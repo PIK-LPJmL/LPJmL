@@ -22,10 +22,15 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de)
 
 ### Changed
 
-- New functions `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and minimize duplicate code in `lpj_climber4.c`.
+- New functions `init_annual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and minimize duplicate code in `lpj_poem.c`.
+- `lpj_climber4.c` renamed to `lpj_poem.c`.
+- `update_daily.c` renamed to `update_daily_cell.c`.
+- `update_monthly.c` renamed to `update_monthly_grid.c`.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c' moved after N update really happened.
 
 
 ## [5.9.25] - 2025-05-22

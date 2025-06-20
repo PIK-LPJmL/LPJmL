@@ -311,7 +311,6 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
         printf("%g ",stand->soil.NO3[l]);
       printf("\n");
 #endif
-
       if(!config->npp_controlled_bnf)
       {
         bnf=biologicalnfixation(stand, npft, ncft, config);
@@ -333,6 +332,12 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
         nh3=stand->soil.NH4[0];
       stand->soil.NH4[0]-=nh3;
       getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
+#ifdef DEBUG_N
+      printf("AFTER_STRESS: ");
+      for(l=0;l<NSOILLAYER-1;l++)
+        printf("%g ",stand->soil.NO3[l]);
+      printf("\n");
+#endif
       if (isagriculture(stand->type->landusetype))
         getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
       if(stand->type->landusetype==GRASSLAND)
