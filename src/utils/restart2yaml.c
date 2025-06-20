@@ -18,15 +18,15 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 #include "types.h"
 #include "errmsg.h"
 #include "swap.h"
 #include "hash.h"
 #include "bstruct.h"
 
-//#define DEBUG
-
-#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] [-t] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] [-invalid2null] [-t] restartfile [first [last]]\n"
+#define getname(name) (name==NULL) ? "unnamed" : name
 
 static void printname(const char *name)
 {
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   char *endptr;
   char *key=NULL;
   int level,iarg,keylevel;
-  Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
+  Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE,setnull=FALSE;
   int firstcell,lastcell,last,cell;
   Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE,istable=FALSE;
   for(iarg=1;iarg<argc;iarg++)
@@ -61,6 +61,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-invalid2null"))
+        setnull=TRUE;
       else if(!strcmp(argv[iarg],"-noindent"))
         indent=FALSE;
       else if(!strcmp(argv[iarg],"-t"))
@@ -276,6 +278,36 @@ int main(int argc,char **argv)
           {
             printname(data.name);
             putchar(' ');
+          }
+        }
+        if(data.token==BSTRUCT_FLOAT)
+        {
+          if(isnan(data.data.f))
+          {
+            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",getname(data.name));
+            if(setnull)
+              data.token=BSTRUCT_NULL;
+          }
+          else if(isinf(data.data.f))
+          {
+            fprintf(stderr,"Error: Value of '%s' is infinite.\n",getname(data.name));
+            if(setnull)
+              data.token=BSTRUCT_NULL;
+          }
+        }
+        else if(data.token==BSTRUCT_DOUBLE)
+        {
+          if(isnan(data.data.d))
+          {
+            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",getname(data.name));
+            if(setnull)
+              data.token=BSTRUCT_NULL;
+          }
+          else if(isinf(data.data.d))
+          {
+            fprintf(stderr,"Error: Value of '%s' is infinite.\n",getname(data.name));
+            if(setnull)
+              data.token=BSTRUCT_NULL;
           }
         }
         bstruct_printdata(&data);

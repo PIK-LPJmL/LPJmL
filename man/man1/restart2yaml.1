@@ -3,10 +3,10 @@
 restart2yaml \- Convert LPJmL restart file into YAML/JSON.
 .SH SYNOPSIS
 .B restart2yaml
-[\-name key] [\-first] [\-json] [\-noindent] [\-t] \fIrestartfile\fP [start [end]]
+[\-name key] [\-first] [\-json] [\-noindent] [\-invalid2null] [\-t] \fIrestartfile\fP [start [end]]
 
 .B restart2json
-[\-name key] [\-first] [\-noindent] [\-t] \fIrestartfile\fP [start [end]]
+[\-name key] [\-first] [\-noindent] [\-invalid2null] [\-t] \fIrestartfile\fP [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML/JSON format. \fBrestart2json\fP is an alias for \fBrestart2yaml\fP -json.
 .SH OPTIONS
@@ -22,6 +22,9 @@ Ouput format is set to JSON, default ist YAML.
 .TP
 \-noindent
 Disable indentations in JSON files to save storage space, default is 2 spaces per level.
+.TP
+\-invalid2null
+Set all not a number (NaN) and infinite values to null. This is in particular useful for JSON output format, because these value are not defined in the standard.
 .TP
 \-t
 Print only table of defined object names.
