@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                u  p  d  a  t  e  _  d  a  i  l  y  .  c                        \n**/
+/**             u  p  d  a  t  e  _  d  a  i  l  y  _  c  e  l  l  .  c            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -24,20 +24,20 @@
 #define LEAF 0
 #define WOOD 1
 
-void update_daily(Cell *cell,            /**< pointer to cell */
-                  int cell_id,           /**< cell index */
-                  Dailyclimate *climate, /**< Daily climate values */
-                  Real co2,              /**< atmospheric CO2 (ppmv) */
-                  Input *input,          /**< input data */
-                  int day,               /**< day (1..365) */
-                  int dayofmonth,        /**< day of month (0..30) */
-                  int month,             /**< month (0..11) */
-                  int year,              /**< simulation year (AD) */
-                  int npft,              /**< number of natural PFTs */
-                  int ncft,              /**< number of crop PFTs */
-                  Bool intercrop,        /**< intercropping enabled (TRUE/FALSE) */
-                  const Config *config   /**< LPJ configuration */
-                 )
+void update_daily_cell(Cell *cell,            /**< pointer to cell */
+                       int cell_id,           /**< cell index */
+                       Dailyclimate *climate, /**< Daily climate values */
+                       Real co2,              /**< atmospheric CO2 (ppmv) */
+                       Input *input,          /**< input data */
+                       int day,               /**< day (1..365) */
+                       int dayofmonth,        /**< day of month (0..30) */
+                       int month,             /**< month (0..11) */
+                       int year,              /**< simulation year (AD) */
+                       int npft,              /**< number of natural PFTs */
+                       int ncft,              /**< number of crop PFTs */
+                       Bool intercrop,        /**< intercropping enabled (TRUE/FALSE) */
+                       const Config *config   /**< LPJ configuration */
+                      )
 {
   int s,p;
   Pft *pft;
@@ -484,4 +484,4 @@ void update_daily(Cell *cell,            /**< pointer to cell */
     cell->balance.flux_estab.carbon+=flux_estab.carbon;
     cell->output.dcflux-=flux_estab.carbon;
   } /* of if(!cell->skip) */
-} /* of 'update_daily' */
+} /* of 'update_daily_cell' */

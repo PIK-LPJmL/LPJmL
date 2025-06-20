@@ -17,15 +17,15 @@
 
 #include "lpj.h"
 
-void update_monthly(Outputfile *output,  /**< Output file data */
-                    Cell grid[],         /**< cell array */
-                    Climate *climate,    /**< pointer to climate data */
-                    int month,           /**< month (0..11) */
-                    int year,            /**< simulation year (AD) */
-                    int npft,            /**< number of natural PFTs */
-                    int ncft,            /**< number of crop PFTs */
-                    const Config *config /**< LPJ configuration */
-                   )
+void update_monthly_grid(Outputfile *output,  /**< Output file data */
+                         Cell grid[],         /**< cell array */
+                         Climate *climate,    /**< pointer to climate data */
+                         int month,           /**< month (0..11) */
+                         int year,            /**< simulation year (AD) */
+                         int npft,            /**< number of natural PFTs */
+                         int ncft,            /**< number of crop PFTs */
+                         const Config *config /**< LPJ configuration */
+                        )
 {
   Pft *pft;
   Stand *stand;
@@ -62,4 +62,4 @@ void update_monthly(Outputfile *output,  /**< Output file data */
   if(year>=config->outputyear && month<NMONTH-1)
     /* write out monthly output, postpone last timestep until after annual processes */
     fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
-} /* of 'monthly_update' */
+} /* of 'monthly_update_grid' */

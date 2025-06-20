@@ -42,12 +42,13 @@ Bool iterateyear(Outputfile *output,  /**< Output file data */
     {
       for(cell=0;cell<config->ngridcell;cell++)
       {
-        update_daily(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,npft,ncft,intercrop,config);
+        update_daily_cell(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,
+                          npft,ncft,intercrop,config);
       }
       updatedaily_grid(output,grid,input.extflow,day,month,year,npft,ncft,config);
       day++;
     } /* of 'foreachdayofmonth */
-    update_monthly(output,grid,input.climate,month,year,npft,ncft,config);
+    update_monthly_grid(output,grid,input.climate,month,year,npft,ncft,config);
   } /* of 'foreachmonth */
   updateannual_grid(output,grid,input.landcover,year,npft,ncft,intercrop,daily.isdailytemp,config);
   return FALSE;

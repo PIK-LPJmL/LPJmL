@@ -142,11 +142,11 @@ Received 19 November 1997; accepted 15 January 1999*/
 
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,const Config *);
-extern void update_daily(Cell *,int,Dailyclimate *,Real,Input *,int,int,int,
-                        int,int,int,Bool,const Config *);
+extern void update_daily_cell(Cell *,int,Dailyclimate *,Real,Input *,int,int,int,
+                              int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           int,Bool,Bool,const Config *);
-extern void update_monthly(Outputfile *,Cell *,Climate *,int,int,int,int,const Config *);
+extern void update_monthly_grid(Outputfile *,Cell *,Climate *,int,int,int,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);

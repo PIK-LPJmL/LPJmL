@@ -1300,7 +1300,7 @@ void lpj_update_
                 co2 = tmp_co2[cell];
               }
               /******* now do the MAIN work ****************************************         \n**/
-              update_daily(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
+              update_daily_cell(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
               //grid[cell].output.daily.sun=daily.sun; not used for FMS coupling
 
 
@@ -1439,7 +1439,7 @@ void lpj_update_
 
               //tmp_albedo_out[cell] = albedo(&grid[cell]);
               // TODO: use Erik's new albedo() parameterisation.
-              // It requires temperature and precipitation, which we also used for update_daily() above.
+              // It requires temperature and precipitation, which we also used for update_daily_cell() above.
               tmp_albedo_out[cell] = albedo(&grid[cell], tmp_temp_mean[cell], tmp_prec[cell]);
 
             } /* if (!grid[cell].skip) */
@@ -1455,12 +1455,13 @@ void lpj_update_
           dayofyear++;
         } /* if (goodnight) */ /* of 'foreachdayofmonth */
 
-        if (monthend) {
-          update_monthly(output,grid,input.climate,month,year,npft,ncft,&config);
-
+        if (monthend) 
+        {
+          update_monthly_grid(output,grid,input.climate,month,year,npft,ncft,&config);
         } /* if (monthend) */ /* of 'foreachmonth */
 
-        if (silvester) { /* from iterateyear_river() */
+        if (silvester)
+        { /* from iterateyear() */
           updateannual_grid(output,grid,input.landcover,year,npft,ncft,intercrop,daily.isdailytemp,&config);
           for(cell=0;cell<config.ngridcell;cell++)
           {
