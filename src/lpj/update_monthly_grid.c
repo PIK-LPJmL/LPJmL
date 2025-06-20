@@ -58,7 +58,11 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
       grid[cell].balance.awater_flux+=((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area);
     } /* if(!grid[cell].skip) */
   } /* of 'for(cell=0;...)' */
-
+#ifdef DEBUG
+  printf("year=%d,month=%d\n",year,month+1);
+  printf("cell=%d\n",cell+config->startgrid);
+  printcell(grid+cell,1,npft,ncft,config);
+#endif
   if(year>=config->outputyear && month<NMONTH-1)
     /* write out monthly output, postpone last timestep until after annual processes */
     fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
