@@ -408,7 +408,7 @@ int main(int argc,char **argv)
     for(cell=0;cell<item[i].ncell;cell++)
     {
       index[k++]=bstruct_getarrayindex(out);
-      level=0;
+      level=bstruct_getlevel(out);
       /* copy one cell */
       do
       {
@@ -418,20 +418,9 @@ int main(int argc,char **argv)
                   cell,item[i].filename);
           return EXIT_FAILURE;
         }
-        switch(data.token)
-        {
-          case BSTRUCT_BEGINARRAY: case BSTRUCT_BEGINARRAY1: case BSTRUCT_BEGINSTRUCT:
-            level++;
-            break;
-          case BSTRUCT_ENDSTRUCT: case BSTRUCT_ENDARRAY:
-            level--;
-            break;
-          default:
-            break;
-        }
         bstruct_writedata(out,&data);
         bstruct_freedata(&data);
-      }while(level>0);
+      }while(bstruct_getlevel(out)>level);
     }
     bstruct_finish(item[i].file);
   }
