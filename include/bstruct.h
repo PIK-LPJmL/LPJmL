@@ -113,6 +113,7 @@ extern long long bstruct_getarrayindex(Bstruct);
 extern Bool bstruct_writenull(Bstruct,const char *);
 extern Bool bstruct_isnull(Bstruct,const char *);
 extern void bstruct_printnoread(Bstruct,Bool);
+extern Bool bstruct_writedata(Bstruct,const Bstruct_data *);
 
 /* Definition of macros */
 
