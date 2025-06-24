@@ -54,7 +54,12 @@ Bool bstruct_writedata(Bstruct bstr,            /**< pointer to restart file */
       return bstruct_writefloat(bstr,data->name,0);
     case BSTRUCT_NULL:
       return bstruct_writenull(bstr,data->name);
+    case BSTRUCT_INDEXARRAY:
+      fwrite(&data->token,1,1,bstr->file);
+      if(fwrite(&data->size,sizeof(data->size),1,bstr->file)!=1)
+        return TRUE;
+      return fwrite(data->data.index,sizeof(long long),data->size,bstr->file)!=data->size;
     default:
-      return FALSE;
+      return TRUE;
   }
 } /* of 'bstruct_writdata' */
