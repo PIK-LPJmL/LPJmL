@@ -42,7 +42,7 @@
     "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
     "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
     "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-    "theta" : 0.99,            /* theta */
+    "theta" : 0.94,             /* theta */
     "alphac3" : 0.065,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
     "alphac4" : 0.05,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
     "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/
@@ -61,7 +61,7 @@
     "equisoil_fadeout": 0,     /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
     "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
     "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-    "temp_response" : 42.02,   /* Parameter in temperature response function */
+    "temp_response" : 46.02,   /* Parameter in temperature response function */
     "percthres" : 1.0,
     "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */

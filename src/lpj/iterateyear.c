@@ -102,7 +102,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
-
   day=1;
   foreachmonth(month)
   {
