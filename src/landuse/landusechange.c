@@ -207,14 +207,15 @@ void deforest(Cell *cell,          /**< pointer to cell */
                soilmethane(&stand->soil)*WC/WCH4,pft->par->name,crop->growingdays);
         }
         else
-          fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s \n",
+          fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s.\n",
              stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,standstocks(stand).carbon,
              soilmethane(&stand->soil)*WC/WCH4,pft->par->name);
 
       }
     }
 #endif
-   fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
+   fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %s.\n",
+           sprintcoord(line,&cell->coord),difffrac, bool2str(iswetland));
 #ifdef DEBUG3
     for(j=0;j<ncft;j++)
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
