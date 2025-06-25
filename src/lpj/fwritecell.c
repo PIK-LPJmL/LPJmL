@@ -81,7 +81,7 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
         break;
       if(fwritestandlist(file,"standlist",grid[cell].standlist,npft+ncft))
         break;
-      if (bstruct_writereal(file,"groud_st",grid[cell].ground_st))
+      if (bstruct_writereal(file,"ground_st",grid[cell].ground_st))
         break;
       if (bstruct_writereal(file,"ground_st_am",grid[cell].ground_st_am))
         break;

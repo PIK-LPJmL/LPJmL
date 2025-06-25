@@ -112,6 +112,8 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
     }
+    readreal(file,"ground_st",&cell->ground_st);
+    readreal(file,"ground_st_am",&cell->ground_st_am);
     readreal(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
     readreal(file,"cropfrac_wl",&cell->ml.cropfrac_wl);
     readreal(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
