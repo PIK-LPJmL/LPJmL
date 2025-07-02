@@ -26,7 +26,8 @@ of `major.minor.patch` with
 
 ### Changed
 
-- New functions `init_annual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.
+- New functions `setupannual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.
+- Parts of code in `iterateyear.c` has been moved to `update_daily_cell.c` and `update_monthly_grid.c`.
 - `lpj_climber4.c` renamed to `lpj_poem.c`.
 - `update_daily.c` renamed to `update_daily_cell.c`.
 - `update_monthly.c` renamed to `update_monthly_grid.c`.
