@@ -20,6 +20,15 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Fixed
+
+- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
+
+
 ## [5.9.25] - 2025-05-22
 
 ### Contributors
