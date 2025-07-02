@@ -27,7 +27,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
-
+- Man page for `mathclm` corrected for option `-v`.
 
 ## [5.9.25] - 2025-05-22
 
