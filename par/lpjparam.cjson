@@ -63,7 +63,7 @@
     "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
     "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
-    "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
+    "k_temp" : 0.0693,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
     "min_c_bnf" : 20,          /* threshold C root content for BNF */
     "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
     "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
