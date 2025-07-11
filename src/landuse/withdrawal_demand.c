@@ -36,6 +36,10 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   Real *in,*out;
   Irrigation *data;
   Stand *stand;
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
 
   in=(Real *)pnet_input(config->irrig_neighbour);
   out=(Real *)pnet_output(config->irrig_neighbour);
@@ -114,5 +118,8 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
     }
     grid[cell].discharge.wd_demand+=grid[cell].discharge.wd_neighbour;
   }
+#ifdef USE_TIMING
+  timing.withdrawal_demand+=mrun()-t;
+#endif
 
 } /* of 'withdrawal_demand' */

@@ -94,7 +94,11 @@ int main(int argc,char **argv)
   int year,rc;
   Cell *grid;         /* cell array */
   Input input;        /* input data */
-  time_t tstart,tend,tbegin,tfinal;   /* variables for timing */
+  time_t tstart,tend,tinvoke;   /* variables for timing */
+  double tbegin,tfinal;
+#ifdef USE_TIMING
+  double t;
+#endif
   Standtype standtype[NSTANDTYPES];
   String s;
   Config config;         /* LPJ configuration */
@@ -106,9 +110,13 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
-  time(&tbegin);         /* Start timing for total wall clock time */
+  time(&tinvoke);
+  tbegin=mrun();         /* Start timing for total wall clock time */
 #ifdef USE_MPI
   MPI_Init(&argc,&argv); /* Initialize MPI */
+#ifdef USE_TIMING
+  timing.MPI_Init+=mrun()-tbegin;
+#endif
 /*
  * Use default communicator containing all processors. In defining your own
  * communicator it is possible to run LPJ on a subset of processors
@@ -173,7 +181,7 @@ int main(int argc,char **argv)
   { /* Output only for the root task 0 */
     copyright(progname);
     printf("\nRunning for user %s on %s at %s",getuser(),gethost(),
-           ctime(&tbegin));
+           ctime(&tinvoke));
     fflush(stdout);
   }
 
@@ -181,7 +189,13 @@ int main(int argc,char **argv)
    * in light and establishment
    * crops must have last id-number */
   /* Read configuration file */
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+#ifdef USE_TIMING
+  timing.readconfig+=mrun()-t;
+#endif
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(argc)
   {
@@ -237,7 +251,13 @@ int main(int argc,char **argv)
   standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
   /* Allocation and initialization of grid */
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+#ifdef USE_TIMING
+  timing.newgrid+=mrun()-t;
+#endif
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   if(iscoupled(config))
   {
@@ -245,7 +265,13 @@ int main(int argc,char **argv)
     snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
     failonerror(&config,rc,OPEN_COUPLER_ERR,s);
   }
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
+#ifdef USE_TIMING
+  timing.initinput+=mrun()-t;
+#endif
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   if(config.check_climate)
@@ -254,11 +280,23 @@ int main(int argc,char **argv)
     failonerror(&config,rc,INIT_INPUT_ERR,"Check of climate data failed");
   }
   /* open output files */  
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   output=fopenoutput(grid,NOUT,&config);
+#ifdef USE_TIMING
+  timing.fopenoutput+=mrun()-t;
+#endif
   rc=(output==NULL);
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+#ifdef USE_TIMING
+  timing.initoutput+=mrun()-t;
+#endif
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
   if(iscoupled(config))
@@ -279,9 +317,15 @@ int main(int argc,char **argv)
     puts("Simulation begins...");
   time(&tstart); /* Start timing */
   /* Starting simulation */
+#ifdef USE_TIMING
+  t=mrun();
+#endif
   year=iterate(output,grid,input,
                config.npft[GRASS]+config.npft[TREE],config.npft[CROP],
                &config);
+#ifdef USE_TIMING
+  timing.iterate+=mrun()-t;
+#endif
   /* Simulation has finished */
   time(&tend); /* Stop timing */
   fcloseoutput(output,&config);
@@ -298,11 +342,6 @@ int main(int argc,char **argv)
            config.total,(int)(tend-tstart),
            (double)(tend-tstart)/config.total/max(year-config.firstyear+
                                                    config.nspinup,1));
-#ifdef USE_TIMING
-    if(iscoupled(config))
-      printf("Time spent in communication to %s model: %.2g sec.\n",
-             config.coupled_model,timing);
-#endif
   }
 #if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)
@@ -317,9 +356,12 @@ int main(int argc,char **argv)
   /* Exit MPI */
   MPI_Finalize();
 #endif
-  time(&tfinal);
+  tfinal=mrun();
   if(isroot(config))
   {
+#ifdef USE_TIMING
+    printtiming(tfinal-tbegin);
+#endif
     printf("Total wall clock time:\t%d sec (",(int)(tfinal-tbegin));
     printtime((int)(tfinal-tbegin));
     puts(").");

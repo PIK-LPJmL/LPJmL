@@ -30,6 +30,10 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
 #ifndef COUPLED
   int wateruse_year;
 #endif
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
   if(input->landuse!=NULL)
   {
     calc_seasonality(grid,npft,ncft,config);
@@ -180,5 +184,8 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
+#ifdef USE_TIMING
+  timing.setupannual_grid+=mrun()-t;
+#endif
   return FALSE;
 } /* of 'setupannual_grid' */

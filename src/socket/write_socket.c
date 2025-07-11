@@ -19,12 +19,13 @@
 #include <sys/socket.h>
 #endif
 #include "types.h"
+#include "timing.h"
 #include "channel.h"
 
 Bool write_socket(Socket *socket,const void *buffer,int n)
 {
 #ifdef USE_TIMING
-  double tstart,tend;
+  double tstart;
 #endif
   int i,j;
   i=0;
@@ -40,8 +41,7 @@ Bool write_socket(Socket *socket,const void *buffer,int n)
     n-=j;
   }while(n);
 #ifdef USE_TIMING
-  tend=mrun();
-  timing+=tend-tstart;
+  timing.write_socket+=mrun()-tstart;
 #endif
   return FALSE;
 } /* of 'write_socket' */

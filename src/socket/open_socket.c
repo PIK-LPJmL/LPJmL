@@ -51,9 +51,6 @@ Socket *open_socket(int port, /* port of TCP/IP connection */
     return NULL;
 #else
   int my_socket;
-#ifdef USE_TIMING
-  timing=0;
-#endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {

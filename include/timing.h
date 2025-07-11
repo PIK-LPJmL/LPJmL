@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 r  e  a  d  _  s  o  c  k  e  t  .  c                          \n**/
+/**                     t  i  m  i  n  g  . h                                      \n**/
 /**                                                                                \n**/
-/**     Function reads bytes from socket                                           \n**/
+/**     Definition of performance timing datatype                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,33 +12,37 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#ifndef _WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-#include "types.h"
-#include "timing.h"
-#include "channel.h"
+#ifndef TIMING_H
+#define TIMING_H
 
-Bool read_socket(Socket *socket,void *data,int n)
+typedef struct
 {
-  int i,j;
-#ifdef USE_TIMING
-  double tstart;
-  tstart=mrun();
+  double drain;
+  double fopenoutput;
+  double fwriterestart;
+  double fwriteoutput;
+  double getclimate;
+  double initinput;
+  double initoutput;
+  double irrig_amount_reservoir;
+  double iterate;
+  double iterateyear;
+  double littersom;
+  double MPI_Init;
+  double newgrid;
+  double readconfig;
+  double read_socket;
+  double update_soil_thermal_state;
+  double setupannual_grid;
+  double storeclimate;
+  double wateruse;
+  double withdrawal_demand;
+  double write_socket;
+} Timing;
+
+extern Timing timing;
+
+void fprinttiming(FILE *file,double);
+
+#define printtiming(total) fprinttiming(stdout,total)
 #endif
-  i=n;
-  do
-  {
-    j=recv(socket->channel,(char *)data+n-i,i,0);
-    if(j<0)
-      return TRUE;
-    i-=j;
-  }while(i);
-#ifdef USE_TIMING
-  timing.read_socket+=mrun()-tstart;
-#endif
-  return FALSE;
-} /* of 'read_socket' */
