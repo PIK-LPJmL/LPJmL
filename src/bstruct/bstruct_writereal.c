@@ -23,7 +23,7 @@ Bool bstruct_writereal(Bstruct bstr,     /**< pointer to restart file */
 {
   Bool rc=FALSE;
   Byte token;
-  if(value==0.0)
+  if(fpclassify(value)==FP_ZERO)
     token=BSTRUCT_FZERO;  // only non-zero values are written to reduce file size
   else
     token=(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT;

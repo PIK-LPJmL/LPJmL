@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <string.h>
 #include "types.h"
+#include "errmsg.h"
 #include "swap.h"
 
 Bool freadtopheader(FILE *file,     /**< file pointer of binary file */
@@ -29,14 +30,19 @@ Bool freadtopheader(FILE *file,     /**< file pointer of binary file */
                    ) /** \return TRUE on error */
 {
   char *buffer;
-  int file_version;
+  int file_version,rc;
   buffer=newvec(char,strlen(headername)+1);
   if(buffer==NULL)
+  {
+    printallocerr("buffer");
     return TRUE;
-  if(fread(buffer,strlen(headername),1,file)!=1)
+  }
+  rc=fread(buffer,1,strlen(headername),file);
+  if(rc!=strlen(headername))
   {
     if(isout)
-      fprintf(stderr,"ERROR239: Cannot read header id: %s.\n",strerror(errno));
+      fprintf(stderr,"ERROR239: Cannot read header id '%s', only %d bytes read.\n",
+              headername,rc);
     free(buffer);
     return TRUE;
   }
@@ -57,7 +63,7 @@ Bool freadtopheader(FILE *file,     /**< file pointer of binary file */
   if(fread(&file_version,sizeof(file_version),1,file)!=1)
   {
     if(isout)
-      fprintf(stderr,"ERROR239: Cannot read header version: %s.\n",strerror(errno));
+      fprintf(stderr,"ERROR239: Cannot read header version.\n");
     return TRUE;
   }
   if((file_version & 0xff)==0)

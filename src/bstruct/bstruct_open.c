@@ -16,6 +16,23 @@
 
 #include "bstruct_intern.h"
 
+static void closefile(Bstruct bstruct)
+{
+  /* Function deallocates data and closes file in case of error */
+  int i;
+  /* free name table */
+  for(i=0;i<bstruct->count;i++)
+  {
+    free(bstruct->names[i].key);
+    free(bstruct->names[i].data);
+  }
+  free(bstruct->names);
+  free(bstruct->names2);
+  fclose(bstruct->file);
+  bstruct_freenamestack(bstruct);
+  free(bstruct);
+} /* of 'closefile' */
+
 Bstruct bstruct_open(const char *filename, /**< filename of restart file to open */
                      Bool isout            /**< enable error output on stderr */
                     )                      /** \return pointer to restart file or NULL in case of error */
@@ -25,7 +42,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   int version,i;
   long long filepos,save;
   Byte len;
-  short *id;
+  unsigned short *id;
   bstruct=new(struct bstruct);
   if(bstruct==NULL)
   {
@@ -33,6 +50,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     return NULL;
   }
   bstruct->isout=isout;
+  bstruct->print_noread=FALSE;
   bstruct->imiss=0;
   bstruct->skipped=0;
   bstruct->level=1;
@@ -79,7 +97,8 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   if(freadlong(&filepos,1,bstruct->swap,bstruct->file)!=1)
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot read position of name table.\n");
+      fprintf(stderr,"ERROR517: Cannot read position of name table in '%s'.\n",
+              filename);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);
@@ -99,17 +118,30 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   if(fseek(bstruct->file,filepos,SEEK_SET))
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot seek to name table.\n");
+      fprintf(stderr,"ERROR517: Cannot seek to name table in '%s'.\n",
+              filename);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
-  /* read name table */
+  /* read size of name table */
   if(freadint(&bstruct->count,1,bstruct->swap,bstruct->file)!=1)
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot read size of name table.\n");
+      fprintf(stderr,"ERROR517: Cannot read size of name table in '%s'.\n",
+              filename);
+    fclose(bstruct->file);
+    bstruct_freenamestack(bstruct);
+    free(bstruct);
+    return NULL;
+  }
+  /* check size of name table */
+  if(bstruct->count>USHRT_MAX+1)
+  {
+    if(isout)
+      fprintf(stderr,"ERROR528: Size=%d of name table in '%s' is greater than maximum allowed size of %d.\n",
+              bstruct->count,filename,USHRT_MAX+1);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);
@@ -136,52 +168,56 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   }
   for(i=0;i<bstruct->count;i++)
   {
+    bstruct->names[i].key=NULL;
+    bstruct->names[i].data=NULL;
+  }
+  /* read name table */
+  for(i=0;i<bstruct->count;i++)
+  {
     if(fread(&len,1,1,bstruct->file)!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR517: Cannot read length of name in table.\n");
-      fclose(bstruct->file);
-      bstruct_freenamestack(bstruct);
-      free(bstruct);
+        fprintf(stderr,"ERROR517: Cannot read length of name %d in table.\n",i+1);
+      closefile(bstruct);
       return NULL;
     }
     bstruct->names[i].key=malloc((int)len+1);
     if(bstruct->names[i].key==NULL)
     {
       printallocerr("key");
-      fclose(bstruct->file);
-      bstruct_freenamestack(bstruct);
-      free(bstruct);
+      closefile(bstruct);
       return NULL;
     }
     if(fread(bstruct->names[i].key,len,1,bstruct->file)!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",
-               bstruct->count);
-      fclose(bstruct->file);
-      bstruct_freenamestack(bstruct);
-      free(bstruct);
+        fprintf(stderr,"ERROR517: Unexpected end of file reading name %d in table of size %d.\n",
+                i+1,bstruct->count);
+      closefile(bstruct);
       return NULL;
     }
     ((char *)bstruct->names[i].key)[len]='\0';
-    id=new(short);
+    id=new(unsigned short);
     if(id==NULL)
     {
       printallocerr("id");
-      fclose(bstruct->file);
-      bstruct_freenamestack(bstruct);
-      free(bstruct);
+      closefile(bstruct);
       return NULL;
     }
-    if(freadshort(id,1,bstruct->swap,bstruct->file)!=1)
+    if(freadushort(id,1,bstruct->swap,bstruct->file)!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",
-                bstruct->count);
-      fclose(bstruct->file);
-      bstruct_freenamestack(bstruct);
-      free(bstruct);
+        fprintf(stderr,"ERROR517: Unexpected end of file reading name %d in table of size %d.\n",
+                i+1,bstruct->count);
+      closefile(bstruct);
+      return NULL;
+    }
+    if(*id>=bstruct->count)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR527: Invalid value %d of id for name '%s' in name table, must be in [0,%d].\n",
+                *id,(char *)bstruct->names[i].key,bstruct->count-1);
+      closefile(bstruct);
       return NULL;
     }
     bstruct->names[i].data=id;

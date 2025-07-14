@@ -141,7 +141,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #else
   *flux_global=flux;
 #endif
-  if(flux_global->area>epsilon)
+  if(isroot(*config) && flux_global->area>epsilon)
     flux_global->temp/=flux_global->area;
   return flux_global->npp-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
 } /* of 'flux_sum' */

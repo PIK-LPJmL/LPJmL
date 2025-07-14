@@ -1,1 +1,1 @@
-void bstruct_finish(Bstruct);
+Bool bstruct_finish(Bstruct);

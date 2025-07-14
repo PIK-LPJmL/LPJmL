@@ -33,6 +33,13 @@ Bool bstruct_isnull(Bstruct bstr,    /**< pointer to restart file */
       fprintf(stderr,"ERROR508: Unexpected end of file reading token.\n");
     return FALSE;
   }
+  if(isinvalidtoken(token))
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR502: Invalid token %d checking for null object '%s'.\n",
+              token,getname(name));
+    return FALSE;
+  }
   rc=bstruct_findobject(bstr,&token,BSTRUCT_NULL,name);
   if(!rc && (token & 63)==BSTRUCT_NULL)
     return TRUE;

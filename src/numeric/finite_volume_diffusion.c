@@ -70,10 +70,10 @@ void finite_volume_diffusion_timestep(Real * amount,          /**< g/m^2, substa
 
 void calculate_resistances(Real * res, const Real * h, const Real * diff, const int n)
 {
-  res[0] = (h[0]/2)/diff[0]; /* equation (25) p. 191 */
+  res[0] = (h[0]*0.5)/diff[0]; /* equation (25) p. 191 */
   int j;
   for (j=1; j<n; ++j)
-    res[j] = (h[j-1]/2)/diff[j-1] + (h[j]/2)/diff[j]; /* equation (17) p. 189 */
+    res[j] = (h[j-1]*0.5)/diff[j-1] + (h[j]*0.5)/diff[j]; /* equation (17) p. 189 */
 } /* of 'calculate_resistances' */
 
 Bool apply_finite_volume_diffusion_of_a_day(Real * amount,         /**< g/m^2, substance absolute amount */

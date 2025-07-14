@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**         b  s  t  r  u  c  t  _  w  r  i  t  e  d  o  u  b  l  e  .  c          \n**/
+/**              b  s  t  r  u  c  t  _  r  e  a  d  i  d  .  c                    \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,17 +16,30 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writedouble(Bstruct bstr,     /**< pointer to restart file */
-                         const char *name, /**< name of object or NULL */
-                         double value      /**< value written to file */
-                        )                  /** \return TRUE on error */
+Bool bstruct_readid(Bstruct bstr, /**< pointer to restart file */
+                    Byte token,   /**< token */
+                    Id *id        /**< id read */
+                   )              /** \return TRUE on error */
 {
-  Bool rc=FALSE;
-  Byte token;
-  token=(fpclassify(value)==FP_ZERO) ? BSTRUCT_FZERO : BSTRUCT_DOUBLE; // only non-zero values are written to reduce file size
-  if(bstruct_writename(bstr,token,name))
+  /* Function reads id */
+  Byte id1;
+  if((token & 64)==64) /* bit 7 set, id is of type unsigned short */
+  {
+    if(freadushort(id,1,bstr->swap,bstr->file)!=1)
+      return TRUE;
+  }
+  else
+  {
+    if(fread(&id1,1,1,bstr->file)!=1)
+      return TRUE;
+    *id=id1;
+  }
+  if(*id>=bstr->count)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR527: Invalid id %d, must be in [0,%d].\n",
+              *id,bstr->count-1);
     return TRUE;
-  if(token!=BSTRUCT_FZERO)
-    rc=fwrite(&value,sizeof(value),1,bstr->file)!=1;
-  return rc;
-} /* of 'bstruct_writedouble' */
+  }
+  return FALSE;
+} /* of 'bstruct_readid' */

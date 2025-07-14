@@ -53,13 +53,13 @@ extern char *bstruct_typenames[];
 extern Bstruct bstruct_open(const char *,Bool);
 extern Bstruct bstruct_wopen(const char *,Bool,Bool);
 extern int bstruct_getmiss(const Bstruct);
-extern int bstruct_getskipped(const Bstruct);
+extern int bstruct_getnoread(const Bstruct);
 extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
 extern Bool bstruct_writearrayindex(Bstruct,long long,const long long vec[],int,int);
-extern void bstruct_finish(Bstruct);
+extern Bool bstruct_finish(Bstruct);
 extern void bstruct_sync(Bstruct);
 extern void bstruct_setout(Bstruct,Bool);
 extern Bool bstruct_writebool(Bstruct,const char *,Bool);
@@ -82,7 +82,7 @@ extern Bool bstruct_writebeginindexarray(Bstruct,const char *,long long *,int);
 extern Bool bstruct_writebeginstruct(Bstruct,const char *);
 extern Bool bstruct_writeendstruct(Bstruct);
 extern Bool bstruct_writeendarray(Bstruct);
-extern void bstruct_fprintdata(FILE *,const Bstruct_data *);
+extern void bstruct_fprintdata(FILE *,const Bstruct_data *,int);
 extern Bool bstruct_readdata(Bstruct,Bstruct_data *);
 extern void bstruct_freedata(Bstruct_data *);
 extern Bool bstruct_readbeginarray(Bstruct,const char *,int *);
@@ -112,10 +112,13 @@ extern void bstruct_fprintnamestack(FILE *,const Bstruct);
 extern long long bstruct_getarrayindex(Bstruct);
 extern Bool bstruct_writenull(Bstruct,const char *);
 extern Bool bstruct_isnull(Bstruct,const char *);
+extern void bstruct_printnoread(Bstruct,Bool);
+extern Bool bstruct_writedata(Bstruct,const Bstruct_data *);
+extern int bstruct_getlevel(const Bstruct);
 
 /* Definition of macros */
 
-#define bstruct_printdata(data) bstruct_fprintdata(stdout,data)
+#define bstruct_printdata(data,decimals) bstruct_fprintdata(stdout,data,decimals)
 #define bstruct_printnametable(name,bstr,isjson) bstruct_fprintnametable(stdout,name,bstr,isjson)
 #define bstruct_create(filename) bstruct_wopen(filename,FALSE,TRUE)
 #define bstruct_append(filename,isout) bstruct_wopen(filename,TRUE,isout)

@@ -27,6 +27,7 @@
 #include "bstruct_readendstruct.h"
 #include "bstruct_finish.h"
 #include "bstruct_fprintnamestack.h"
+#include "bstruct_readid.h"
 #include "bstruct_readtoken.h"
 #include "bstruct_writenull.h"
 #include "bstruct_isnull.h"

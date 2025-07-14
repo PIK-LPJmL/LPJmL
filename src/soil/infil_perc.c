@@ -544,7 +544,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
   // use analytical expression for aquifer specific yield
 
-  Theta_ice=pow(10,-OMEGA*icefrac[lwt+1]);
+  Theta_ice=pow(10,-OMEGA*icefrac[min(lwt+1,NSOILLAYER-1)]);
   s_node=(allwater(soil,lwt)/soildepth[lwt] + allice(soil,lwt)/soildepth[lwt])/soil->wsat[lwt];
   s_node=max(s_node,0.02);
   s_node=min(1, s_node);

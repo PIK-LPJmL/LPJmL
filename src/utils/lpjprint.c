@@ -30,7 +30,7 @@
 #define NSTANDTYPES 15 /* number of stand types */
 
 #define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
+              "       [-pedantic] [-print_noread] [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 #define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
@@ -225,6 +225,8 @@ int main(int argc,char **argv)
              "-h,--help        print this help text\n"
              "-v,--version     print LPJmL version\n"
              "-nopp            disable preprocessing\n"
+             "-pedantic        stop on warnings\n"
+             "-print_noread    print variable names not read from restart file\n"
              "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"

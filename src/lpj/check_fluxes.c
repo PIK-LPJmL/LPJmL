@@ -103,11 +103,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                  p,pft->par->name,vegc_sum(pft));
         fflush(stdout);
       } /* of 'foreachstand' */
-#ifdef NO_FAIL_BALANCE
-    fprintf(stderr,"ERROR004: "
-#else
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-#endif
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f "
          "trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f c_influx %.2f totalfrac: %.5f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
@@ -117,16 +113,14 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,
          cell->ml.image_data->timber_f.fast,cell->ml.image_data->fburnt,cell->balance.influx.carbon,fraction);
 #else
-#ifdef NO_FAIL_BALANCE
-    fprintf(stderr,"ERROR004: "
-#else
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-#endif
-         "y: %d c: %d (%s) BALANCE_C-error: %.10f anpp: %.2f rh: %.2f\n"
-         "                            firec: %.2f flux_estab: %.2f flux_harvest: %.2f \n"
-         "                            delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
-         "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
-         "                            deforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest.carbon: %.2f c_influx %.2f totalfrac: %.5f\n",
+         "Invalid carbon balance in year %d in cell %d (%s) of %.10f\n"
+         "=====001: anpp: %.2f rh: %.2f\n"
+         "=====002: firec: %.2f flux_estab: %.2f flux_harvest: %.2f \n"
+         "=====003: delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
+         "=====004: estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
+         "=====005: deforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f\n"
+         "=====006: product pools %.2f %.2f timber_harvest.carbon: %.2f c_influx %.2f totalfrac: %.5f",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp,cell->balance.arh,cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
@@ -144,15 +138,13 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #endif
   if(year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
-#ifdef NO_FAIL_BALANCE
-    fprintf(stderr,"ERROR037: "
-#else
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-#endif
-      "y: %d c: %d (%s) BALANCE_N-error: %.10f n_influx %g n_outflux %g \n"
-      "           delta_tot=%g total nitrogen=%g n_harvest %g n_biomass_yield %g n_estab %g NO3_lateral %g \n"
-      "           n_defor_emis %g n_product_turnover %g trad_biofuel: %g timber.harvest: %g \n"
-      "           estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g totalfrac: %.5f\n",
+      "Invalid nitrogen balance in year %d in cell %d (%s) of %.10f\n"
+      "=====001: n_influx %g n_outflux %g\n"
+      "=====002: delta_tot=%g total nitrogen=%g n_harvest %g n_biomass_yield %g n_estab %g NO3_lateral %g\n"
+      "=====003: n_defor_emis %g n_product_turnover %g trad_biofuel: %g timber.harvest: %g\n"
+      "=====004: estab_storage grass [0] = %g estab_storage grass [1] = %g\n"
+      "=====005: estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g totalfrac: %.5f",
       year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.nitrogen,cell->balance.influx.nitrogen,cell->balance.n_outflux,
       delta_tot.nitrogen,tot.nitrogen,cell->balance.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->balance.flux_estab.nitrogen,cell->NO3_lateral,
       cell->balance.deforest_emissions.nitrogen, cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen,cell->balance.trad_biofuel.nitrogen,cell->balance.timber_harvest.nitrogen,
@@ -187,18 +179,16 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balanceW=totw-cell->balance.totw-cell->balance.aprec-cell->balance.aMT_water+cell->balance.awater_flux+cell->balance.excess_water;
   if(year>startyear && fabs(balanceW)>param.error_limit.w_local)
   //if(year>1511 && fabs(balanceW)>1.5)
-#ifdef NO_FAIL_BALANCE
-      fprintf(stderr,"ERROR005: "
-#else
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-#endif
-         "y: %d c: %d (%s) BALANCE_W-error %.2f \n "
-         "cell->totw: %.2f totw: %.2f lateral_water: %.2f \n "
-         "awater_flux:%.2f awater_flux_before:%.2f \n "
-         "aprec:%.2f excess water:%.2f \n atransp: %g  aevap %g  ainterc %g \n "
-         "runoff %g aevap_lake %g  aevap_res %g  airrig %g  aMT_water %g dmass_lake: %g dmass_river: %g\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,cell->lateral_water,
-         cell->balance.awater_flux,awater_flux,cell->balance.aprec,cell->balance.excess_water,cell->balance.atransp,cell->balance.aevap,
-         cell->balance.ainterc,cell->discharge.drunoff,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,cell->discharge.dmass_lake,cell->discharge.dmass_river);
+           "Invalid water balance in year %d in cell %d (%s) of %.2f\n"
+           "=====001: cell->totw: %.2f totw: %.2f lateral_water: %.2f\n"
+           "=====002: awater_flux:%.2f awater_flux_before:%.2f\n"
+           "=====003: aprec:%.2f excess water:%.2f\n"
+           "=====004: atransp: %g aevap %g ainterc %g gw_withdrawal %g\n"
+           "=====005: runoff %g aevap_lake %g aevap_res %g  airrig %g aMT_water %g dmass_lake: %g dmass_river: %g",
+           year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,cell->lateral_water,
+           cell->balance.awater_flux,awater_flux,cell->balance.aprec,cell->balance.excess_water,cell->balance.atransp,cell->balance.aevap,
+           cell->balance.ainterc,cell->balance.gw_withdrawal,cell->discharge.drunoff,cell->balance.aevap_lake,cell->balance.aevap_res,
+           cell->balance.airrig,cell->balance.aMT_water,cell->discharge.dmass_lake,cell->discharge.dmass_river);
   cell->balance.totw=totw;
 } /* of 'check_fluxes' */
