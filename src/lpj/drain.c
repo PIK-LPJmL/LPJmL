@@ -52,7 +52,6 @@ void drain(Cell grid[],         /**< Cell array */
   Real fout_lake,irrig_to_river;
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
 #endif
   count=(int)(1.0/TSTEP); /* calculate number of iterations */
   out=(Real *)pnet_output(config->route);
@@ -118,6 +117,12 @@ void drain(Cell grid[],         /**< Cell array */
 
   grid-=config->startgrid-config->firstgrid; /* adjust first index of grid
                                               array needed for pnet library */
+#ifdef USE_TIMING
+#ifdef USE_MPI
+  MPI_Barrier(config->comm);
+#endif
+  tstart=mrun();
+#endif
   for(iter=0;iter<count;iter++)
   {
     for(i=pnet_lo(config->route);i<=pnet_hi(config->route);i++)
@@ -232,9 +237,6 @@ void drain(Cell grid[],         /**< Cell array */
     getoutput(&grid[cell].output,WD_LOCAL,config)+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
   }
 #ifdef USE_TIMING
-#ifdef USE_MPI
-  MPI_Barrier(config->comm);
-#endif
   timing.drain+=mrun()-tstart;
 #endif
 }  /* of 'drain' */

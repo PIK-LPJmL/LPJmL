@@ -27,12 +27,10 @@ typedef struct
   double irrig_amount_reservoir;
   double iterate;
   double iterateyear;
-  double littersom;
   double MPI_Init;
   double newgrid;
   double readconfig;
   double read_socket;
-  double update_soil_thermal_state;
   double setupannual_grid;
   double storeclimate;
   double wateruse;

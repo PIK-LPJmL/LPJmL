@@ -14,6 +14,7 @@
 
 #include "lpj.h"
 
+
 /* declare internally used functions */
 STATIC void setup_heatgrid(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, const Real *, const Soil *);
@@ -40,10 +41,6 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 {
   /* calculate absolute water ice content of each layer and provide it for below functions */
   Real abs_waterice_cont[NSOILLAYER];
-#ifdef USE_TIMING
-  double t;
-  t=mrun();
-#endif
   get_abs_waterice_cont(abs_waterice_cont, soil);
 
   /* check if phase changes are already present in soil or can possibly happen during timestep due to airtemp forcing */
@@ -64,9 +61,6 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   compute_litter_and_snow_temp_from_enth(soil, airtemp, &therm_prop);
   compute_water_ice_ratios_from_enth(soil, &therm_prop);
   compute_maxthaw_depth(soil);
-#ifdef USE_TIMING
-  timing.update_soil_thermal_state+=mrun()-t;
-#endif
 } /* of 'update_soil_thermal_state' */
 
 

@@ -33,7 +33,6 @@ void fprinttiming(FILE *file,  /**< pointer to text file */
   fprintf(file,"irrig_amount_reservoir    %10.2f %6.1f\n",timing.irrig_amount_reservoir,timing.irrig_amount_reservoir/total*100);
   fprintf(file,"iterate                   %10.2f %6.1f\n",timing.iterate,timing.iterate/total*100);
   fprintf(file,"iterateyear               %10.2f %6.1f\n",timing.iterateyear,timing.iterateyear/total*100);
-  fprintf(file,"littersom                 %10.2f %6.1f\n",timing.littersom,timing.littersom/total*100);
 #ifdef USE_MPI
   fprintf(file,"MPI_Init                  %10.2f %6.1f\n",timing.MPI_Init,timing.MPI_Init/total*100);
 #endif
@@ -41,7 +40,6 @@ void fprinttiming(FILE *file,  /**< pointer to text file */
   fprintf(file,"readconfig                %10.2f %6.1f\n",timing.readconfig,timing.readconfig/total*100);
   if(timing.read_socket>0)
     fprintf(file,"read_socket               %10.2f %6.1f\n",timing.read_socket,timing.read_socket/total*100);
-  fprintf(file,"update_soil_thermal_state %10.2f %6.1f\n",timing.update_soil_thermal_state,timing.update_soil_thermal_state/total*100);
   fprintf(file,"setupannual_grid          %10.2f %6.1f\n",timing.setupannual_grid,timing.setupannual_grid/total*100);
   fprintf(file,"storeclimate              %10.2f %6.1f\n",timing.storeclimate,timing.storeclimate/total*100);
   fprintf(file,"wateruse                  %10.2f %6.1f\n",timing.wateruse,timing.wateruse/total*100);

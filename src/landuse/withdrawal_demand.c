@@ -38,7 +38,6 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   Stand *stand;
 #ifdef USE_TIMING
   double t;
-  t=mrun();
 #endif
 
   in=(Real *)pnet_input(config->irrig_neighbour);
@@ -105,6 +104,12 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   for(i=0;i<pnet_outlen(config->irrig_neighbour);i++)
     out[i]=grid[pnet_outindex(config->irrig_neighbour,i)-config->startgrid+config->firstgrid].discharge.wd_deficit;
 
+#ifdef USE_TIMING
+#ifdef USE_MPI
+  MPI_Barrier(config->comm);
+#endif
+  t=mrun();
+#endif
   pnet_exchg(config->irrig_neighbour);
 
   for(cell=0;cell<config->ngridcell;cell++)

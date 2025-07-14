@@ -32,6 +32,7 @@
 #include "crop.h"
 #include "agriculture.h"
 
+
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
 #define INTERCEPT 0.04021601
@@ -88,10 +89,6 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
   Pft *pft;
   Pftcrop *crop;
   Irrigation *data;
-#ifdef USE_TIMING
-  double t;
-  t=mrun();
-#endif
   soil=&stand->soil;
   flux.nitrogen=0;
   foreachsoillayer(l)
@@ -412,8 +409,5 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
-#ifdef USE_TIMING
-  timing.littersom+=mrun()-t;
-#endif
   return flux;
 } /* of 'littersom' */
