@@ -19,10 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.9.26] - 2025-07-14
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: David Hötten (davidho@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Changed
 
@@ -36,6 +39,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
+
 
 ## [5.9.25] - 2025-05-22
 
