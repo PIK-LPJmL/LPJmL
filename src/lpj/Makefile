@@ -15,8 +15,8 @@
 
 include ../../Makefile.inc
 
-OBJS    = update_daily.$O update_annual.$O init_annual.$O\
-          update_monthly.$O newgrid.$O iterate.$O  outputindex.$O\
+OBJS    = update_daily_cell.$O update_annual.$O init_annual.$O\
+          update_monthly_grid.$O newgrid.$O iterate.$O  outputindex.$O\
           iterateyear.$O initoutput.$O fopenoutput.$O\
           fcloseoutput.$O fprintincludes.$O flux_sum.$O\
           freeoutput.$O freegrid.$O freecell.$O fscanoutput.$O\
@@ -50,7 +50,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\
-          fscanerrorlimit.$O createconfig.$O
+          fscanerrorlimit.$O createconfig.$O setupannual_grid.$O\
+          updateannual_grid.$O updatedaily_grid.$O initmonthly_grid.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

@@ -20,6 +20,27 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.26] - 2025-07-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- New functions `setupannual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.
+- Parts of code in `iterateyear.c` has been moved to `update_daily_cell.c` and `update_monthly_grid.c`.
+- `lpj_climber4.c` renamed to `lpj_poem.c`.
+- `update_daily.c` renamed to `update_daily_cell.c`.
+- `update_monthly.c` renamed to `update_monthly_grid.c`.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c' (former `updatedaily.c`) moved after N update really happened.
+
+### Fixed
+
+- Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
+
+
 ## [5.9.25] - 2025-05-22
 
 ### Contributors
