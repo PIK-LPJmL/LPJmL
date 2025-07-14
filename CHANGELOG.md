@@ -38,6 +38,7 @@ of `major.minor.patch` with
 
 - Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
 - Utility `lpjcat` updated to support the new restart file format.
+- Preprint's doi:10.5194/egusphere-2023-2946 changed to the final BNF paper doi:10.5194/gmd-17-7889-2024 in `.zenodo.json`.
 
 
 ## [5.9.26] - 2025-07-14
