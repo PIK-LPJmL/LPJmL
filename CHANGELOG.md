@@ -20,6 +20,30 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.27] - 2025-07-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- Utility `json2restart` added to convert JSON files into restart files.
+- alias `restart2json` added for `restart2yaml -json`.
+- Output of time spent in reading and writing the restart file added.
+- Option `-print_noread` added to `lpjml` to print variable names not read from restart file.
+- Check added that PFT names in restart file match PFT names in LPJmL configuration file.
+- Unit tests added for bstruct library functions.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
+- Utility `lpjcat` updated to support the new restart file format.
+- Preprint's doi:10.5194/egusphere-2023-2946 changed to the final BNF paper doi:10.5194/gmd-17-7889-2024 in `.zenodo.json`.
+
+
 ## [5.9.26] - 2025-07-14
 
 ### Contributors

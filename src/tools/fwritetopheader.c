@@ -1,9 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
+/**               f  w  r  i  t  e  t  o  p  h  e  a  d  e  r  .  c                \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ restart files. Detects                         \n**/
-/**     whether byte order has to be changed                                       \n**/
+/**     Writing file header for LPJ related files.                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,20 +14,14 @@
 
 #include "lpj.h"
 
-Bool freadrestartheader(FILE *file,            /**< file pointer of binary file */
-                        Restartheader *header, /**< file header to be read */
-                        Bool swap              /**< set to TRUE if data is in different byte order */
-                       )                       /** \return TRUE on error */
+Bool fwritetopheader(FILE *file,             /**< file pointer of binary file */
+                     const char *headername, /**< header string */
+                     int version             /**< header version */
+                    )                        /** \return TRUE on error */
 {
-  if(freadint(&header->landuse,1,swap,file)!=1)
+  if(fwrite(headername,strlen(headername),1,file)!=1)
     return TRUE;
-  if(freadint(&header->river_routing,1,swap,file)!=1)
+  if(fwrite(&version,sizeof(version),1,file)!=1)
     return TRUE;
-  if(freadint(&header->sdate_option,1,swap,file)!=1)
-    return TRUE;
-  if(freadint(&header->crop_phu_option,1,swap,file)!=1)
-    return TRUE;
-  if(freadint(&header->separate_harvests,1,swap,file)!=1)
-    return TRUE;
-  return freadseed(file,header->seed,swap);
-} /* of 'freadrestartheader' */
+  return FALSE;
+} /* of 'fwritetopheader' */
