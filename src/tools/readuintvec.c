@@ -89,6 +89,8 @@ Bool readuintvec(FILE *file,          /**< pointer to binary file */
         data[i]=(unsigned int)dvec[i]; 
       free(dvec);
       break;
+    default:
+      return TRUE;
   } /* of switch */
   return FALSE;
 } /* of 'readuintvec' */

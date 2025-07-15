@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes stand data to binary file                                  \n**/
+/**     Function writes stand data to restart file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,23 +16,24 @@
 
 #include "lpj.h"
 
-Bool fwritestand(FILE *file,        /**< pointer to binary file */
+Bool fwritestand(Bstruct file,       /**< pointer to restart file */
+                 const char *name,   /**< name of object */
                  const Stand *stand, /**< pointer to stand */
-                 int ntotpft        /**< total number of PFTs*/
-                )                   /** \return TRUE on error */
+                 int ntotpft         /**< total number of PFTs*/
+                )                    /** \return TRUE on error */
 {
-  Byte b;
-  /* write PFT list to file */
-  b=(Byte)stand->type->landusetype;
-  fwrite(&b,sizeof(b),1,file);
-  if(fwritepftlist(file,&stand->pftlist)!=getnpft(&stand->pftlist))
-    return TRUE;
+  bstruct_writebeginstruct(file,name);
+  bstruct_writebyte(file,"landusetype",stand->type->landusetype);
   /* write soil data to file */
-  if(fwritesoil(file,&stand->soil,ntotpft))
+  if(fwritesoil(file,"soil",&stand->soil,ntotpft))
     return TRUE;
-  fwrite1(&stand->frac,sizeof(Real),file);
+  /* write PFT list to file */
+  if(fwritepftlist(file,"pftlist",&stand->pftlist)!=getnpft(&stand->pftlist))
+    return TRUE;
+  bstruct_writereal(file,"frac",stand->frac);
   /* write stand-specific data */
   if(stand->type->fwrite(file,stand))
     return TRUE;
-  return (fwrite(stand->frac_g,sizeof(Real),NSOILLAYER,file)!=NSOILLAYER);
+  bstruct_writerealarray(file,"frac_g",stand->frac_g,NSOILLAYER);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritestand' */

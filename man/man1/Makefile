@@ -23,7 +23,7 @@ SRC	= cat2bsq.1 lpjml.1 txt2grid.1 printglobal.1\
           regridlpj.1 cdf2clm.1 clm2cdf.1 soil2cdf.1 cdf2soil.1 bin2cdf.1\
           cutclm.1 cvrtclm.1 manage2js.1 headersize.1 addheader.1 mergeclm.1\
           getcellindex.1 getcountry.1 country2cdf.1 printglobal.1 arr2clm.1\
-          splitclm.1 allbin2cdf.1
+          splitclm.1 allbin2cdf.1 restart2yaml.1 json2restart.1
 
 HTMLDIR	= ../../html
 HTML	= $(SRC:%.1=$(HTMLDIR)/%.html)

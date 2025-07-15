@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads cell data from file                                         \n**/
+/**     Function reads cell data from restart file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,96 +17,106 @@
 #include "lpj.h"
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
+#define readreal(file,name,value) if(bstruct_readreal(file,name,value)) return TRUE
 
-Bool freadcell(FILE *file,             /**< File pointer to binary file */
+Bool freadcell(Bstruct file,           /**< pointer to restart file */
                Cell *cell,             /**< Pointer to cell */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
                const Soilpar *soilpar, /**< pointer to soil parameter */
                const Standtype standtype[], /**< array of stand types */
                int nstand,             /**< number of stand types */
-               Bool swap,              /**< Byte order has to be changed (TRUE/FALSE) */
                Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
+  Coord coord;
+  String line,line2;
   int i;
-  Byte b;
-  if(fread(&b,sizeof(b),1,file)!=1)
+  if(bstruct_readbeginstruct(file,NULL))
+    return TRUE;
+  if(bstruct_readcoord(file,"coord",&coord))
+    return TRUE;
+  if(coord.lat!=cell->coord.lat || coord.lon!=cell->coord.lon)
   {
-    fprintf(stderr,"ERROR254: Cannot read skip flag.\n");
+    fprintf(stderr,"ERROR254: Coordinate (%s) differs from coordinate (%s) in %s file.\n",
+            sprintcoord(line,&cell->coord),sprintcoord(line2,&coord),
+            (config->ischeckpoint) ? "checkpoint" : "restart");
     return TRUE;
   }
-  cell->skip=b;
-  freadseed(file,cell->seed,swap);
-  freadreal1(&cell->discharge.dmass_lake,swap,file);
+  if(bstruct_readbool(file,"skip",&cell->skip))
+    return TRUE;
+  if(freadseed(file,"seed",cell->seed))
+  {
+    fprintf(stderr,"ERROR254: Cannot read random seed.\n");
+    return TRUE;
+  }
+  readreal(file,"dmass_lake",&cell->discharge.dmass_lake);
   if(config->river_routing)
   {
 #ifdef IMAGE
-    freadreal1(&cell->discharge.dmass_gw,swap,file); // groundwater mass
+    readreal(file,"dmass_gw",&cell->discharge.dmass_gw); // groundwater mass
 #endif
-    freadreal1(&cell->discharge.dfout,swap,file);
-    freadreal1(&cell->discharge.dmass_river,swap,file);
-    freadreal1(&cell->discharge.dmass_sum,swap,file);
+    readreal(file,"dfout",&cell->discharge.dfout);
+    readreal(file,"dmass_river",&cell->discharge.dmass_river);
+    readreal(file,"dmass_sum",&cell->discharge.dmass_sum);
 #ifdef COUPLING_WITH_FMS
-    freadreal1(&cell->laketemp,swap,file);
+    readreal(file,"laketemp",&cell->laketemp);
 #endif
-    cell->discharge.queue=freadqueue(file,swap);
+    cell->discharge.queue=freadqueue(file,"queue");
     if(cell->discharge.queue==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read queue data.\n");
       return TRUE;
     }
-    if(fread(&b,sizeof(b),1,file)!=1)
-    {
-      fprintf(stderr,"ERROR254: Cannot read dam flag.\n");
+    if(bstruct_readbool(file,"dam",&cell->ml.dam))
       return TRUE;
-    }
-    cell->ml.dam=b;
     if(cell->ml.dam)
     {
-      if(freadresdata(file,cell,swap))
+      if(freadresdata(file,"resdata",cell))
       {
         fprintf(stderr,"ERROR254: Cannot read reservoir data.\n");
         return TRUE;
       }
     }
-  } 
+  }
   if(!cell->skip)
   {
-    freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
-    freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
-    if(freadignition(file,&cell->ignition,swap))
+    /* cell has valid soilcode */
+    if(freadstocksarray(file,"estab_storage_tree",cell->balance.estab_storage_tree,2))
+      return TRUE;
+    if(freadstocksarray(file,"estab_storage_grass",cell->balance.estab_storage_grass,2))
+      return TRUE;
+    if(freadignition(file,"ignition",&cell->ignition))
     {
       fprintf(stderr,"ERROR254: Cannot read ignition data.\n");
       return TRUE;
     }
-    freadreal1(&cell->balance.excess_water,swap,file);
+    readreal(file,"excess_water",&cell->balance.excess_water);
 
-    /* cell has valid soilcode */
-    freadreal1(&cell->discharge.waterdeficit,swap,file);
+    readreal(file,"waterdeficit",&cell->discharge.waterdeficit);
     cell->gdd=newgdd(npft);
     checkptr(cell->gdd);
-    if(freadreal(cell->gdd,npft,swap,file)!=npft)
+    if(bstruct_readrealarray(file,"gdd",cell->gdd,npft))
     {
       fprintf(stderr,"ERROR254: Cannot read GDD data.\n");
       return TRUE;
     }
     /* read stand list */
-    cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,config->separate_harvests,swap);
+    cell->standlist=freadstandlist(file,"standlist",cell,config->pftpar,npft+ncft,soilpar,
+                                   standtype,nstand,config->separate_harvests);
     if(cell->standlist==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
     }
-    freadreal1(&cell->ml.cropfrac_rf,swap,file);
-    freadreal1(&cell->ml.cropfrac_ir,swap,file);
-    if(freadclimbuf(file,&cell->climbuf,ncft,swap))
+    readreal(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
+    readreal(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
+    if(freadclimbuf(file,"climbuf",&cell->climbuf,ncft))
     {
       fprintf(stderr,"ERROR254: Cannot read climbuf data.\n");
       return TRUE;
     }
-    cell->ml.cropdates=freadcropdates(file,ncft,swap);
+    cell->ml.cropdates=freadcropdates(file,"cropdates",ncft);
     if(cell->ml.cropdates==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read crop dates.\n");
@@ -118,7 +128,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       checkptr(cell->ml.sdate_fixed);
       if(config->sdate_option_restart>NO_FIXED_SDATE)
       {
-        if(freadint(cell->ml.sdate_fixed,2*ncft,swap,file)!=2*ncft)
+        if(bstruct_readintarray(file,"sdate_fixed",cell->ml.sdate_fixed,2*ncft))
         {
           fprintf(stderr,"ERROR254: Cannot read sowing date data.\n");
           return TRUE;
@@ -131,8 +141,6 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     else
     {
       cell->ml.sdate_fixed=NULL;
-      if(config->sdate_option_restart)
-        fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
     }
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
@@ -140,7 +148,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       checkptr(cell->ml.crop_phu_fixed);
       if(config->crop_phu_option_restart)
       {
-        if(freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file)!=2*ncft)
+        if(bstruct_readrealarray(file,"crop_phu_fixed",cell->ml.crop_phu_fixed,2*ncft))
         {
           fprintf(stderr,"ERROR254: Cannot read PHU data.\n");
           return TRUE;
@@ -153,33 +161,39 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     else
     {
       cell->ml.crop_phu_fixed=NULL;
-      if(config->crop_phu_option_restart)
-        fseek(file,sizeof(Real)*2*ncft,SEEK_CUR);
     }
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
-    freadint(cell->ml.sowing_month,2*ncft,swap,file);
+    if(bstruct_readintarray(file,"sowing_month",cell->ml.sowing_month,2*ncft))
+    {
+      fprintf(stderr,"ERROR254: Cannot read sowing month data.\n");
+      return TRUE;
+    }
     cell->ml.gs=newvec(int,2*ncft);
     checkptr(cell->ml.gs);
-    if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
+    if(bstruct_readintarray(file,"gs",cell->ml.gs,2*ncft))
     {
       fprintf(stderr,"ERROR254: Cannot read gs data.\n");
       return TRUE;
     }
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
-      if(freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap))
+      if(freadlandfrac(file,"landfrac",cell->ml.landfrac,ncft,config->nagtree))
       {
         fprintf(stderr,"ERROR254: Cannot read landfrac data.\n");
         return TRUE;
       }
 #ifndef IMAGE
-      freadreal((Real *)&cell->ml.product,sizeof(Pool)/sizeof(Real),swap,file);
+      if(freadpool(file,"product",&cell->ml.product))
+      {
+        fprintf(stderr,"ERROR254: Cannot read product pool.\n");
+        return TRUE;
+      }
 #endif
     }
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
     {
-      if(freadlandfrac(file,cell->ml.fertilizer_nr,ncft,config->nagtree,swap))
+      if(freadlandfrac(file,"fertilizer_nr",cell->ml.fertilizer_nr,ncft,config->nagtree))
       {
         fprintf(stderr,"ERROR254: Cannot read fertilizer data.\n");
         return TRUE;
@@ -187,12 +201,12 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     if(config->ischeckpoint && config->n_out)
     {
-      if(freadoutputdata(file,&cell->output,swap,config))
+      if(freadoutputdata(file,"outputdata",&cell->output,config))
       {
         fprintf(stderr,"ERROR254: Cannot read output data.\n");
         return TRUE;
       }
     }
   }
-  return FALSE;
+  return bstruct_readendstruct(file,NULL);
 } /* of 'freadcell' */
