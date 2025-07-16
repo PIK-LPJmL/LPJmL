@@ -436,6 +436,37 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     /* Now scan PFT-specific parameters and set specific functions */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
+    Real vmax25_median=50;
+    Real vmax25_high=150;
+    if(pft->phenology==SUMMERGREEN || pft->phenology==RAINGREEN)
+    {
+      //pft->ncleaf.low=0.267*pft->sla + 0.014/CCpDM + 0.444*pft->nfixing*pft->sla + 0.001/CCpDM*pft->nfixing;
+      pft->ncleaf.low=0.267*pft->sla + 0.014/CCpDM;
+      pft->ncleaf.median=pft->ncleaf.low + 0.006*vmax25_median*pft->sla;
+      pft->ncleaf.high=pft->ncleaf.low + 0.006*vmax25_high*pft->sla;
+    }
+    else if(pft->phenology==EVERGREEN)
+    {
+      //pft->ncleaf.low=0.596*pft->sla + 0.008/CCpDM - 0.146*pft->nfixing*pft->sla + 0.006/CCpDM*pft->nfixing;
+      pft->ncleaf.low=0.596*pft->sla + 0.008/CCpDM;
+      pft->ncleaf.median=pft->ncleaf.low + 0.006*vmax25_median*pft->sla;
+      pft->ncleaf.high=pft->ncleaf.low + 0.006*vmax25_high*pft->sla;
+    }
+    else if(pft->phenology==CROPGREEN)
+    {
+      pft->ncleaf.low=0.437*pft->sla + 0.007/CCpDM - 1.134*pft->nfixing*pft->sla + 0.026/CCpDM*pft->nfixing;
+      pft->ncleaf.median=pft->ncleaf.low + 0.010*vmax25_median*pft->sla;
+      pft->ncleaf.high=pft->ncleaf.low + 0.010*vmax25_high*pft->sla;
+    }
+    else
+    {
+      //pft->ncleaf.low=0.437*pft->sla + 0.007/CCpDM - 1.134*pft->nfixing*pft->sla + 0.026/CCpDM*pft->nfixing;
+      pft->ncleaf.low=0.437*pft->sla + 0.007/CCpDM;
+      pft->ncleaf.median=pft->ncleaf.low + 0.010*vmax25_median*pft->sla;
+      pft->ncleaf.high=pft->ncleaf.low + 0.010*vmax25_high*pft->sla;
+    }
+    /*fprintf(stderr,"CN ratio limits for PFT '%s' = (%g,%g,%g).\n",
+            pft->name,1/pft->ncleaf.high,1/pft->ncleaf.median,1/pft->ncleaf.low);*/
   }
   return FALSE;
 } /* of 'fscanpftpar' */

@@ -24,7 +24,7 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
                   Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {
-  Real nc_ratio,vcmax25,leafarea;
+  Real nc_ratio;
   const Pfttree *tree;
   const Pfttreepar *treepar;
   Real ndemand_tot;
@@ -36,20 +36,7 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(tree->ind.leaf.carbon*pft->nind);
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon);
   //*ndemand_leaf=param.p*9.6450617e-4*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft))+param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon)/CCpDM;
-  leafarea=tree->ind.leaf.carbon*pft->par->sla*pft->nind*pft->phen;
-  if(leafarea>0)
-  {
-    vcmax25=vmax/(NSECONDSDAY*cmass*1e-6)*exp(66530/8.314*(1/degCtoK(temp)-1/degCtoK(25)))/leafarea; //from gC/m2/day (per m2 ground area at temp) to µmol/m2/s (per m2 leaf area at 25 degC)
-    if(pft->par->phenology==EVERGREEN)
-      *ndemand_leaf=0.008/(pft->par->sla*CCpDM) + 0.006*vcmax25 - 0.146*pft->par->nfixing + 0.006*pft->par->nfixing/(pft->par->sla*CCpDM) + 0.596;
-    else
-      *ndemand_leaf=0.014/(pft->par->sla*CCpDM) + 0.006*vcmax25 + 0.444*pft->par->nfixing + 0.001*pft->par->nfixing/(pft->par->sla*CCpDM) + 0.267;
-    *ndemand_leaf*=leafarea; // from gN/m2 leaf area to gN/m2 ground area
-  }
-  else
-  {
-    *ndemand_leaf=0;
-  }
+  *ndemand_leaf=0.006*vmax/(NSECONDSDAY*cmass*1e-6)*exp(66530/8.314*(1/degCtoK(temp)-1/degCtoK(25))) + pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon);
   if(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind==0)
     nc_ratio=pft->par->ncleaf.low;
   else
