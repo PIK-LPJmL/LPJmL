@@ -139,7 +139,19 @@ static void openfile(Outputfile *output,const Cell grid[],
             {
               header.datatype=config->grid_type;
               if(header.datatype==LPJ_SHORT)
+              {
                 header.scalar=0.01;
+                if(isfloatcoord(config->resolution.lon*0.5,0.01) || isfloatcoord(config->resolution.lat*0.5,0.01))
+                {
+                  fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid in '%s'.\n",
+                          config->resolution.lat,config->resolution.lon,filename);
+                  if(config->pedantic)
+                  {
+                    fclose(output->files[config->outputvars[i].id].fp.file);
+                    output->files[config->outputvars[i].id].isopen=FALSE;
+                  }
+                }
+              }
               header.nbands=2;
               header.nstep=1;
               header.timestep=1;
@@ -195,6 +207,19 @@ static void openfile(Outputfile *output,const Cell grid[],
             printfcreateerr(config->outputvars[i].filename.name);
           else
             output->files[config->outputvars[i].id].isopen=TRUE;
+          if(config->outputvars[i].id==GRID)
+          {
+            if(config->grid_type==LPJ_SHORT && (isfloatcoord(config->resolution.lon*0.5,0.01) || isfloatcoord(config->resolution.lat*0.5,0.01)))
+            {
+              fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid in '%s'.\n",
+                      config->resolution.lat,config->resolution.lon,filename);
+              if(config->pedantic)
+              {
+                fclose(output->files[config->outputvars[i].id].fp.file);
+                output->files[config->outputvars[i].id].isopen=FALSE;
+              }
+            }
+          }
         }
         break;
       case TXT:

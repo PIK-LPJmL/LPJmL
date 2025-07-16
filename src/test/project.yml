@@ -49,7 +49,7 @@
         - -O2
     :link:
       :*:
-        - -O0
+        - -O0 -ljson-c
       :high_res:
         - -O2
 

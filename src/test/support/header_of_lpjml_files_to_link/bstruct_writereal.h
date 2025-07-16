@@ -1,1 +1,1 @@
-Bool bstruct_writereal(Bstruct,const char *,Real);
+Bool bstruct_writereal(Bstruct bstr,const char *,Real);

@@ -1,1 +1,1 @@
-Bool bstruct_readreal(Bstruct,const char *,Real *);
+Bool bstruct_readreal(Bstruct bstr,const char *,Real *);

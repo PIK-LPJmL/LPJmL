@@ -587,6 +587,9 @@ Bool filesexist(Config config, /**< LPJmL configuration */
           fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
         free(oldpath);
         oldpath=path;
+        if(config.outputvars[i].id==GRID && config.grid_type==LPJ_SHORT && (config.outputvars[i].filename.fmt==RAW || config.outputvars[i].filename.fmt==CLM) && (isfloatcoord(config.resolution.lat*0.5,0.01) || isfloatcoord(config.resolution.lon*0.5,0.01)))
+          fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid in '%s'.\n",
+                  config.resolution.lat,config.resolution.lon,config.outputvars[i].filename.name);
       }
       else
         free(path);

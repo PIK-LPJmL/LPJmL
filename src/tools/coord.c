@@ -461,3 +461,10 @@ int findnextcoord(Real *dist_min,     /**< [out] minimum distance */
   *dist_min=sqrt(*dist_min);
   return i_min;
 } /* of 'findnextcoord' */
+
+Bool isfloatcoord(Real coord, /**< coordinate (deg) */
+                  Real scale  /**< scale factor */
+                 )            /** \return must be float coord  to resolve coordinate (TRUE/FALSE) */
+{
+  return (short)(coord/scale)*scale!=coord;
+} /* of 'isfloatcoord' */
