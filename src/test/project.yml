@@ -91,6 +91,7 @@
     - ../landuse/**
     - ../tools/**
     - ../bstruct/**
+    - ../numeric/**
     - support/helper_code/src
   :include:
     - ../../include
