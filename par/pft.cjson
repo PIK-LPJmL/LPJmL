@@ -42,10 +42,10 @@
 #define MORT_MAX 0.03
 #endif
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER 0.35      /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.42   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV 0.42   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.55   /* fraction of N not recovered before turnover */
 #ifdef BMGR_BROWN
 #define FN_TURNOVER_BMGR 0.30    /* 0.30 for brown harvest + specific harvest dates */
 #else
