@@ -58,6 +58,8 @@ Directory tree after extracting the tar files:
      |
      +--numeric   : source for numerical routines
      |
+     +--bstruct   : source for reading/writing restart files
+     |
      +--tools     : source for tools
      |
      +--pnet      : source for library for distributed networks
@@ -141,6 +143,7 @@ CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
+DEBUG_BSTRUCT       diagnostic output is generated for reading/writing of restart
 DEBUG_COUPLER       diagnostic output is generated for the coupler
 DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
 DEBUG_N             diagnostic output is generated for the nitrogen cycle
@@ -220,6 +223,7 @@ regridclm     - regrid CLM file to new grid
 regridlpj     - regrid input data set for selected countries or specified grid file
 regridsoil    - regrid binary soil file to different grid file
 reservoir2cdf - convert CLM reservoir file into NetCDF file
+restart2yaml  - convert LPJmL restart file into YAML
 setclm        - set value in header of CLM files for LPJmL
 soil2cdf      - convert binary files into NetCDF files
 splitclm      - copy specific bands of clm data files

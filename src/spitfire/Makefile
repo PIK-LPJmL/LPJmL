@@ -17,7 +17,7 @@ include ../../Makefile.inc
 
 OBJS    = area_burnt.$O firedangerindex.$O fscanfireduration.$O\
           popdens.$O humanignition.$O fprintfireduration.$O\
-          fuel_consumption_1hr.$O\
+          fuel_consumption_1hr.$O fwritefwi.$O freadfwi.$O\
           initfuel.$O deadfuel_consumption.$O\
           ignition.$O update_nesterov.$O\
           litter_update_fire.$O surface_fire_intensity.$O\
@@ -32,7 +32,7 @@ LIBDIR  = ../../lib
 LIB     = libspitfire.$A
 
 HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
-          $(INC)/soil.h $(INC)/manage.h $(INC)/spitfire.h\
+          $(INC)/soil.h $(INC)/manage.h $(INC)/spitfire.h $(INC)/bstruct.h\
           $(INC)/climate.h $(INC)/date.h $(INC)/pft.h $(INC)/param.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/cropdates.h $(INC)/crop.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/grass.h\

@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "errmsg.h"
 #include "queue.h"
@@ -56,14 +58,19 @@ Queue newqueue(int count, /**< number of Real values per queue element */
   return queue;
 } /* of 'newqueue' */
 
-Bool fwritequeue(FILE *file,       /**< pointer to binary file */
-                 const Queue queue /**< pointer to queue */
-                )
+Bool fwritequeue(Bstruct file,    /**< pointer to restart file */
+                const char *name, /**< name of object */
+                const Queue queue /**< pointer to queue written */
+               )                  /** \return TRUE on error */
 {
-  fwrite(&queue->size,sizeof(int),1,file);
-  fwrite(&queue->count,sizeof(int),1,file);
-  fwrite(&queue->first,sizeof(int),1,file);
-  return fwrite(queue->data,sizeof(Real),queue->size*queue->count,file)!=queue->size*queue->count;
+  int i,j;
+  bstruct_writeint(file,"count",queue->count);
+  bstruct_writebeginarray(file,name,queue->size*queue->count);
+  for(j=0;j<queue->count;j++)
+    for(i=0;i<queue->size;i++)
+      if(bstruct_writereal(file,NULL,queue->data[((queue->first+i) % queue->size)*queue->count+j]))
+        return TRUE;
+  return bstruct_writeendarray(file);
 } /* of 'fwritequeue' */
 
 void fprintqueue(FILE *file,       /**< pointer to text file */
@@ -80,66 +87,33 @@ void fprintqueue(FILE *file,       /**< pointer to text file */
   }
 } /* of 'fprintqueue' */
 
-Queue freadqueue(FILE *file, /**< pointer to binary file */
-                 Bool swap   /**< byte order has to be swapped */
-                )            /** \return pointer to queue read or NULL on error */
+Queue freadqueue(Bstruct file,    /**< pointer to restart file */
+                 const char *name /**< name of object */
+                )                 /** \return pointer to queue read or NULL */
 {
   Queue queue;
+  int size;
   queue=new(struct queue);
   if(queue==NULL)
   {
     printallocerr("queue");
     return NULL;
   }
-  if(freadint1(&queue->size,swap,file)!=1)
+  if(bstruct_readint(file,"count",&queue->count))
   {
     free(queue);
     return NULL;
   }
-  if(freadint1(&queue->count,swap,file)!=1)
-  {
-    free(queue);
-    return NULL;
-  }
-  if(freadint1(&queue->first,swap,file)!=1)
-  {
-    free(queue);
-    return NULL;
-  }
-  if(queue->first<0 || queue->first>=queue->size)
-  {
-    fprintf(stderr,"ERROR253: Invalid first pointer %d in queue, must be in [0,%d].\n",
-            queue->first,queue->size-1);
-    free(queue);
-    return NULL;
-  }
-  queue->data=newvec(Real,queue->size*queue->count);
+  queue->data=bstruct_readvarrealarray(file,name,&size);
   if(queue->data==NULL)
   {
-    printallocerr("queue");
     free(queue);
     return NULL;
   }
-  if(freadreal(queue->data,queue->size*queue->count,swap,file)!=queue->size*queue->count)
-  {
-    free(queue->data);
-    free(queue);
-    return NULL;
-  }
+  queue->size=size/queue->count;
+  queue->first=0;
   return queue;
 } /* of 'freadqueue' */
-
-Bool skipqueue(FILE *file, /**< pointer to binary file */
-               Bool swap   /**< byte order has to be swapped */
-              )            /** \return TRUE on error */
-{
-  int size,count;
-  if(freadint1(&size,swap,file)!=1)
-    return TRUE;
-  if(freadint1(&count,swap,file)!=1)
-    return TRUE;
-  return fseek(file,sizeof(int)+sizeof(Real)*size*count,SEEK_CUR);
-} /* of 'skipqueue' */
 
 void getqueue(const Queue queue, /**< pointer to queue */
               Real val[],        /**< values to be read from queue */

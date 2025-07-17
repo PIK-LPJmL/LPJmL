@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "swap_func.h": "c",
+        "bstruct_intern.h": "c",
+        "bstruct_readtoken.h": "c",
+        "unistd.h": "c"
+    }
+}

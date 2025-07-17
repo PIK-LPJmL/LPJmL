@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function read ignition data from binary file                               \n**/
+/**     Function read ignition data from restart file                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,9 +16,15 @@
 
 #include "lpj.h"
 
-Bool freadignition(FILE *file,Ignition *ignition,Bool swap)
+Bool freadignition(Bstruct file,const char *name,Ignition *ignition)
 {
-  freadreal1(&ignition->nesterov_accum,swap,file);
-  freadreal1(&ignition->nesterov_max,swap,file);
-  return freadint(&ignition->nesterov_day,1,swap,file)!=1;
+  if(bstruct_readbeginstruct(file,name))
+    return TRUE;
+  if(bstruct_readreal(file,"nesterov_accum",&ignition->nesterov_accum))
+    return TRUE;
+  if(bstruct_readreal(file,"nesterov_max",&ignition->nesterov_max))
+    return TRUE;
+  if(bstruct_readint(file,"nesterov_day",&ignition->nesterov_day))
+    return TRUE;
+  return bstruct_readendstruct(file,name);
 } /* of 'freadignition' */

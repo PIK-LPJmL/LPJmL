@@ -88,13 +88,15 @@ extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
 extern void dailyfire(Stand *,Real,Real,Real,Input *,int,int,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
-extern Bool fwriteignition(FILE *,const Ignition *);
-extern Bool freadignition(FILE *,Ignition *,Bool);
+extern Bool fwriteignition(Bstruct,const char *,const Ignition *);
+extern Bool freadignition(Bstruct,const char *,Ignition *);
 extern void fprintignition(FILE *,const Ignition *);
 extern Real getvpd(const Dailyclimate *,Bool);
 extern Real growing_season_index(Real,Real *,const Dailyclimate *,Bool,Real);
 extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int,Bool);
 extern void initfwi(FWIdata *);
+extern Bool fwritefwi(Bstruct,const char *,const FWIdata *);
+extern Bool freadfwi(Bstruct,const char *,FWIdata *);
 
 /* Definition of constants */
 
@@ -103,8 +105,6 @@ extern void initfwi(FWIdata *);
 /* Definition of macros */
 
 #define isspitfire(config) ((config)->fire==SPITFIRE || (config)->fire==SPITFIRE_TMAX)
-#define fwritefwi(file,fwi)  fwrite(fwi,sizeof(FWIdata),1,file)
-#define freadfwi(file,fwi,swap) freadreal((Real *)fwi,sizeof(FWIdata)/sizeof(Real),swap,file)
 #define fprintfwi(file,fwi) fprintf(file,"ffmc:\t\t%g\ndmc:\t\t%g\ndc:\t\t%g\n",(fwi)->ffmc,(fwi)->dmc,(fwi)->dc)
 
 #endif

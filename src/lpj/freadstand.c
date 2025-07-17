@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads stand data from file                                        \n**/
+/**     Function reads stand data from restart file                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,19 +16,22 @@
 
 #include "lpj.h"
 
-Stand *freadstand(FILE *file, /**< File pointer to binary file */
+Stand *freadstand(Bstruct file, /**< pointer to restart file */
+                  const char *name,    /**< name of object */
                   Cell *cell, /**< Cell pointer */
                   const Pftpar pftpar[],/**< Pft parameter array */
                   int ntotpft,          /**<  total number of PFTs */
                   const Soilpar *soilpar, /**< soil parameter */
                   Standtype **standtype, /**< array of stand types */
                   int nstand, /**< number of stand types */
-                  Bool separate_harvests,
-                  Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
+                  Bool separate_harvests
                  ) /** \return allocated stand data or NULL */
 {
   Stand *stand;
-  Byte landusetype,isfire;
+  Bool isfire;
+  Byte landusetype;
+  if(bstruct_readbeginstruct(file,name))
+    return NULL;
   stand=new(Stand);
   if(stand==NULL)
   {
@@ -36,7 +39,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
-  if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
+  if(bstruct_readbyte(file,"landusetype",&landusetype))
   {
     free(stand);
     return NULL;
@@ -49,27 +52,36 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->type=standtype[landusetype];
-  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,separate_harvests,swap))
-  {
-    fprintf(stderr,"ERROR254: Cannot read PFT list.\n");
-    free(stand);
-    return NULL;
-  }
   initstand(stand);
-  if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
+  if(freadsoil(file,"soil",&stand->soil,soilpar,pftpar,ntotpft))
   {
-    fprintf(stderr,"ERROR254: Cannot read soil data.\n");
+    fprintf(stderr,"ERROR254: Cannot read soil data for %s stand.\n",stand->type->name);
     free(stand);
     return NULL;
   }
-  freadreal1(&stand->frac,swap,file);
+  if(freadpftlist(file,"pftlist",stand,&stand->pftlist,pftpar,ntotpft,separate_harvests))
+  {
+    fprintf(stderr,"ERROR254: Cannot read PFT list for %s stand.\n",stand->type->name);
+    free(stand);
+    return NULL;
+  }
+  if(bstruct_readreal(file,"frac",&stand->frac))
+  {
+    fprintf(stderr,"ERROR254: Cannot read stand fraction for %s stand.\n",stand->type->name);
+    free(stand);
+    return NULL;
+  }
   stand->data=NULL;
-  fread(&isfire,sizeof(isfire),1,file);
+  if(bstruct_readbool(file,"isfire",&isfire))
+  { 
+    free(stand);
+    return NULL;
+  }
   if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
   {
     if(isfire)
     {
-      stand->fires=freadqueue(file,swap);
+      stand->fires=freadqueue(file,"fires");
       if(stand->fires==NULL)
       {
         freepftlist(&stand->pftlist);
@@ -109,17 +121,21 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   else
   {
     stand->fires=NULL;
-    if(isfire)
-      skipqueue(file,swap);
   }
   /* read stand-specific data */
-  if(stand->type->fread(file,stand,swap))
+  if(stand->type->fread(file,stand))
   {
-    fprintf(stderr,"ERROR254: Cannot read stand-specific data.\n");
+    fprintf(stderr,"ERROR254: Cannot read stand-specific data for %s stand.\n",stand->type->name);
     freestand(stand);
     return NULL;
   }
-  if(freadreal(stand->frac_g,NSOILLAYER,swap,file)!=NSOILLAYER)
+  if(bstruct_readrealarray(file,"frac_g",stand->frac_g,NSOILLAYER))
+  {
+    fprintf(stderr,"ERROR254: Cannot read frac_g array for %s stand.\n",stand->type->name);
+    freestand(stand);
+    return NULL;
+  }
+  if(bstruct_readendstruct(file,name))
   {
     freestand(stand);
     return NULL;

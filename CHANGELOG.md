@@ -43,6 +43,24 @@ of `major.minor.patch` with
 - The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
 
 
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code reviewer: Stephen Wirth (wirth@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- alias `restart2json` added for `restart2yaml -json`.
+- Output of time spent in reading and writing the restart file added.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
+- Utility `lpjcat` updated to support the new restart file format.
+
+
 ## [5.9.25] - 2025-05-22
 
 ### Contributors

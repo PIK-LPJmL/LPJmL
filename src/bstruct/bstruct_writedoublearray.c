@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c             \n**/
+/**  b  s  t  r  u  c  t  _  w  r  i  t  e  d  o  u  b  l  e  a  r  r  a  y .  c   \n**/
 /**                                                                                \n**/
-/**     Writing file header for LPJ restart files.                                 \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions for reading/writing JSON-like objects from binary file           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,21 +14,17 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include "bstruct_intern.h"
 
-Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary file */
-                         const Restartheader *header /**< file header to be written */
-                        )                            /** \return TRUE on error */
+Bool bstruct_writedoublearray(Bstruct bstr,       /**< pointer to restart file */
+                              const char *name,   /**< name of object or NULL */
+                              const double vec[], /**< array written to file */
+                              int size            /**< size of array */
+                             )                    /** \return TRUE on error */
 {
-  if(fwrite(&header->landuse,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->river_routing,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->crop_phu_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->separate_harvests,sizeof(int),1,file)!=1)
-    return TRUE;
-  return fwrite(header->seed,sizeof(Seed),1,file)!=1;
-} /* of 'fwriterestartheader' */
+  int i;
+  bstruct_writebeginarray(bstr,name,size);
+  for(i=0;i<size;i++)
+    bstruct_writedouble(bstr,NULL,vec[i]);
+  return bstruct_writeendarray(bstr);
+} /* of 'bstruct_writedoublearray' */

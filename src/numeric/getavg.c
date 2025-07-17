@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "numeric.h"
 
 Real getavg(const Real vec[], /**< array of real values */

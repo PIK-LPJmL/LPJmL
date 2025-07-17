@@ -50,7 +50,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\
-          fscanerrorlimit.$O createconfig.$O
+          fscanerrorlimit.$O createconfig.$O freadstocks.$O fwritestocks.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -67,7 +67,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/param.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
           $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
-          $(INC)/coupler.h $(INC)/couplerpar.h
+          $(INC)/coupler.h $(INC)/couplerpar.h $(INC)/bstruct.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

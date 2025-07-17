@@ -1,0 +1,61 @@
+.TH restart2yaml 1  "USER COMMANDS"
+.SH NAME
+restart2yaml \- Convert LPJmL restart file into YAML.
+.SH SYNOPSIS
+.B restart2yaml
+[\-name key] [\-first] [\-json] [\-noindent] [\-t] \fIrestartfile\fP [start [end]]
+.SH DESCRIPTION
+Program prints contents of restart file of a LPJmL model run in YAML/JSON format.
+.SH OPTIONS
+.TP
+\-name key
+Print only variables/array/structures with name key.
+.TP
+\-first
+Stop at first occurrence of key specified by the \-name option.
+.TP
+\-json
+Ouput format is set to JSON, default ist YAML.
+.TP
+\-noindent
+Disable indentations in JSON files to save storage space, default is 2 spaces per level.
+.TP
+\-t
+Print only table of defined object names.
+.TP
+.I restartfile
+Name of restart file.
+.TP
+.I start
+Index of first grid cell to be printed.
+.TP
+.I end
+Index of last grid cell to be printed.
+
+.SH EXAMPLE
+.TP
+Print restart file:
+.B restart2yaml
+restart.lpj >restart.yaml
+.PP
+.TP
+Print restart file as JSON file without indentation:
+.B restart2yaml
+-json -noindent restart.lpj >restart.json
+.PP
+.SH EXIT STATUS
+.B
+restart2yaml
+returns a zero exit status if the restart file has been printed.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+lpjprint(1), lpjml(1), lpjcheck(1), lpjfiles(1)

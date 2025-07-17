@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "numeric.h"
 
 void setseed(Seed seed,int start)

@@ -26,7 +26,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
   time_t mod_date;
   long long size;
   Header header;
-  Restartheader restartheader;
   String id;
   short sdata;
   int idata;
@@ -124,30 +123,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
     }
     if(unit!=NULL && strlen(unit)>0)
       printf("Unit:\t\t%s\n",unit);
-    if(isrestart)
-    {
-      if(RESTART_VERSION==version)
-      {
-        freadrestartheader(file,&restartheader,swap);
-        printf("Land use:\t\t%s\n"
-               "River routing:\t\t%s\n"
-               "Fixed sowing date:\t%s\n"
-               "Prescribed PHU:\t\t%s\n"
-               "Double harvest:\t\t%s\n",
-               bool2str(restartheader.landuse),
-               bool2str(restartheader.river_routing),
-               bool2str(restartheader.sdate_option),
-               bool2str(restartheader.crop_phu_option),
-               bool2str(restartheader.separate_harvests));
-        printf("Random seed:\t");
-        for(i=0;i<NSEED;i++)
-          printf(" %d",restartheader.seed[i]);
-        putchar('\n');
-      }
-      else
-        fprintf(stderr,"Warning: invalid restart version %d, must be %d.\n",
-                version,RESTART_VERSION);
-    }
   }
   free(unit);
   if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
@@ -176,7 +151,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     else
       last-=first-1;
     if(isrestart)
-      fputs("File is restart file, use 'lpjprint' to print content.\n",stderr);
+      fputs("File is outdated restart file in CLM format.\n",stderr);
     else if(isreservoir)
     {
       if((output & NO_TEXT)==0)
@@ -333,6 +308,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   }
                   printf("%6g\n",ddata);
                   break;
+                default:
+                  return;
                }
             }
             fseek(file,typesizes[type]*(header.ncell-last-first+header.firstcell),SEEK_CUR);
@@ -412,6 +389,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 }
                 printf(" %6g",ddata);
                 break;
+              default:
+                return;
             }
           putchar('\n');
         } /* of for(cell=...) */

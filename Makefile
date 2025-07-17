@@ -36,7 +36,8 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
-          $(INC)/couplerpar.h $(INC)/urban.h src/climate/realdata.h
+          $(INC)/couplerpar.h $(INC)/urban.h src/climate/realdata.h\
+          $(INC)/bstruct.h $(INC)/hash.h src/bstruct/bstruct_intern.h
 
 DATA    = par/*.cjson
 
@@ -111,6 +112,7 @@ tar:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c src/reservoir/Makefile src/climate/*.h\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
+            src/bstruct/Makefile src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
@@ -128,6 +130,7 @@ zipfile:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c src/reservoir/Makefile src/climate/*.h\
             src/image/*.c src/image/Makefile src/reservoir/*.c\
+            src/bstruct/Makefile src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c

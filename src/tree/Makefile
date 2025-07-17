@@ -38,7 +38,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/tree.h $(INC)/output.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/param.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/stand.h\
-          $(INC)/list.h $(INC)/cell.h  $(INC)/units.h\
+          $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/bstruct.h\
           $(INC)/config.h $(INC)/landuse.h $(INC)/spitfire.h\
           $(INC)/climbuf.h $(INC)/discharge.h $(INC)/biomass_tree.h
 
