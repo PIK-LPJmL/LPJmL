@@ -19,7 +19,7 @@
 Bool bstruct_writefloatarray(Bstruct bstr,      /**< pointer to restart file */
                              const char *name,  /**< name of object or NULL */
                              const float vec[], /**< array written to file */
-                             int size          /**< size of array */
+                             int size           /**< size of array */
                             )                   /** \return TRUE on error */
 {
   int i;

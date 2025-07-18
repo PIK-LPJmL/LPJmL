@@ -38,19 +38,19 @@ void initoutputdata(Output *output,      /**< output data */
     if(isinit(index))
       for(i=0;i<config->outputsize[index];i++)
         output->data[config->outputmap[index]+i]=0;
-   if(isinit(PFT_GCGP))
-     for(i=0;i<config->outputsize[PFT_GCGP];i++)
-       output->data[config->outputmap[PFT_GCGP_COUNT]+i]=0;
-   if(isinit(CFT_SWC))
-     for(i=0;i<config->outputsize[CFT_SWC];i++)
-       output->data[config->outputmap[NDAY_MONTH]+i]=0;
+  if(isinit(PFT_GCGP))
+    for(i=0;i<config->outputsize[PFT_GCGP];i++)
+      output->data[config->outputmap[PFT_GCGP_COUNT]+i]=0;
+  if(isinit(CFT_SWC))
+    for(i=0;i<config->outputsize[CFT_SWC];i++)
+      output->data[config->outputmap[NDAY_MONTH]+i]=0;
   /* set specific output data to one */
   if(isinit(DECAY_WOOD_AGR))
-     output->data[config->outputmap[DECAY_WOOD_AGR]]=1;
+    output->data[config->outputmap[DECAY_WOOD_AGR]]=1;
   if(isinit(DECAY_WOOD_NV))
-     output->data[config->outputmap[DECAY_WOOD_NV]]=1;
+    output->data[config->outputmap[DECAY_WOOD_NV]]=1;
   if(isinit(DECAY_LEAF_AGR))
-     output->data[config->outputmap[DECAY_LEAF_AGR]]=1;
+    output->data[config->outputmap[DECAY_LEAF_AGR]]=1;
   if(isinit(DECAY_LEAF_NV))
-     output->data[config->outputmap[DECAY_LEAF_NV]]=1;
+    output->data[config->outputmap[DECAY_LEAF_NV]]=1;
 } /* of 'initoutputdata' */

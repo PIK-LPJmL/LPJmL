@@ -29,9 +29,11 @@ Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
   /* read token */
   if(fread(&token,1,1,bstr->file)!=1)
     return FALSE;
-  if(token==BSTRUCT_ENDARRAY)
+  if(isinvalidtoken(token))
   {
-    fseek(bstr->file,pos,SEEK_SET);
+    if(bstr->isout)
+      fprintf(stderr,"ERROR502: Invalid token %d checking for object '%s'.\n",
+              token,getname(key));
     return FALSE;
   }
   isout=bstr->isout;

@@ -24,6 +24,7 @@
 #include "bstruct_writefloat.h"
 #include "bstruct_readfloat.h"
 #include "bstruct_finish.h"
+#include "bstruct_readid.h"
 #include "bstruct_readtoken.h"
 
 void test_restart(void)

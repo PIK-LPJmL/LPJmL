@@ -23,7 +23,7 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
 {
   /* Function writes token and id of name of object into restart file */
   int len,count;
-  short *id;
+  Id *id;
   Byte id1;
   char *s;
   bstr->namestack[bstr->level-1].nr++;
@@ -55,19 +55,18 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     return TRUE;
   }
   token|=128; /* set top bit in token */
-  fwrite(&token,1,1,bstr->file);
   /* Look in hash table whether name has already been used */
   id=gethashitem(bstr->hash,name);
   if(id==NULL)
   {
     /* name not found in hash, add name and new id to hash table */
     count=gethashcount(bstr->hash);
-    if(count==SHRT_MAX)
+    if(count==USHRT_MAX+1)
     {
-      fprintf(stderr,"ERROR518: Maximum number of names=%d in table reached.\n",SHRT_MAX);
+      fprintf(stderr,"ERROR518: Maximum number of names=%d in table reached.\n",USHRT_MAX+1);
       return TRUE;
     }
-    id=new(short);
+    id=new(Id);
     if(id==NULL)
     {
       printallocerr("id");
@@ -92,8 +91,10 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
   if(*id>UCHAR_MAX)
   {
     token|=64; /* set bit 7 in token */
-    return fwrite(id,sizeof(short),1,bstr->file)!=1;
+    fwrite(&token,1,1,bstr->file);
+    return fwrite(id,sizeof(Id),1,bstr->file)!=1;
   }
   id1=*id;
+  fwrite(&token,1,1,bstr->file);
   return fwrite(&id1,1,1,bstr->file)!=1;
 } /* of 'bstruct_writename' */

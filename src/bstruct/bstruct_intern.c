@@ -20,8 +20,8 @@ const size_t bstruct_typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),
                                   sizeof(double),0,0,sizeof(unsigned short),0,0,0};
 
 char *bstruct_typenames[]={"byte","short","int","float","double","bool","bool","ushort",
-                           "zero","fzero","null","string","string1","array","array1","struct","indexarray",
-                           "endstruct","endarray","end"};
+                           "zero","fzero","null","string","string1","array","array1",
+                           "struct","indexarray","endstruct","endarray","end"};
 
 int bstruct_gethashkey(const char *key,int size)
 {
@@ -30,7 +30,7 @@ int bstruct_gethashkey(const char *key,int size)
   while(*key!='\0')
     hashvalue=(hashvalue*256+(unsigned char)(*key++)) % size;
   return hashvalue;
-} /* of 'hashkey' */
+} /* of 'bstruct_gethashkey' */
 
 int bstruct_cmpname(const void *ptr1,const void *ptr2)
 {
@@ -42,10 +42,10 @@ int bstruct_cmpname(const void *ptr1,const void *ptr2)
 
 int bstruct_cmpdata(const void *ptr1,const void *ptr2)
 {
-  /* Function compares two hash items by data , used for sorting and searching items */
+  /* Function compares two hash items by data, used for sorting and searching items */
   const Hashitem *h1=ptr1;
   const Hashitem *h2=ptr2;
-  return *(const short *)(h1->data)-*(const short *)(h2->data);
+  return (int)*(const unsigned short *)(h1->data)-*(const unsigned short *)(h2->data);
 } /* of 'bstruct_cmpdata' */
 
 void bstruct_freenamestack(Bstruct bstruct)

@@ -29,9 +29,20 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
                Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
+  Coord coord;
+  String line,line2;
   int i;
   if(bstruct_readbeginstruct(file,NULL))
     return TRUE;
+  if(bstruct_readcoord(file,"coord",&coord))
+    return TRUE;
+  if(coord.lat!=cell->coord.lat || coord.lon!=cell->coord.lon)
+  {
+    fprintf(stderr,"ERROR254: Coordinate (%s) differs from coordinate (%s) in %s file.\n",
+            sprintcoord(line,&cell->coord),sprintcoord(line2,&coord),
+            (config->ischeckpoint) ? "checkpoint" : "restart");
+    return TRUE;
+  }
   if(bstruct_readbool(file,"skip",&cell->skip))
     return TRUE;
   if(freadseed(file,"seed",cell->seed))

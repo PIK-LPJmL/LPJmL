@@ -320,6 +320,20 @@ Bool bstruct_writecoord(Bstruct file,      /**< pointer to restart file */
   return bstruct_writeendstruct(file);
 } /* of 'bstruct_writecoord' */
 
+Bool bstruct_readcoord(Bstruct file,     /**< pointer to restart file */
+                       const char *name, /**< name of object */
+                       Coord *coord      /**< cell coordinate read from file */
+                      )                  /** \return FALSE for successful read */
+{
+  if(bstruct_readbeginstruct(file,name))
+    return TRUE;
+  if(bstruct_readreal(file,"lon",&coord->lon))
+    return TRUE;
+  if(bstruct_readreal(file,"lat",&coord->lat))
+    return TRUE;
+  return bstruct_readendstruct(file,name);
+} /* of 'bstruct_readcoord' */
+
 Bool writecoord(FILE *file,        /**< pointer to binary file */
                 const Coord *coord /**< cell coordinate written to file */
                )                   /** \return FALSE for successful write */

@@ -66,8 +66,8 @@ Bool fwritequeue(Bstruct file,    /**< pointer to restart file */
   int i,j;
   bstruct_writeint(file,"count",queue->count);
   bstruct_writebeginarray(file,name,queue->size*queue->count);
-  for(j=0;j<queue->count;j++)
-    for(i=0;i<queue->size;i++)
+  for(i=0;i<queue->size;i++)
+    for(j=0;j<queue->count;j++)
       if(bstruct_writereal(file,NULL,queue->data[((queue->first+i) % queue->size)*queue->count+j]))
         return TRUE;
   return bstruct_writeendarray(file);

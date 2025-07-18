@@ -41,9 +41,9 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
                    )                      /** \return pointer to restart file or NULL */
 {
   Bstruct file;
-  char *lpjversion;
+  char *lpjversion,*pftname;
   Real cellsize_lon,cellsize_lat;
-  int offset,ncell,restart_npft,restart_ncft,firstcell,firstyear;
+  int i,offset,ncell,restart_npft,restart_ncft,firstcell,firstyear,size;
   Bool separate_harvests;
   Type datatype;
   char *type;
@@ -51,6 +51,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   file=bstruct_open(filename,isroot(*config));
   if(file==NULL)
     return NULL;
+  bstruct_printnoread(file,config->print_noread);
   type=(config->ischeckpoint) ? "checkpoint" : "restart";
   /* read header */
   if(bstruct_readbeginstruct(file,"header"))
@@ -96,6 +97,46 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
   readbool(file,"river_routing",&config->river_routing_restart);
   readbool(file,"separate_harvests",&separate_harvests);
+  if(bstruct_readbeginarray(file,"pfts",&size))
+  {
+    bstruct_finish(file);
+    return NULL;
+  }
+  if(size!=restart_npft+restart_ncft)
+  {
+    fprintf(stderr,"ERROR245: Size of PFT array=%d in header of '%s' is not %d.\n",
+            size,filename,restart_npft+restart_ncft);
+    bstruct_finish(file);
+    return NULL;
+  }
+  for(i=0;i<size;i++)
+  {
+    pftname=bstruct_readstring(file,NULL);
+    if(pftname==NULL)
+    {
+      fprintf(stderr,"ERROR245: Cannot read PFT name of item %d in PFT array in header of '%s'.\n",
+              i+1,filename);
+      bstruct_finish(file);
+      return NULL;
+    }
+    if(strcmp(pftname,config->pftpar[i].name))
+    {
+      fprintf(stderr,"WARNING042: PFT name '%s' differs from '%s' in %s file '%s'.\n",
+              pftname,config->pftpar[i].name,type,filename);
+      if(config->pedantic)
+      {
+        free(pftname);
+        bstruct_finish(file);
+        return NULL;
+      }
+    }
+    free(pftname);
+  }
+  if(bstruct_readendarray(file,"pfts"))
+  {
+    bstruct_finish(file);
+    return NULL;
+  }
   if(freadseed(file,"seed",config->seed))
   {
     if(isroot(*config))

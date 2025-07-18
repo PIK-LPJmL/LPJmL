@@ -22,19 +22,20 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
                      )                      /** \return pointer to restart file or NULL in case of error */
 {
   /* Function creates/appends restart file */
-  /*   Structure of restart file:
-   *   |'B'|'S'|'T'|'R'|'U'|'C'|'T'|1|0|0|0| # file header and versiona    (7 + 4 bytes)
-   *   |p1|p2|p3|p4|p5|p6|p7|p8|             # pointer to name table       (8 bytes)
-   *   |00TOKEN|                             # type without id             (1 byte)
-   *   |10TOKEN|id|                          # type with byte id           (2 bytes)
-   *   |11TOKEN|id1|id2|                     # type with word id           (3 bytes)
-   *   |10TOKEN|id|d1|d2...|dn|              # type with byte id and data  (2 bytes + sizeof(data))
-   *   ...
-   *   |BSTRUCT_END|                         # end token                   (1 byte)
-   *   |size1|size2|size3|size4|             # size of name table          (4 bytes)
-   *   |n|s1|s2|...|sn|                      # name                        (1+ name length bytes)
-   *   |id1|id2|                             # id                          (2 bytes)
-   *   ....
+  /* Structure of restart file:
+   * Offset|Content
+   *      0|'B'|'S'|'T'|'R'|'U'|'C'|'T'|1|0|0|0| # file header and version     (7 + 4 bytes)
+   *     11|p1|p2|p3|p4|p5|p6|p7|p8|             # pointer to name table       (8 bytes)
+   *     12|00TOKEN|                             # type without id             (1 byte)
+   *     13|10TOKEN|id|                          # type with byte id           (2 bytes)
+   *     15|11TOKEN|id1|id2|                     # type with word id           (3 bytes)
+   *     17|10TOKEN|id|d1|d2...|dn|              # type with byte id and data  (2 bytes + sizeof(data))
+   *   19+n|...
+   *    p-1|BSTRUCT_END|                         # end token                   (1 byte)
+   *      p|size1|size2|size3|size4|             # size of name table          (4 bytes)
+   *    p+4|n|s1|s2|...|sn|                      # name                        (1+ name length bytes)
+   *  p+5+n|id1|id2|                             # id                          (2 bytes)
+   *  p+7+n|...
    */
   long long filepos;
   char *name;

@@ -21,9 +21,9 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
                      )                   /**  \return TRUE on error */
 {
   /* Function reads one data object */
-  Byte len,id1;
+  Byte len;
   int string_length;
-  short id;
+  Id id;
   data->name=NULL;
   if(fread(&data->token,1,1,bstr->file)!=1)
   {
@@ -31,34 +31,25 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       fprintf(stderr,"ERROR508: Unexpected end of file reading token.\n");
     return TRUE;
   }
+  if(isinvalidtoken(data->token))
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR502: Invalid token %d.\n",data->token);
+    return TRUE;
+  }
   if(data->token==BSTRUCT_END || data->token==BSTRUCT_ENDARRAY || data->token==BSTRUCT_ENDSTRUCT)
     return FALSE;
   if(data->token!=BSTRUCT_INDEXARRAY)
   {
-    if((data->token & 128)==128) /* top bit in token set, object name stored in next byte or short */
+    if(bstruct_hasname(data->token))
     {
-      if((data->token & 64)==64) /* bit 7 set, id is of type short */
+      if(bstruct_readid(bstr,data->token,&id))
       {
-        if(freadshort(&id,1,bstr->swap,bstr->file)!=1)
-        {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                    bstruct_typenames[data->token & 63]);
-          return TRUE;
-        }
+        fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
+                bstruct_typenames[data->token & 63]);
+         return TRUE;
       }
-      else
-      {
-        if(fread(&id1,1,1,bstr->file)!=1)
-        {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                    bstruct_typenames[data->token & 63]);
-          return TRUE;
-        }
-        id=id1;
-      }
-      if(id>=0 && id<bstr->count)
+      if(id<bstr->count)
         data->name=bstr->names2[id].key;
     }
   }
@@ -147,6 +138,13 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
           return TRUE;
         }
       }
+      if(string_length<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid string length %d of '%s'.\n",
+                  string_length,getname(data->name));
+        return TRUE;
+      }
       data->data.string=malloc(string_length+1);
       if(data->data.string==NULL)
       {
@@ -182,12 +180,26 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
                   getname(data->name));
         return TRUE;
       }
+      if(data->size<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid length %d of array '%s'.\n",
+                  data->size,getname(data->name));
+        return TRUE;
+      }
       return FALSE;
     case BSTRUCT_INDEXARRAY:
       if(freadint(&data->size,1,bstr->swap,bstr->file)!=1)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading size of index array.\n");
+        return TRUE;
+      }
+      if(data->size<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid length %d of index array.\n",
+                  data->size);
         return TRUE;
       }
       data->data.index=newvec(long long,data->size);

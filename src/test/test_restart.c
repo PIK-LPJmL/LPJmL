@@ -34,6 +34,7 @@
 #include "bstruct_finish.h"
 #include "bstruct_writebeginstruct.h"
 #include "bstruct_fprintnamestack.h"
+#include "bstruct_readid.h"
 #include "bstruct_readtoken.h"
 
 void test_restart(void)

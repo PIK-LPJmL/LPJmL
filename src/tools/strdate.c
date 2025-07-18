@@ -20,6 +20,6 @@
 char *strdate(const time_t *t)
 {
   static String s;
-  strftime(s,STRING_LEN,"%y-%m-%d",localtime(t));
+  strftime(s,STRING_LEN,"%c",localtime(t));
   return s;
 } /* of 'strdate' */

@@ -16,7 +16,7 @@
 
 #include "bstruct_intern.h"
 
-void bstruct_fprintnamestack(FILE *file,        /**< pointer to text file */ 
+void bstruct_fprintnamestack(FILE *file,        /**< pointer to text file */
                              const Bstruct bstr /**< pointer to restart file */
                             )
 {

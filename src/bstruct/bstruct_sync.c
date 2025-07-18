@@ -18,6 +18,7 @@
 
 void bstruct_sync(Bstruct bstr)
 {
+  fflush(bstr->file);
 #ifndef _WIN32
   fsync(fileno(bstr->file));
 #endif
