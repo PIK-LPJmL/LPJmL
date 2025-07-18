@@ -42,10 +42,7 @@
 #define MORT_MAX 0.03
 #endif
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.35      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.42   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.42   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.55   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_CROP 0.35      /* fraction of N not recovered before turnover */
 #ifdef BMGR_BROWN
 #define FN_TURNOVER_BMGR 0.30    /* 0.30 for brown harvest + specific harvest dates */
 #else
@@ -169,7 +166,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.48, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -281,7 +278,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.45, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -393,7 +390,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.41, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -505,7 +502,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.40, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -617,7 +614,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.37, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -731,7 +728,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.28, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -843,7 +840,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.31, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -957,7 +954,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.21, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1071,7 +1068,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.35, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -1165,7 +1162,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.35, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1259,7 +1256,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.28, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1352,7 +1349,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore */
-      "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.48, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1458,7 +1455,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.37, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1667,7 +1664,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.37, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1783,7 +1780,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.48, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1899,7 +1896,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.28, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2015,7 +2012,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.45, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2127,7 +2124,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.4, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2239,7 +2236,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2350,7 +2347,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2462,7 +2459,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : 1.0, "humid" : 1.0 },
@@ -2574,7 +2571,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -2686,7 +2683,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -2798,7 +2795,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2917,7 +2914,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,   /* windspeed dampening */
       "roughness_length" : 0.03,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3029,7 +3026,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3141,7 +3138,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3253,7 +3250,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3372,7 +3369,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3484,7 +3481,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3596,7 +3593,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
