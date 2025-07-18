@@ -34,7 +34,7 @@ LIB     = libgrass.$A
 HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/soil.h $(INC)/climate.h $(INC)/date.h $(INC)/pft.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/param.h $(INC)/output.h\
-          $(INC)/grass.h $(INC)/errmsg.h $(INC)/numeric.h\
+          $(INC)/grass.h $(INC)/errmsg.h $(INC)/numeric.h $(INC)/bstruct.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/stand.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/spitfire.h\
           $(INC)/config.h $(INC)/landuse.h $(INC)/climbuf.h $(INC)/discharge.h

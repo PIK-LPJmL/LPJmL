@@ -300,8 +300,12 @@ int main(int argc,char **argv)
                                                    config.nspinup,1));
 #ifdef USE_TIMING
     if(iscoupled(config))
-      printf("Time spent in communication to %s model: %.2g sec.\n",
+      printf("Time spent in communication to %s model: %.2f sec.\n",
              config.coupled_model,timing);
+    if(config.restart_filename!=NULL)
+      printf("Time spent in reading restart file: %.2f sec.\n",tread);
+    if(iswriterestart(&config))
+      printf("Time spent in writing restart file: %.2f sec.\n",twrite);
 #endif
   }
 #if defined IMAGE && defined COUPLED

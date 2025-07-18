@@ -20,6 +20,51 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.27] - 2025-07-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- Utility `json2restart` added to convert JSON files into restart files.
+- alias `restart2json` added for `restart2yaml -json`.
+- Output of time spent in reading and writing the restart file added.
+- Option `-print_noread` added to `lpjml` to print variable names not read from restart file.
+- Check added that PFT names in restart file match PFT names in LPJmL configuration file.
+- Unit tests added for bstruct library functions.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
+- Utility `lpjcat` updated to support the new restart file format.
+- Preprint's doi:10.5194/egusphere-2023-2946 changed to the final BNF paper doi:10.5194/gmd-17-7889-2024 in `.zenodo.json`.
+
+
+## [5.9.26] - 2025-07-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- New functions `setupannual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.
+- Parts of code in `iterateyear.c` has been moved to `update_daily_cell.c` and `update_monthly_grid.c`.
+- `lpj_climber4.c` renamed to `lpj_poem.c`.
+- `update_daily.c` renamed to `update_daily_cell.c`.
+- `update_monthly.c` renamed to `update_monthly_grid.c`.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c' (former `updatedaily.c`) moved after N update really happened.
+
+### Fixed
+
+- Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
+
+
 ## [5.9.25] - 2025-05-22
 
 ### Contributors

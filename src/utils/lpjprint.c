@@ -29,7 +29,7 @@
 #define NSTANDTYPES 13 /* number of stand types */
 
 #define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
+              "       [-pedantic] [-print_noread] [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 #define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
@@ -41,11 +41,11 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
 {
   Cell grid;
   int i,soil_id,data;
-  Bool swap,missing,isregion;
+  Bool missing,isregion;
   unsigned int soilcode;
   int code;
   size_t offset;
-  FILE *file_restart;
+  Bstruct file_restart;
   char *name;
   Celldata celldata;
   Infile countrycode;
@@ -96,7 +96,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   }
   /* If FROM_RESTART open restart file */
   config->count=0;
-  file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,config,npft+ncft,&swap);
+  file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,config,npft,ncft);
   if(file_restart==NULL)
     return TRUE;
 
@@ -172,9 +172,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
     soil_id=config->soilmap[soilcode]-1;
     if(freadcell(file_restart,&grid,npft,ncft,
-                 config->soilpar+soil_id,standtype,NSTANDTYPES,swap,config))
+                 config->soilpar+soil_id,standtype,NSTANDTYPES,config))
     {
-      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
+      fprintf(stderr,"ERRROR190: Cannot read cell data from '%s', number of gridcells truncated to %d.\n",
               (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
       config->ngridcell=i;
       break;
@@ -183,7 +183,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       printcell(&grid,1,npft,ncft,config);
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
-  fclose(file_restart);
+  bstruct_finish(file_restart);
   closecelldata(celldata,config);
   if(config->countrypar!=NULL)
   {
@@ -225,6 +225,8 @@ int main(int argc,char **argv)
              "-h,--help        print this help text\n"
              "-v,--version     print LPJmL version\n"
              "-nopp            disable preprocessing\n"
+             "-pedantic        stop on warnings\n"
+             "-print_noread    print variable names not read from restart file\n"
              "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"
