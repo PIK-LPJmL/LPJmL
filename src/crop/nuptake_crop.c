@@ -61,7 +61,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   //fprintcropphys2(stdout,crop->ind,pft->nind);
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
+  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(2.0/(1.0/pft->par->ncleaf.low+1.0/pft->par->ncleaf.high)-pft->par->ncleaf.high)),0),1); /* consistent with Smith et al. 2014 */
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif

@@ -57,7 +57,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   nirrig=getnirrig(ncft,config);
  // NCplant = (vegn_sum_tree(pft)-(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen)*pft->nind+pft->bm_inc.nitrogen*(tree->falloc.leaf+tree->falloc.leaf))/(vegc_sum_tree(pft)-(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon)*pft->nind+pft->bm_inc.carbon*(tree->falloc.leaf+tree->falloc.leaf)); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   NCplant = (tree->ind.leaf.nitrogen+ tree->ind.root.nitrogen) / (tree->ind.leaf.carbon+ tree->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*zaehle supple 10*/
+  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(2.0/(1.0/pft->par->ncleaf.low+1.0/pft->par->ncleaf.high)-pft->par->ncleaf.high)),0),1); /* consistent with Smith et al. 2014 */
   ndemand_leaf_opt=*ndemand_leaf;
   nsum=0;
   if((tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind)==0)
