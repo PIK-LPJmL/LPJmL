@@ -24,12 +24,15 @@ of `major.minor.patch` with
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
-
 ### Added
 
 - Warning message added in `lpjml`, `lpjcheck`,`cdfsoil`, `txt2grid` and `cdf2coord` if cell size cannot be resolved by grid data in short format.
 - Function `isfloatcoord()` added in `coord.c` to check whether coordinate must be stored as a float variable, test function `test_isfloatcoord.c` added.
 - Test functions for `bisect`, `leftmostzero` and `getbufferavg` functions added.
+
+### Fixed
+
+- Hard-coded filename `test.lpj` replaced by temporary filename in `test_append.c`, `test_getnoread.c`, `test_indexarray.c`, `test_isdefined.c`, `test_isnull.c`, `test_restart.c`, and `test_writename.c` in order to allow parallel execution of tests.
 
 
 ## [5.9.27] - 2025-07-15
