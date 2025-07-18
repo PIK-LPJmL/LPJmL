@@ -23,7 +23,6 @@ Real vmaxlimit_tree(const Pft *pft, /**< pointer to PFT */
   Real vmax;
   const Pfttree *tree;
   tree=pft->data;
-  //vmax=(pft->nleaf-param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon)/CCpDM)/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/9.6450617e-4;
-  vmax=(pft->nleaf-pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon))/exp(66530/8.314*(1/degCtoK(temp)-1/degCtoK(25)))/0.006*(NSECONDSDAY*cmass*1e-6);
+  vmax=(pft->nleaf-pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*cmass*1e-6);
   return min(pft->vmax,max(vmax,0.0001));
 } /* of 'vmaxlimit_tree' */

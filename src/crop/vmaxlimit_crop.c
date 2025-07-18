@@ -26,7 +26,6 @@ Real vmaxlimit_crop(const Pft *pft, /**< pointer to PFT */
 #ifdef DEBUG_N
   printf("LAI=%g, N0=%g\n",lai_crop(pft),param.n0*0.001*crop->ind.leaf.carbon);
 #endif
-  //vmax=((crop->ind.leaf.nitrogen-param.n0*0.001*crop->ind.leaf.carbon/CCpDM)*pft->nind)/exp(-param.k_temp*(temp-25))/f_lai(lai_crop(pft))/param.p/9.6450617e-4;
-  vmax=(crop->ind.leaf.nitrogen-pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind)/exp(66530/8.314*(1/degCtoK(temp)-1/degCtoK(25)))/0.010*(NSECONDSDAY*cmass*1e-6);
+  vmax=(crop->ind.leaf.nitrogen-pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind)/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*cmass*1e-6);
   return max(vmax,epsilon);
 } /* of 'vmaxlimit_crop' */
