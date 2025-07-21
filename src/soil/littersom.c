@@ -95,7 +95,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real N_sum=0;
   Real n_immo=0;
   int i,p,l,dt;
-  Soil *soil;
+  Soil *soil, *savesoil;
   Real CH4_em=0;
   Real CH4_sink=0;
   Real yedoma_flux;
@@ -122,36 +122,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real socfraction[BOTTOMLAYER];
   Real NH4_mineral;
   soil=&stand->soil;
-  Real D_O2[BOTTOMLAYER];
   int timesteps=3;
 
-  for (l = 0; l<BOTTOMLAYER; l++)
-  {
-    soil_moist = getsoilmoist(soil,l);
-    V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_O2[l] = max(0.001, V + soil_moist*soil->wsat[l]*BO2);
-    if (V<0)
-    {
-      V = 0;
-    }
-    D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
-    if (D_O2[l]>0)
-    {
-      if (l == 0)
-        dt = 0.5*(soildepth[l] * soildepth[l] * 1e-6) / D_O2[l];
-      else
-        dt = 0.5*(soildepth[l] * soildepth[l-1] * 1e-6) / (0.5*(D_O2[l] + D_O2[l - 1]));
-#ifdef SAFE
-      if(isnan(dt))
-      {
-        fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in gasdiffusion(), D_O2[%d]=%g",l,D_O2[l]);
-      }
-#endif
-      timesteps = max(timesteps, (unsigned long)(timestep2sec(1.0, NSTEP_DAILY) / dt) + 1);
-    }
-    else
-      timesteps = max(timesteps, 0);
-  }
+
+
 
 
 
@@ -792,6 +766,9 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     if(soil->maxthaw_depth>0) gasdiffusion(&stand->soil,airtemp,pch4,&CH4_em,runoff,&CH4_sink,timesteps);
     *ch4_sink+=CH4_sink;
     *methaneflux_litter+=CH4_em;
+
+
+
   } /*end of timesteps*/
 
   /*sum for equilsom-routine*/
