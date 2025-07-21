@@ -621,7 +621,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
   forrootsoillayer(l)
     transp+=aet_stand[l];
-  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
+  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply+intercep_stand_blue)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
   if(fabs(balancew)>0.001 && stand->frac>0.00001)
   {
 

@@ -24,14 +24,11 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   int l,index,i;
   String line;
   Real water1,water2;
-  //Real absolute_water1[NSOILLAYER],absolute_water2;
-  //Real absolute_ice1[NSOILLAYER],absolute_ice2;
 #ifdef CHECK_BALANCE
   Real water_before,water_after;
   Real excess_water=stand1->cell->balance.excess_water;
   Real water_w1,water_w2;
   water_w1=water_w2=0;
-  //fprintf(stderr,"soilwater1: %g frac1: %g soilwater2: %g frac2: %g \n",soilwater(&stand1->soil)*stand1->frac,stand1->frac,soilwater(&stand2->soil)*stand2->frac,stand2->frac);
   water_before=soilwater(&stand1->soil)*stand1->frac+soilwater(&stand2->soil)*stand2->frac+stand1->cell->balance.excess_water;
   foreachsoillayer(l)
   {
@@ -173,9 +170,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
       mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
     else
       stand1->frac_g[l]=0;
-    //stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
     stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
-    //mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
     stand1->soil.w[l]/=stand1->soil.whcs[l];
 
     mixpool(stand1->soil.w_fw[l],stand2->soil.w_fw[l],stand1->frac,stand2->frac);
@@ -195,15 +190,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.Ks[l], stand2->soil.Ks[l], stand1->frac, stand2->frac);
     mixpool(stand1->soil.wi_abs_enth_adj[l],stand2->soil.wi_abs_enth_adj[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.sol_abs_enth_adj[l],stand2->soil.sol_abs_enth_adj[l],stand1->frac,stand2->frac);
-/*
-    absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
-    absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
-    mixpool(absolute_water1[l], absolute_water2, stand1->frac, stand2->frac);
-
-    absolute_ice1[l] = stand1->soil.ice_depth[l] + stand1->soil.ice_fw[l] + stand1->soil.wpwps[l] * stand1->soil.ice_pwp[l];
-    absolute_ice2 = stand2->soil.ice_depth[l] + stand2->soil.ice_fw[l] + stand2->soil.wpwps[l] * stand2->soil.ice_pwp[l];
-    mixpool(absolute_ice1[l], absolute_ice2, stand1->frac, stand2->frac);
-*/
   }
 
   for(l=0;l<NTILLLAYER;l++)
@@ -214,13 +200,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
     pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
 
-  //pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);     // DOES NOT WOTK HERE; CAUSES BALANCE ERRORS
   /* bedrock needs to be mixed seperately */
 
   stand1->soil.w[BOTTOMLAYER]=(stand1->soil.w[BOTTOMLAYER]*stand1->soil.whcs[BOTTOMLAYER]*stand1->frac+stand2->soil.w[BOTTOMLAYER]*stand2->soil.whcs[BOTTOMLAYER]*stand2->frac)/(stand1->frac+stand2->frac);
-  //mixpool(stand1->soil.whcs[BOTTOMLAYER],stand2->soil.whcs[BOTTOMLAYER],stand1->frac,stand2->frac);
   stand1->soil.w[BOTTOMLAYER]/=stand1->soil.whcs[BOTTOMLAYER];
-  //mixpool(stand1->soil.w[BOTTOMLAYER],stand2->soil.w[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.w_fw[BOTTOMLAYER],stand2->soil.w_fw[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wsat[BOTTOMLAYER],stand2->soil.wsat[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wsats[BOTTOMLAYER],stand2->soil.wsats[BOTTOMLAYER],stand1->frac,stand2->frac);
@@ -289,8 +272,8 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   foreachstand(stand, s, cropstand->cell->standlist)
   {
     st=standstocks(stand);
-    start.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;//-stand->cell->balance.flux_estab.carbon;
-    start.nitrogen+=st.nitrogen*stand->frac;//-stand->cell->balance.flux_estab.nitrogen;
+    start.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=st.nitrogen*stand->frac;
     start_w += soilwater(&stand->soil)*stand->frac;
   }
 #endif
@@ -302,9 +285,11 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   {
     if (isempty(&cropstand->pftlist)) /* should not happen as establishment of cover crops now happens on all stands after tillage */
     {
-    foreachpft(pft,p,&setasidestand->pftlist)
-      mix_veg(pft,setasidestand->frac/(setasidestand->frac+cropstand->frac));
-  }
+      foreachpft(pft,p,&setasidestand->pftlist)
+      {
+        mix_veg(pft,setasidestand->frac/(setasidestand->frac+cropstand->frac));
+      }
+    }
     else
     {
       foreachpft(pft, p, &setasidestand->pftlist)
@@ -454,8 +439,8 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);
-    start.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;//-stand->cell->balance.flux_estab.carbon;
-    start.nitrogen+=st.nitrogen*checkstand->frac;//-stand->cell->balance.flux_estab.nitrogen;
+    start.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+    start.nitrogen+=st.nitrogen*checkstand->frac;
     start_w += soilwater(&checkstand->soil)*checkstand->frac;
   }
   start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
@@ -495,8 +480,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     foreachpft(pft, p, &cropstand->pftlist)
     {
       stocks = establishment(pft, 0, 0, n_est);
-      //flux_estab.carbon += stocks.carbon;
-      //flux_estab.nitrogen += stocks.nitrogen;
+
       /* to avoid artificial fertilization of setaside stands with small grass saplings planted as cover crops
          instead of sowing seeds, we take the biomass for the cover crop sapling from the litter pools */
       

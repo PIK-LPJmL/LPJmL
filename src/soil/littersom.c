@@ -49,7 +49,6 @@
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
 #define WTABTHRES 3000
 #define Q10 1.8
-#define timesteps 30
 #define LINEAR_DECAY
 
 //#define CALC_EFF_CARBON
@@ -121,7 +120,43 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real epsilon_O2 = 0;
   Real temp;
   Real socfraction[BOTTOMLAYER];
+  Real NH4_mineral;
+  soil=&stand->soil;
+  Real D_O2[BOTTOMLAYER];
+  int timesteps=3;
 
+  for (l = 0; l<BOTTOMLAYER; l++)
+  {
+    soil_moist = getsoilmoist(soil,l);
+    V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
+    epsilon_O2[l] = max(0.001, V + soil_moist*soil->wsat[l]*BO2);
+    if (V<0)
+    {
+      V = 0;
+    }
+    D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    if (D_O2[l]>0)
+    {
+      if (l == 0)
+        dt = 0.5*(soildepth[l] * soildepth[l] * 1e-6) / D_O2[l];
+      else
+        dt = 0.5*(soildepth[l] * soildepth[l-1] * 1e-6) / (0.5*(D_O2[l] + D_O2[l - 1]));
+#ifdef SAFE
+      if(isnan(dt))
+      {
+        fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in gasdiffusion(), D_O2[%d]=%g",l,D_O2[l]);
+      }
+#endif
+      timesteps = max(timesteps, (unsigned long)(timestep2sec(1.0, NSTEP_DAILY) / dt) + 1);
+    }
+    else
+      timesteps = max(timesteps, 0);
+  }
+
+
+
+//  if(exp(-(soil->O2[0]*oxid_frac/soil->wsat[0]/soildepth[0]*1000)/O2star)>0.0001)
+//    timesteps=30;
 
 // IMPLEMENTATION OF THE EFFECTIVE CARBON CONCENTRATION
 #ifdef CALC_EFF_CARBON
@@ -133,8 +168,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Pool soilold[LASTLAYER];
   Stocks soilall[LASTLAYER];
 #endif
-  Real NH4_mineral;
-  soil=&stand->soil;
+
 #ifdef CHECK_BALANCE
   Stocks start;
   Stocks end;
@@ -305,12 +339,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
         if (V<=epsilon)
           V=epsilon+epsilon;
-        //epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
 
         /*methanotrophy */
         if((V>0.25) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
         {
-          //oxidation=(Vmax_CH4*1e-3*24/timesteps*WCH4*soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)*gtemp_soil[l]*soildepth[l]*soil->wsat[l]/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->gCH4/layer/m2
           if (soil->temp[l]>40)
             temp = 40;
           else
@@ -546,7 +578,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             CN_fast=soil->litter.item[p].agsub.leaf.carbon/soil->litter.item[p].agsub.leaf.nitrogen;
           else
             CN_fast=soil->par->cn_ratio;
-          litter_flux = soil->litter.item[p].agsub.leaf.carbon * soil->litter.item[p].pft->k_litter10.leaf/ k_red_litter/timesteps*gtemp_soil[0]* exp(-(soil->O2[0]*oxid_frac/soil->wsat[0]/soildepth[0]*1000)/O2star);
+          litter_flux = soil->litter.item[p].agsub.leaf.carbon * soil->litter.item[p].pft->k_litter10.leaf/ k_red_litter/timesteps*gtemp_soil[0]*exp(-(soil->O2[0]*oxid_frac/soil->wsat[0]/soildepth[0]*1000)/O2star);
           soil->litter.item[p].agsub.leaf.carbon -= litter_flux*WC/WCH4;
           *methaneflux_litter += litter_flux;
           NH4_mineral=min(soil->litter.item[p].agsub.leaf.nitrogen,litter_flux*WC/WCH4/CN_fast);
@@ -930,7 +962,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
-  stand->cell->balance.aCH4_oxid+=oxidation_stand;
+  stand->cell->balance.aCH4_oxid+=oxidation_stand*stand->frac;
   getoutput(&stand->cell->output,CH4_OXIDATION,config) += oxidation_stand*stand->frac;
 
 #ifdef CHECK_BALANCE

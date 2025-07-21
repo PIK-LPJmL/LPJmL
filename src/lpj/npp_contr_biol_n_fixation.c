@@ -74,6 +74,6 @@ Real npp_contr_biol_n_fixation(Pft *pft,             /**< PFT */
     npp_requ = max_cost;
     bnf =  max_cost / pft->par->bnf_cost;
   }
-  pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp
+  pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp, this is the NPP cost
   return(bnf);
 }

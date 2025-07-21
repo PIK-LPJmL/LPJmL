@@ -59,7 +59,6 @@
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
   "with_lakes" : true,      /* enable lakes (true/false) */
-  "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
@@ -92,9 +91,10 @@
   "population" : false,     /* use population input (for spitfire) */
   "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2100, /* set landuse year for "const" and "only_crops" cases */
-  "reservoir" : false,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
+  "reservoir" : true,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
   "wateruse" : "all",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
   "equilsoil" : false,      /* enables soil equilibration  (natural vegetation spinup) */
+  "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
 #else
   "methane" : "fixed",      /* methane value prescribed, other values: "fixed", "prescribed", "dynamic" */
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
@@ -102,6 +102,7 @@
   "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
   "wateruse" : "no",        /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
+  "river_routing" : false,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
 #endif
   "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.cjson. Cultivations types are "none" (natural PFTs), "biomass" (bioenergy PFTs), "wp" (wood plantation PFTs),  "annual tree" (agriculture tree PFTs) and "annual crop" (CFTs)*/
   "prescribe_burntarea" : false, /* prescribe burned area on nat vegetation (for spitfire)  */
@@ -474,7 +475,7 @@ ID                               Fmt                        filename
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire_rr.lpj", /* filename of restart file written */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire_noirr.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
 
 #else

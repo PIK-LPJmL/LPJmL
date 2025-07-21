@@ -36,12 +36,12 @@
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#define MORT_MAX 0.015
+#define MORT_MAX 0.01
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.7   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER 0.45      /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.65   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV 0.55   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.48   /* fraction of N not recovered before turnover */
 #define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -76,15 +76,15 @@
 #define PHI_BNF_1 0.0
 #define PHI_BNF_2 2.0
 #define MAXBNFCOST 0.25
-#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
-#define MAXBNFCOSTTE 0.0014
-#define MAXBNFCOSTBO 0.0056
-#define MAXBNFCOSTGR 0.005
-//#define MAXBNFCOSTTR 0.096 /* Fraction of NPP available for BNF multiplied by climates legume share */
-//#define MAXBNFCOSTTE 0.024
-//#define MAXBNFCOSTBO 0.0576
-//#define MAXBNFCOSTGR 0.003
-#define BNF_COST 6.0
+//#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
+//#define MAXBNFCOSTTE 0.0014
+//#define MAXBNFCOSTBO 0.0056
+//#define MAXBNFCOSTGR 0.007
+#define MAXBNFCOSTTR 0.021 /* Fraction of NPP available for BNF multiplied by climates legume share */
+#define MAXBNFCOSTTE 0.07
+#define MAXBNFCOSTBO 0.0126
+#define MAXBNFCOSTGR 0.021
+#define BNF_COST 6.2
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
   [
@@ -166,7 +166,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -199,7 +199,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -282,7 +282,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */
@@ -315,7 +315,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -398,7 +398,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.57, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
@@ -431,7 +431,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -514,7 +514,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.53, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.4,             /* inundation stress threshold [m] */
@@ -547,7 +547,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
    },
@@ -630,7 +630,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.52, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.4,            /* inundation stress threshold [m] */
@@ -663,7 +663,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 temperate evergreen forest*/
+      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -746,7 +746,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.49, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -781,7 +781,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -864,7 +864,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.4, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.30,             /* inundation stress threshold [m] */
@@ -897,7 +897,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.062,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.03,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -980,7 +980,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.43, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1015,7 +1015,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.062,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.03,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1098,7 +1098,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.33, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
@@ -1133,7 +1133,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.062,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.03,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
    },
@@ -1216,7 +1216,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.5, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1231,7 +1231,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1329,7 +1329,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1427,7 +1427,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1525,7 +1525,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1545,7 +1545,7 @@
       "nmax" : 20.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
-      "sla" : 0.042242,        /* specific leaf area */
+      "sla" : 0.18,        /* specific leaf area */
       "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
@@ -1623,7 +1623,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 30},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.01,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -3250,7 +3250,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
-      "nfixpot" : 0.055,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
       "bnf_cost" : BNF_COST
     },
@@ -3721,7 +3721,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
       "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
       "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
-      "nfixpot" : 0.055,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
       "bnf_cost" : BNF_COST
     },

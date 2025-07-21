@@ -24,8 +24,6 @@ void cutpfts(Stand *stand, /**< Pointer to stand */
   Pft *pft;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon;
-    pft->bm_inc.carbon=0;
     litter_update(&stand->soil.litter,pft,pft->nind,config);
   }
   freepftlist(&stand->pftlist);

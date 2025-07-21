@@ -318,7 +318,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   end=0;
 
   foreachstand(checkstand,s,stand->cell->standlist)
-    //if(checkstand->type->landusetype!=KILL)
       end+=standstocks(checkstand).nitrogen*checkstand->frac;
   end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
       stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
