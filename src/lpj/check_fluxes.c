@@ -116,7 +116,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
          "Invalid carbon balance in year %d in cell %d (%s) of %.10f\n"
          "=====001: anpp: %.2f rh: %.2f\n"
-         "=====002: firec: %.2f flux_estab: %.2f flux_harvest: %.2f \n"
+         "=====002: firec: %.2f flux_estab: %.2f flux_harvest: %.2f\n"
          "=====003: delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
          "=====004: estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
          "=====005: deforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f\n"

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               u  p  d  a  t  e  _  a  n  n  u  a  l  .  c                      \n**/
+/**               u  p  d  a  t  e  _  a  n  n  u  a  l  _  c  e  l  l  .  c       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -19,14 +19,14 @@
 
 #define N 5
 
-void update_annual(Cell *cell,          /**< Pointer to cell */
-                   int npft,            /**< number of natural pfts */
-                   int ncft,            /**< number of crop pfts */
-                   int year,            /**< simulation year (AD) */
-                   Bool isdaily,        /**< daily temperature data (TRUE/FALSE) */
-                   Bool intercrop,      /**< intercropping (TRUE/FALSE) */
-                   const Config *config /**< LPJ configuration */
-                  )
+void update_annual_cell(Cell *cell,          /**< Pointer to cell */
+                        int npft,            /**< number of natural pfts */
+                        int ncft,            /**< number of crop pfts */
+                        int year,            /**< simulation year (AD) */
+                        Bool isdaily,        /**< daily temperature data (TRUE/FALSE) */
+                        Bool intercrop,      /**< intercropping (TRUE/FALSE) */
+                        const Config *config /**< LPJ configuration */
+                       )
 {
   int s,m,cft;
   Stand *stand;
@@ -57,14 +57,14 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     getmintemp20_n(&cell->climbuf,mintemp,N);
     for (m=0;m<N;m++)
     {
-     for (cft=0;cft<ncft;cft++)
-     {
-       croppar=config->pftpar[npft+cft].data;
-       if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
-         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
-       else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
-         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));
-     }
+      for (cft=0;cft<ncft;cft++)
+      {
+        croppar=config->pftpar[npft+cft].data;
+        if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
+          cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
+        else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
+          cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));
+      }
     }
   }
 
@@ -233,4 +233,4 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
 
-} /* of 'update_annual' */
+} /* of 'update_annual_cell' */

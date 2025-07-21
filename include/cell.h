@@ -168,11 +168,11 @@ Received 19 November 1997; accepted 15 January 1999*/
 
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,const Config *);
-extern void update_daily(Cell *,Real,Real,Real,Dailyclimate,int,
-                         int,int,int,int,Bool,const Config *);
-extern void update_annual(Cell *,int,int,
-                          int,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int,const Config *);
+extern void update_daily_cell(Cell *,int,Dailyclimate *,Real,Real,Input *,int,int,int,
+                              int,int,int,Bool,const Config *);
+extern void update_annual_cell(Cell *,int,int,
+                               int,Bool,Bool,const Config *);
+extern void update_monthly_grid(Outputfile *,Cell *,Climate *,int,int,int,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(Bstruct,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
@@ -183,9 +183,9 @@ extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
-extern void iterateyear(Outputfile *,Cell [],Input,
-                        Real,Real,int,int,int,const Config *);
 extern void fwriteoutput_ch4(Outputfile *,Real,Real,int,const Config *);
+extern Bool iterateyear(Outputfile *,Cell [],Input,
+                        Real,Real *,Real *,int,int,int,const Config *);
 extern void initoutputdata(Output *,int,int,const Config *);
 extern Bool fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
@@ -219,6 +219,10 @@ extern Bool fwritestocks(Bstruct,const char *,const Stocks *);
 extern Bool fwritestocksarray(Bstruct,const char *,const Stocks [],int);
 extern Bool freadstocks(Bstruct,const char *,Stocks *);
 extern Bool freadstocksarray(Bstruct,const char *,Stocks [],int);
+extern Bool setupannual_grid(Outputfile*,Cell *,Input *,int,int,int,Bool,const Config *);
+extern void initmonthly_grid(Cell *,int,int,Climate *,const Config *);
+extern void updateannual_grid(Outputfile *,Cell *,Landcover,Real,Real *,Real *,int,int,int,Bool,Bool,const Config *);
+extern void updatedaily_grid(Outputfile *,Cell *,Extflow,int,int,int,int,int,const Config *);
 
 /* Definition of macros */
 
