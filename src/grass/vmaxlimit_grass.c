@@ -23,6 +23,6 @@ Real vmaxlimit_grass(const Pft *pft, /**< pointer to PFT */
   const Pftgrass *grass;
   Real vmax;
   grass=pft->data; 
-  vmax=(pft->nleaf-pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/f_lai(lai_grass(pft))/param.p/0.02314815*daylength;
+  vmax=(pft->nleaf-param.n0*0.001*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon)/CCpDM)/exp(-param.k_temp*(temp-25))/f_lai(lai_grass(pft))/param.p/9.6450617e-4;
   return min(pft->vmax,max(vmax,0.0001));
   } /* of 'vmaxlimit_grass' */

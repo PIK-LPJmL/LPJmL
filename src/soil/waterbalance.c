@@ -70,13 +70,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   {
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
    {
-//
-//      fprintf(stderr,"\n\nstart waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
-//          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
-//      fflush(stderr);
-//      fprintf(stderr,"Cell (%s) 1 Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
-//          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
-//
       if (soil->w_fw[l]<0)
       {
         if (soil->w[l]>epsilon)
@@ -102,12 +95,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
           soil->w[l]=0;
         }
       }
-
-
-//      fprintf(stderr,"after recalculation waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f wpwps=%.6f ice_pwp=%.6f marginal:%.6f\n",
-//         sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->wpwps[l],soil->ice_pwp[l],marginal);
-//     fprintf(stderr,"Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s \n",
-//         l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
      tmpwater=0;
      if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
      {
@@ -163,7 +150,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
   //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
-    //if(stand->type->landusetype!=NATURAL)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
         stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
       if(data_irrig->irrigation && data_irrig->irrig_system==DRIP)
@@ -210,7 +196,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       soildepth_evap-=soildepth[l];
       evap_test+=evap_out[l];
     }
-    //printf("l= %d \n",l);
     if(soil->w_fw[l]<0)
     {
       soil->w[l]+=soil->w_fw[l]/soil->whcs[l];
@@ -327,7 +312,6 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
     stand->cell->discharge.drunoff+=marginal*stand->frac;    // drunoff included in awater_flux rm next line
-    //stand->cell->balance.awater_flux+=marginal*stand->frac;
     if(isnan(soil->w[l] )||  isnan(soil->w_fw[l]) || isnan(stand->cell->balance.atransp))
     {
       fail(FPE_ERR,TRUE,TRUE,"in waterbalance() Cell (%s) alance.atranspt= %3.5f  aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.4f soilice:%.4f w=%.4f fw:%.4f wpwps:%.4f wsats=%.6f layer: %d\n",

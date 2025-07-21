@@ -709,42 +709,16 @@ void update_daily_cell(Cell *cell,            /**< cell pointer           */
   }
   end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
-  if(cell->ml.dam)
-  {
-    water_after+=cell->ml.resdata->dmass/cell->coord.area;/*+cell->resdata->dfout_irrigation/cell->coord.area; */
-    for(i=0;i<NIRRIGDAYS;i++)
-      water_after+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
-  }
+    if(cell->ml.dam)
+    {
+      water_after+=cell->ml.resdata->dmass/cell->coord.area;/*+cell->resdata->dfout_irrigation/cell->coord.area; */
+      for(i=0;i<NIRRIGDAYS;i++)
+        water_after+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
+    }
 
-  balanceW=water_after-water_before-climate->prec+
-          ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
-          +((cell->balance.excess_water+cell->lateral_water)-excess_old);
-    if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.01)
-    {
-      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
-          "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-          __FUNCTION__,day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
-          cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, cell->balance.neg_fluxes.carbon,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink*WC/WCH4,cell->balance.aCH4_em*WC/WCH4);
-    }
-    fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
-                        +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
-    fluxes_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
-    end=0;
-    foreachstand(stand,s,cell->standlist)
-      if(stand->type->landusetype!=KILL)
-        end+=standstocks(stand).nitrogen*stand->frac;
-    end+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+cell->NO3_lateral+
-         cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
-    if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.01)
-    {
-      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-         "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
-             __FUNCTION__,day,end-start1.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start1.nitrogen, end,cell->balance.flux_estab.nitrogen,cell->balance.flux_harvest.nitrogen,
-             fluxes_in.nitrogen,fluxes_out.nitrogen, cell->balance.neg_fluxes.nitrogen,cell->NO3_lateral);
-      foreachstand(stand,s,cell->standlist)
-        fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d \n",
-                stand->frac, stand->type->name,s,stand->soil.iswetland);
-    }
+    balanceW=water_after-water_before-climate->prec+
+            ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
+            +((cell->balance.excess_water+cell->lateral_water)-excess_old);
     if(fabs(balanceW)>0.0001)
     {
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "

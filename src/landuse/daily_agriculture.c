@@ -256,7 +256,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->type=&kill_stand;
         stand->growing_days=0;
 //      }
-    }   //if more than on cft is on rice field it could be that isrice needs to be set FALSE, but it is used later on
+    }
   } /* of foreachpft() */
 
   /* green water inflow */
@@ -592,12 +592,14 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
   forrootsoillayer(l)
    transp+=aet_stand[l];
-  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
+  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply+intercep_stand_blue)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
   if(fabs(balancew)>0.001 && stand->frac>0.00001)
   {
 
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g rice: %d wstore: %g wstore_new: %g wstore_old: %g \n",
-        __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrig_stor,stand->frac,isrice,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g intercep_stand_blue %g runoff: %g influx: %g "
+        "fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g rice: %d wstore: %g wstore_new: %g wstore_old: %g \n",
+        __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,intercep_stand_blue,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrig_stor,
+        stand->frac,isrice,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
   }
 
 
