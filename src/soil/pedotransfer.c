@@ -122,7 +122,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       soil->whcs[l] = soil->whc[l] * soildepth[l];
 
       /* Calculation of Ks */
-      lambda =  (log(soil->wfc[l]) - log(soil->wpwp[l]))/DENOMINATOR; //(log(1500) - log(33));
+      lambda =  (log(soil->wfc[l]/soil->wpwp[l]))/DENOMINATOR; //(log(1500) - log(33));
       soil->Ks[l] = 1930*pow((soil->wsat[l]-soil->wfc[l]),(3-lambda));
 
       soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
