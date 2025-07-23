@@ -260,7 +260,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
     cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
     cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
-    hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,&CH4_sink,npft,ncft,config);
+    hetres=daily_littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,&CH4_sink,npft,ncft,config);
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
     getoutput(&cell->output,CH4_LITTER,config)+=CH4_em*stand->frac;
