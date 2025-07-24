@@ -215,6 +215,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(f,&param.ftimber,"ftimber");
       fscanparamreal01(f,&param.harvest_fast_frac,"harvest_fast_frac");
       fscanparampoolpar(f,&param.product_turnover,"product_turnover");
+      fscanparamreal(f,&param.luc_burn_startyear,"luc_burn_startyear");
     }
     if(config->residues_fire)
     {
