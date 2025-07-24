@@ -50,6 +50,9 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
   Real ko,kc,tau,pi,c1,c2;
   Real je,jc,phipi,adt,s,sigma;
   Real fac,gammastar;
+
+  b=exp(-3.044-0.017*temp);
+
   if(tstress<1e-2)
   {
     *agd=0;
