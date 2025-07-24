@@ -143,7 +143,7 @@ extern Bool annual_tree(Stand *,Pft *,Real *,Bool,const Config *);
 extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *,const Config *);
-extern void turnover_daily_tree(Litter *,Pft *,Real,int,Bool,const Config *);
+extern void turnover_daily_tree(Litter *,Pft *,Real,int,Bool,Real,const Config *);
 extern Stocks harvest_tree(Pft *);
 extern Real nuptake_tree(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real);

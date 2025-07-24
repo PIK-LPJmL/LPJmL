@@ -87,6 +87,7 @@
 #define MAXBNFCOSTBO 0.0056
 #define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
+#define NRECOVERY_NPP 0.05 /* fraction of NPP available for N recovery */
 
   [
     /* first pft */
@@ -198,7 +199,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. pft */
@@ -310,7 +312,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*---------------------------------------------------------------------------------------------*/
   /* 3. pft */
@@ -422,7 +425,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
   },
   /*--------------------------------------------------------------------------*/
   /* 4. pft */
@@ -534,7 +538,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 5. pft */
@@ -648,7 +653,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 6. pft */
@@ -760,7 +766,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 7. pft */
@@ -874,7 +881,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 8. pft */
@@ -988,7 +996,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
   },
   /*--------------------------------------------------------------------------*/
   /* 9. pft */
@@ -1082,7 +1091,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 10. pft */
@@ -1176,7 +1186,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 11. pft */
@@ -1270,7 +1281,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
@@ -1376,7 +1388,15 @@
       "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
       "k_est" : 0.5,          /* k_est,  Giardina, 2002 */
       "rotation" : 8,         /* rotation */
-      "max_rotation_length" : 40 /* max_rotation_length */
+      "max_rotation_length" : 40, /* max_rotation_length */
+      "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+      "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
+      "maxbnfcost" : MAXBNFCOSTTE,
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. bft */
@@ -1491,7 +1511,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 3. bft ONLY FOR BIOENERGY*/
@@ -1585,7 +1606,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 1. wft */
@@ -1699,6 +1721,7 @@
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP, /* fraction of NPP available for N recovery */
       "rotation" : 500,            /* rotation */
       "max_rotation_length" : 500, /* max_rotation_length */
       "P_init" : 0.15394           /* Initial stand density (only used for wood plantations) */
@@ -1815,6 +1838,7 @@
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP, /* fraction of NPP available for N recovery */
       "rotation" : 500,              /* rotation */
       "max_rotation_length" : 500,   /* max_rotation_length */
       "P_init" : 0.147257            /* Initial stand density (only used for wood plantations) */
@@ -1931,6 +1955,7 @@
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP, /* fraction of NPP available for N recovery */
       "rotation" : 500,            /* rotation */
       "max_rotation_length" : 500, /* max_rotation_length */
       "P_init" : 0.169781          /* Initial stand density (only used for wood plantations) */
@@ -2045,7 +2070,8 @@
       "max_rotation_length" : 25, /* max_rotation_length */
       "harvest_ratio" : 0,        /* harvest ratio for cultural trees */
       "cnratio_fruit" : 10,
-      "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : true,   /* grass PFT allowed under agriculture tree? */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 14. cft */
@@ -2157,7 +2183,8 @@
       "max_rotation_length" : 200, /* max_rotation_length */
       "harvest_ratio" : 0.15,      /* harvest ratio for cultural trees */
       "cnratio_fruit" : 10,
-      "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : true,   /* grass PFT allowed under agriculture tree? */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 15. cft */
@@ -2268,7 +2295,8 @@
       "max_rotation_length" : 1, /* max_rotation_length */
       "harvest_ratio" : 0.19,    /* fraction of biomass increment put into fruits */
       "cnratio_fruit" : 10,
-      "with_grass" : false   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : false,   /* grass PFT allowed under agriculture tree? */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 1. cft */
@@ -2380,7 +2408,8 @@
       "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. cft */
@@ -2492,7 +2521,8 @@
       "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.3, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.3, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 3. cft */
@@ -2604,7 +2634,8 @@
       "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.83, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.83, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 4. cft */
@@ -2716,7 +2747,8 @@
       "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 5. cft */
@@ -2835,7 +2867,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST, 
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 6. cft */
@@ -2947,7 +2980,8 @@
       "himin" : 1.25,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.74, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.74, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 7. cft */
@@ -3059,7 +3093,8 @@
       "himin" : 1.10,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 3.27, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 3.27, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 8. cft */
@@ -3171,7 +3206,8 @@
       "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.04, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.04, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 9. cft */
@@ -3290,7 +3326,8 @@
       "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST,
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 10. cft */
@@ -3402,7 +3439,8 @@
       "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.68, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.68, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 11. cft */
@@ -3514,7 +3552,8 @@
       "himin" : 0.15,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.76, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.76, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 12. cft */
@@ -3626,6 +3665,7 @@
       "himin" : 0.80,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 4.57, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 4.57, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "nrecovery_npp" : NRECOVERY_NPP /* fraction of NPP available for N recovery */
     }
   ]

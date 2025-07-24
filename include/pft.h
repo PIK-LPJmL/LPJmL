@@ -160,6 +160,7 @@ typedef struct Pft
     Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
     Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
     Real bnf_cost;              /**< cost for N fixation (gC/gN) */
+    Real nrecovery_npp;         /**< NPP fraction for N recovery from leaf turnover (-) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -199,7 +200,7 @@ typedef struct Pft
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
-    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,const Config *);
+    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,Real,const Config *);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
@@ -223,6 +224,7 @@ typedef struct Pft
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
   Real npp_bnf;
+  Real npp_nrecovery; /**< N recovery from leaf turnover */
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -280,7 +282,7 @@ extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
-extern void phenology_gsi(Pft *, Real, Real, int,Bool,const Config *);
+extern void phenology_gsi(Pft *, Real, Real, int,Bool,Real,const Config *);
 extern Real nitrogen_stress(Pft *,Real,Real,Real [LASTLAYER],Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
@@ -311,7 +313,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
-#define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
+#define turnover_daily(litter,pft,temp,day,isdaily,daylength,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,daylength,config)
 #define alphaa(pft,lai_opt) pft->par->alphaa_manage(pft,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim) pft->par->npp(pft,gtemp_air,gtemp_soil,assim)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
@@ -332,5 +334,11 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
 #define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
 #define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
+
+#ifdef NRECOVERY_COST
+#define nrecover_price(leafN,leafC,sla) (0.01/(leafN/(leafC * sla)))
+#else 
+#define nrecover_price(leafN,leafC,sla) (0.0)
+#endif
 
 #endif

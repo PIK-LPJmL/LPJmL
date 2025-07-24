@@ -97,5 +97,6 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
   }
   pft->vmax=0;
   pft->npp_bnf=0;
+  pft->npp_nrecovery=0.0;
   return bstruct_readendstruct(file,NULL);
 } /* of 'freadpft' */

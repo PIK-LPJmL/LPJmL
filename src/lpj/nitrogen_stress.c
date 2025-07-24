@@ -44,7 +44,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
     {
       if(pft->par->nfixing && config->npp_controlled_bnf)
-        pft->npp_bnf=npp;
+        pft->npp_bnf=npp-pft->npp_nrecovery;
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
     }
     else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))

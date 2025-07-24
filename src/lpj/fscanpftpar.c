@@ -419,6 +419,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftreal(verb,item,&pft->maxbnfcost,pft->name,"maxbnfcost");
       fscanpftreal(verb,item,&pft->bnf_cost,pft->name,"bnf_cost");
     }
+    fscanpftreal(verb,item,&pft->nrecovery_npp,pft->name,"nrecovery_npp");
     fscanpftreal(verb,item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,item,&pft->roughness,pft->name,"roughness_length");
     fscanpftirrig2(verb,item,&pft->irrig_threshold,pft->name,"irrig_threshold");

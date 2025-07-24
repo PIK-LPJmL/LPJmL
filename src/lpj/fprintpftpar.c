@@ -126,10 +126,11 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "CNleaf:\t\t%g %g %g\n"
                "kNstore:\t%g\n"
                "fN_turnover:\t%g\n"
-               "N fixing:\t%s\n",
+               "N fixing:\t%s\n"
+               "max NPP for N recovery: \t%g (fraction of NPP bm_inc.carbon)\n",
           pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
           1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
-          pftpar->fn_turnover,bool2str(pftpar->nfixing));
+          pftpar->fn_turnover,bool2str(pftpar->nfixing), pftpar->nrecovery_npp);
   if(config->npp_controlled_bnf && pftpar->nfixing)
   {
     fprintf(file,"temp_bnf_lim:\t%g %g\n"
