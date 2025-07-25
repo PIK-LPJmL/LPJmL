@@ -49,11 +49,10 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   soil=&stand->soil;
   Soil savesoil;
   int timesteps=3;
-  int l,dt;
+  int i,l,dt;
   Stocks hetres;
   Stocks hetres1;
-  int fast_needed = 0;
-  Bool stop = FALSE;
+  Bool fast_needed  = FALSE;
   hetres.nitrogen=hetres.carbon=0;
   Real methaneflux_litter,runoff,MT_water,ch4_sink;
   Real O2_save[LASTLAYER];
@@ -70,12 +69,12 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   for(dt=0;dt<timesteps;dt++)
   {
     forrootsoillayer(l)
-        {
+    {
       O2_save[l]=soil->O2[l];
       CH4_save[l]=soil->CH4[l];
-        }
+    }
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
-    if((stop=istoolarge(soil,O2_save,CH4_save)))
+    if((fast_needed=istoolarge(soil,O2_save,CH4_save)))
       break;
     hetres.carbon+=hetres1.carbon;
     hetres.nitrogen+=hetres1.nitrogen;
@@ -83,15 +82,23 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     *CH4_source+=methaneflux_litter;
     *lrunoff+=runoff;
     *MT_lwater+=MT_water;
-  }
-  if(stop)
-  {
-    soil_status(soil, &savesoil, npft+ncft);
-    *CH4_sink=*CH4_source=*lrunoff=*MT_lwater=hetres.nitrogen=hetres.carbon=0;
-    timesteps=30;
-    for(dt=0;dt<timesteps;dt++)
+
+    if(fast_needed )
     {
-      hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
+      soil_status(soil, &savesoil, npft+ncft);
+      for (i=0;i<10;i++)
+      {
+        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps*10);
+        hetres.carbon+=hetres1.carbon;
+        hetres.nitrogen+=hetres1.nitrogen;
+        *CH4_sink+=ch4_sink;
+        *CH4_source+=methaneflux_litter;
+        *lrunoff+=runoff;
+        *MT_lwater+=MT_water;
+      }
+    }
+    else
+    {
       hetres.carbon+=hetres1.carbon;
       hetres.nitrogen+=hetres1.nitrogen;
       *CH4_sink+=ch4_sink;
@@ -99,6 +106,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       *lrunoff+=runoff;
       *MT_lwater+=MT_water;
     }
+    fast_needed = FALSE;
   }
   freelitter(&savesoil.litter);
   free(savesoil.decomp_litter_pft);
