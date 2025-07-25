@@ -42,7 +42,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Stocks hetres;
   Stocks hetres1;
   Real test_O2,test_CH4;
-  int stop = 0;
+  int fast_needed = 0;
   test_O2=test_CH4=0;
   hetres.nitrogen=hetres.carbon=0;
   Real methaneflux_litter,runoff,MT_water,ch4_sink;
@@ -56,44 +56,45 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   savesoil.litter.n=0;
   soil_status(&savesoil, soil, npft+ncft);
 
-  for(dt=0;dt<timesteps && !stop;dt++)
+  for(dt=0;dt<timesteps;dt++)
   {
     test_O2=test_CH4=0;
     soil_status(&testsoil, soil, npft+ncft);
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
-    hetres.carbon+=hetres1.carbon;
-    hetres.nitrogen+=hetres1.nitrogen;
-    *CH4_sink+=ch4_sink;
-    *CH4_source+=methaneflux_litter;
-    *lrunoff+=runoff;
-    *MT_lwater+=MT_water;
     forrootsoillayer(l)
     {
       test_O2=fabs(soil->O2[l]-testsoil.O2[l]);
       test_CH4=fabs(soil->CH4[l]-testsoil.CH4[l]);
-      if(test_O2>testsoil.O2[l]*0.2 || test_CH4>testsoil.CH4[l]*0.2)
+      if(test_O2>testsoil.O2[l]*0.7 || test_CH4>testsoil.CH4[l]*0.25)
       {
-        stop=1;
+        fast_needed=1;
         break;
       }
     }
-  }
-
-  if(stop)
-  {
-   soil_status(soil, &savesoil, npft+ncft);
-   *CH4_sink=*CH4_source=*lrunoff=*MT_lwater=hetres.nitrogen=hetres.carbon=0;
-   timesteps=30;
-   for(dt=0;dt<timesteps;dt++)
-   {
-     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
-     hetres.carbon+=hetres1.carbon;
-     hetres.nitrogen+=hetres1.nitrogen;
-     *CH4_sink+=ch4_sink;
-     *CH4_source+=methaneflux_litter;
-     *lrunoff+=runoff;
-     *MT_lwater+=MT_water;
-   }
+    if (fast_needed)
+    {
+      soil_status(soil, &testsoil, npft+ncft);
+      for (i=0;i<10;i++)
+      {
+        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps*10);
+        hetres.carbon+=hetres1.carbon;
+        hetres.nitrogen+=hetres1.nitrogen;
+        *CH4_sink+=ch4_sink;
+        *CH4_source+=methaneflux_litter;
+        *lrunoff+=runoff;
+        *MT_lwater+=MT_water;
+      }
+    }
+    else
+    {
+      hetres.carbon+=hetres1.carbon;
+      hetres.nitrogen+=hetres1.nitrogen;
+      *CH4_sink+=ch4_sink;
+      *CH4_source+=methaneflux_litter;
+      *lrunoff+=runoff;
+      *MT_lwater+=MT_water;
+    }
+    fast_needed = 0;
   }
   freelitter(&savesoil.litter);
   freelitter(&testsoil.litter);
