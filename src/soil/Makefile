@@ -36,7 +36,8 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O\
           calc_soil_thermal_props.$O apply_heatconduction_of_a_day.$O compute_mean_layer_temps_from_enth.$O\
           apply_enth_of_untracked_mass_shifts.$O freezefrac2soil.$O enth2freezefrac.$O\
-          apply_perc_enthalpy.$O update_soil_thermal_state.$O freadpool.$O fwritepool.$O
+          apply_perc_enthalpy.$O update_soil_thermal_state.$O freadpool.$O fwritepool.$O\
+          soil_status.$O daily_littersom.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

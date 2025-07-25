@@ -16,6 +16,7 @@
 #define maxSOM_dens 130000 //g*m-3
 #define psi_som 10.3 /**> saturated suction (mm) for organic matter (Letts, 2000)*/
 #define b_som   2.7   /**> ! Clapp Hornberger paramater for oragnic soil (Letts, 2000)*/
+#define DENOMINATOR 3.81671282562382 // log(1500) - log(33)
 
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
@@ -121,7 +122,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       soil->whcs[l] = soil->whc[l] * soildepth[l];
 
       /* Calculation of Ks */
-      lambda =  (log(soil->wfc[l]) - log(soil->wpwp[l]))/(log(1500) - log(33));
+      lambda =  (log(soil->wfc[l]/soil->wpwp[l]))/DENOMINATOR; //(log(1500) - log(33));
       soil->Ks[l] = 1930*pow((soil->wsat[l]-soil->wfc[l]),(3-lambda));
 
       soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);

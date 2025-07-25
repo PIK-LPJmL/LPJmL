@@ -316,6 +316,7 @@ struct Dailyclimate; /* forward declaration */
 extern int addlitter(Litter *,const struct Pftpar *);
 extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
+extern void soil_status(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
 extern Bool fscansoilpar(LPJfile *,Config *);
@@ -347,7 +348,8 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,int);
+extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);

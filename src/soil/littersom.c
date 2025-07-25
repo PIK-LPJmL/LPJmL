@@ -79,7 +79,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  Real *ch4_sink,                    /**< [out] negative CH4 emissions (gC/m2/day) */
                  int npft,                          /**< [in] number of natural PFTs */
                  int ncft,                          /**< [in] number of crop PFTs */
-                 const Config *config               /**< [in] LPJmL configuration */
+                 const Config *config,               /**< [in] LPJmL configuration */
+                 int timesteps
                 )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
   Real response[LASTLAYER];
@@ -122,12 +123,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real socfraction[BOTTOMLAYER];
   Real NH4_mineral;
   soil=&stand->soil;
-  int timesteps=3;
-
-
-
-
-
+  *methaneflux_litter=*runoff=*MT_water=*ch4_sink=0;
 
 //  if(exp(-(soil->O2[0]*oxid_frac/soil->wsat[0]/soildepth[0]*1000)/O2star)>0.0001)
 //    timesteps=30;
@@ -154,7 +150,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #endif
   k_soil10.fast=param.k_soil10.fast*(1-soil->icefrac)+DECOM_FAST*soil->icefrac;
   k_soil10.slow=param.k_soil10.slow*(1-soil->icefrac)+DECOM_SLOW*soil->icefrac;
-  flux.nitrogen=0;
+  flux.nitrogen=flux.carbon=0;
   forrootsoillayer(l){
     response[l]=0.0;
   }
@@ -175,7 +171,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   }
 #endif
 
-  *methaneflux_litter=*runoff=*MT_water=0;
   forrootsoillayer(l)
   {
     if (soil->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-(soil->wpwps[l]*soil->ice_pwp[l])>epsilon)
@@ -199,8 +194,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
        response[l]=1.0;
   }
 
-  for(dt=0;dt<timesteps;dt++)
-  {
+//  for(dt=0;dt<timesteps;dt++)
+//  {
     forrootsoillayer(l)
     {
       if(gtemp_soil[l]>epsilon)
@@ -769,7 +764,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 
 
 
-  } /*end of timesteps*/
+// } /*end of timesteps*/
 
   /*sum for equilsom-routine*/
   soil->decomp_litter_mean.carbon+=decom_litter.carbon;
