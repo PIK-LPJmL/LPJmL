@@ -64,10 +64,10 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   check(savesoil.decomp_litter_pft);
 
   savesoil.litter.n=0;
-  soil_status(&savesoil, soil, npft+ncft);
 
   for(dt=0;dt<timesteps;dt++)
   {
+    soil_status(&savesoil, soil, npft+ncft);
     forrootsoillayer(l)
     {
       O2_save[l]=soil->O2[l];
@@ -76,12 +76,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
     if((fast_needed=istoolarge(soil,O2_save,CH4_save)))
       break;
-    hetres.carbon+=hetres1.carbon;
-    hetres.nitrogen+=hetres1.nitrogen;
-    *CH4_sink+=ch4_sink;
-    *CH4_source+=methaneflux_litter;
-    *lrunoff+=runoff;
-    *MT_lwater+=MT_water;
+
 
     if(fast_needed )
     {
