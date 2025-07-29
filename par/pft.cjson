@@ -70,8 +70,8 @@
 #define CN_GC4_MD 28.4
 #define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
-#define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
-#define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define BC3 0.031         /*leaf respiration as fraction of Vmax for C3 plants */
+#define BC4 0.031         /* leaf respiration as fraction of Vmax for C4 plants */
 #define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
 #define IRRIG_THRESHOLD_C3_HUMID 0.9 /* irrigation threshold C3, prec >= aprec_lim */
 #define IRRIG_THRESHOLD_C4       0.7 /* irrigation threshold C4 */

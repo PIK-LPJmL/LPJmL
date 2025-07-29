@@ -126,6 +126,21 @@ Real getavgprec(const Climbuf *climbuf)
   return avg_prec/(NDAYS/3);
 } /* of 'getavgprec' */
 
+Real getgdd(const Climbuf *climbuf, Real basetemp)
+{
+  Real gdd=0;
+  int gpdays=0;
+  int m;
+  foreachmonth(m)
+    if(climbuf->mtemp20[m]>basetemp) {
+      gdd+=(climbuf->mtemp20[m]-basetemp)*ndaymonth[m];
+      gpdays+=ndaymonth[m];
+    }
+  if(gpdays>0)
+      gdd/=gpdays;
+  return gdd;
+} /* of 'getgdd' */
+
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
                      Real mprec,       /**< monthly precipitation (mm) */
