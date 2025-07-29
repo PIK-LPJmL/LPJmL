@@ -222,7 +222,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
   for(p=0;p<npft;p++)
   {
-    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND) &&
+    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND) &&
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==WP) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
@@ -247,7 +247,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist){
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       if (istree(pft))
       {

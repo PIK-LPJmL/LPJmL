@@ -113,7 +113,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Stocks fluxes_in,fluxes_out;
   Real end=0;
   Real dcflux=0;
-  Stocks influx={0,0};
   int s;
   fluxes_in.carbon=stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon; //influxes
   fluxes_out.carbon=stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon+stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon; //outfluxes

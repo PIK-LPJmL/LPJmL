@@ -303,7 +303,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       break; /* leave time loop */
     }
-    if(iterateyear(output,grid,input,co2,&ch4,&pch4,npft,ncft,year,config))
+    if(iterateyear(output,grid,&input,co2,&ch4,&pch4,npft,ncft,year,config))
       break;
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)

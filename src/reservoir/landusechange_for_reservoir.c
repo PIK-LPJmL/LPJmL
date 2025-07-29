@@ -19,8 +19,6 @@
 #include "agriculture.h"
 #include "soil.h"
 
-#define CHECK_BALANCE
-
 static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
                                    Real *difffrac, /**< fraction to deforest */
                                    Bool luc_timber, /**< setting land-use change timber */
@@ -94,13 +92,11 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
                                         const Config *config /**< LPJmL configuration */
                                        )                     /** \return reservoir fraction that could be created from setaside */
 {
-  int s,s2,pos,t;
-  const Pft *pft;
-  Stand *setasidestand,*setasidestand_ir,*cutstand, *stand,*checkstand;
+  int s,s2,pos;
+  Stand *setasidestand,*setasidestand_ir,*cutstand, *stand;
   Real factor;
   Stocks stocks;
   String line;
-  Irrigation *data, *data_2;
 #ifndef IMAGE
     Real carbon;
     Real totw_before,totw_after,balanceW;
@@ -143,7 +139,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
-    data_2=setasidestand->data;
 
     factor=0.0; /* initialize factor with 0, assumed that there is enough setaside stand in the cell */
 
@@ -185,7 +180,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         if(s2==NOT_FOUND)
           s2=findlandusetype(cell->standlist,SETASIDE_WETLAND);
         setasidestand=getstand(cell->standlist,s);
-        data_2=setasidestand->data;
         if(s2!=NOT_FOUND)                                             //if irrigated setaside is available, merge as much as needed second time needed if all setasides exist 2 times becao
         {
           setasidestand_ir=getstand(cell->standlist,s2);
@@ -217,7 +211,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         if(s2==NOT_FOUND)
          s2=findlandusetype(cell->standlist,SETASIDE_WETLAND);
         setasidestand=getstand(cell->standlist,s2);
-        data_2=setasidestand->data;
         factor=min(1,(difffrac-setasidestand->frac)/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl-setasidestand->frac));
         if(factor>1.0+epsilon)
           fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
@@ -231,7 +224,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           {
             /* remove all vegetation on irrigated setaside */
             cutpfts(stand,config);
-            data=stand->data;
             mixsetaside(setasidestand,stand,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,s);
             s--;
@@ -243,7 +235,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
             cutstand->frac=difffrac-setasidestand->frac;
             reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
             stand->frac-=cutstand->frac;
-            data=stand->data;
             mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,pos);
             carbon=0;
@@ -258,7 +249,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
     foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL) /* existence of SETASIDES has been ruled out */
     {
-      data=stand->data;
       pos=addstand(&natural_stand,cell)-1;
       cutstand=getstand(cell->standlist,pos);
       cutstand->frac=factor*stand->frac;
@@ -379,14 +369,12 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
    following year */
 {
   Real difffrac,difffrac2;
-  String line;
-  Stand *stand,*checkstand;
+  Stand *stand;
   Pft *pft;
   Bool isrice=FALSE;
   Real sum[2],sum_wl;
   Real minnatfrac_res;
-  Real carbon=0;
-  int s,p,t;
+  int s,p;
 #ifndef IMAGE
   Real totw_before,totw_after,balanceW;
   Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */

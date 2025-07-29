@@ -35,7 +35,6 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
               )                       /** \return void         */
 {
   int l,p;
-  Real socfraction;
   Real epsilon_gas, soilmoist, V;
   Poolpar *sum;
   sum=newvec(Poolpar,ntotpft);
@@ -63,10 +62,10 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     }
     for(p=0;p<ntotpft;p++)
     {
-      socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+      soil->socfraction[l][p]=pow(10,pftpar[p].soc_k*logmidlayer[l])
                 - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
-      soil->c_shift[l][p].fast=soil->decay_rate[l].fast*socfraction;
-      soil->c_shift[l][p].slow=soil->decay_rate[l].slow*socfraction;
+      soil->c_shift[l][p].fast=soil->decay_rate[l].fast*soil->socfraction[l][p];
+      soil->c_shift[l][p].slow=soil->decay_rate[l].slow*soil->socfraction[l][p];
       sum[p].fast+=soil->c_shift[l][p].fast;
       sum[p].slow+=soil->c_shift[l][p].slow;
     }

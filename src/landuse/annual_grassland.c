@@ -60,7 +60,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   grassland=stand->data;
 
   nnat=getnnat(npft,config);
-  index=(stand->type->landusetype==GRASSLAND) ? rmgrass(ncft) : rothers(ncft);
+  index=(getlandusetype(stand)==GRASSLAND) ? rmgrass(ncft) : rothers(ncft);
   nirrig=getnirrig(ncft,config);
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -101,7 +101,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
       flux_estab.carbon+=stocks.carbon;
@@ -118,7 +118,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    if(stand->type->landusetype==GRASSLAND)
+    if(getlandusetype(stand)==GRASSLAND)
     {
       if(isannual(FPC_BFT,config))
         getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;

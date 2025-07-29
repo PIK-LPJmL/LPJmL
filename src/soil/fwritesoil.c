@@ -50,6 +50,10 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
     fwritepoolpararray(file,NULL,soil->c_shift[l],ntotpft);
   }
   bstruct_writeendarray(file);
+  bstruct_writebeginarray(file,"socfraction",LASTLAYER);
+  forrootsoillayer(l)
+    bstruct_writerealarray(file,NULL,soil->socfraction[l],ntotpft);
+  bstruct_writeendarray(file);
   if(fwritelitter(file,"litter",&soil->litter))
     return TRUE;
   bstruct_writerealarray(file,"NO3",soil->NO3,LASTLAYER);

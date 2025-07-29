@@ -84,7 +84,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
   for(p=0;p<npft;p++)
   {
     if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss
-       && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+       && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       if(!present[p])
         addpft(stand,config->pftpar+p,year,0,config);
@@ -94,7 +94,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
 
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
       flux_estab.carbon+=stocks.carbon;

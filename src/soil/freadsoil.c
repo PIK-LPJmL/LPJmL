@@ -95,6 +95,27 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   }
   if(bstruct_readendarray(file,"c_shift"))
     return TRUE;
+  if(bstruct_readbeginarray(file,"socfraction",&size))
+    return TRUE;
+  if(size!=LASTLAYER)
+  {
+    fprintf(stderr,"ERROR227: Size of socfraction=%d is not %d.\n",
+            size,LASTLAYER);
+    return TRUE;
+  }
+  forrootsoillayer(l)
+  {
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    if(soil->socfraction[l]==NULL)
+    {
+      printallocerr("socfraction");
+      return TRUE;
+    }
+    if(bstruct_readrealarray(file,NULL,soil->socfraction[l],ntotpft))
+      return TRUE;
+  }
+  if(bstruct_readendarray(file,"socfraction"))
+    return TRUE;
   if(freadlitter(file,"litter",&soil->litter,pftpar,ntotpft))
     return TRUE;
   readrealarray(file,"NO3",soil->NO3,LASTLAYER);

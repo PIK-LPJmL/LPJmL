@@ -200,12 +200,12 @@ void deforest(Cell *cell,          /**< pointer to cell */
       data=stand->data;
       foreachpft(pft,p,&stand->pftlist)
       {
-        if(stand->type->landusetype!= NATURAL && stand->type->landusetype!= WETLAND)
+        if(getlandusetype(stand)!= NATURAL && getlandusetype(stand)!= WETLAND)
         {
-            crop=pft->data;
-            fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  stand_irrigation: %d carbon:%g methan: %g PFT: %s growingdays: %d\n",
-               stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,data->irrigation,standstocks(stand).carbon,
-               soilmethane(&stand->soil)*WC/WCH4,pft->par->name,crop->growingdays);
+          crop=pft->data;
+          fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  stand_irrigation: %d carbon:%g methan: %g PFT: %s growingdays: %d\n",
+                  stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,data->irrigation,standstocks(stand).carbon,
+                  soilmethane(&stand->soil)*WC/WCH4,pft->par->name,crop->growingdays);
         }
         else
           fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s.\n",
@@ -221,9 +221,9 @@ void deforest(Cell *cell,          /**< pointer to cell */
     for(j=0;j<ncft;j++)
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
     fprintf(stderr,"grassfrac_rainfed: %g grassfrac_irr: %g\n",(cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1]),
-        (cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]));
+            (cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]));
     fprintf(stderr,"ml.cropfrac_rf: %g ml.cropfrac_ir: %g  ml.cropfrac_wl: %g  \n",
-        cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl);
+            cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl);
 #endif
   }
 #ifdef CHECK_BALANCE
@@ -598,7 +598,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         wetstand=getstand(cell->standlist,s);
         if(wetstand->frac<=epsilon-difffrac)
         {                                                     /*setaside stand has not enough space for grassland expansion*/
-          if(mixstand==NULL || mixstand->type->landusetype==KILL) /* in case only setaside_wetland found or other setaside stands are to small*/
+          if(mixstand==NULL || getlandusetype(mixstand)==KILL) /* in case only setaside_wetland found or other setaside stands are to small*/
           {
             if(mixstand==NULL)
             {
@@ -629,7 +629,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+wetstand->slope_mean*wetstand->frac)/(mixstand->frac+wetstand->frac);
             mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
             foreachpft(pft,p,&mixstand->pftlist)
-                mix_veg(pft,mixstand->frac/(mixstand->frac+wetstand->frac));
+              mix_veg(pft,mixstand->frac/(mixstand->frac+wetstand->frac));
             difffrac=-wetstand->frac;
             mixstand->frac+=-difffrac;
             difffrac2-=wetstand->frac;
@@ -642,7 +642,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         }
         else
         {
-          if(mixstand==NULL || mixstand->type->landusetype==KILL)
+          if(mixstand==NULL || getlandusetype(mixstand)==KILL)
           {
             pos=addstand(&wetland_stand,cell)-1; /*setaside big enough for grassland expansion*/
             if(mixstand==NULL)
@@ -674,7 +674,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             wetstand->frac=-difffrac;
             mixsoil(mixstand,wetstand,year,npft+ncft,config);
             remove_vegetation_copy(&mixstand->soil,wetstand,cell,-difffrac/(mixstand->frac-difffrac),
-                config->luc_timber,TRUE,config);
+                                   config->luc_timber,TRUE,config);
             wetstand->frac=old_mixfrac+difffrac;
             mixstand->frac-=difffrac;
             mixstand->soil.iswetland=FALSE;
@@ -707,7 +707,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
       data->irrigation=irrigation;
       grassstand->frac+=mixstand->frac;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype==KILL)
+        if(getlandusetype(stand)==KILL)
         {
           delstand(cell->standlist,s); /* deleting temporary mixstand copy */
           s--;
@@ -723,7 +723,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
       {
         case PASTURE:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
@@ -747,7 +747,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               delstand(cell->standlist,pos);
             }
             for(p=0;p<npft;p++)
-              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
                   config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
@@ -762,7 +762,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case BIOMASS_TREE_PLANTATION:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
               config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
@@ -776,7 +776,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           if(strcmp(config->pftpar[pft_id].name,"cotton"))
           {
             for(p=0;p<npft;p++)
-              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
                  config->pftpar[p].id==pft_id)
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
@@ -791,7 +791,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
@@ -803,7 +803,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case WOOD_PLANTATION:
           for (p = 0;p < npft;p++)
-            if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
+            if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
               config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
             {
               addpft(mixstand, config->pftpar + p, year, 0,config);
@@ -926,7 +926,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
 #endif
 
-  index=data->irrigation*getnirrig(ncft,config)+(grassstand->type->landusetype==GRASSLAND ? rmgrass(ncft) : rothers(ncft));
+  index=data->irrigation*getnirrig(ncft,config)+(getlandusetype(grassstand)==GRASSLAND ? rmgrass(ncft) : rothers(ncft));
 
   if(grassstand->frac<=difffrac+epsilon)
   {
@@ -1075,7 +1075,7 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 
   nirrig=getnirrig(ncft,config);
 
-  switch(stand->type->landusetype)
+  switch(getlandusetype(stand))
   {
     case AGRICULTURE:
       if(data->irrigation && data->irrig_system!=stand->cell->ml.irrig_system->crop[cft])
@@ -1468,11 +1468,11 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   sum_wl=sum[0]=sum[1]=0;
   foreachstand(stand,s,cell->standlist)
   {
-    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
+    if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND && getlandusetype(stand)!=KILL)
     {
       data=stand->data;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
-      if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
+      if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
         sum[data->irrigation]+=stand->frac;
@@ -1713,7 +1713,13 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==WOODPLANTATION || (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
+    if(getlandusetype(stand)==GRASSLAND || 
+       getlandusetype(stand)==BIOMASS_GRASS ||
+       getlandusetype(stand)==BIOMASS_TREE ||
+       getlandusetype(stand)==AGRICULTURE_TREE ||
+       getlandusetype(stand)==AGRICULTURE_GRASS ||
+       getlandusetype(stand)==WOODPLANTATION ||
+       (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
@@ -1721,7 +1727,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   sum_wl=sum[0]=sum[1]=0;
   foreachstand(stand,s,cell->standlist)
   {
-    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
+    if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND && getlandusetype(stand)!=KILL)
     {
       data=stand->data;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);

@@ -49,14 +49,14 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.gir=0.0;
       /* wateruse for irrigation */
       foreachstand(stand,s,grid[cell].standlist)
-        if(stand->type->landusetype==AGRICULTURE ||
-           stand->type->landusetype==GRASSLAND ||
-           stand->type->landusetype==OTHERS ||
-           stand->type->landusetype==BIOMASS_GRASS ||
-           stand->type->landusetype==BIOMASS_TREE ||
-           stand->type->landusetype==AGRICULTURE_GRASS ||
-           stand->type->landusetype==AGRICULTURE_TREE ||
-           stand->type->landusetype==WOODPLANTATION)
+        if(getlandusetype(stand)==AGRICULTURE ||
+           getlandusetype(stand)==GRASSLAND ||
+           getlandusetype(stand)==OTHERS ||
+           getlandusetype(stand)==BIOMASS_GRASS ||
+           getlandusetype(stand)==BIOMASS_TREE ||
+           getlandusetype(stand)==AGRICULTURE_GRASS ||
+           getlandusetype(stand)==AGRICULTURE_TREE ||
+           getlandusetype(stand)==WOODPLANTATION)
         {
           isrice=ispftinstand(&stand->pftlist,config->rice_pft);
           data=stand->data;

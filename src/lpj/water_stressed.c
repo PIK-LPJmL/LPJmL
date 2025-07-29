@@ -127,7 +127,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(*wet>0.99)
     *wet=0.99;
 
-  if(pft->stand->type->landusetype==AGRICULTURE || (pft->stand->type->landusetype==OTHERS && config->others_to_crop))
+  if(getlandusetype(pft->stand)==AGRICULTURE || (getlandusetype(pft->stand)==OTHERS && config->others_to_crop))
   {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
     if (pft->phen>0)
@@ -143,7 +143,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
 
-  if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
+  if (getlandusetype(pft->stand)!=SETASIDE_RF && getlandusetype(pft->stand)!=SETASIDE_IR)
   {
     getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
     getoutputindex(&pft->stand->cell->output,PFT_WATER_SUPPLY,index,config)+=(supply_pft<=demand_pft) ? supply_pft : demand_pft;

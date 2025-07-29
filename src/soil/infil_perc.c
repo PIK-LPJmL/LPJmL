@@ -47,7 +47,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
                 const Config *config /**< LPJ configuration */
                )                     /** \return water runoff (mm) */
 {
-  Real runoff,qcharge_layer,qcharge_tot,qcharge_tot1,qcharge,fill,runoff_out,runoff_neg;
+  Real runoff,qcharge_layer,qcharge_tot,qcharge_tot1,fill,runoff_out,runoff_neg;
   Real perc,slug,tolitter;
   Real TT; /*traveltime in [mm/h]*/
   Real HC; /*hydraulic conductivity in [mm/h]*/
@@ -624,7 +624,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     qcharge_tot+= -ka*(wh_zwt-wh)/((soil->wtable-layerbound[lwt])*2);
   qcharge_tot= max(-10.0,qcharge_tot);
   qcharge_tot= min(10.0,qcharge_tot);
-  qcharge=qcharge_tot;
+#ifdef CHECK_BALANCE
+  Real qcharge=qcharge_tot;
+#endif
  //*******************************//
   if (soil->wtable>0)
     S=soil->wsat[lwt]*(1.-pow((1.+(soil->wtable/soil->psi_sat[lwt])),(-1./soil->b[lwt])));

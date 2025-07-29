@@ -56,7 +56,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
       check_lu(cell->standlist,(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft],npft+cft,(isother) ? OTHERS : AGRICULTURE,irrig))
   {
 //    if(year==2010 && day==59) fprintf(stdout,"cultcftstand2 on day: %d allocation: %d type: %s standfrac: %g\n",day,*alloc_today,setasidestand->type->name,setasidestand->frac);
-    if(!(*alloc_today) && setasidestand->type->landusetype!=AGRICULTURE)
+    if(!(*alloc_today) && getlandusetype(setasidestand)!=AGRICULTURE)
     {
       foreachpft(pft, p, &setasidestand->pftlist)
         turnover_grass(&setasidestand->soil.litter, pft,1.0/NDAYYEAR,config);
@@ -171,7 +171,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
     difffrac=0;
     foreachstand(stand,s,cell->standlist)
     {
-      if(stand->type->landusetype==((isother) ? OTHERS : AGRICULTURE))
+      if(getlandusetype(stand)==((isother) ? OTHERS : AGRICULTURE))
       {
         irrigation=stand->data;
         // determine PFT-ID of crop grown here (use last or first as there is only one crop per cropstand)

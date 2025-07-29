@@ -17,9 +17,9 @@
 #include "lpj.h"
 
 void soil_status(Soil *dst,       /**< destination */
-              const Soil *src, /**< source */
-              int ntotpft      /**< total number of PFTs */
-              )                /** \return void */
+                 const Soil *src, /**< source */
+                 int ntotpft      /**< total number of PFTs */
+                )                 /** \return void */
 {
   int i,l,p;
   dst->par=src->par;

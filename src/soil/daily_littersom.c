@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+#define Q10 1.8
+
 static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[LASTLAYER])
 {
   Real test_O2;
@@ -30,6 +32,16 @@ static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[
   }
   return FALSE;
 } /* of 'istoolarge' */
+
+static Real f_wfps(const Soil *soil,      /* Soil data */
+                   int l                  /* soil layer */
+                  )                       /* return soil temperature (deg C) */
+{
+  Real x;
+  x=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->wpwps[l]+soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l];
+  return pow((x-soil->par->b_nit)/soil->par->n_nit,soil->par->z_nit)*
+      pow((x-soil->par->c_nit)/soil->par->m_nit,soil->par->d_nit);
+} /* of 'f_wfps' */
 
 Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer to stand data */
                        const Real gtemp_soil[NSOILLAYER], /**< [in] respiration coefficents */
@@ -48,15 +60,27 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Soil *soil;
   soil=&stand->soil;
   Soil savesoil;
-  int timesteps=3;
+  int timesteps=15;
   int i,l,dt;
   Stocks hetres;
   Stocks hetres1;
   Bool fast_needed  = FALSE;
   hetres.nitrogen=hetres.carbon=0;
+  Real temp;
   Real methaneflux_litter,runoff,MT_water,ch4_sink;
-  Real O2_save[LASTLAYER];
-  Real CH4_save[LASTLAYER];
+  Real Q10_oxid[LASTLAYER],fac_wfps[LASTLAYER],fac_temp[LASTLAYER];
+
+  forrootsoillayer(l)
+  {
+    if (soil->temp[l]>40)
+      temp = 40;
+    else
+      temp=soil->temp[l];
+    Q10_oxid[l]=pow(Q10,(temp-soil->amean_temp[l])/10);
+    fac_wfps[l] = f_wfps(soil,l);
+    fac_temp[l] = f_temp(soil->temp[l]);
+  }
+
 
   *CH4_sink=*CH4_source=*lrunoff=*MT_lwater=0;
 
@@ -64,26 +88,31 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   check(savesoil.decomp_litter_pft);
 
   savesoil.litter.n=0;
-
+/*###################### TESTE*/
+//  timesteps=100;
+//  for(dt=0;dt<timesteps;dt++)
+//  {
+//    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps);
+//    hetres.carbon+=hetres1.carbon;
+//    hetres.nitrogen+=hetres1.nitrogen;
+//    *CH4_sink+=ch4_sink;
+//    *CH4_source+=methaneflux_litter;
+//    *lrunoff+=runoff;
+//    *MT_lwater+=MT_water;
+//  }
+/*######################*/
   for(dt=0;dt<timesteps;dt++)
   {
     soil_status(&savesoil, soil, npft+ncft);
-    forrootsoillayer(l)
-    {
-      O2_save[l]=soil->O2[l];
-      CH4_save[l]=soil->CH4[l];
-    }
-    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps);
-    if((fast_needed=istoolarge(soil,O2_save,CH4_save)))
-      break;
-
+    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps);
+    fast_needed=istoolarge(soil,savesoil.O2,savesoil.CH4);
 
     if(fast_needed )
     {
       soil_status(soil, &savesoil, npft+ncft);
       for (i=0;i<10;i++)
       {
-        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,timesteps*10);
+        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps*10);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;

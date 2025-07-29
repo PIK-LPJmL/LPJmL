@@ -95,7 +95,7 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   kCH4 = kCH4/100*24;
   kO2 = kO2/100*24;
   CH4_rice=CH4_plant=CH4_sink=0;
-  if(stand->type->landusetype==SETASIDE_WETLAND)
+  if(getlandusetype(stand)==SETASIDE_WETLAND)
     isrice=TRUE;
   foreachpft(pft, p, &stand->pftlist)
   {
@@ -120,7 +120,7 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
           if(CH4_plant<0)
             CH4_sink+=CH4_plant;
           else
-           CH4_plant_all+=CH4_plant;
+            CH4_plant_all+=CH4_plant;
 
           if(isrice && CH4_plant>0)
           {
@@ -138,20 +138,22 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
     }
   }
   getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
-  if(stand->type->landusetype==WETLAND)
+  if(getlandusetype(stand)==WETLAND)
     getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all;
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
 
-  if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
+  if(CH4_rice>0)
+    stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
   //if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
-  if(CH4_rice>0) rice_em=CH4_rice;
+  if(CH4_rice>0)
+    rice_em=CH4_rice;
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
-  if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=GRASSLAND && !isrice)
+  if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND && getlandusetype(stand)!=GRASSLAND && !isrice)
   {
     stand->cell->balance.aCH4_agr+=(CH4_plant_all+CH4_sink)*stand->frac;
     getoutput(&stand->cell->output,CH4_AGR,config)+=(CH4_plant_all+CH4_sink)*stand->frac;
   }
-  if((stand->type->landusetype==GRASSLAND))
+  if(getlandusetype(stand)==GRASSLAND)
   {
     stand->cell->balance.aCH4_grassland+=(CH4_plant_all+CH4_sink)*stand->frac;
     getoutput(&stand->cell->output,CH4_GRASSLAND,config)+=CH4_plant_all+CH4_sink;
@@ -160,7 +162,7 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
   stand->cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
- #ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(start - end - CH4_plant_all*WC/WCH4-CH4_sink*WC/WCH4)>0.0001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g CH4_sink: %g",

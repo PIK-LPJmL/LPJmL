@@ -48,7 +48,10 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(landcover,cell) : NULL;
       update_annual_cell(grid+cell,npft,ncft,year,isdailytemp,intercrop,config);
 #ifdef SAFE
-      check_fluxes(grid+cell,year,cell,config);
+      if(config->withlanduse)
+        check_fluxes(grid+cell,year,cell,config);
+      else if(year>(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout+1))
+        check_fluxes(grid+cell,year,cell,config);
 #endif
 
 #ifdef DEBUG
@@ -93,11 +96,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
     } /* if(!grid[cell].skip) */
     if(config->river_routing)
     {
-#ifdef IMAGE
-      grid[cell].balance.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw;
-#else
-      grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
-#endif
+      grid[cell].balance.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw+grid[cell].lateral_water*grid[cell].coord.area;
       if(grid[cell].ml.dam)
         grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }

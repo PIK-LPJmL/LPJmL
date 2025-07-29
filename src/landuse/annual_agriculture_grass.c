@@ -91,7 +91,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
       light_grass(&stand->soil.litter,pft,excess);
     }
 
-  if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf,stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+  if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
   {
     if(!present[p])
      addpft(stand,config->pftpar+irrigation->pft_id,year,0,config);
@@ -100,7 +100,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
 
   fpc_total = fpc_sum(fpc_type, config->ntypes, &stand->pftlist);
   foreachpft(pft, p, &stand->pftlist)
-    if (establish(stand->cell->gdd[pft->par->id], pft->par, &stand->cell->climbuf,stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
+    if (establish(stand->cell->gdd[pft->par->id], pft->par, &stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       stocks=establishment_grass(pft, fpc_total, fpc_type[pft->par->type], n_est);
       flux_estab.carbon+=stocks.carbon;

@@ -108,9 +108,8 @@
 #define O2star 10.0           /*g/m3*/
 #define BO2 0.031            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.026           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
-#define Vmax_CH4 10.0        /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h */
-#define km_CH4 5.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
-#define km_O2 10.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
+#define Vmax_CH4 0.356       /*Michaelis-Menten coefficient (gCH4/m3/day) ; is given mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h *24 to day * WHC4*/
+#define km_CH4 0.032       /*mikroM Michaelis-Menten coefficient (gCH4/m3);  in mikroM  convert  to 10−3 mol/m3 * WHC4 */
 #define tau_CH4 12.5         /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
@@ -231,6 +230,7 @@ typedef struct
   Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
   Poolpar decay_rate[LASTLAYER]; /**< fast and slow decay rate */
   Poolpar *c_shift[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
+  Real *socfraction[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
   Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
   Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
@@ -348,7 +348,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,int);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Real *,const Real *, const Real *,int);
 extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);

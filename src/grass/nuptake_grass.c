@@ -24,18 +24,20 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
                    const Config *config  /**< LPJmL configurtation */
                   )                      /** \return nitrogen uptake (gN/m2/day) */
 {
+#ifdef SAFE
+  String line;
+#endif
   Soil *soil;
   Pftgrass *grass;
   Pftgrasspar *grasspar;
-  Real NO3_up=0;
+  Real NO3_up[LASTLAYER],NH4_up[LASTLAYER];
   Real NCplant,ndemand_leaf_opt,NC_leaf,ndemand_all;
   Real f_NCplant;
   Real up_temp_f;
-  Real totn,nsum;
   Real wscaler;
   Real autofert_n;
   Real n_uptake=0;
-  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
+  Real nupsum=0;
   Real rootdist_n[LASTLAYER];
   Real n_deficit=0.0;
   Real n_fixed=0.0;
@@ -57,66 +59,63 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   ndemand_leaf_opt=*ndemand_leaf;
 
   NCplant = (grass->ind.leaf.nitrogen+ grass->ind.root.nitrogen) / (grass->ind.leaf.carbon+ grass->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  NC_leaf=(grass->ind.leaf.nitrogen-grass->turn.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
+  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(2.0/(1.0/pft->par->ncleaf.low+1.0/pft->par->ncleaf.high)-pft->par->ncleaf.high)),0),1); /* consistent with Smith et al. 2014 */
 
-  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1);
-  /* reducing uptake according to availability */
-  nsum=0;
   if((grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf/pft->nind)==0)
     NC_leaf=pft->par->ncleaf.low;
   else
     NC_leaf=(grass->ind.leaf.nitrogen-grass->turn.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf/pft->nind)/(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf/pft->nind);
   if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
+  {
     forrootsoillayer(l)
     {
       wscaler=soil->w[l]>epsilon ? 1 : 0;
-      totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
-      if(totn>0)
+      up_temp_f=nuptake_temp_fcn(soil->temp[l]);
+      if(soil->NO3[l]>0)
       {
-        /*Thornley 1991*/
-        up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
+        NO3_up[l]=pft->par->vmax_up*(pft->par->kNmin+soil->NO3[l]*wscaler/(soil->NO3[l]*wscaler+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
             f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root-grass->turn_litt.root.carbon)*rootdist_n[l]/1000;
-       /* reducing uptake according to availability */
-        if(NO3_up>totn)
-          NO3_up=totn;
-        n_uptake+=NO3_up;
-        nsum+=totn*rootdist_n[l];
+        /* reducing uptake according to availability */
+        if(NO3_up[l]>soil->NO3[l])
+          NO3_up[l]=soil->NO3[l];
+        nupsum+=NO3_up[l];
       }
+      else
+        NO3_up[l]=0;
+      if(soil->NH4[l]>0)
+      {
+        NH4_up[l]=pft->par->vmax_up*(pft->par->kNmin+soil->NH4[l]*wscaler/(soil->NH4[l]*wscaler+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
+            f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root-grass->turn_litt.root.carbon)*rootdist_n[l]/1000;
+        /* reducing uptake according to availability */
+        if(NH4_up[l]>soil->NH4[l])
+          NH4_up[l]=soil->NH4[l];
+        nupsum+=NH4_up[l];
+      }
+      else
+        NH4_up[l]=0;
     }
-  if(nsum<epsilon)  //nsum==0
-    n_uptake=0;
-  else
-  {
-    if (n_uptake>*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen))
-      n_uptake=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
-    if(n_uptake<=0)
+    if(nupsum==0)
       n_uptake=0;
     else
     {
+      if(nupsum>*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen))
+        n_uptake=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
+      else
+        n_uptake=nupsum;
       pft->bm_inc.nitrogen+=n_uptake;
       forrootsoillayer(l)
       {
-        wscaler=soil->w[l]>epsilon ? 1 : 0;
-        soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-        if(soil->NO3[l]<0)
-        {
-          //pft->bm_inc.nitrogen+=soil->NO3[l];
-          n_upfail+=soil->NO3[l];
-          soil->NO3[l]=0;
-        }
-
-        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum-n_upfail*wscaler;
-        if(wscaler>0)
-          n_upfail=0;
-        if(soil->NH4[l]<0)
-        {
-          //pft->bm_inc.nitrogen+=soil->NH4[l];
-          n_upfail+=soil->NH4[l];
-          soil->NH4[l]=0;
-        }
+        soil->NO3[l]-=NO3_up[l]*n_uptake/nupsum;
+        soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;
+#ifdef SAFE
+        if (soil->NO3[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NO3=%g<0 in layer %d, NO3_up=%g, nuptake=%g, nupsum=%g",
+                sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,NO3_up[l],n_uptake,nupsum);
+        if (soil->NH4[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NH4=%g<0 in layer %d, NH4_up=%g, nuptake=%g, nupsum=%g",
+                sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,NH4_up[l],n_uptake,nupsum);
+#endif
       }
-      pft->bm_inc.nitrogen+=n_upfail;
     }
   }
   if(config->fertilizer_input==AUTO_FERTILIZER
@@ -186,8 +185,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     pft->vscal+=1;
   else
     pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore)));
-  /* correcting for failed uptake from depleted soils in outputs */
-  n_uptake+=n_upfail;
+
   switch(pft->stand->type->landusetype)
   {
     case NATURAL: case WETLAND: case SETASIDE_RF: case SETASIDE_IR: case SETASIDE_WETLAND:           //problematic as some PFTs are present in many stands

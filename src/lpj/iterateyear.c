@@ -19,7 +19,7 @@
 
 Bool iterateyear(Outputfile *output,  /**< Output file data */
                  Cell grid[],         /**< cell array */
-                 Input input,         /**< input data */
+                 Input *input,        /**< input data */
                  Real co2,            /**< atmospheric CO2 (ppmv) */
                  Real *ch4,           /**< CH4 (gC) */
                  Real *pch4,          /**< CH4 concentration (ppmv) */
@@ -33,25 +33,25 @@ Bool iterateyear(Outputfile *output,  /**< Output file data */
   Bool intercrop;
   int month,dayofmonth,day;
   int cell;
-  intercrop=getintercrop(input.landuse);
-  if(setupannual_grid(output,grid,&input,year,npft,ncft,intercrop,config))
+  intercrop=getintercrop(input->landuse);
+  if(setupannual_grid(output,grid,input,year,npft,ncft,intercrop,config))
     return TRUE;
   day=1;
   foreachmonth(month)
   {
-    initmonthly_grid(grid,month,year,input.climate,config);
+    initmonthly_grid(grid,month,year,input->climate,config);
     foreachdayofmonth(dayofmonth,month)
     {
       for(cell=0;cell<config->ngridcell;cell++)
       {
-        update_daily_cell(grid+cell,cell,&daily,co2,*pch4,&input,day,dayofmonth,month,year,
+        update_daily_cell(grid+cell,cell,&daily,co2,*pch4,input,day,dayofmonth,month,year,
                           npft,ncft,intercrop,config);
       }
-      updatedaily_grid(output,grid,input.extflow,day,month,year,npft,ncft,config);
+      updatedaily_grid(output,grid,input->extflow,day,month,year,npft,ncft,config);
       day++;
     } /* of 'foreachdayofmonth */
-    update_monthly_grid(output,grid,input.climate,month,year,npft,ncft,config);
+    update_monthly_grid(output,grid,input->climate,month,year,npft,ncft,config);
   } /* of 'foreachmonth */
-  updateannual_grid(output,grid,input.landcover,co2,ch4,pch4,year,npft,ncft,intercrop,daily.isdailytemp,config);
+  updateannual_grid(output,grid,input->landcover,co2,ch4,pch4,year,npft,ncft,intercrop,daily.isdailytemp,config);
   return FALSE;
 } /* of 'iterateyear' */

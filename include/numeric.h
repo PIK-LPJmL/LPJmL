@@ -56,6 +56,7 @@ extern void interpolate_data(Real *, Real *, Real *, int n, Real);
 extern void permute(int [],int,Seed);
 extern Bool apply_finite_volume_diffusion_of_a_day(Real *, const int, const Real *, const Real, const Real *, const Real *);
 extern Bool apply_finite_volume_diffusion_impl(Real *, const int, const Real *, const Real, const Real *, const Real *, const Real);
+extern void finite_volume_diffusion_timestep(Real *, const int, Real,const Real *, const Real, const Real *, const Real *);
 Bool apply_finite_volume_diffusion_impl_crank_nicolson(Real * amount,             /* g/m^2, substance absolute amount */
                                            const int n,               /* number of gridpoints */
                                            const Real * h,            /* m, layer thicknesses (delta_x) */

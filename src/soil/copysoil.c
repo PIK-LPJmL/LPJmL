@@ -36,7 +36,10 @@ void copysoil(Soil *dst,       /**< destination */
     dst->decay_rate[l].slow=src->decay_rate[l].slow;
     dst->decay_rate[l].fast=src->decay_rate[l].fast;
     for(p=0;p<ntotpft;p++)
+    {
       dst->c_shift[l][p]=src->c_shift[l][p];
+      dst->socfraction[l][p]=src->socfraction[l][p];
+    }
   }
   dst->YEDOMA=src->YEDOMA;
 #ifdef MICRO_HEATING
