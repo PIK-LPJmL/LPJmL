@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+#define EXPLICIT
+
 void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real airtemp,   /**< [in] air temperature (deg C) */
                   Real pch4,      /**< [in] atmospheric CH4 (ppm) */
@@ -90,6 +92,9 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   }
   if (do_diffusion)
     for (l = 0; l<diffsteps; l++)
+#ifdef EXPLICIT
+      finite_volume_diffusion_timestep(soil->O2, BOTTOMLAYER, dt,h, O2_air, D_O2, epsilon_O2);
+#else
       r = apply_finite_volume_diffusion_impl(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2, dt);
   if(r)
   {
@@ -100,6 +105,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
     perror("Error in gasdiffusion: apply_finite_volume_diffusion_of_a_day for O2 returned TRUE");
   }
+#endif
 
   /*********************Diffusion of methane*************************************/
 
@@ -122,6 +128,9 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
   if (do_diffusion)
     for (l = 0; l<diffsteps; l++)
+#ifdef EXPLICIT
+     finite_volume_diffusion_timestep(soil->CH4, BOTTOMLAYER, dt,h, CH4_air, D_CH4, epsilon_CH4);
+#else
      r = apply_finite_volume_diffusion_impl(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4, dt);
   if(r)
   {
@@ -130,6 +139,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       printf("D_CH4[%d]=%g, epsilon_CH4[%d]=%g\n", l, D_CH4[l], l, epsilon_CH4[l]);
     perror("Error in gasdiffusion: apply_finite_volume_diffusion_of_a_day for CH4 returned TRUE");
   }
+#endif
 
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef SAFE
