@@ -36,6 +36,13 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
       return TRUE;
     }
     freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    if(soil->socfraction[l]==NULL)
+    {
+      printallocerr("socfraction");
+      return TRUE;
+    }
+    freadreal((Real *)soil->socfraction[l],ntotpft,swap,file);
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
   {

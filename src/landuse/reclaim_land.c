@@ -182,17 +182,21 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,i
   {
     soil->c_shift[l]=newvec(Poolpar,ntotpft);
     check(soil->c_shift[l]);
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    check(soil->socfraction[l]);
   }
   for (p=0;p<ntotpft;p++)
   {
-    soil->c_shift[0][p].fast=1;
-    soil->c_shift[0][p].slow=1;
+    soil->c_shift[0][p].fast=0.6;
+    soil->c_shift[0][p].slow=0.6;
+    soil->socfraction[0][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[0]);
   }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift[l][p].fast=0;
-      soil->c_shift[l][p].slow=0;
+      soil->c_shift[l][p].fast=0.4/(LASTLAYER-1);
+      soil->c_shift[l][p].slow=0.4/(LASTLAYER-1);
+      soil->socfraction[l][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[l])-pow(10,config->pftpar[p].soc_k*logmidlayer[l-1]);
     }
   soil->decomp_litter_pft=newvec(Stocks,ntotpft);
   check(soil->decomp_litter_pft);

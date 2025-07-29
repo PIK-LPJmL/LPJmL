@@ -346,6 +346,8 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
   }
   if(readinputdata(&celldata->soilph,&grid->soilph,&grid->coord,cell+config->startgrid,&config->soilph_filename))
     return TRUE;
+  grid->fsoilph=0.56 + atan(M_PI*0.45*(-5 + grid->soilph)) / M_PI;
+
   if(config->landfrac_from_file)
   {
     if(readinputdata(&celldata->landfrac,&grid->landfrac,&grid->coord,cell+config->startgrid,&config->landfrac_filename))

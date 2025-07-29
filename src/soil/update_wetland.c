@@ -226,6 +226,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           {
             wetstand->soil.c_shift[l] = newvec(Poolpar, ntotpft);
             check(wetstand->soil.c_shift[l]);
+            wetstand->soil.socfraction[l] = newvec(Real, ntotpft);
+            check(wetstand->soil.socfraction[l]);
           }
           frac = natstand->frac;
           if(frac<(wetlandarea_new-crop_wetland))
@@ -623,22 +625,16 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         kmean_pft.fast = kmean_pft.slow = 0.;
         forrootsoillayer(l)
         {
-          socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
-            - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l - 1]) : 0);
-
-          kmean_pft.fast += socfraction*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR);
-          kmean_pft.slow += socfraction*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR);
+          kmean_pft.fast += stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR);
+          kmean_pft.slow += stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR);
         }
 
         forrootsoillayer(l)
         {
-          socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
-            - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l - 1]) : 0);
-
           if (stand->soil.decomp_litter_mean.carbon>100)
           {
-            if (ctotal.fast.carbon>5000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast = (socfraction*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR)) / kmean_pft.fast;
-            if (ctotal.slow.carbon>1000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow = (socfraction*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR)) / kmean_pft.slow;
+            if (ctotal.fast.carbon>5000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR)) / kmean_pft.fast;
+            if (ctotal.slow.carbon>1000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR)) / kmean_pft.slow;
           }
           cshift.fast += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast;
           cshift.slow += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow;

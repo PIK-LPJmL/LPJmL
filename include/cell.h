@@ -131,6 +131,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real snowpool_above_lake; /**< temporarily storing the snow mass on a lake*/
 #endif
   Real soilph;              /**< soil pH */
+  Real fsoilph;             /**< ph dependenc needed for nitrification */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
   Bool was_glaciated;       /**< cell was fully covered with ice in previous year*/
   Bool is_glaciated;        /**< cell is fully covered with ice */

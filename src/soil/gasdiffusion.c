@@ -69,8 +69,10 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   Bool do_diffusion = TRUE;
   Bool r = FALSE;
   Real bO2,bCH4;
+  Real T_rel;
   bO2=0.0647*exp(-0.0257*airtemp);
   bCH4=0.0523*exp(-0.0236*airtemp);
+
 
   for (l = 0; l<BOTTOMLAYER; l++)
   {
@@ -82,6 +84,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_O2[l]=D_O2_air*V*eta + D_O2_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    //D_O2[l]=D_O2_air*(V*V*V)/(soil->wsat[l]*soil->wsat[l])*pow(airtemp+273.15,1.75)+ D_O2_water*soil_moist*soil->wsat[l]; //Moldrup
     if (epsilon_O2[l] <= 0.001 &&  (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }
@@ -112,6 +115,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_CH4[l] = D_CH4_air*V*eta + D_CH4_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    //D_CH4[l]=D_CH4_air*(V*V*V)/(soil->wsat[l]*soil->wsat[l])*pow(airtemp+273.15,1.75)+ D_CH4_water*soil_moist*soil->wsat[l]; //Moldrup
     if (epsilon_CH4[l] <= 0.001 && (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }

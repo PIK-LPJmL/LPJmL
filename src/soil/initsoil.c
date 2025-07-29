@@ -50,6 +50,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     }
     soil->c_shift[l]=newvec(Poolpar,ntotpft);
     checkptr(soil->c_shift[l]);
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    check(soil->socfraction[l]);
   }
   soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   soil->snowpack=soil->icefrac = 0.0;
@@ -90,12 +92,14 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     {
       soil->c_shift[0][p].fast=0.55;
       soil->c_shift[0][p].slow=0.55;
+      soil->socfraction[0][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[0]);
     }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
         soil->c_shift[l][p].fast=0.45/(LASTLAYER-1);
         soil->c_shift[l][p].slow=0.45/(LASTLAYER-1);
+        soil->socfraction[l][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[l])-pow(10,config->pftpar[p].soc_k*logmidlayer[l-1]);
     }
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
