@@ -28,7 +28,11 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                  )
 {
   int l;
+#ifdef EXPLICIT
   int diffsteps = 1;
+#else
+  int diffsteps = 1;
+#endif
   Real dt = day2sec(1) / diffsteps/timesteps;
   Real D_O2[BOTTOMLAYER], D_CH4[BOTTOMLAYER]; /* oxygen/methane diffusivity [m2/s]*/
   Real epsilon_CH4[BOTTOMLAYER], epsilon_O2[BOTTOMLAYER];
@@ -69,9 +73,10 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
   O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;       /*g/m3 oxygen concentration*/
   Bool do_diffusion = TRUE;
+#ifndef EXPLICIT
   Bool r = FALSE;
+#endif
   Real bO2,bCH4;
-  Real T_rel;
   bO2=0.0647*exp(-0.0257*airtemp);
   bCH4=0.0523*exp(-0.0236*airtemp);
 
@@ -90,10 +95,15 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     if (epsilon_O2[l] <= 0.001 &&  (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }
+#ifdef EXPLICIT
+  Real res[BOTTOMLAYER];
+  calculate_resistances(res, h, D_O2, BOTTOMLAYER);
+#endif
+
   if (do_diffusion)
     for (l = 0; l<diffsteps; l++)
 #ifdef EXPLICIT
-      finite_volume_diffusion_timestep(soil->O2, BOTTOMLAYER, dt,h, O2_air, D_O2, epsilon_O2);
+      finite_volume_diffusion_timestep(soil->O2, BOTTOMLAYER, dt,h, O2_air, res, epsilon_O2);
 #else
       r = apply_finite_volume_diffusion_impl(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2, dt);
   if(r)
@@ -125,11 +135,13 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     if (epsilon_CH4[l] <= 0.001 && (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }
-
+#ifdef EXPLICIT
+  calculate_resistances(res, h, D_CH4, BOTTOMLAYER);
+#endif
   if (do_diffusion)
     for (l = 0; l<diffsteps; l++)
 #ifdef EXPLICIT
-     finite_volume_diffusion_timestep(soil->CH4, BOTTOMLAYER, dt,h, CH4_air, D_CH4, epsilon_CH4);
+     finite_volume_diffusion_timestep(soil->CH4, BOTTOMLAYER, dt,h, CH4_air, res, epsilon_CH4);
 #else
      r = apply_finite_volume_diffusion_impl(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4, dt);
   if(r)
