@@ -95,7 +95,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real moist[LASTLAYER],soil_moist[LASTLAYER];
   Real N_sum=0;
   Real n_immo=0;
-  int i,p,l,dt;
+  int i,p,l;
   Soil *soil;
   Real CH4_em=0;
   Real CH4_sink=0;

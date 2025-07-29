@@ -184,7 +184,7 @@ extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void fwriteoutput_ch4(Outputfile *,Real,Real,int,const Config *);
-extern Bool iterateyear(Outputfile *,Cell [],Input,
+extern Bool iterateyear(Outputfile *,Cell [],Input *,
                         Real,Real *,Real *,int,int,int,const Config *);
 extern void initoutputdata(Output *,int,int,const Config *);
 extern Bool fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
