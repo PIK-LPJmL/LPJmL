@@ -29,11 +29,11 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
                       "FREEZING","THAWING"};
   fprintf(file,"Soil type:\t%s\n",soil->par->name);
   fprintf(file,"iswetland:\t%d\n",soil->iswetland);
-  fputs("C shift fast:\n"
-        "PFT                                               ",file);
-  forrootsoillayer(l)
-    fprintf(file," %5d",l);
-  fputs("\n--------------------------------------------------",file);
+//  fputs("C shift fast:\n"
+//        "PFT                                               ",file);
+//  forrootsoillayer(l)
+//    fprintf(file," %5d",l);
+//  fputs("\n--------------------------------------------------",file);
 //  forrootsoillayer(l)
 //    fputs(" -----",file);
 //  fputc('\n',file);
@@ -64,20 +64,36 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
 //    fputc('\n',file);
 //  }
 //  fputs("--------------------------------------------------",file);
+  fputs("socfraction:\n"
+      "PFT                                               ",file);
+  forrootsoillayer(l)
+    fprintf(file," %5d",l);
+  fputs("\n--------------------------------------------------",file);
+  forrootsoillayer(l)
+    fputs(" -----",file);
+  fputc('\n',file);
+  for(p=0;p<ntotpft;p++)
+  {
+    fprintf(file,"%-50s",pftpar[p].name);
+    forrootsoillayer(l)
+      fprintf(file," %5.2f",soil->socfraction[l][p]);
+    fputc('\n',file);
+  }
+  fputs("--------------------------------------------------",file);
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);
   fputs("Gas pools:\n"
-    "\tlayer  O2 (g/m2)   CH4 (mg/m2)\n"
-    "\t----- ------------ ------------\n", file);
+      "\tlayer  O2 (g/m2)   CH4 (mg/m2)\n"
+      "\t----- ------------ ------------\n", file);
   forrootsoillayer(l)
   {
     fprintf(file, "\t%5d %12.2f %6.8f\n", l, soil->O2[l], soil->CH4[l] * 1000);
     /*fprintf(file,"k_mean:\t %.5f %.5f\n",soil->k_mean[l].slow,soil->k_mean[l].fast);*/
   }
   fputs("Stock pools:\n"
-        "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2) k_mean_slow k_mean_fast\n"
-        "\t----- ------------ ------------ ------------ ------------ ----------- -----------\n",file);
+      "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2) k_mean_slow k_mean_fast\n"
+      "\t----- ------------ ------------ ------------ ------------ ----------- -----------\n",file);
   forrootsoillayer(l)
   {
     fprintf(file,"\t%5d %12.2f %12.2f %12.2f %12.2f %1.9f %1.9f\n",

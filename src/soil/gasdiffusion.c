@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define EXPLICIT
+//#define EXPLICIT
 
 void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real airtemp,   /**< [in] air temperature (deg C) */

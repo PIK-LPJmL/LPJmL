@@ -311,7 +311,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           V=epsilon+epsilon;
 
         /*methanotrophy */
-        if((V>0.25) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
+        if((V>0.2) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
         {
           oxidation=(Vmax_CH4/timesteps*soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)/(km_CH4+soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)*Q10_oxid[l]*soildepth[l]*V/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->gCH4/layer/m2
           O2_need=min(oxidation*2*WO2/WCH4,soil->O2[l]*oxid_frac);            // g02/layer/m2
