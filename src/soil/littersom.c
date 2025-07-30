@@ -79,10 +79,12 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  Real *ch4_sink,                    /**< [out] negative CH4 emissions (gC/m2/day) */
                  int npft,                          /**< [in] number of natural PFTs */
                  int ncft,                          /**< [in] number of crop PFTs */
-                 const Config *config,               /**< [in] LPJmL configuration */
+                 const Config *config,              /**< [in] LPJmL configuration */
                  const Real *Q10_oxid,
                  const Real *fac_wfps,
                  const Real *fac_temp,
+                 Real *bCH4,                         /**< bunsen coefficient T dependent */
+                 Real *bO2,                          /**< bunsen coefficient T dependent */
                  int timesteps
                 )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
@@ -753,7 +755,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     }   /*end soil->litter.n*/
 
     if(soil->maxthaw_depth>0)
-      gasdiffusion(&stand->soil,airtemp,pch4,&CH4_em,runoff,&CH4_sink,timesteps);
+      gasdiffusion(&stand->soil,airtemp,pch4,&CH4_em,runoff,&CH4_sink,bCH4,bO2,timesteps);
     *ch4_sink+=CH4_sink;
     *methaneflux_litter+=CH4_em;
 
