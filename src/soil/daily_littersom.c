@@ -60,7 +60,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Soil *soil;
   soil=&stand->soil;
   Soil savesoil;
-  int timesteps=15;
+  int timesteps=5;
   int i,l,dt;
   Stocks hetres;
   Stocks hetres1;
