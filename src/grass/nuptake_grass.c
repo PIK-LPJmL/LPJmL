@@ -119,8 +119,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     }
   }
   if(config->fertilizer_input==AUTO_FERTILIZER
-    && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS ||
-        pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR || pft->stand->type->landusetype == SETASIDE_WETLAND))
+    && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS || pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR))
   {
     data=pft->stand->data;
     autofert_n=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
@@ -185,10 +184,9 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     pft->vscal+=1;
   else
     pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore)));
-
   switch(pft->stand->type->landusetype)
   {
-    case NATURAL: case WETLAND: case SETASIDE_RF: case SETASIDE_IR: case SETASIDE_WETLAND:           //problematic as some PFTs are present in many stands
+    case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
       if(config->pft_output_scaled)
         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
       else

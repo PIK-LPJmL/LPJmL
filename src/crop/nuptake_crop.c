@@ -43,7 +43,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
   Real nc_ratio;
-  int autofert=config->fertilizer_input;
   int l,nirrig,nnat,index;
   soil=&pft->stand->soil;
   if(config->permafrost)
@@ -59,10 +58,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   data=pft->stand->data;
   if(crop->ind.leaf.carbon+crop->ind.root.carbon==0)
     return 0;
+  //fprintcropphys2(stdout,crop->ind,pft->nind);
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
-  //if(pft->par->id==config->rice_pft) f_NCplant=1;
+  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(2.0/(1.0/pft->par->ncleaf.low+1.0/pft->par->ncleaf.high)-pft->par->ncleaf.high)),0),1); /* consistent with Smith et al. 2014 */
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
@@ -103,7 +102,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       else
         NH4_up[l]=0;
     }
-
     if(nupsum==0)
       n_uptake=0;
     else
@@ -115,8 +113,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       pft->bm_inc.nitrogen+=n_uptake;
       forrootsoillayer(l)
       {
-         soil->NO3[l]-=NO3_up[l]*n_uptake/nupsum;
-         soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;
+        soil->NO3[l]-=NO3_up[l]*n_uptake/nupsum;
+        soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;      
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
           fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NO3=%g<0 in layer %d, NO3_up=%g, nuptake=%g, nupsum=%g",
@@ -126,7 +124,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                 sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,NH4_up[l],n_uptake,nupsum);
 #endif
       }
-   }
+    }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);
   if(*n_plant_demand > pft->bm_inc.nitrogen)
@@ -164,7 +162,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     }
     else
     {
-      if(autofert==AUTO_FERTILIZER)
+      if(config->fertilizer_input==AUTO_FERTILIZER)
       {
         autofert_n = *n_plant_demand - pft->bm_inc.nitrogen;
         if(autofert_n>0)
