@@ -79,6 +79,10 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -252,5 +256,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
+#ifdef USE_TIMING
+  timing.water_stressed+=mrun()-tstart;
+#endif
   return agd;
 } /* of 'water_stressed' */

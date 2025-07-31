@@ -349,6 +349,10 @@ int main(int argc,char **argv)
 #endif
   if(iscoupled(config))
     close_coupler(year<=config.lastyear,&config);
+#ifdef USE_TIMING
+  tfinal=mrun();
+  printtiming(tfinal-tbegin,&config);
+#endif
   freeconfig(&config);
 #ifdef USE_MPI
   /* Wait until all tasks have finished to measure total wall clock time */
@@ -359,9 +363,6 @@ int main(int argc,char **argv)
   tfinal=mrun();
   if(isroot(config))
   {
-#ifdef USE_TIMING
-    printtiming(tfinal-tbegin);
-#endif
     printf("Total wall clock time:\t%d sec (",(int)(tfinal-tbegin));
     printtime((int)(tfinal-tbegin));
     puts(").");

@@ -89,6 +89,10 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
   Pft *pft;
   Pftcrop *crop;
   Irrigation *data;
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   soil=&stand->soil;
   flux.nitrogen=0;
   foreachsoillayer(l)
@@ -409,5 +413,8 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
+#ifdef USE_TIMING
+   timing.littersom+=mrun()-tstart;
+#endif
   return flux;
 } /* of 'littersom' */

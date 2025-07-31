@@ -63,6 +63,10 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   Irrigation *data;
   Real popdensity=0;
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   if(!cell->skip)
   {
     if(config->ispopulation)
@@ -489,4 +493,7 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
     cell->balance.flux_estab.carbon+=flux_estab.carbon;
     cell->output.dcflux-=flux_estab.carbon;
   } /* of if(!cell->skip) */
+#ifdef USE_TIMING
+  timing.update_daily_cell+=mrun()-tstart;
+#endif
 } /* of 'update_daily_cell' */

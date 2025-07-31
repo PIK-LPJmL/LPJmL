@@ -106,7 +106,9 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
 
 #ifdef USE_TIMING
 #ifdef USE_MPI
+  t=mrun();
   MPI_Barrier(config->comm);
+  timing.barrier+=mrun()-t;
 #endif
   t=mrun();
 #endif
@@ -126,5 +128,4 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
 #ifdef USE_TIMING
   timing.withdrawal_demand+=mrun()-t;
 #endif
-
 } /* of 'withdrawal_demand' */

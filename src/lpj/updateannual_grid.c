@@ -35,6 +35,9 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
 {
 #ifdef USE_TIMING
   double t;
+#ifdef USE_MPI
+  double t2;
+#endif
 #endif
   Stand *stand;
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
@@ -138,7 +141,9 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
     fwriterestart(grid,npft,ncft,year,config->write_restart_filename,FALSE,config); /* write restart file */
 #ifdef USE_TIMING
 #ifdef USE_MPI
+    t2=mrun();
     MPI_Barrier(config->comm);
+    timing.barrier+=mrun()-t2;
 #endif
     timing.fwriterestart+=mrun()-t;
 #endif

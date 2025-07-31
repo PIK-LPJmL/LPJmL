@@ -25,6 +25,10 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
                       const Config *config /**< LPJ configuration */
                      )
 {
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   if(config->river_routing)
   {
     if(config->withlanduse)
@@ -43,4 +47,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
   if(config->withdailyoutput && day<NDAYYEAR && year>=config->outputyear)
     /* postpone last timestep until after annual processes */
     fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
+#ifdef USE_TIMING
+  timing.updatedaily_grid+=mrun()-tstart;
+#endif
 } /* of 'updatedaily_grid' */

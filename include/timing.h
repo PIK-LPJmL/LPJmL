@@ -34,13 +34,15 @@ typedef struct
   double setupannual_grid;
   double storeclimate;
   double wateruse;
+  double littersom;
+  double pedotransfer;
+  double update_daily_cell;
+  double updatedaily_grid;
+  double water_stressed;
   double withdrawal_demand;
   double write_socket;
+  double barrier;
 } Timing;
 
 extern Timing timing;
-
-void fprinttiming(FILE *file,double);
-
-#define printtiming(total) fprinttiming(stdout,total)
 #endif
