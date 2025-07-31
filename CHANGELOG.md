@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Maik Billing (billing@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -51,6 +51,8 @@ of `major.minor.patch` with
 - Comment for `pft` initialized in `initsetting_netcdf.c`.
 - Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
 - Short data handled correctly for metafile input in `bin2cdf`.
+- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
+- Man page for `mathclm` corrected for option `-v`.
 
 
 ## [5.9.27] - 2025-07-15
