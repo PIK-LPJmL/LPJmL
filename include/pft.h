@@ -209,8 +209,8 @@ typedef struct Pft
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
-    Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
-    Real (*vmaxlimit)(const struct Pft *,Real,Real);
+    Real (*ndemand)(const struct Pft *,Real *,Real,Real);
+    Real (*vmaxlimit)(const struct Pft *,Real);
     void (*copy)(struct Pft *, const struct Pft *);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
@@ -342,7 +342,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define annualpft(stand,pft,fpc_inc,isdaily,config) pft->par->annual(stand,pft,fpc_inc,isdaily,config)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
-#define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
-#define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
+#define ndemand(pft,nleaf,vcmax,temp) pft->par->ndemand(pft,nleaf,vcmax,temp)
+#define vmaxlimit(pft,temp) pft->par->vmaxlimit(pft,temp)
 
 #endif

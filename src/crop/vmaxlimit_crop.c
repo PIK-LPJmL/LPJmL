@@ -16,7 +16,6 @@
 #include "crop.h"
 
 Real vmaxlimit_crop(const Pft *pft, /**< pointer to PFT */
-                    Real daylength, /**< day length (h) */
                     Real temp       /**< temperature (deg C) */
                    )                /** \return vmax (gC/m2/day) */
 {
