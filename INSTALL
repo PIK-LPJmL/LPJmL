@@ -183,6 +183,7 @@ The following programs are created in the bin directory:
 
 adddrain      - add river basin to coordinate file
 addheader     - add CLM header to binary file
+allbin2cdf    - convert all binary output files into NetCDF files
 arr2clm       - convert 2-D float arrays into CLM file
 asc2clm       - convert ARC/Info ASCII files to CLM data files for LPJmL
 backtrace     - print backtrace from core

@@ -23,9 +23,34 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de)
+
+### Added
+
+- Option `-h` added to utilities `addheader`, `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
+- Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
+- Support for short datatype added in `cmpbin` utility.
+- Shell script `allbin2cdf` added to convert all binary raw output files in a directory to NetCDF files.
+- Option `-nounit` added to `bin2cdf` to set unit if unit is defined in the metafile as an empty string.
+
+### Changed
+
+- If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
+- Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
+- File `default.md` converted from DOS to Linux format.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- Man pages updated.
 
 ### Fixed
 
+- Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
+- Missing deallocation of list added in `open_config.c`.
+- Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
+- Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
+- Typo in man page of `configure.sh` fixed.
+- Comment for `pft` initialized in `initsetting_netcdf.c`.
+- Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
+- Short data handled correctly for metafile input in `bin2cdf`.
 - Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
 - Man page for `mathclm` corrected for option `-v`.
 

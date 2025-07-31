@@ -3,11 +3,14 @@
 regridsoil \- regrid soil file to new grid
 .SH SYNOPSIS
 .B regridsoil
-[\-search] [\-zero] [\-longheader] [\-json]
+[\-h] [\-search] [\-zero] [\-longheader] [\-json]
 .I grid_old.clm grid_new.clm soil_old.clm soil_new.clm
 .SH DESCRIPTION
 Program reads soil file and corresponding grid file to regrid the soil data to a new grid file.
 .SH OPTIONS
+.TP
+\-h,\--help
+Print a short help text.
 .TP
 \-search
 If grid coordinate cannot be found in old grid nearest grid cell is used.
