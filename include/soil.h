@@ -346,7 +346,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Real *,const Real *, const Real *,Real *,Real *,int);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Real *,const Real *, const Real *,Real *,Real *,Real , Real *,Real *,int);
 extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);

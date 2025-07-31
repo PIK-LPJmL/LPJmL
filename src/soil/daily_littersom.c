@@ -17,6 +17,10 @@
 #include "lpj.h"
 
 #define Q10 1.8
+#define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
+#define MOIST_3 -5.00505434
+#define MOIST_2 4.26937932
+#define MOIST  0.71890122
 
 typedef struct
 {
@@ -67,7 +71,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Soil savesoil;
   Data data;
   int timesteps=6;
-  int i,l,dt;
+  int i,l,dt,p;
   Stocks hetres;
   Stocks hetres1;
   Bool fast_needed  = FALSE;
@@ -77,7 +81,24 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Real O2_save[LASTLAYER];
   Real CH4_save[LASTLAYER];
   Real Q10_oxid[LASTLAYER],fac_wfps[LASTLAYER],fac_temp[LASTLAYER];
+  Real moist,w_agtop;
+  Real response_agtop_leaves,*response_agsub_wood,*response_agtop_wood;
 
+  response_agtop_wood=newvec(Real,ncft+npft);
+  check(response_agtop_wood);
+  response_agsub_wood=newvec(Real,ncft+npft);
+  check(response_agsub_wood);
+  moist=(soil->w[0]*soil->whcs[0]+(soil->wpwps[0]*(1-soil->ice_pwp[0]))+soil->w_fw[0])
+  /(soil->wsats[0]-soil->ice_depth[0]-soil->ice_fw[0]-(soil->wpwps[0]*soil->ice_pwp[0]));
+
+  w_agtop=soil->litter.agtop_wcap>epsilon ? soil->litter.agtop_moist/soil->litter.agtop_wcap : moist;
+
+  response_agtop_leaves=temp_response(soil->litter.agtop_temp,soil->amean_temp[0])*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
+  for(p=0;p<(npft+ncft);p++)
+  {
+    response_agsub_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist*moist*moist)+MOIST_2*(moist*moist)+MOIST*moist);
+    response_agtop_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->litter.agtop_temp-10)/10.0)*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
+  }
 
 
   forrootsoillayer(l)
@@ -105,7 +126,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
 //  for(dt=0;dt<timesteps;dt++)
 //  {
 //    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-//         Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps);
+//         Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps);
 //    hetres.carbon+=hetres1.carbon;
 //    hetres.nitrogen+=hetres1.nitrogen;
 //    *CH4_sink+=ch4_sink;
@@ -123,7 +144,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       CH4_save[l]=soil->CH4[l];
     }
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-        Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps);
+        Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps);
     fast_needed=istoolarge(soil,O2_save,CH4_save);
 
     if(fast_needed )
@@ -132,7 +153,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       for (i=0;i<10;i++)
       {
         hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps*10);
+            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*10);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;
@@ -154,5 +175,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   }
   freelitter(&savesoil.litter);
   free(savesoil.decomp_litter_pft);
+  free(response_agtop_wood);
+  free(response_agsub_wood);
   return hetres;
 } /* of 'daily_littersom' */
