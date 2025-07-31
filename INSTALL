@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
 | |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
 | |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.25
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.27
 
-Installation of LPJmL C Version 5.9.25
+Installation of LPJmL C Version 5.9.27
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.9.25.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.27.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -57,6 +57,8 @@ Directory tree after extracting the tar files:
   +--src          : source tree
      |
      +--numeric   : source for numerical routines
+     |
+     +--bstruct   : source for reading/writing restart files
      |
      +--tools     : source for tools
      |
@@ -141,6 +143,7 @@ CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
+DEBUG_BSTRUCT       diagnostic output is generated for reading/writing of restart
 DEBUG_COUPLER       diagnostic output is generated for the coupler
 DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
 DEBUG_N             diagnostic output is generated for the nitrogen cycle
@@ -205,6 +208,7 @@ drainage2cdf  - convert CLM drainage file into NetCDF file
 getcellindex  - get cell index from latitude, longitude values
 grid2clm      - convert grid data file to CLM data files for LPJmL
 headersize    - print header size of CLM files
+json2restart  - convert JSON file into LPJmL restart file
 lpjcat        - concatenate restart files from distributed LPJmL simulations.
 lpjcheck      - check syntax of LPJmL configuration files
 lpjfiles      - print list of input/output files of LPJmL
@@ -220,6 +224,7 @@ regridclm     - regrid CLM file to new grid
 regridlpj     - regrid input data set for selected countries or specified grid file
 regridsoil    - regrid binary soil file to different grid file
 reservoir2cdf - convert CLM reservoir file into NetCDF file
+restart2yaml  - convert LPJmL restart file into YAML
 setclm        - set value in header of CLM files for LPJmL
 soil2cdf      - convert binary files into NetCDF files
 splitclm      - copy specific bands of clm data files

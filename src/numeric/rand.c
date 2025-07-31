@@ -14,6 +14,8 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "numeric.h"
 
 #define modulus 2147483647

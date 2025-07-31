@@ -68,7 +68,6 @@
 #define YEARCELL 2
 #define CELLINDEX 3
 #define CELLSEQ 4
-#define READ_VERSION -1
 #define CLM_MAX_VERSION 4  /**< highest version for clm files supported */
 #define MAP_NAME "map"     /**< name of map in JSON files */
 #define BAND_NAMES "band_names" /**< name of band string array in JSON metafiles */
@@ -131,16 +130,6 @@ typedef struct
 
 typedef struct
 {
-  Bool landuse;        /**< land use enabled (TRUE/FALSE) */
-  Bool river_routing;  /**< river routing enabled (TRUE/FALSE) */
-  int sdate_option;    /**< sowing date option (0-2)*/
-  Bool crop_phu_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
-  Bool separate_harvests; /**< double harvest output enabled */
-  Seed seed;           /**< Random seed */
-} Restartheader;
-
-typedef struct
-{
   List *list;
   Bool isfloat;
 } Map;
@@ -149,8 +138,6 @@ typedef struct
 
 extern Bool fwriteheader(FILE *,const Header *, const char *,int);
 extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *,Bool);
-extern Bool freadrestartheader(FILE *,Restartheader *,Bool);
-extern Bool fwriterestartheader(FILE *,const Restartheader *);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);

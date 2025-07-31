@@ -19,6 +19,10 @@
 #include "lpj.h"
 #include "natural.h"
 
+#ifdef USE_TIMING
+double tread=0; /* used for timing for reading restart file */
+#endif
+
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration */
@@ -34,11 +38,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   int i,n,l,j,data;
   int cft;
   Celldata celldata;
-  Bool swap_restart;
   Bool missing;
   Infile grassharvest_file;
   unsigned int soilcode;
   int soil_id;
+  int miss,miss_total;
+  int skipped,skipped_total;
   char *name;
   size_t offset;
   Bool isregion;
@@ -50,7 +55,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 #endif
   int code;
-  FILE *file_restart;
+  Bstruct file_restart;
   Infile countrycode;
 
   /* Open coordinate and soil file */
@@ -187,9 +192,16 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   else
   {
-    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft+ncft,&swap_restart);
+#ifdef USE_TIMING
+    if(isroot(*config))
+       tread=mrun();
+#endif
+    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft,ncft);
     if(file_restart==NULL)
     {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR254: Cannot open %s file '%s'.\n",(config->ischeckpoint) ? "checkpoint" : "restart",
+                (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
       free(grid);
       closecelldata(celldata,config);
       if(config->countrypar!=NULL)
@@ -200,6 +212,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closeinput(&grassharvest_file);
       return NULL;
     }
+    skipped=bstruct_getnoread(file_restart);
     if(!config->ischeckpoint && config->new_seed)
       setseed(config->seed,config->seed_start);
   }
@@ -407,7 +420,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(freadcell(file_restart,grid+i,npft,ncft,
                    config->soilpar+soil_id,standtype,nstand,
-                   swap_restart,config))
+                   config))
       {
         fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                 (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
@@ -443,7 +456,27 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   } /* of for(i=0;...) */
   if(file_restart!=NULL)
-    fclose(file_restart);
+  {
+    miss=bstruct_getmiss(file_restart);
+#ifdef USE_MPI
+    MPI_Reduce(&miss,&miss_total,1,MPI_INT,MPI_SUM,0,config->comm);
+#else
+    miss_total=miss;
+#endif
+    if(isroot(*config) && miss_total)
+      fprintf(stderr,"REMARK002: %d objects not in right order in restart file '%s'.\n",
+              miss_total,(config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
+    skipped=bstruct_getnoread(file_restart)-skipped;
+#ifdef USE_MPI
+    MPI_Reduce(&skipped,&skipped_total,1,MPI_INT,MPI_SUM,0,config->comm);
+#else
+    skipped_total=skipped;
+#endif
+    if(isroot(*config) && skipped_total)
+      fprintf(stderr,"REMARK003: %d objects not read in restart file '%s'.\n",
+              skipped_total,(config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
+    bstruct_finish(file_restart);
+  }
   closecelldata(celldata,config);
   if(config->grassharvest_filename.name!=NULL)
     closeinput(&grassharvest_file);
@@ -492,6 +525,10 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
 #endif
     return NULL;
   }
+#ifdef USE_TIMING
+  if(isroot(*config))
+    tread=mrun()-tread;
+#endif
 #ifdef USE_MPI
   MPI_Allgather(&config->count,1,MPI_INT,counts,1,MPI_INT,
                 config->comm);
