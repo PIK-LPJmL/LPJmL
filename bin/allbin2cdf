@@ -1,0 +1,77 @@
+#!/bin/bash
+#################################################################################
+##                                                                             ##
+##                  a  l  l  b  i  n  2  c  d  f                               ##
+##                                                                             ##
+##    bash script to convert all binary raw files to NetCDF files using the    ##
+##    JSON metafiles in current directory                                      ##
+##                                                                             ##
+##    Usage: allbin2cdf [[-option op] ...] [[binpath] [netcdfpath]]            ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
+
+USAGE="Usage: $0 [[-option op] ...] [[binpath] [netcdfpath]]"
+
+binpath="."
+count=0
+options=""
+
+# check command line options
+
+while(( "$#" )); do
+  case "$1" in
+    -option)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: option missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     options="$options $1"
+     shift 1
+     ;;
+    -*)
+      echo >&2 Invalid option \'$1\'
+      echo -e >&2 $USAGE
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ $# -gt 0 ]
+then
+  binpath=$1 # source directory for raw binary output
+fi
+if [ $# -gt 1 ]
+then
+  netcdfpath=$2 #target directory for NetCDF files
+else
+  netcdfpath=$binpath
+fi
+#iterate over all JSON metafiles *.bin.json
+for file in $binpath/*.bin.json
+do
+  if test -f $file && [ "$file" != "$binpath/grid.bin.json" ] # exclude grid file from conversion
+  then
+#   basename strips path frpm filename, suffix .bin.json replaced by suffix .nc
+    echo $file "-->" $netcdfpath/$(basename ${file%.bin.json}).nc
+#call conversion function bin2cdf
+    if bin2cdf $options -metafile $file $netcdfpath/$(basename ${file%.bin.json}).nc ;
+    then
+#     NetCDF file has been successfully created, increas counter by 1
+      ((count++))
+    fi
+  fi
+done
+# return number of converted files
+exit $count
