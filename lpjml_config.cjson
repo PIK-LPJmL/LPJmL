@@ -407,10 +407,10 @@ ID                               Fmt                        filename
 
 #else
   /* first spinup */
-  "nspinup" : 3500,  /* spinup years */
+  "nspinup" : 3439,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
+  "firstyear": 1840, /* first year of simulation */
+  "lastyear" : 1840, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" : -1599,
   "write_restart" : true, /* create restart file at year defined in "restart_year" */

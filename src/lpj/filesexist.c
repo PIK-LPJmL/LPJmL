@@ -304,8 +304,10 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
       {
         if(input.firstyear>config->firstyear)
         {
-          fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
-          return 1;
+          fprintf(stderr,"%s: First year=%d in '%s' is greater than first simulation year %d.\n",
+                  (config->nspinup==0) ? "ERROR200" : "WARNING043",input.firstyear,filename->name,config->firstyear);
+          if(config->nspinup==0)
+            return 1;
         }
         if(!config->fix_climate && input.firstyear+input.nyear-1<config->lastyear)
         {
@@ -330,8 +332,10 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
     {
       if(header.firstyear>config->firstyear)
       {
-        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
-        return 1;
+        fprintf(stderr,"%s: First year=%d in '%s' is greater than first simulation year %d.\n",
+                (config->nspinup==0) ? "ERROR200" : "WARNING043",header.firstyear,filename->name,config->firstyear);
+        if(config->nspinup==0)
+          return 1;
       }
       if(!config->fix_climate && header.firstyear+header.nyear-1<config->lastyear)
       {

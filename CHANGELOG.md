@@ -31,6 +31,13 @@ of `major.minor.patch` with
 - Function `isfloatcoord()` added in `coord.c` to check whether coordinate must be stored as a float variable, test function `test_isfloatcoord.c` added.
 - Test functions for `bisect`, `leftmostzero` and `getbufferavg` functions added.
 
+### Changed
+
+- Error about first simulation year is less than first year of climate data replaced by warning in `initclimate.c`.
+- First and last simulation year in spinup changed from 1901 to 1840 in `lpjml_config.cjson`.
+- Number of spinup years changed from 3500 to 3439 in `lpjml_config.cjson` in order to get bit-identical results.
+
+
 ### Removed
 
 - Unused source file `src/lpj/part.c` removed.
