@@ -24,11 +24,6 @@ void turnover_daily_grass(Litter *litter,
 #endif
                           int UNUSED(day),
                           Bool UNUSED(isdaily),
-#ifdef NRECOVERY_COST
-                          Real daylength, /**< day length (h) */
-#else
-                          Real UNUSED(daylength), /**< day length (h) */
-#endif
                           const Config *config /**< LPJmL configuration*/
                          )
 {
@@ -55,7 +50,7 @@ void turnover_daily_grass(Litter *litter,
     litter->item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac*pft->par->fn_turnover;
 #ifdef NRECOVERY_COST
-    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
+    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,temp)*(1+pft->par->knstore);
     npp_for_recovery = max(0.0,pft->bm_inc.carbon * pft->par->nrecovery_npp);
     if((nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2) && npp_for_recovery > epsilon){
       navailable=nrecovered=max(0.0,grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover));

@@ -51,7 +51,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   /* phenology */
   pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
 
-  turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,daylength,config);
+  turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
 
   if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
       (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))

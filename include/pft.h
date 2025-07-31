@@ -200,13 +200,13 @@ typedef struct Pft
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
-    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,Real,const Config *);
+    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,const Config *);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
-    Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
-    Real (*vmaxlimit)(const struct Pft *,Real,Real);
+    Real (*ndemand)(const struct Pft *,Real *,Real,Real);
+    Real (*vmaxlimit)(const struct Pft *,Real);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
@@ -314,7 +314,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
-#define turnover_daily(litter,pft,temp,day,isdaily,daylength,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,daylength,config)
+#define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
 #define alphaa(pft,lai_opt) pft->par->alphaa_manage(pft,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim) pft->par->npp(pft,gtemp_air,gtemp_soil,assim)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
@@ -333,8 +333,8 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define annualpft(stand,pft,fpc_inc,isdaily,config) pft->par->annual(stand,pft,fpc_inc,isdaily,config)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
-#define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
-#define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
+#define ndemand(pft,nleaf,vcmax,temp) pft->par->ndemand(pft,nleaf,vcmax,temp)
+#define vmaxlimit(pft,temp) pft->par->vmaxlimit(pft,temp)
 
 #ifdef NRECOVERY_COST
 #define nrecover_price(leafN,leafC,sla) (0.01/(leafN/(leafC * sla)))

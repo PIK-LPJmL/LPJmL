@@ -18,7 +18,6 @@
 Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
                   Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
                   Real vmax,          /**< vmax (gC/m2/day) */
-                  Real daylength,     /**< day length (h) */
                   Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {

@@ -16,7 +16,6 @@
 #include "grass.h"
 
 Real vmaxlimit_grass(const Pft *pft, /**< pointer to PFT */
-                     Real daylength, /**< day length (h) */
                      Real temp       /**< temperature (deg C) */
                     )                /** \return vmax (gC/m2/day) */
 {

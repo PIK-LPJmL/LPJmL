@@ -16,7 +16,6 @@
 #include "tree.h"
 
 Real vmaxlimit_tree(const Pft *pft, /**< pointer to PFT */
-                    Real daylength, /**< day length (h) */
                     Real temp       /**< temperature (deg C) */
                    )                /** \return vmax (gC/m2/day) */
 {
