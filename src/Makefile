@@ -35,7 +35,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/biomass_tree.h $(INC)/biomass_grass.h $(INC)/cdf.h\
           $(INC)/agriculture.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/wetland.h\
           $(INC)/hydrotope.h $(INC)/cpl.h $(INC)/woodplantation.h $(INC)/agriculture_tree.h\
-          $(INC)/agriculture_grass.h $(INC)/coupler.h
+          $(INC)/agriculture_grass.h $(INC)/coupler.h $(INC)/timing.h
 
 LIBDIR  = ../lib
 BINDIR  = ../bin

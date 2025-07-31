@@ -47,6 +47,10 @@ of `major.minor.patch` with
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 - code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
+### Added
+
+- Flag `-DUSE_TIMING` enables now timing for several LPJmL functions for performance analysis.
+
 ### Changed
 
 - New functions `setupannual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.

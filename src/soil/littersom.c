@@ -32,6 +32,7 @@
 #include "crop.h"
 #include "agriculture.h"
 
+
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
 #define k_red 1                           /*anoxic decomposition is much smaller than oxic decomposition*/

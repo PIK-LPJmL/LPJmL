@@ -36,6 +36,9 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
                        const Config *config /**< LPJ configuration */
                       )
 {
+#ifdef USE_TIMING
+  double t;
+#endif
   Stand *stand;
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   Real cflux_total;
@@ -157,5 +160,16 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
       MPI_Bcast(pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
 #endif
   if(iswriterestart(config) && year==config->restartyear)
+  {
+#ifdef USE_TIMING
+    t=mrun();
+#endif
     fwriterestart(grid,npft,ncft,year,config->write_restart_filename,FALSE,config); /* write restart file */
+#ifdef USE_TIMING
+#ifdef USE_MPI
+    MPI_Barrier(config->comm);
+#endif
+    timing.fwriterestart+=mrun()-t;
+#endif
+   }
 } /* of 'updateannual_grid' */

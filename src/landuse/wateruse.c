@@ -32,6 +32,10 @@ void wateruse(Cell *grid,          /**< LPJ grid */
   Real *in,*out;
   Real wd_neighbour;
   Real wd_gw=0;
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
 
   in=(Real *)pnet_input(config->irrig_back);
   out=(Real *)pnet_output(config->irrig_back);
@@ -186,4 +190,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       distribute_water(&grid[cell],npft,ncft,month,config);
     }
   }
+#ifdef USE_TIMING
+  timing.wateruse+=mrun()-t;
+#endif
 } /* of 'wateruse' */

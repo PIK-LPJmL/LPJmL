@@ -14,6 +14,7 @@
 
 #include "lpj.h"
 
+
 /* declare internally used functions */
 STATIC void setup_heatgrid(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, const Real *, const Soil *);

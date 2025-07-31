@@ -579,6 +579,10 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   short *svec;
   Real depth=0;
 
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
   switch(timestep)
@@ -2106,5 +2110,8 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputarray(PFT_NUPTAKE2,1);
   }
   free(vec);
+#ifdef USE_TIMING
+  timing.fwriteoutput+=mrun()-t;
+#endif
   return FALSE;
 } /* of 'fwriteoutput' */

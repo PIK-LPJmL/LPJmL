@@ -48,6 +48,9 @@ int iterate(Outputfile *output, /**< Output file data */
 {
   Real co2, ch4, pch4;
   int year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year,depos_year;
+#ifdef USE_TIMING
+  double t;
+#endif
   Bool rc;
   Climatedata store,data_save;
   if (config->isanomaly)
@@ -63,7 +66,13 @@ int iterate(Outputfile *output, /**< Output file data */
   {
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
+#ifdef USE_TIMING
+    t=mrun();
+#endif
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
+#ifdef USE_TIMING
+    timing.storeclimate+=mrun()-t;
+#endif
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed, re-run with \"store_climate\" : false setting");
 
     data_save=input.climate->data[data_index];
@@ -129,10 +138,24 @@ int iterate(Outputfile *output, /**< Output file data */
       if(config->storeclimate)
         moveclimate(input.climate,&store,data_index,spinup_year);
       else
+      {
+#ifdef USE_TIMING
+        t=mrun();
+#endif
         getclimate(input.climate,grid,data_index,firstspinupyear+spinup_year,config);
+#ifdef USE_TIMING
+        timing.getclimate+=mrun()-t;
+#endif
+      }
       if (config->isanomaly)
       {
+#ifdef USE_TIMING
+        t=mrun();
+#endif
         getclimate(input.climate,grid,0,config->firstyear,config);
+#ifdef USE_TIMING
+        timing.getclimate+=mrun()-t;
+#endif
         if(config->with_glaciers)
           readicefrac(input.icefrac,grid,0,config->firstyear,config);
         addanomaly_climate(input.climate,data_index);
@@ -259,7 +282,13 @@ int iterate(Outputfile *output, /**< Output file data */
         }
         else
           climate_year=year;
+#ifdef USE_TIMING
+        t=mrun();
+#endif
         rc=getclimate(input.climate,grid,0,climate_year,config);
+#ifdef USE_TIMING
+        timing.getclimate+=mrun()-t;
+#endif
         if(iserror(rc,config))
         {
           if(isroot(*config))
@@ -303,7 +332,14 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       break; /* leave time loop */
     }
-    if(iterateyear(output,grid,&input,co2,&ch4,&pch4,npft,ncft,year,config))
+#ifdef USE_TIMING
+    t=mrun();
+#endif
+    rc=iterateyear(output,grid,&input,co2,&ch4,&pch4,npft,ncft,year,config);
+#ifdef USE_TIMING
+    timing.iterateyear+=mrun()-t;
+#endif
+    if(rc)
       break;
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)

@@ -18,6 +18,10 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
 {
   Real *in,*out;
   int i,cell,k;
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
 
   grid-=config->startgrid-config->firstgrid;
   out=(Real *)pnet_output(config->irrig_res);
@@ -93,4 +97,7 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
       grid[cell].discharge.act_irrig_amount_from_reservoir+=grid[cell].ml.fraction[i]*in[pnet_inindex(config->irrig_res_back,cell,i)]*grid[cell].discharge.irrig_unmet;
     }
    }
+#ifdef USE_TIMING
+  timing.irrig_amount_reservoir+=mrun()-t;
+#endif
 } /* of 'irrig_amount_reservoir' */

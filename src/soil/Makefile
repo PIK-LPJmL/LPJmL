@@ -51,7 +51,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h $(INC)/discharge.h\
           $(INC)/climbuf.h $(INC)/reservoir.h $(INC)/agriculture.h\
-          $(INC)/wetland.h $(INC)/hydrotope.h $(INC)/bstruct.h
+          $(INC)/wetland.h $(INC)/hydrotope.h $(INC)/bstruct.h $(INC)/timing.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

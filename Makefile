@@ -37,7 +37,8 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
           $(INC)/wetland.h  $(INC)/hydrotope.h $(INC)/icefrac.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
-          $(INC)/couplerpar.h $(INC)/bstruct.h $(INC)/hash.h $(INC)/bstruct_intern.h
+          $(INC)/couplerpar.h $(INC)/bstruct.h $(INC)/hash.h $(INC)/bstruct_intern.h\
+          $(INC)/timing.h
 
 DATA    = par/*.cjson
 
