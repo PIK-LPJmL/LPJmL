@@ -91,7 +91,8 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
     case SUMMERGREEN:
       if(!tree->isphen && tree->turn.leaf.carbon<epsilon)
       {
-        if(pft->aphen>treepar->aphen_max)
+        if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR-1) ||
+           (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
         {
           f_turnover_tree(pft,day,config,1.0);
           tree->isphen=TRUE;
@@ -101,15 +102,23 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
           f_turnover_tree(pft,day,config,1.0);
           tree->isphen=TRUE;
         }
-        else if(((pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR-1) ||
-                (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
-      		  	  && pft->aphen>treepar->aphen_min)
+      }
+      break;
+    case RAINGREEN:
+      if(!tree->isphen && tree->turn.leaf.carbon<epsilon)
+      {
+        if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR-1) ||
+           (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
+        {
+          f_turnover_tree(pft,day,config,1.0);
+          tree->isphen=TRUE;
+        }
+        else if(pft->wscal*100<pft->par->wscal.base && pft->aphen>treepar->aphen_min)
         {
           f_turnover_tree(pft,day,config,1.0);
           tree->isphen=TRUE;
         }
       }
-      break;
     default:
       f_turnover_tree(pft,day,config,1.0/NDAYYEAR);
       break;
