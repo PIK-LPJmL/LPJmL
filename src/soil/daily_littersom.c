@@ -18,6 +18,11 @@
 
 #define Q10 1.8
 
+typedef struct
+{
+  Real bCH4[LASTLAYER],bO2[LASTLAYER];
+} Data;
+
 static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[LASTLAYER])
 {
   Real test_O2;
@@ -60,7 +65,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Soil *soil;
   soil=&stand->soil;
   Soil savesoil;
-  int timesteps=15;
+  Data data;
+  int timesteps=6;
   int i,l,dt;
   Stocks hetres;
   Stocks hetres1;
@@ -82,6 +88,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     Q10_oxid[l]=pow(Q10,(temp-soil->amean_temp[l])/10);
     fac_wfps[l] = f_wfps(soil,l);
     fac_temp[l] = f_temp(soil->temp[l]);
+    data.bO2[l]=0.0647*exp(-0.0257*soil->temp[l]);
+    data.bCH4[l]=0.0523*exp(-0.0236*soil->temp[l]);
   }
 
 
@@ -89,13 +97,14 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
 
   savesoil.decomp_litter_pft=newvec(Stocks,npft+ncft);
   check(savesoil.decomp_litter_pft);
-
   savesoil.litter.n=0;
+
 /*###################### TESTE*/
 //  timesteps=100;
 //  for(dt=0;dt<timesteps;dt++)
 //  {
-//    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps);
+//    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
+//         Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps);
 //    hetres.carbon+=hetres1.carbon;
 //    hetres.nitrogen+=hetres1.nitrogen;
 //    *CH4_sink+=ch4_sink;
@@ -107,7 +116,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   for(dt=0;dt<timesteps;dt++)
   {
     soil_status(&savesoil, soil, npft+ncft);
-    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps);
+    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
+                      Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps);
     fast_needed=istoolarge(soil,savesoil.O2,savesoil.CH4);
 
     if(fast_needed )
@@ -115,7 +125,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       soil_status(soil, &savesoil, npft+ncft);
       for (i=0;i<10;i++)
       {
-        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,Q10_oxid,fac_wfps,fac_temp,timesteps*10);
+        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
+            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps*10);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;

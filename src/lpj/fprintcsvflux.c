@@ -26,8 +26,8 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   char d;
   d=config->csv_delimit;
-  if(config->ngridcell<20)
-    scale=1/flux.area/config->ngridcell;
+  if(config->nall<80)
+    scale=1/flux.area;
   else
     scale=1e-15;
   if(year==config->firstyear-config->nspinup)

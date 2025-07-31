@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define EXPLICIT
+//#define EXPLICIT
 
 void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real airtemp,   /**< [in] air temperature (deg C) */
@@ -24,6 +24,8 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real *CH4_out,  /**< [out] CH4 emissions (gC/m2/day) */
                   Real *runoff,   /**< [out] runoff (mm/day) */
                   Real *CH4_sink,  /**< [out] CH4 soil sink (gC/m2/day) */
+                  Real *bCH4,
+                  Real *bO2,
                   int timesteps
                  )
 {
@@ -76,16 +78,12 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 #ifndef EXPLICIT
   Bool r = FALSE;
 #endif
-  Real bO2,bCH4;
-  bO2=0.0647*exp(-0.0257*airtemp);
-  bCH4=0.0523*exp(-0.0236*airtemp);
-
 
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l],bO2);
+    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l],bO2[l]);
     if (V<0)
     {
       V = 0;
@@ -125,7 +123,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l],bCH4);
+    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l],bCH4[l]);
     if (V<0)
     {
       V = 0;

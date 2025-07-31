@@ -76,15 +76,15 @@
 #define PHI_BNF_1 0.0
 #define PHI_BNF_2 2.0
 #define MAXBNFCOST 0.25
-//#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
-//#define MAXBNFCOSTTE 0.0014
-//#define MAXBNFCOSTBO 0.0056
-//#define MAXBNFCOSTGR 0.007
-#define MAXBNFCOSTTR 0.021 /* Fraction of NPP available for BNF multiplied by climates legume share */
-#define MAXBNFCOSTTE 0.07
-#define MAXBNFCOSTBO 0.0126
-#define MAXBNFCOSTGR 0.021
-#define BNF_COST 6.2
+#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
+#define MAXBNFCOSTTE 0.0014
+#define MAXBNFCOSTBO 0.0056
+#define MAXBNFCOSTGR 0.007
+//#define MAXBNFCOSTTR 0.021 /* Fraction of NPP available for BNF multiplied by climates legume share */
+//#define MAXBNFCOSTTE 0.07
+//#define MAXBNFCOSTBO 0.0126
+//#define MAXBNFCOSTGR 0.021
+#define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
   [
@@ -431,7 +431,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.025,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -663,7 +663,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate evergreen forest*/
+      "nfixpot" : 0.03, /* Yu and Zhuang 2020 temperate evergreen forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -781,7 +781,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "nfixpot" : 0.03, /* Yu and Zhuang 2020 temperate deciduous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },

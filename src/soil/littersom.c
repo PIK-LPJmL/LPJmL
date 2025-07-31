@@ -70,10 +70,12 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  Real *ch4_sink,                    /**< [out] negative CH4 emissions (gC/m2/day) */
                  int npft,                          /**< [in] number of natural PFTs */
                  int ncft,                          /**< [in] number of crop PFTs */
-                 const Config *config,               /**< [in] LPJmL configuration */
+                 const Config *config,              /**< [in] LPJmL configuration */
                  const Real *Q10_oxid,
                  const Real *fac_wfps,
                  const Real *fac_temp,
+                 Real *bCH4,                         /**< bunsen coefficient T dependent */
+                 Real *bO2,                          /**< bunsen coefficient T dependent */
                  int timesteps
                 )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
@@ -299,7 +301,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           V=epsilon+epsilon;
 
         /*methanotrophy */
-        if((V>0.25) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
+        if((V>0.2) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
         {
           oxidation=(Vmax_CH4/timesteps*soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)/(km_CH4+soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)*Q10_oxid[l]*soildepth[l]*V/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->gCH4/layer/m2
           O2_need=min(oxidation*2*WO2/WCH4,soil->O2[l]*oxid_frac);            // g02/layer/m2
@@ -743,7 +745,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     }   /*end soil->litter.n*/
 
     if(soil->maxthaw_depth>0)
-      gasdiffusion(&stand->soil,airtemp,pch4,&CH4_em,runoff,&CH4_sink,timesteps);
+      gasdiffusion(&stand->soil,airtemp,pch4,&CH4_em,runoff,&CH4_sink,bCH4,bO2,timesteps);
     *ch4_sink+=CH4_sink;
     *methaneflux_litter+=CH4_em;
 
