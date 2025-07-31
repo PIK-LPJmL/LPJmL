@@ -95,7 +95,7 @@ of `major.minor.patch` with
 - `lpj_climber4.c` renamed to `lpj_poem.c`.
 - `update_daily.c` renamed to `update_daily_cell.c`.
 - `update_monthly.c` renamed to `update_monthly_grid.c`.
-- `AFTER_STRESS` debugging output in `update_daily_cell.c' (former `updatedaily.c`) moved after N update really happened.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c` (former `updatedaily.c`) moved after N update really happened.
 
 ### Fixed
 
