@@ -99,7 +99,6 @@ of `major.minor.patch` with
 
 - Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
 
->>>>>>> 7f8882785885e71a59c95634ffded9b761269c67
 
 ## [5.9.25] - 2025-05-22
 
