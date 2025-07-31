@@ -24,8 +24,8 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real *CH4_out,  /**< [out] CH4 emissions (gC/m2/day) */
                   Real *runoff,   /**< [out] runoff (mm/day) */
                   Real *CH4_sink,  /**< [out] CH4 soil sink (gC/m2/day) */
-                  Real *bCH4,
-                  Real *bO2,
+                  const Real *bCH4,
+                  const Real *bO2,
                   int timesteps
                  )
 {

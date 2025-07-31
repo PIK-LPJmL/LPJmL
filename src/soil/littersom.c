@@ -74,8 +74,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  const Real *Q10_oxid,
                  const Real *fac_wfps,
                  const Real *fac_temp,
-                 Real *bCH4,                         /**< bunsen coefficient T dependent */
-                 Real *bO2,                          /**< bunsen coefficient T dependent */
+                 const Real *bCH4,                         /**< bunsen coefficient T dependent */
+                 const Real *bO2,                          /**< bunsen coefficient T dependent */
                  int timesteps
                 )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
@@ -260,7 +260,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef SAFE
          if(soil->NO3[l]<-epsilon)
            fail(NEGATIVE_SOIL_NO3_ERR,FALSE,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%s)",
-               soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
+                soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
 
         soil->NH4[l]-=F_NO3;
@@ -269,7 +269,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef SAFE
          if(soil->NH4[l]<-epsilon)
            fail(NEGATIVE_SOIL_NH4_ERR,FALSE,TRUE,"Negative soil NH4=%g in layer %d in cell (%s)",
-               soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
+                soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
         flux.nitrogen += F_N2O;
         /* F_N2O is given back for output */

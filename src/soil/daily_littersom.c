@@ -126,7 +126,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       for (i=0;i<10;i++)
       {
         hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps*10);
+                          Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,timesteps*10);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;
