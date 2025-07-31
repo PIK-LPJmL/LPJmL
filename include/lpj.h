@@ -141,6 +141,7 @@ extern void help(const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
 extern void failonerror(const Config *,int,int,const char *);
+extern void fprinttiming(FILE *,double,const Config *);
 #ifdef USE_MPI
 extern Bool iserror(int,const Config *);
 extern void sendhash(const Hash,int,MPI_Comm);
@@ -158,5 +159,6 @@ extern void receivehash(Hash,int,MPI_Comm);
 #endif
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
 #define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
+#define printtiming(total,config) fprinttiming(stdout,total,config)
 
 #endif

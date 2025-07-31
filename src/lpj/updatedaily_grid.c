@@ -25,6 +25,10 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
                       const Config *config /**< LPJ configuration */
                      )
 {
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   if(config->river_routing)
   {
     if(config->withlanduse)
@@ -48,4 +52,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
       printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
     exit(WRITE_OUTPUT_ERR);
   }
+#ifdef USE_TIMING
+  timing.updatedaily_grid+=mrun()-tstart;
+#endif
 } /* of 'updatedaily_grid' */

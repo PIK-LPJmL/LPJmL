@@ -81,6 +81,10 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real trf[LASTLAYER];
   //Irrigation *irrig;
   Real istress=0;
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   aet_frac = 1;
   aet=0;
   if (-pft->stand->soil.wtable >= pft->par->inun_thres)
@@ -281,5 +285,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
   getoutput(&pft->stand->cell->output,RA,config)+=*rd*pft->stand->frac;
+#ifdef USE_TIMING
+  timing.water_stressed+=mrun()-tstart;
+#endif
   return agd;
 } /* of 'water_stressed' */

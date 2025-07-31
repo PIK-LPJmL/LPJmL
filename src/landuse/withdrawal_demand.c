@@ -102,15 +102,17 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.wd_deficit=grid[cell].discharge.wd_demand=0;
 
 
-if(neighbour_irrigation)
-{
+  if(neighbour_irrigation)
+  {
   /* fill output buffer with water withdrawal deficits */
   for(i=0;i<pnet_outlen(config->irrig_neighbour);i++)
     out[i]=grid[pnet_outindex(config->irrig_neighbour,i)-config->startgrid+config->firstgrid].discharge.wd_deficit;
 
 #ifdef USE_TIMING
 #ifdef USE_MPI
+  t=mrun();
   MPI_Barrier(config->comm);
+  timing.barrier+=mrun()-t;
 #endif
   t=mrun();
 #endif
@@ -130,6 +132,5 @@ if(neighbour_irrigation)
 #ifdef USE_TIMING
   timing.withdrawal_demand+=mrun()-t;
 #endif
-}
-
+  }
 } /* of 'withdrawal_demand' */

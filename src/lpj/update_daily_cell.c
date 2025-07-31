@@ -70,6 +70,10 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   runoff=snowrunoff=melt_all=0;
   Real popdensity=0;
   Irrigation *data;
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   if(!cell->skip)
   {
 #ifdef CHECK_BALANCE
@@ -731,4 +735,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 #endif
 
   } /* of if(!cell->skip) */
+#ifdef USE_TIMING
+  timing.update_daily_cell+=mrun()-tstart;
+#endif
 } /* of 'update_daily_cell' */

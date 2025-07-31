@@ -69,7 +69,10 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Real temp;
   Real methaneflux_litter,runoff,MT_water,ch4_sink;
   Real Q10_oxid[LASTLAYER],fac_wfps[LASTLAYER],fac_temp[LASTLAYER];
-
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   forrootsoillayer(l)
   {
     if (soil->temp[l]>40)
@@ -134,5 +137,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   }
   freelitter(&savesoil.litter);
   free(savesoil.decomp_litter_pft);
+#ifdef USE_TIMING
+  timing.littersom+=mrun()-tstart;
+#endif
   return hetres;
 } /* of 'daily_littersom' */

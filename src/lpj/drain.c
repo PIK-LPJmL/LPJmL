@@ -119,7 +119,9 @@ void drain(Cell grid[],         /**< Cell array */
                                               array needed for pnet library */
 #ifdef USE_TIMING
 #ifdef USE_MPI
+  tstart=mrun();
   MPI_Barrier(config->comm);
+  timing.barrier+=mrun()-tstart;
 #endif
   tstart=mrun();
 #endif

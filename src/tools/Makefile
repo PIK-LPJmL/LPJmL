@@ -40,7 +40,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
           freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
           getversion.$O getsprintf.$O freadtopheader.$O hash.$O sendhash.$O\
-          fwritetopheader.$O fprinttiming.$O
+          fwritetopheader.$O fprinttiming.$O timing.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
