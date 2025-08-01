@@ -14,7 +14,9 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
+
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
@@ -403,7 +405,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
 
 int main(int argc,char **argv)
 {
-  int i,output,index,start,stop,first,last,nbands,version;
+  int i,output,index,start,stop,first,last,nbands,version,rc;
   Type type;
   const char *progname;
   char *endptr;
@@ -423,7 +425,35 @@ int main(int argc,char **argv)
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
+      if(!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help"))
+      {
+        printf("     ");
+        rc=printf("%s (" __DATE__ ") Help",progname);
+        printf("\n     ");
+        repeatch('=',rc);
+        printf("\n\nPrint contents of clm files for LPJmL version %s\n",getversion());
+        printf(USAGE
+               "\nArguments:\n"
+               "-metafile   file is a JSON metafile describing the structure of the raw binary file\n"
+               "-header     print without header\n"
+               "-data       print without data\n"
+               "-text       print data without header and cell index\n"
+               "-json       print header in JSON format only\n"
+               "-scale s    scale data with scale factor defined in header\n"
+               "-longheader set long header(version 2) in CLM files\n"
+               "-type t     set datatype of clm file. Default is short\n"
+               "-nbands n   set number of bands to n ignoring value in file header\n"
+               "-map name   nme of map in JSON metafile, default is \"map\"\n"
+               "-start s    start output of data at year s\n"
+               "-end e      end output of data at year e\n"
+               "-first f    index of first cell for output\n"
+               "-last l     index of last cell for output\n"
+               "clmfile     filename of clm data file(s)\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
       {
         puts(getversion());
         return EXIT_SUCCESS;
@@ -447,7 +477,7 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-map'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         map_name=argv[++i];
@@ -457,13 +487,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-first'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         first=strtol(argv[++i],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-first'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-first'.\n"
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
       }
@@ -472,13 +503,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-last'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         last=strtol(argv[++i],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-last'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-last'.\n"
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
       }
@@ -487,13 +519,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-start'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         start=strtol(argv[++i],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-start'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-start'.\n"
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
       }
@@ -502,13 +535,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-nbands'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         nbands=strtol(argv[++i],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-nbands'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-nbands'.\n"
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
         if(nbands<1)
@@ -522,13 +556,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-end'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         stop=strtol(argv[++i],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-end'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-end'.\n"
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
         if(start!=INT_MAX && stop<start)
@@ -542,14 +577,14 @@ int main(int argc,char **argv)
         if(argc-1==i)
         {
           fprintf(stderr,"Argument missing for option '-type'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         index=findstr(argv[++i],typenames,N_TYPES);
         if(index==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[i],progname);
+                  ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
         type=(Type)index;
@@ -557,7 +592,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],progname);
+                ERR_USAGE,argv[i],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -568,7 +603,7 @@ int main(int argc,char **argv)
   if(argc==0)
   {
     fprintf(stderr,"Error: Filename missing.\n"
-            USAGE,progname);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   for(i=0;i<argc;i++)

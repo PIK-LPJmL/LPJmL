@@ -14,7 +14,8 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-v] [-metafile] [-size4] [-byte] [-search] [-zero] [-longheader] [-json] [grid_old.clm] grid_new.clm data_old.clm data_new.clm\n"
+#define USAGE "Usage: %s [-h] [-v] [-metafile] [-size4] [-byte] [-search] [-zero] [-longheader] [-json] [grid_old.clm] grid_new.clm data_old.clm data_new.clm\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {
@@ -31,7 +32,7 @@ int main(int argc,char **argv)
   Coord res,res2;
   Coordfile grid;
   int i,j,*index,data_version,setversion,ngrid,ngrid2,iarg,format;
-  int index_datafile,index_gridfile;
+  int index_datafile,index_gridfile,rc;
   float lon,lat,*fzero;
   char *arglist,*out_json;
   const char *progname;
@@ -53,7 +54,35 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
+      {
+        printf("     ");
+        rc=printf("%s (" __DATE__ ") Help",progname);
+        printf("\n     ");
+        repeatch('=',rc);
+        printf("\n\nRegrid CLM file to new grid for LPJmL version %s\n",getversion());
+        printf(USAGE
+               "\nArguments:\n"
+               "-h,--help    print this help text\n"
+               "-v,--version print LPJml versions\n"
+               "-metafle     files are JSON metafiles,\n"
+               "             additional JSON file is written\n"
+               "-size4       size of CLM input data is set to 4 bytes\n"
+               "-byte        size of CLM input data is set to 1 byte\n"
+               "-search      if cell is not found, nearest cell is used\n"
+               "-zero        id cell is not found, data is set to zero\n"
+               "-lonhgheader version of CLM file is set to 2\n"
+               "-json        an additional JSON metafile with suffix .json is created\n"
+               "grid_old.clm corresponding grid filename of input data,\n"
+               "             can be omitted for metafile input\n"
+               "grid_new_clm grid filename data should be regridded to\n"
+               "data_old_clm filename of data that should be regridded\n"
+               "data_new.clm filename of data file where regridded data is written\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
       {
         puts(getversion());
         return EXIT_SUCCESS;
@@ -75,7 +104,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],progname);
+                ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -84,7 +113,7 @@ int main(int argc,char **argv)
   if(argc<(ismeta ? 3 : 4)+iarg)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            USAGE,progname);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   format=CLM;

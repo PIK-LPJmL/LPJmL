@@ -98,6 +98,7 @@ static void freeaxis(Axis *axis /**< axis definition */
   free(axis->long_name);
   free(axis->standard_name);
   free(axis->unit);
+  free(axis->comment);
 } /* of 'freeaxis' */
 
 Bool fscanconfig_netcdf(LPJfile *file,            /**< pointer to LPJ file */
