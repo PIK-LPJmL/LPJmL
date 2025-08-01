@@ -290,6 +290,8 @@
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
       "wood_sapl" : 1.2,      /* sapwood sapling 22*/
+      "aphen_min" : APHEN_MIN,
+      "aphen_max" : APHEN_MAX,
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : ALLOM1,      /* allometry */
       "allom2" : ALLOM2,
