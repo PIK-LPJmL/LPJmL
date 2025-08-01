@@ -107,8 +107,7 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
     case RAINGREEN:
       if(!tree->isphen && tree->turn.leaf.carbon<epsilon)
       {
-        if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR-1) ||
-           (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
+        if(pft->aphen>treepar->aphen_max || day==pft->stand->cell->climbuf.startday_rainyseason-1)
         {
           f_turnover_tree(pft,day,config,1.0);
           tree->isphen=TRUE;

@@ -22,9 +22,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    const Config *config /**< LPJmL configuration */
                   )
 {
-  Pfttree *tree;
   /* get parameters */
-
   Phen_param tminpar = getpftpar(pft, tmin);
   Phen_param tmaxpar = getpftpar(pft, tmax);
   Phen_param lightpar = getpftpar(pft, light);
@@ -52,15 +50,26 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
 
   turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
 
-  if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
-      (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
+  if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") || 
+     !strcmp(pft->par->name,"tropical broadleaved raingreen tree") || 
+     !strcmp(pft->par->name,"bioenergy tropical tree") ||
+     !strcmp(pft->par->name,"woodplantation tropical tree"))
   {
-    pft->aphen = 0.0;
-    if(pft->par->type==TREE)
+    if(day==pft->stand->cell->climbuf.startday_rainyseason)
     {
-      tree=pft->data;
-      tree->isphen=FALSE;
+      pft->aphen=0.0;
+      ((Pfttree *)pft->data)->isphen=FALSE;
     }
   }
-  pft->aphen+= pft->phen;
+  else
+  {
+    if((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
+        (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
+    {
+      pft->aphen=0.0;
+      if(pft->par->type==TREE)
+        ((Pfttree *)pft->data)->isphen=FALSE;
+    }
+  }
+  pft->aphen+=pft->phen;
 } /* of 'phenology_gsi' */

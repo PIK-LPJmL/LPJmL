@@ -17,6 +17,10 @@
 #define k (1.0/12.0)
 #define kk 0.05
 
+#define readint(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
+#define readreal(file,name,val) if(bstruct_readreal(file,name,val)) return TRUE
+#define readrealarray(file,name,val,size) if(bstruct_readrealarray(file,name,val,size)) return TRUE
+
 Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                  int ncft          /**< number of crop pfts */
                 )                  /** \return TRUE on error */
@@ -57,6 +61,8 @@ Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
     climbuf->prec[d]=0;
   for(m=0;m<NMONTH;m++)
     climbuf->mpet20[m]=climbuf->mprec20[m]=climbuf->mtemp20[m]=-9999;
+  for(m=0;m<NMONTH;m++)
+    climbuf->mprec_sum[m]=0;
   return FALSE;
 } /* of 'new_climbuf' */
 
@@ -124,6 +130,55 @@ Real getavgprec(const Climbuf *climbuf)
   return avg_prec/(NDAYS/3);
 } /* of 'getavgprec' */
 
+
+Real getgdd(const Climbuf *climbuf, Real basetemp)
+{
+  Real gdd=0;
+  int gpdays=0;
+  int m;
+  foreachmonth(m)
+    if(climbuf->mtemp20[m]>basetemp) {
+      gdd+=(climbuf->mtemp20[m]-basetemp)*ndaymonth[m];
+      gpdays+=ndaymonth[m];
+    }
+  if(gpdays>0)
+      gdd/=gpdays;
+  return gdd;
+} /* of 'getgdd' */
+
+int getstart_rainyseason(const Climbuf *climbuf)
+{
+  Real mprec3mon[NMONTH];
+  Real mprec_thresh;
+  int firstdaymonth[NMONTH];
+  int mstart=0,mpeak=0;
+  int m;
+  foreachmonth(m)
+  {
+    if(m==0)
+      firstdaymonth[m]=0;
+    else
+      firstdaymonth[m]=firstdaymonth[m-1]+ndaymonth[m-1];
+  }
+  foreachmonth(m)
+  {
+    mprec3mon[m]=(climbuf->mprec_sum[(m-1)%NMONTH]+climbuf->mprec_sum[m]+climbuf->mprec_sum[(m+1)%NMONTH])/3;
+    if(mprec3mon[m]<mprec3mon[mstart])
+      mstart=m;
+    if(mprec3mon[m]>mprec3mon[mpeak])
+      mpeak=m;
+  }
+  if(mstart==mpeak)
+    return firstdaymonth[mstart]+15;
+  mprec_thresh=mprec3mon[mstart]+(mprec3mon[mpeak]-mprec3mon[mstart])*0.05;
+  if(mstart>mpeak)
+    mpeak+=NMONTH;
+  for(m=mstart;m<mpeak;m++)
+    if(climbuf->mprec_sum[m%NMONTH]<mprec_thresh)
+      mstart=m%NMONTH;
+  return firstdaymonth[mstart]+15;
+} /* of 'getstart_rainyseason' */
+
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
                      Real mprec,       /**< monthly precipitation (mm) */
@@ -139,6 +194,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->mprec20[month]= (climbuf->mprec20[month]<-9998) ? mprec : (1-kk)*climbuf->mprec20[month]+kk*mprec;
   climbuf->mpet20[month]= (climbuf->mpet20[month]<-9998) ? mpet : (1-kk)*climbuf->mpet20[month]+kk*mpet;
   climbuf->mtemp20[month]= (climbuf->mtemp20[month]<-9998) ? mtemp : (1-kk)*climbuf->mtemp20[month]+kk*mtemp;
+  climbuf->mprec_sum[month]+=mprec;
   climbuf->atemp+=mtemp*k;
 } /* of 'monthly_climbuf' */
 
@@ -164,6 +220,7 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
     for(cft=0;cft<ncft;cft++)
       climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
   }
+  climbuf->startday_rainyseason=getstart_rainyseason(climbuf);
 } /* of 'annual_climbuf' */
 
 Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
@@ -171,23 +228,27 @@ Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
                    int ncft                /**< number of crop pfts */
                   )                        /** \return TRUE on error */
 {
-  fwrite(&climbuf->temp_max,sizeof(Real),1,file);
-  fwrite(&climbuf->temp_min,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean,sizeof(Real),1,file);
-  fwrite(&climbuf->aetp_mean,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean20,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean20_fix,sizeof(Real),1,file);
-  fwrite(&climbuf->gdd5,sizeof(Real),1,file);
-  fwrite(climbuf->dval_prec,sizeof(Real),1,file);
-  fwrite(climbuf->temp,sizeof(Real),NDAYS,file);
-  fwrite(climbuf->prec,sizeof(Real),NDAYS,file);
-  fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->V_req,sizeof(Real),ncft,file);
-  fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
-  fwritebuffer(file,climbuf->min);
-  return fwritebuffer(file,climbuf->max);
+  bstruct_writebeginstruct(file,name);
+  bstruct_writereal(file,"temp_max",climbuf->temp_max);
+  bstruct_writereal(file,"temp_min",climbuf->temp_min);
+  bstruct_writereal(file,"atemp_mean",climbuf->atemp_mean);
+  bstruct_writereal(file,"aetp_mean",climbuf->aetp_mean);
+  bstruct_writereal(file,"atemp_mean20",climbuf->atemp_mean20);
+  bstruct_writereal(file,"atemp_mean20_fix",climbuf->atemp_mean20_fix);
+  bstruct_writereal(file,"gdd5",climbuf->gdd5);
+  bstruct_writereal(file,"dval_prec",climbuf->dval_prec[0]);
+  bstruct_writeint(file,"startday_rainyseason",climbuf->startday_rainyseason);
+  bstruct_writerealarray(file,"temp",climbuf->temp,NDAYS);
+  bstruct_writerealarray(file,"prec",climbuf->prec,NDAYS);
+  bstruct_writerealarray(file,"mpet20",climbuf->mpet20,NMONTH);
+  bstruct_writerealarray(file,"mprec20",climbuf->mprec20,NMONTH);
+  bstruct_writerealarray(file,"mprec_sum",climbuf->mprec_sum,NMONTH);
+  bstruct_writerealarray(file,"mtemp20",climbuf->mtemp20,NMONTH);
+  bstruct_writerealarray(file,"V_req",climbuf->V_req,ncft);
+  bstruct_writerealarray(file,"V_req_a",climbuf->V_req_a,ncft);
+  fwritebuffer(file,"min",climbuf->min);
+  fwritebuffer(file,"max",climbuf->max);
+  return bstruct_writeendstruct(file);
 } /* of 'fwriteclimbuf' */
 
 Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
@@ -197,19 +258,23 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
                  )                  /** \return TRUE on error */
 {
   int m;
-  freadreal1(&climbuf->temp_max,swap,file);
-  freadreal1(&climbuf->temp_min,swap,file);
-  freadreal1(&climbuf->atemp_mean,swap,file);
-  freadreal1(&climbuf->aetp_mean,swap,file);
-  freadreal1(&climbuf->atemp_mean20,swap,file);
-  freadreal1(&climbuf->atemp_mean20_fix,swap,file);
-  freadreal1(&climbuf->gdd5,swap,file);
-  freadreal1(climbuf->dval_prec,swap,file);
-  freadreal(climbuf->temp,NDAYS,swap,file);
-  freadreal(climbuf->prec,NDAYS,swap,file);
-  freadreal(climbuf->mpet20,NMONTH,swap,file);
-  freadreal(climbuf->mprec20,NMONTH,swap,file);
-  freadreal(climbuf->mtemp20,NMONTH,swap,file);
+  if(bstruct_readbeginstruct(file,name))
+    return TRUE;
+  readreal(file,"temp_max",&climbuf->temp_max);
+  readreal(file,"temp_min",&climbuf->temp_min);
+  readreal(file,"atemp_mean",&climbuf->atemp_mean);
+  readreal(file,"aetp_mean",&climbuf->aetp_mean);
+  readreal(file,"atemp_mean20",&climbuf->atemp_mean20);
+  readreal(file,"atemp_mean20_fix",&climbuf->atemp_mean20_fix);
+  readreal(file,"gdd5",&climbuf->gdd5);
+  readreal(file,"dval_prec",climbuf->dval_prec);
+  readint(file,"startday_rainyseason",&climbuf->startday_rainyseason);
+  readrealarray(file,"temp",climbuf->temp,NDAYS);
+  readrealarray(file,"prec",climbuf->prec,NDAYS);
+  readrealarray(file,"mpet20",climbuf->mpet20,NMONTH);
+  readrealarray(file,"mprec20",climbuf->mprec20,NMONTH);
+  readrealarray(file,"mprec_sum",climbuf->mprec_sum,NMONTH);
+  readrealarray(file,"mtemp20",climbuf->mtemp20,NMONTH);
   climbuf->V_req=newvec(Real,ncft);
   if(climbuf->V_req==NULL)
     return TRUE;
