@@ -174,6 +174,14 @@ typedef struct
 
 typedef struct
 {
+  Real response_agtop_leaves,*response_agsub_wood,*response_agtop_wood;
+  Real Q10_oxid[LASTLAYER],fac_wfps[LASTLAYER],fac_temp[LASTLAYER];
+  Real bCH4[LASTLAYER]; /**< bunsen coefficient T dependent */
+  Real bO2[LASTLAYER];  /**< bunsen coefficient T dependent */
+} Littersom_param;
+
+typedef struct
+{
   Real avg_fbd[NFUELCLASS+1]; /**< average fuel bulk densities */
   Litteritem *item;           /**< litter list for PFTs */
   int n;                      /**< number of litter pools */
@@ -348,7 +356,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Real *,const Real *, const Real *,const Real *,const Real *,int);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Littersom_param *,int);
 extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);

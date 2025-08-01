@@ -193,6 +193,9 @@ int iterate(Outputfile *output, /**< Output file data */
         {
           if (year==config->firstyear || (config->ischeckpoint && year==startyear))
           {
+#ifdef USE_TIMING
+            t=mrun();
+#endif
             if (getclimate(input.climate,grid,1,year,config))
             {
               fprintf(stderr, "ERROR104: Simulation stopped in getclimate().\n");
@@ -205,6 +208,9 @@ int iterate(Outputfile *output, /**< Output file data */
               fflush(stderr);
               break; /* leave time loop */
             }
+#ifdef USE_TIMING
+            timing.getclimate+=mrun()-t;
+#endif
             if(config->with_glaciers)
             {
               if (readicefrac(input.icefrac, grid, 1, year, config))
@@ -224,12 +230,18 @@ int iterate(Outputfile *output, /**< Output file data */
           }
           else if (year != config->lastyear && (year - config->firstyear) % config->delta_year == 0)
           {
+#ifdef USE_TIMING
+            t=mrun();
+#endif
             if (getclimate(input.climate, grid, index + 1, year, config))
             {
               fprintf(stderr, "ERROR104: Simulation stopped in getclimate().\n");
               fflush(stderr);
               break; /* leave time loop */
             }
+#ifdef USE_TIMING
+            timing.getclimate+=mrun()-t;
+#endif
             if(config->with_glaciers)
             {
               if (readicefrac(input.icefrac, grid, index + 1, year, config))
@@ -247,12 +259,18 @@ int iterate(Outputfile *output, /**< Output file data */
         }
         else
         {
+#ifdef USE_TIMING
+          t=mrun();
+#endif
           if(getclimate(input.climate,grid,0,year,config))
           {
             fputs("ERROR104: Simulation stopped in getclimate().\n",stderr);
             fflush(stderr);
             break; /* leave time loop */
           }
+#ifdef USE_TIMING
+          timing.getclimate+=mrun()-t;
+#endif
           if(config->with_glaciers)
           {
             if (readicefrac(input.icefrac,grid,0,year,config))
