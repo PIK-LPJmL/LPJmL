@@ -123,6 +123,11 @@
 #define snowdens_first 150
 #define snowdens_end 500
 #define oxid_frac 0.95          /*remainig O2 during oxidation processes, Reduced Compounds is left assumed to be together 5% */
+#define Q10 1.8
+#define INTERCEPT 0.04021601 /* changed from 0.10021601 now again original value*/
+#define MOIST_3 -5.00505434
+#define MOIST_2 4.26937932
+#define MOIST  0.71890122
 
 /* Declaration of variables */
 

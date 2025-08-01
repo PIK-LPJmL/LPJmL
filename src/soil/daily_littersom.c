@@ -16,12 +16,6 @@
 
 #include "lpj.h"
 
-#define Q10 1.8
-#define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
-#define MOIST_3 -5.00505434
-#define MOIST_2 4.26937932
-#define MOIST  0.71890122
-
 static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[LASTLAYER])
 {
   Real test_O2;
@@ -37,9 +31,9 @@ static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[
   return FALSE;
 } /* of 'istoolarge' */
 
-static Real f_wfps(const Soil *soil,      /* Soil data */
-                   int l                  /* soil layer */
-                  )                       /* return soil temperature (deg C) */
+static Real f_wfps(const Soil *soil, /* Soil data */
+                   int l             /* soil layer */
+                  )                  /* return soil temperature (deg C) */
 {
   Real x;
   x=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->wpwps[l]+soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l];
@@ -68,7 +62,6 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   int i,l,dt,p;
   Stocks hetres;
   Stocks hetres1;
-  Bool fast_needed  = FALSE;
   hetres.nitrogen=hetres.carbon=0;
   Real temp;
   Real methaneflux_litter,runoff,MT_water,ch4_sink;
@@ -90,24 +83,19 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   data.response_agtop_leaves=temp_response(soil->litter.agtop_temp,soil->amean_temp[0])*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
   for(p=0;p<(npft+ncft);p++)
   {
-    data.response_agsub_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist*moist*moist)+MOIST_2*(moist*moist)+MOIST*moist);
-    data.response_agtop_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->litter.agtop_temp-10)/10.0)*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
+    data.response_agsub_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->temp[0]-10)*0.1)*(INTERCEPT+MOIST_3*(moist*moist*moist)+MOIST_2*(moist*moist)+MOIST*moist);
+    data.response_agtop_wood[p]=pow(config->pftpar[p].k_litter10.q10_wood,(soil->litter.agtop_temp-10)*0.1)*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
   }
-
 
   forrootsoillayer(l)
   {
-    if (soil->temp[l]>40)
-      temp = 40;
-    else
-      temp=soil->temp[l];
-    data.Q10_oxid[l]=pow(Q10,(temp-soil->amean_temp[l])/10);
+    temp=min(soil->temp[l],40);
+    data.Q10_oxid[l]=pow(Q10,(temp-soil->amean_temp[l])*0.1);
     data.fac_wfps[l] = f_wfps(soil,l);
     data.fac_temp[l] = f_temp(soil->temp[l]);
     data.bO2[l]=0.0647*exp(-0.0257*soil->temp[l]);
     data.bCH4[l]=0.0523*exp(-0.0236*soil->temp[l]);
   }
-
 
   *CH4_sink=*CH4_source=*lrunoff=*MT_lwater=0;
 
@@ -133,9 +121,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   {
     soil_status(&savesoil, soil, npft+ncft);
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,&data,timesteps);
-    fast_needed=istoolarge(soil,savesoil.O2,savesoil.CH4);
-
-    if(fast_needed )
+    if(istoolarge(soil,savesoil.O2,savesoil.CH4))
     {
       soil_status(soil, &savesoil, npft+ncft);
       for (i=0;i<10;i++)
@@ -158,8 +144,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
       *lrunoff+=runoff;
       *MT_lwater+=MT_water;
     }
-    fast_needed = FALSE;
-  }
+  } /* of  for(dt=0;dt<timesteps;dt++) */
   freelitter(&savesoil.litter);
   free(savesoil.decomp_litter_pft);
   free(data.response_agtop_wood);
