@@ -420,7 +420,7 @@ int main(int argc,char **argv)
         rc=freaddouble(dcoord,2,swap_grid,grid)!=2;
         break;
       default:
-        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridheader.datatype,argv[2]);
+        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridheader.datatype,argv[iarg+1]);
         return EXIT_FAILURE;
     }
     if(rc)
