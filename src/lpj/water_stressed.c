@@ -149,8 +149,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   }
 
   *wdf=wdf(pft,demand,supply);
-
-  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0)
+  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0 && pft->phen>0)
   {
     pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
