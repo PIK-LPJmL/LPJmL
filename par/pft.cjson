@@ -256,7 +256,7 @@
       "wscal" :
       {
         "slope" : 7.97,       /* new phenology: slope of water limiting function */
-        "base" : 22.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 35,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.1348        /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */

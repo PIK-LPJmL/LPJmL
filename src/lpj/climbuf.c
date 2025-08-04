@@ -157,10 +157,10 @@ int getstart_rainyseason(const Climbuf *climbuf)
       firstdaymonth[m]=0;
     else
       firstdaymonth[m]=firstdaymonth[m-1]+ndaymonth[m-1];
+    mprec3mon[(m+1)%NMONTH]=(climbuf->mprec_sum[m]+climbuf->mprec_sum[(m+1)%NMONTH]+climbuf->mprec_sum[(m+2)%NMONTH])/3;
   }
   foreachmonth(m)
   {
-    mprec3mon[m]=(climbuf->mprec_sum[(m-1)%NMONTH]+climbuf->mprec_sum[m]+climbuf->mprec_sum[(m+1)%NMONTH])/3;
     if(mprec3mon[m]<mprec3mon[mstart])
       mstart=m;
     if(mprec3mon[m]>mprec3mon[mpeak])

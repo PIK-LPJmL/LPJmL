@@ -47,7 +47,16 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   pft->phen_gsi.wscal=max(epsilon,pft->phen_gsi.wscal);
 
   /* phenology */
-  pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
+  if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") ||
+     !strcmp(pft->par->name,"bioenergy tropical tree") ||
+     !strcmp(pft->par->name,"woodplantation tropical tree"))
+  {
+    pft->phen=1.0;
+  }
+  else if(pft->par->type!=TREE || !((Pfttree *)pft->data)->isphen)
+  {
+    pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
+  }
 
   turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
 

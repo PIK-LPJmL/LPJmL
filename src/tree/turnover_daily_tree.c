@@ -81,41 +81,48 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
   Pfttreepar *treepar;
   tree=pft->data;
   treepar=pft->par->data;
-  Real dtemp,gddtw;
-  dtemp=temp-getpftpar(pft,gddbase);
+  Real gddtw;
   gddtw=temp-((isdaily) ? getpftpar(pft,twmax_daily) : getpftpar(pft,twmax));
   tree->gddtw+=(gddtw>0.0) ? gddtw : 0.0;
 
   switch(getpftpar(pft,phenology))
   {
     case SUMMERGREEN:
-      if(!tree->isphen && tree->turn.leaf.carbon<epsilon)
+      if(!tree->isphen)
       {
-        if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR-1) ||
+        if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE-1) ||
            (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
         {
           f_turnover_tree(pft,day,config,1.0);
+          pft->phen=0.0;
           tree->isphen=TRUE;
+          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
-        else if(dtemp<0 && pft->aphen>treepar->aphen_min)
+        else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
           f_turnover_tree(pft,day,config,1.0);
+          pft->phen=0.0;
           tree->isphen=TRUE;
+          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
       }
       break;
     case RAINGREEN:
-      if(!tree->isphen && tree->turn.leaf.carbon<epsilon)
+      if(!tree->isphen)
       {
         if(pft->aphen>treepar->aphen_max || day==pft->stand->cell->climbuf.startday_rainyseason-1)
         {
           f_turnover_tree(pft,day,config,1.0);
+          pft->phen=0.0;
           tree->isphen=TRUE;
+          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
-        else if(pft->wscal*100<pft->par->wscal.base && pft->aphen>treepar->aphen_min)
+        else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
           f_turnover_tree(pft,day,config,1.0);
+          pft->phen=0.0;
           tree->isphen=TRUE;
+          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
       }
     default:
