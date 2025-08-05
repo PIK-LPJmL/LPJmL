@@ -84,6 +84,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Real moist,w_agtop;
   Real response_agtop_leaves,*response_agsub_wood,*response_agtop_wood;
 
+  soil->count++;
+
   response_agtop_wood=newvec(Real,ncft+npft);
   check(response_agtop_wood);
   response_agsub_wood=newvec(Real,ncft+npft);
@@ -150,10 +152,10 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     if(fast_needed )
     {
       soil_status(soil, &savesoil, npft+ncft);
-      for (i=0;i<10;i++)
+      for (i=0;i<5;i++)
       {
         hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*10);
+            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*5);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;
