@@ -96,14 +96,12 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
           f_turnover_tree(pft,day,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
-          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
         else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
           f_turnover_tree(pft,day,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
-          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
       }
       break;
@@ -115,14 +113,12 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
           f_turnover_tree(pft,day,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
-          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
         else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
           f_turnover_tree(pft,day,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
-          getoutputindex(&pft->stand->cell->output,PFT_TURNOVER_DAY,pft->par->id,config)=day;
         }
       }
       break;
