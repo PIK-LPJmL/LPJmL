@@ -78,6 +78,10 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           "p:\t\t%g\n"
           "N0:\t\t%g (mgN/gC)\n"
           "k_temp:\t\t%g\n"
+          "vmaxNO3:\t%g (gN/kgC/d)\n"
+          "vmaxNH4:\t%g (gN/kgC/d)\n"
+          "KNO3:\t\t%g (gN/m3)\n"
+          "KNH4:\t\t%g (gN/m3)\n"
           "min_c_bnf:\t%g (gC/m2)\n"
           "q_ash:\t\t%g\n"
           "sapwood_rec:\t%g\n"
@@ -88,6 +92,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           "fertilizer rate:\t%g (gN/m2/yr)\n"
           "par_sink_limit:\t%g\n",
           param.k_max,param.k_2,param.p,param.n0,param.k_temp,
+          param.vmaxNO3,param.vmaxNH4,param.KNO3,param.KNH4,
           param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.T_m,
           param.T_0,param.T_r,
           param.init_soiln.fast,param.init_soiln.slow,
