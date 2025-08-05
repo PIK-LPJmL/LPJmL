@@ -78,7 +78,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       up_temp_f=nuptake_temp_fcn(soil->temp[l]);
       if(soil->NO3[l]>0)
       {
-        NO3_up[l]=pft->par->vmax_up*(pft->par->kNmin+soil->NO3[l]*wscaler/(soil->NO3[l]*wscaler+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))*up_temp_f*
+        NO3_up[l]=param.vmaxNO3*(pft->par->kNmin+soil->NO3[l]*wscaler/(soil->NO3[l]*wscaler+param.KNO3*soil->wsat[l]*soildepth[l]/1000))*up_temp_f*
             f_NCplant*(crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
         /* reducing uptake according to availability */
         if(NO3_up[l]>soil->NO3[l])
@@ -92,7 +92,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         NO3_up[l]=0;
       if(soil->NH4[l]>0)
       {
-        NH4_up[l]=pft->par->vmax_up*(pft->par->kNmin+soil->NH4[l]*wscaler/(soil->NH4[l]*wscaler+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))*up_temp_f*
+        NH4_up[l]=param.vmaxNH4*(pft->par->kNmin+soil->NH4[l]*wscaler/(soil->NH4[l]*wscaler+param.KNH4*soil->wsat[l]*soildepth[l]/1000))*up_temp_f*
             f_NCplant*(crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000;
         /* reducing uptake according to availability */
         if(NH4_up[l]>soil->NH4[l])

@@ -64,6 +64,10 @@
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
     "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
     "k_temp" : 0.0693,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
+    "vmaxNO3" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+    "vmaxNH4" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+    "KNO3" : 0.70,             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+    "KNH4" : 0.45,             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
     "min_c_bnf" : 20,          /* threshold C root content for BNF */
     "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
     "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
