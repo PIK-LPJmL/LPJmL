@@ -19,6 +19,31 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Jens Heinke (heinke@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review:
+
+### Added
+
+- option to specify year after which deforestation is no longer feeding product pools but biomass is burnt instead: `luc_burn_startyear` (disabled)
+- option to specify costs for N recovery upon turnover (pre-compiler switch `NRECOVERY_COST`, disabled)
+
+### Changed
+
+- parameter changes: 
+  - `alphaa` from 0.5 to 0.6 for natural vegetation; 
+  - `theta` from 0.9 to 0.95; 
+  - `fn_turnover` PFT1: 0.7, PFT2: 0.3, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3;
+- parameter `bc3` and `bc4` now computed dependent on mean vegetation period temperature
+- nitrogen from turnover directly added to `bm_inc.nitrogen`
+
+### Fixed
+
+- corrected conversion of vmax in computation of N demand, which was incorrectly scaled with `daylength`
+- corrected temperature sensitive of N demand
+- corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
+
 
 ## [5.9.27] - 2025-07-15
 

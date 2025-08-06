@@ -48,7 +48,7 @@
 #else
 #define FN_TURNOVER_BMGR 0.69    /* 0.68 for green harvest + specific harvest dates */
 #endif
-#define ALPHAA 0.5
+#define ALPHAA 0.6
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 41.6
 #define CN_BL_EG_MN 14.8
