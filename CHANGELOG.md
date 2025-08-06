@@ -37,6 +37,7 @@ of `major.minor.patch` with
   - `fn_turnover` PFT1: 0.7, PFT2: 0.3, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3;
 - parameter `bc3` and `bc4` now computed dependent on mean vegetation period temperature
 - nitrogen from turnover directly added to `bm_inc.nitrogen`
+- N uptake now separated for uptake of NH4 and NO3 with literature-based parameters
 
 ### Fixed
 
