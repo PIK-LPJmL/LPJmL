@@ -146,10 +146,9 @@ Real getgdd(const Climbuf *climbuf, Real basetemp)
 
 int getstart_rainyseason(const Climbuf *climbuf)
 {
-  Real mprec3mon[NMONTH];
-  Real mprec_thresh;
+  Real mprec6mon[NMONTH];
   int firstdaymonth[NMONTH];
-  int mstart=0,mpeak=0;
+  int mstart=0;
   int m;
   foreachmonth(m)
   {
@@ -157,24 +156,11 @@ int getstart_rainyseason(const Climbuf *climbuf)
       firstdaymonth[m]=0;
     else
       firstdaymonth[m]=firstdaymonth[m-1]+ndaymonth[m-1];
-    mprec3mon[(m+1)%NMONTH]=(climbuf->mprec_sum[m]+climbuf->mprec_sum[(m+1)%NMONTH]+climbuf->mprec_sum[(m+2)%NMONTH])/3;
-  }
-  foreachmonth(m)
-  {
-    if(mprec3mon[m]<mprec3mon[mstart])
+    mprec6mon[m%NMONTH]=(climbuf->mprec_sum[m]+climbuf->mprec_sum[(m+1)%NMONTH]+climbuf->mprec_sum[(m+2)%NMONTH]+climbuf->mprec_sum[(m+3)%NMONTH]+climbuf->mprec_sum[(m+4)%NMONTH]+climbuf->mprec_sum[(m+5)%NMONTH])/6;
+    if(mprec6mon[m]>=mprec6mon[mstart])
       mstart=m;
-    if(mprec3mon[m]>mprec3mon[mpeak])
-      mpeak=m;
   }
-  if(mstart==mpeak)
-    return firstdaymonth[mstart]+15;
-  mprec_thresh=mprec3mon[mstart]+(mprec3mon[mpeak]-mprec3mon[mstart])*0.05;
-  if(mstart>mpeak)
-    mpeak+=NMONTH;
-  for(m=mstart;m<mpeak;m++)
-    if(climbuf->mprec_sum[m%NMONTH]<mprec_thresh)
-      mstart=m%NMONTH;
-  return firstdaymonth[mstart]+15;
+  return firstdaymonth[mstart];
 } /* of 'getstart_rainyseason' */
 
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */

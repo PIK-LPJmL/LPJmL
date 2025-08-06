@@ -31,8 +31,8 @@
 #define ALLOM2 40.0
 #define ALLOM3 0.67     /*0.5*/
 #define ALLOM4 0.3
-#define APHEN_MAX 245
-#define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
+#define APHEN_MAX 180
+#define APHEN_MIN 90    /* minimum aphen for cold- and drought-induced senescence */
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
