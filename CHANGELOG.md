@@ -44,6 +44,7 @@ of `major.minor.patch` with
 - corrected conversion of vmax in computation of N demand, which was incorrectly scaled with `daylength`
 - corrected temperature sensitive of N demand
 - corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
+- corrected phenology of trees...
 
 
 ## [5.9.27] - 2025-07-15
