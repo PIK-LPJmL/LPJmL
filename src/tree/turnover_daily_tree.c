@@ -121,6 +121,7 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
           tree->isphen=TRUE;
         }
       }
+      break;
     default:
       f_turnover_tree(pft,day,config,1.0/NDAYYEAR);
       break;
