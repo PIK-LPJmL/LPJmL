@@ -74,7 +74,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       if(soil->NO3[l]>0)
       {
         NO3_up[l]=param.vmaxNO3*(pft->par->kNmin+soil->NO3[l]*wscaler/(soil->NO3[l]*wscaler+param.KNO3*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
-            f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root-tree->turn_litt.root.carbon)*rootdist_n[l]/1000;  //Smith et al. Eq. C14-C15, Navail=totn
+            f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root-tree->turn_litt.root.carbon)*rootdist_n[l]/1000;
         /* reducing uptake according to availability */
         if(NO3_up[l]>soil->NO3[l])
           NO3_up[l]=soil->NO3[l];

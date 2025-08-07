@@ -31,17 +31,14 @@
 #define ALLOM2 40.0
 #define ALLOM3 0.67     /*0.5*/
 #define ALLOM4 0.3
-#define APHEN_MAX 245
-#define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
+#define APHEN_MAX 180
+#define APHEN_MIN 90    /* minimum aphen for cold-induced senescence */
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #define MORT_MAX 0.02
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.45      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.65   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.55   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.4   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER 0.35      /* fraction of N not recovered before turnover */
 #define ALPHAA 0.7            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 41.6
@@ -398,7 +395,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.7, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.3, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
@@ -449,7 +446,7 @@
       "beta_root" : 0.976,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 1.5,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -565,7 +562,7 @@
       "beta_root" : 0.974,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 1.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -632,7 +629,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.7, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.4,            /* inundation stress threshold [m] */
@@ -799,7 +796,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 1.5,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -866,7 +863,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.7, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.30,             /* inundation stress threshold [m] */
@@ -1114,7 +1111,7 @@
       "crownarea_max" : 20.0, /* crownarea_max 20*/
       "wood_sapl" : 1.2,      /* sapwood sapling 22*/
       "aphen_min" : 10,
-      "aphen_max" : 245,
+      "aphen_max" : APHEN_MAX,
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : ALLOM1,      /* allometry */
       "allom2" : ALLOM2,
@@ -1151,7 +1148,7 @@
       "beta_root" : 0.972,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
@@ -1218,7 +1215,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1249,7 +1246,7 @@
       "beta_root" : 0.943,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1316,7 +1313,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1414,7 +1411,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.28, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1444,7 +1441,7 @@
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
       "beta_root" : 0.93,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
-      "gmin"  : 0.2,          /* gmin 4*/
+      "gmin"  : 0.1,          /* gmin 4*/
       "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
@@ -1512,7 +1509,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.2,             /* inundation stress threshold [m] */
@@ -1610,7 +1607,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */
@@ -1943,7 +1940,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2280,7 +2277,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2400,7 +2397,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2516,7 +2513,7 @@
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
