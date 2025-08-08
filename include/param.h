@@ -93,10 +93,6 @@ typedef struct
   Real min_c_bnf;
   Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
-  Real vmaxNO3;               /**< maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1) */
-  Real vmaxNH4;               /**< maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1) */
-  Real KNO3;                  /**< Half saturation concentration of fine root NO3 uptake (g N m-3) */
-  Real KNH4;                  /**< Half saturation concentration of fine root NH4 uptake (g N m-3) */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
   Real ftimber;         /**< timber fraction at deforestation */
   Real ftimber_wp;      /**< timber fraction for wood plantations */

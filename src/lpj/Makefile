@@ -44,9 +44,9 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
-          fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
-          f_lai.$O getsize.$O fprintoutputvar.$O checkuniqoutput.$O\
-          getngrassnat.$O fscancnratio.$O initoutputdata.$O\
+          fscanphenparam.$O fscannuptakepar.$O landcover.$O standstocks.$O\
+          nitrogen_stress.$O f_lai.$O getsize.$O fprintoutputvar.$O\
+          checkuniqoutput.$O getngrassnat.$O fscancnratio.$O initoutputdata.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\

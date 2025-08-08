@@ -16,7 +16,6 @@
 
 Real nitrogen_stress(Pft *pft,             /**< PFT */
                      Real temp,            /**< temperature (deg C) */
-                     Real daylength,       /**< daylength (h) */
                      Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
                      Real npp,
                      int npft,             /**< number of natural PFTs */
