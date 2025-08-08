@@ -15,10 +15,11 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-map name] [-clm]\n       [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename]\n       [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-swap] [-v] [-units unit] [-var name] [-map name] [-clm]\n       [-cellsize s] [-byte] [-floatgrid] [-doublegrid]  [-o binfile]\n       [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize s] [-byte] [-floatgrid] [-doublegrid] [-o binfile] [-json] gridfile netcdffile ...\n"
 #endif
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 #ifdef USE_NETCDF
 #include <netcdf.h>
@@ -64,7 +65,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
       if(f==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
@@ -73,13 +74,13 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
       if(s==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
     default:
       fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
-      nc_close(file->ncid);
+      closeclimate_netcdf(file,TRUE);
       return TRUE;
   }
   switch(file->time_step)
@@ -115,7 +116,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
           free(f);
           fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
                   nc_strerror(rc));
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
       }
@@ -126,7 +127,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
           free(s);
           fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
                  nc_strerror(rc));
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
       }
@@ -143,7 +144,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             free(f);
           else
             free(s);
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
         if(file->datatype==LPJ_FLOAT)
@@ -154,7 +155,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(f);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           else if(isnan(f[file->nlon*address[0]+address[1]]))
@@ -163,7 +164,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(f);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           if(isbyte)
@@ -191,7 +192,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(s);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           if(isbyte)
@@ -228,6 +229,7 @@ int main(int argc,char **argv)
   Climatefile data;
   Config config;
   char *units,*var,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
+  const char *progname;
   Coord *grid;
   Intcoord intcoord;
   float fcoord[2];
@@ -252,13 +254,41 @@ int main(int argc,char **argv)
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-swap"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
+      {
+        printf("   cdf2bin (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert NetCDF data into raw binary output data for LPJmL version %s\n",getversion());
+        printf(USAGE
+               "\nArguments:\n"
+               "-h,--help    print this help text\n"
+               "-v,--verbose print name of NetCDF files\n"
+#ifdef USE_UDUNITS
+               "-units u     set unit to convert from NetCDF file\n"
+#endif
+               "-var name    variable name in NetCDF file\n"
+               "-map name    name of map in NetCDF file\n"
+               "-clm         grid file is in CLM format, default is raw\n"
+               "-byte        output data is converted in byte\n"
+               "-floatgrid   set datatype of grid file to float, default is short\n"
+               "-doublegrid  set datatype of grid file to double, default is short\n"
+               "-cellsize s  cell size in grid file, default is 0.5\n"
+               "-json        JSON metafile is created with suffix '.json'\n"
+               "-o binfile   filename of raw data file written. Default is out.bin\n"
+               "gridfile     filename of grid data file\n"
+               "netcdffile   filename of NetCDF file(s) converted\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
@@ -275,7 +305,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         var=strdup(argv[++iarg]);
@@ -287,7 +317,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         units=strdup(argv[++iarg]);
@@ -299,7 +329,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-map'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         map_name=argv[++iarg];
@@ -309,7 +339,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         outname=argv[++iarg];
@@ -319,7 +349,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-cellsize'.\n"
-                  USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         cellsize_lon=(float)strtod(argv[++iarg],&endptr);
@@ -338,17 +368,23 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
     else
       break;
   }
+  if(argc<=iarg)
+  {
+    fprintf(stderr,"Grid and NetCDF file missing.\n"
+            ERR_USAGE,progname,progname);
+    return EXIT_FAILURE;
+  }
   if(argc<iarg+2)
   {
-    fprintf(stderr,"Missing arguments.\n"
-            USAGE,argv[0]);
+    fprintf(stderr,"NetCDF file missing.\n"
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   if(isclm)
@@ -464,6 +500,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
     return EXIT_FAILURE;
   }
+  data.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
     if(verbose)
@@ -578,7 +615,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
-    nc_close(data.ncid);
+    closeclimate_netcdf(&data,TRUE);
   }
   if(isclm)
   {
