@@ -87,6 +87,13 @@ typedef struct
 
 typedef struct
 {
+  Real vmax; /**< maximum uptake capacity per unit fine root mass (g N kg-1 C d-1) */
+  Real kmin; /**< Rate of uptake not associated with Michaelis-Menten kinetics (unitless) */
+  Real Km;   /**< Michaelis-Menten constant for uptake (g N kg-1 C d-1) */
+} Nuptake_param;
+
+typedef struct
+{
   Real dry;       /**< irrigation threshold for dry conditions (0..1) */
   Real humid;     /**< irrigation threshold for humid conditions (0..1) */
 } Irrig_threshold;
@@ -147,9 +154,8 @@ typedef struct Pft
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;
     Traitpar k_litter10;
-    Real vmax_up;               /**< maximum N uptake capacity per unit fine root mass (g N g-1 C d-1), non PFT specific */
-    Real kNmin;                 /**< Rate of N uptake not associated with Michaelis-Menten kinetics (unitless), non PFT specific*/
-    Real KNmin;                 /**< Half saturation concentration of fine root N uptake (g N m-2), non-PFT specific */
+    Nuptake_param NO3_up;       /**< NO3 uptake parameters */
+    Nuptake_param NH4_up;       /**< NH4 uptake parameters */
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
     Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
@@ -275,6 +281,7 @@ extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
 extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
 extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
+extern Bool fscannuptakepar(LPJfile *,Nuptake_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void output_daily(const Pft *,Real,Real,const Config *);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
@@ -284,7 +291,7 @@ extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool,Real,const Config *);
-extern Real nitrogen_stress(Pft *,Real,Real,Real [LASTLAYER],Real,int,int,const Config *);
+extern Real nitrogen_stress(Pft *,Real,Real [LASTLAYER],Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);

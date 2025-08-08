@@ -83,6 +83,13 @@
     fprintf(stderr,"ERROR128: Cannot read emission factor '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
+#define fscanpftnuptakepar(verb,file,var,pft,name) \
+  if(fscannuptakepar(file,var,name,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR112: Cannot read N uptake param '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
 
 #define fscanpftirrig2(verb,file,var,pft,name)\
   if(fscanpftirrig(file,var,name,verb))\
@@ -393,9 +400,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,item,&pft->k_litter10.q10_wood,pft->name,
                  "k_litter10_q10_wood");
     fscanpftbool(verb,item,&pft->nfixing,pft->name,"nfixing");
-    fscanpftreal(verb,item,&pft->vmax_up,pft->name,"vmax_up");
-    fscanpftreal(verb,item,&pft->kNmin,pft->name,"kNmin");
-    fscanpftreal(verb,item,&pft->KNmin,pft->name,"KNmin");
+    fscanpftnuptakepar(verb,item,&pft->NO3_up,pft->name,"NO3_up");
+    fscanpftnuptakepar(verb,item,&pft->NH4_up,pft->name,"NH4_up");
     fscanpftreal(verb,item,&pft->knstore,pft->name,"knstore");
     fscanpftreal01(verb,item,&pft->fn_turnover,pft->name,"fn_turnover");
     fscanpftcnratio(verb,item,&cnratio,pft->name,"cnratio_leaf");
