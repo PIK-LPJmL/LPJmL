@@ -135,7 +135,8 @@ Real getgdd(const Climbuf *climbuf, Real basetemp)
   int gpdays=0;
   int m;
   foreachmonth(m)
-    if(climbuf->mtemp20[m]>basetemp) {
+    if(climbuf->mtemp20[m]>basetemp)
+    {
       gdd+=(climbuf->mtemp20[m]-basetemp)*ndaymonth[m];
       gpdays+=ndaymonth[m];
     }

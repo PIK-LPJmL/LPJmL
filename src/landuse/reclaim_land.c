@@ -119,8 +119,10 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
-    else {
-      if(pft->par->type==TREE){
+    else
+    {
+      if(pft->par->type==TREE)
+      {
         stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
