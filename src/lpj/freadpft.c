@@ -65,6 +65,7 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
   readreal(file,"vscal",&pft->vscal);
   readreal(file,"aphen",&pft->aphen);
   readreal(file,"phen",&pft->phen);
+  readreal(file,"b",&pft->b);
   readint(file,"litter_id",&pft->litter);
   if(pft->litter<0 || pft->litter>=stand->soil.litter.n)
   {
