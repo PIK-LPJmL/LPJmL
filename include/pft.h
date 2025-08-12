@@ -328,6 +328,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define litter_update(litter,pft,frac,config) pft->par->litter_update(litter,pft,frac,config)
 #define fire(pft,fireprob) pft->par->fire(pft,fireprob)
 #define actual_lai(pft) pft->par->actual_lai(pft)
+#define lai(pft) pft->par->lai(pft)
 #define init(pft) pft->par->init(pft)
 #define vegc_sum(pft) pft->par->vegc_sum(pft)
 #define leafc(pft) pft->par->leafc(pft)

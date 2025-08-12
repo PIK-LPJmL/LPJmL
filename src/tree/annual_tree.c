@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 #include "tree.h"
-#define inun_mort_max 0.5
 
 Bool annual_tree(Stand *stand,       /**< pointer to stand */
                  Pft *pft,           /**< pointer to PFT */

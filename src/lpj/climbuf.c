@@ -219,11 +219,12 @@ Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
   fwrite(&climbuf->atemp_mean20_fix,sizeof(Real),1,file);
   fwrite(&climbuf->gdd5,sizeof(Real),1,file);
   fwrite(climbuf->dval_prec,sizeof(Real),1,file);
-  fwrite(&climbuf->startday_rainyseason,sizeof(Real),1,file);
+  fwrite(&climbuf->startday_rainyseason,sizeof(int),1,file);
   fwrite(climbuf->temp,sizeof(Real),NDAYS,file);
   fwrite(climbuf->prec,sizeof(Real),NDAYS,file);
   fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
+  fwrite(climbuf->mprec_sum,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->V_req,sizeof(Real),ncft,file);
   fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
@@ -251,6 +252,7 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
   freadreal(climbuf->prec,NDAYS,swap,file);
   freadreal(climbuf->mpet20,NMONTH,swap,file);
   freadreal(climbuf->mprec20,NMONTH,swap,file);
+  freadreal(climbuf->mprec_sum,NMONTH,swap,file);
   freadreal(climbuf->mtemp20,NMONTH,swap,file);
 
   climbuf->V_req=newvec(Real,ncft);

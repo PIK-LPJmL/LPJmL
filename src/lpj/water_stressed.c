@@ -15,6 +15,7 @@
 #include "lpj.h"
 
 #define EPSILON 0.001  /* min precision of solution in bisection method */
+#define k 0.1          /* steepness parameter for inundation stress */
 
 typedef struct
 {
@@ -92,11 +93,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(pft->inun_count>pft->par->inun_dur)
     pft->inun_count=pft->par->inun_dur;
 
-  istress=pft->inun_count/(pft->inun_count+pft->par->inun_dur);
+  if(pft->inun_count>pft->par->inun_dur)
+   istress = (1.0 / (1.0 + exp(-k * (pft->inun_count - pft->par->inun_dur))) - 0.5) * 2.0;
 
   if(istress>1 || istress<0)
     fail(INVALID_INUNDSTRESS_ERR,TRUE,TRUE,"Inundation stress %g>1, isstress inun_count=%d, inun_dur=%d",
          pft->nind,istress,pft->inun_count,pft->par->inun_dur);
+
   pft->inun_stress+=istress/NDAYYEAR;
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;

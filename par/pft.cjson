@@ -77,10 +77,6 @@
 #define MAXBNFCOSTTE 0.0014
 #define MAXBNFCOSTBO 0.0056
 #define MAXBNFCOSTGR 0.007
-//#define MAXBNFCOSTTR 0.021 /* Fraction of NPP available for BNF multiplied by climates legume share */
-//#define MAXBNFCOSTTE 0.07
-//#define MAXBNFCOSTBO 0.0126
-//#define MAXBNFCOSTGR 0.021
 #define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
@@ -167,7 +163,7 @@
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
-      "idt_d" : 30.0,             /* inundation duration threshold [days] */
+      "idt_d" : 35.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
@@ -430,7 +426,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.25,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -489,7 +485,7 @@
       "wscal" :
       {
         "slope" : 5,          /* new phenology: slope of water limiting function */
-        "base" : 8.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 18.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -521,7 +517,7 @@
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 6.0, "sapwood" : 25.0, "root" : 6.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -546,7 +542,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
    },
@@ -662,7 +658,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1, /* Yu and Zhuang 2020 temperate evergreen forest*/
+      "nfixpot" : 0.5, /* Yu and Zhuang 2020 temperate evergreen forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -871,7 +867,7 @@
       "alpha_e" : 0.4,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 6.0, "sapwood" : 25.0, "root" : 6.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 3.0, "sapwood" : 25.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 20.0, /* crownarea_max 20*/
@@ -896,7 +892,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1014,7 +1010,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.2,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1132,7 +1128,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.2,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
    },
@@ -1150,7 +1146,7 @@
       "gmin"  : 1.5,          /* gmin 4*/
       "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.01,        /* resist 8*/
+      "resist" : 0.2,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
       "sla" : 0.040373,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1164,12 +1160,12 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.21,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.91,       /* new phenology: slope of cold-temperature limiting function */
@@ -1230,7 +1226,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1243,12 +1239,12 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.943,    /* beta_root */
+      "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.5,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.01,        /* resist 8*/
+      "resist" : 0.2,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
       "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
@@ -1262,16 +1258,16 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
-      "albedo_litter" : 0.1,  /* albedo of litter */
+      "albedo_litter" : 0.15,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
-        "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 5.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -1289,7 +1285,7 @@
       "wscal" :
       {
         "slope" : 0.5222,     /* new phenology: slope of water limiting function */
-        "base" : 30.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 35.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -1328,7 +1324,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1341,12 +1337,12 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.943,    /* beta_root */
+      "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
       "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.01,        /* resist 8*/
+      "resist" : 0.2,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.045242,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1360,7 +1356,7 @@
       "min_temprange" : 18.0,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1426,7 +1422,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1442,9 +1438,9 @@
       "beta_root" : 0.93,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
       "gmin"  : 0.1,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.5,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
-      "resist" : 0.01,        /* resist 8*/
+      "resist" : 0.2,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1458,12 +1454,12 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
@@ -1479,14 +1475,14 @@
       "light" :
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
-        "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "base" : 55.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
         "slope" : 8,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.4          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
@@ -1524,7 +1520,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1540,11 +1536,11 @@
       "beta_root" : 0.90,     /* beta_root */
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.1,      /* respcoeff 5*/
+      "respcoeff" : 0.5,      /* respcoeff 5*/
       "nmax" : 20.0,          /* nmax 7*/
-      "resist" : 0.01,        /* resist 8*/
+      "resist" : 0.2,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
-      "sla" : 0.18,        /* specific leaf area */
+      "sla" : 0.08,        /* specific leaf area */
       "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
@@ -1556,12 +1552,12 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 4.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
@@ -1577,14 +1573,14 @@
       "light" :
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
-        "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
+        "base" : 60,          /* new phenology: inflection point of light limiting function (Wm-2) */
+        "tau" : 0.2          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 0.88,       /* new phenology: slope of water limiting function */
+        "slope" : 0.7,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.2          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
@@ -1610,7 +1606,7 @@
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
-      "ist_m" : 0.5,             /* inundation stress threshold [m] */
+      "ist_m" : 0.1,             /* inundation stress threshold [m] */
       "idt_d" : 35.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1622,7 +1618,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 30},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.01,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTGR,
       "bnf_cost" : BNF_COST
     },
@@ -1662,7 +1658,7 @@
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 12.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
