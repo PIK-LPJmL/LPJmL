@@ -226,7 +226,7 @@ typedef struct Pft
   Real wscal_mean;
   Real phen,aphen;
   Real vmax;
-  Real b;
+  Real b;                /**< leaf respiration as fraction of vmax acclimated to mean temperature in vegetative period */
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
