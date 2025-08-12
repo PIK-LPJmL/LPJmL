@@ -166,7 +166,7 @@ typedef struct Pft
     Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
     Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
     Real bnf_cost;              /**< cost for N fixation (gC/gN) */
-    Real nrecovery_npp;         /**< NPP fraction for N recovery from leaf turnover (-) */
+    Real fnpp_nrecovery;         /**< NPP fraction for N recovery from leaf turnover (-) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -344,9 +344,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define vmaxlimit(pft,temp) pft->par->vmaxlimit(pft,temp)
 
 #ifdef NRECOVERY_COST
-#define nrecover_price(leafN,leafC,sla) (0.01/(leafN/(leafC * sla)))
-#else 
-#define nrecover_price(leafN,leafC,sla) (0.0)
+#define nrecover_price(leafN,leafC,sla) (0.01/((leafN)/((leafC) * (sla))))
 #endif
 
 #endif

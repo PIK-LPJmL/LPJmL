@@ -180,8 +180,8 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
       }
       tscal_b=exp(-0.017*(getgdd(&grid[cell].climbuf,0)-25));
       foreachstand(stand,s,(grid+cell)->standlist)
-        if(stand->type->landusetype!=AGRICULTURE)
-          foreachpft(pft,p,&stand->pftlist)
+        foreachpft(pft,p,&stand->pftlist)
+          if(pft->par->type!=CROP)
             pft->b=pft->par->b*tscal_b;
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/

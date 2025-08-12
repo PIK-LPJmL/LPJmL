@@ -154,12 +154,6 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
       fflush(stdout);
     }
 #endif
-    //if(!luc_timber){
-    //  if(pft->par->type==TREE){
-    //    stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
-    //  }
-    //}
-
   } /* of foreachpft */
 #if defined IMAGE && defined COUPLED
   if(tharvest)

@@ -57,7 +57,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       cutstand=getstand(cell->standlist,pos);
       cutstand->frac=difffrac;
 
-      reclaim_land(natstand,cutstand,cell,year > param.luc_burn_startyear ? FALSE: config->luc_timber,npft+ncft,config);
+      reclaim_land(natstand,cutstand,cell,year>=param.luc_burn_startyear ? FALSE: config->luc_timber,npft+ncft,config);
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
       tillage(&cutstand->soil, param.residue_frac);
       updatelitterproperties(cutstand,cutstand->frac);

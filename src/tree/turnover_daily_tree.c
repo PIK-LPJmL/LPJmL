@@ -41,7 +41,7 @@ static void f_turnover_tree(Pft *pft,       /**< pointer to tree PFT */
 
 #ifdef NRECOVERY_COST
   nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,temp)*(1+pft->par->knstore);
-  npp_for_recovery=max(0.0,pft->bm_inc.carbon*pft->par->nrecovery_npp);
+  npp_for_recovery=max(0.0,pft->bm_inc.carbon*pft->par->fnpp_nrecovery);
   if((nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2) && npp_for_recovery>epsilon)
   {
     navailable=nrecovered=max(0.0,tree->ind.leaf.nitrogen*treepar->turnover.leaf*factor*pft->nind*(1-pft->par->fn_turnover));

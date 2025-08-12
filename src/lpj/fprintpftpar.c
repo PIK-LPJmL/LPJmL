@@ -131,7 +131,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->NH4_up.vmax,pftpar->NH4_up.kmin,pftpar->NH4_up.Km,
           1/pftpar->ncleaf.high,1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,
           pftpar->knstore,pftpar->fn_turnover,bool2str(pftpar->nfixing),
-          pftpar->nrecovery_npp);
+          pftpar->fnpp_nrecovery);
   if(config->npp_controlled_bnf && pftpar->nfixing)
   {
     fprintf(file,"temp_bnf_lim:\t%g %g\n"

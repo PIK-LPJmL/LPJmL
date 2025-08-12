@@ -34,7 +34,7 @@ of `major.minor.patch` with
 - parameter changes: 
   - `alphaa` from 0.5 to 0.6 for natural vegetation; 
   - `theta` from 0.9 to 0.95; 
-  - `fn_turnover` PFT1: 0.7, PFT2: 0.3, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3;
+  - `fn_turnover` PFT1: 0.5, PFT2: 0.5, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3; updated values from [Sophia et al. 2024](https://doi.org/10.5194/bg-21-4169-2024) for all other PFTs except crops
   - `cnratio_leaf.low/median/high` for all PFTs updated from TRY data
   - `b` (ratio of dark respiration Rd to maximum photosynthetic capacity Vcmax) set to 0.031 for C3 and C4 plants (value for 25°C, from [Wang et al. 2020](https://doi.org/10.1111/gcb.14980), consistent with TRY data)
   - `aphen_min` from 60 to 90 and `aphen_max` from 245 to 180
@@ -44,6 +44,7 @@ of `major.minor.patch` with
 - scaling of vmax with f_LAI calcualtion removed
 - N recovery from turnover directly added to `bm_inc.nitrogen`
 - N uptake now separated for uptake of NH4 and NO3 with parameters from  [Craig et al. 2025](https://doi.org/10.1111/nph.70140) (median of values)
+- trees are burnt (instead of added to to the litter) when running with `luc_timber=FALSE`
 
 ### Fixed
 
