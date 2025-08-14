@@ -136,7 +136,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #endif
     /* calculate old or new phenology*/
     if (config->gsi_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,daylength,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     cover_stand+=pft->fpc*pft->phen;

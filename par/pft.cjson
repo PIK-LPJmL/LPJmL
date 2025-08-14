@@ -38,7 +38,7 @@
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #define MORT_MAX 0.02
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.35      /* fraction of N not recovered before turnover */
+#define FN_TURNOVER 0.5      /* fraction of N not recovered before turnover */
 #define ALPHAA 0.7            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 41.6
@@ -76,7 +76,6 @@
 #define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
 #define MAXBNFCOSTTE 0.0014
 #define MAXBNFCOSTBO 0.0056
-#define MAXBNFCOSTGR 0.007
 #define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
@@ -220,7 +219,7 @@
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
       "sla" : 0.01986,         /* specific leaf area */
-      "lmro_ratio" : 1.2,     /* lmro_ratio 18*/
+      "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 1000.0,         /* ramp 19*/
       "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -240,7 +239,7 @@
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 10.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -253,12 +252,12 @@
       {
         "slope" : 77.17,      /* new phenology: slope of light limiting function */
         "base" : 55.53,       /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.8          /* new phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.52          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
         "slope" : 5.14,       /* new phenology: slope of water limiting function */
-        "base": 70,            /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base": 4.997,        /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -369,7 +368,7 @@
       "tmax" :
       {
         "slope" : 1.625,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
-        "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+        "base" : 40,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
         "tau" : 0.1           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
       },
       "light" :
@@ -381,7 +380,7 @@
       "wscal" :
       {
         "slope" : 7.97,       /* new phenology: slope of water limiting function */
-        "base" : 22.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 25.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.1348        /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -463,7 +462,7 @@
       "beta_root" : 0.976,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 1.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -477,14 +476,14 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
-      "emax": 7.0, //7.0,            /* emax 35*/
+      "emax": 7.0,             /* emax 35*/
       "intc" : 0.06,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,  /* albedo of green leaves */
       "albedo_stem" : 0.1,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.1, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.2172,     /* new phenology: slope of cold-temperature limiting function */
@@ -515,7 +514,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -5.0, "high" : 20.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -586,7 +585,7 @@
       "beta_root" : 0.974,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -609,9 +608,9 @@
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
       "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
-      {
+       {
         "slope" : 0.55,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : -7.6297,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : -0.6297,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -623,7 +622,7 @@
       "light" :
       {
         "slope" : 18.83,      /* new phenology: slope of light limiting function */
-        "base" : 4,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "base" : 39.32,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
@@ -632,13 +631,14 @@
         "base" : 8.821,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
       },
+
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "evergreen",/* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : 3.0, "high" : 20.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -668,7 +668,7 @@
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
-      "turnover" : {"leaf" : 3.0, "sapwood" : 25.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -709,7 +709,7 @@
       "beta_root" : 0.966,    /* beta_root */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 120.0,          /* nmax 7*/
       "resist" : 0.3,         /* resist 8*/
       "longevity" : 0.45,     /* leaf longevity 10*/
@@ -733,7 +733,7 @@
       "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
-        "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+        "slope" : 0.5591,     /* new phenology: slope of cold-temperature limiting function */
         "base" : 5.69,        /* new phenology: inflection point of cold-temperature limiting function (deg C), originally 13.69 from Forkel etal. */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
@@ -745,23 +745,23 @@
       },
       "light" :
       {
-        "slope" : 58,         /* new phenology: slope of light limiting function */
-        "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "slope" : 28,         /* new phenology: slope of light limiting function */
+        "base" : 39.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 5.24,       /* new phenology: slope of water limiting function */
+        "slope" : 3.24,       /* new phenology: slope of water limiting function */
         "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.6           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "summergreen",/* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-      "temp_photos" : { "low" : 20.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+      "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -17.0, "high" : 20.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.31880,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -834,7 +834,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 1.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -877,7 +877,7 @@
       "wscal" :
       {
         "slope" : 5,          /* new phenology: slope of water limiting function */
-        "base" : 0.007695,    /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 2,    /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -886,7 +886,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -32.5, "high" : -2.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -32.5, "high" : -5.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -957,7 +957,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 1.0,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.3,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -1009,7 +1009,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -1000, "high" : -2.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -1000, "high" : -5.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -1082,7 +1082,7 @@
       "beta_root" : 0.943,     /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.3,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 0.65,     /* leaf longevity 10*/
@@ -1209,7 +1209,7 @@
       "gmin"  : 1.5,          /* gmin 4*/
       "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.2,        /* resist 8*/
+      "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
       "sla" : 0.040373,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1280,7 +1280,7 @@
         "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
       },
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* cnleaf min max, based on TRY data */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
@@ -1297,7 +1297,7 @@
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1312,9 +1312,9 @@
       "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.2,        /* resist 8*/
+      "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
       "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
@@ -1336,7 +1336,7 @@
       "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
-        "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
+        "slope" : 0.13,     /* new phenology: slope of cold-temperature limiting function */
         "base" : 5.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
@@ -1355,13 +1355,13 @@
       "wscal" :
       {
         "slope" : 0.5222,     /* new phenology: slope of water limiting function */
-        "base" : 35.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
+        "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "tau" : 0.1001       /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
       "path" : "C3",            /* pathway */
-      "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+      "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 10.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
       "temp" : { "low" : -30.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
@@ -1385,7 +1385,7 @@
         "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
       },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
@@ -1402,7 +1402,7 @@
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1417,9 +1417,9 @@
       "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
-      "resist" : 0.2,        /* resist 8*/
+      "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.045242,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1460,7 +1460,7 @@
       "wscal" :
       {
         "slope" : 0.88,       /* new phenology: slope of water limiting function */
-        "base" : 2,           /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 5,           /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -1490,8 +1490,8 @@
         "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
       },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.28, /* fraction of N not recovered before turnover */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1522,9 +1522,9 @@
       "beta_root" : 0.93,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
       "gmin"  : 0.1,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
-      "resist" : 0.2,        /* resist 8*/
+      "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
@@ -1564,9 +1564,9 @@
       },
       "wscal" :
       {
-        "slope" : 8,       /* new phenology: slope of water limiting function */
+        "slope" : 5,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.2          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
@@ -1595,7 +1595,7 @@
         "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
       },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
@@ -1612,7 +1612,7 @@
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1627,11 +1627,11 @@
       "beta_root" : 0.90,     /* beta_root */
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 20.0,          /* nmax 7*/
-      "resist" : 0.2,        /* resist 8*/
+      "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
-      "sla" : 0.08,        /* specific leaf area */
+      "sla" : 0.04,        /* specific leaf area */
       "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
@@ -1648,11 +1648,11 @@
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 0.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -1664,20 +1664,20 @@
       "light" :
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
-        "base" : 60,          /* new phenology: inflection point of light limiting function (Wm-2) */
+        "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.2          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 0.7,       /* new phenology: slope of water limiting function */
+        "slope" : 0.8,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.2          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.3          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-      "temp_photos" : { "low" : 0.0, "high" : 20.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+      "temp_photos" : { "low" : 0.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
       "temp" : { "low" : -1000.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.60235 ,     /* shape factor for soil organic matter vertical distribution*/
@@ -1700,7 +1700,7 @@
         "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
       },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
@@ -1717,7 +1717,7 @@
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*----------------------------------------------------------------------------------------*/
@@ -2055,7 +2055,7 @@
       },
       "cnratio_leaf": {"low": 34.0, "median" : 90.0, "high" : 132.0}, /* interannual variability in Heaton et al. (2009) */
       "knstore" : 0.05,       /* knstore, acc. to PFT 9 */
-      "fn_turnover" : FN_TURNOVER_BMGR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */

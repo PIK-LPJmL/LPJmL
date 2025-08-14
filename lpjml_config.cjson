@@ -462,7 +462,7 @@ ID                               Fmt                        filename
 
 #ifdef FROM_RESTART
 
-  "nspinup" : 420,   /* spinup years */
+  "nspinup" : 0,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF

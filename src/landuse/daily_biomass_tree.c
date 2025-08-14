@@ -133,7 +133,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   {
     /* calculate old or new phenology */
     if (config->gsi_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,daylength,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     sprink_interc=(data->irrigation.irrig_system==SPRINK) ? 1 : 0;

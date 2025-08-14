@@ -18,32 +18,24 @@
 #include "grass.h"
 #include "tree.h"
 
+
 Real fpc_grass(Pft *pft /**< pointer to grass PFT */
               )         /** \return positive change in FPC */
 {
   Real fpc_old;
-  Pfttree *tree;
-  tree=pft->data;
   const Pft *pft2;
   int p;
   Real lai_sum,fpc_sum;
   fpc_old=pft->fpc;
   lai_sum=fpc_sum=0.0;
-  Real lightextcoeff=0;
-
   foreachpft(pft2,p,&pft->stand->pftlist)
   {
-//    if(pft2->par->type==GRASS)
-//    {
-      lai_sum+=lai(pft2)*pft2->nind;
-      lightextcoeff+=pft2->par->lightextcoeff*pft2->fpc;
-      if(istree(pft))
-        fpc_sum+=tree->crownarea*pft->nind*(1.0-exp(-pft2->par->lightextcoeff*lai(pft2)*pft2->nind));
-      else
-        fpc_sum+=1.0-exp(-pft2->par->lightextcoeff*lai_grass(pft2)*pft2->nind);
-//    }
+    if(pft2->par->type==GRASS)
+    {
+      lai_sum+=lai_grass(pft2)*pft2->nind;
+      fpc_sum+=(1.0-exp(-pft2->par->lightextcoeff*lai_grass(pft2)*pft2->nind));
+    }
   }
-  pft->fpc=fpc_sum>0 ? (1.0-exp(-lightextcoeff*lai_sum))*(1.0-exp(-pft->par->lightextcoeff*lai_grass(pft)*pft->nind))/fpc_sum : 0;
-  //pft->fpc= fpc_sum*(1.0-exp(-pft->par->lightextcoeff*lai_grass(pft)*pft->nind));
+  pft->fpc=fpc_sum>0 ? (1.0-exp(-pft->par->lightextcoeff*lai_sum))*(1.0-exp(-pft->par->lightextcoeff*lai_grass(pft)*pft->nind))/fpc_sum : 0;
   return (pft->fpc<fpc_old) ? 0 : pft->fpc-fpc_old;
 } /* 'fpc_grass' */

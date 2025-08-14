@@ -19,6 +19,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    Real light,  /**< light, i.e. shortwave-downward radiation (W m-2) */
                    int day,     /**< day of the year */
                    Bool isdaily, /**< daily temperature data (TRUE/FALSE) */
+                   Real daylength, /**< day length (h) */
                    const Config *config /**< LPJmL configuration */
                   )
 {
@@ -47,6 +48,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
 
   /* phenology */
   if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") ||
+     !strcmp(pft->par->name,"tropical broadleaved evergreen tree floodtolerant") ||
      !strcmp(pft->par->name,"bioenergy tropical tree") ||
      !strcmp(pft->par->name,"woodplantation tropical tree"))
   {
@@ -60,6 +62,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
 
   if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") || 
+      !strcmp(pft->par->name,"tropical broadleaved evergreen tree floodtolerant") ||
      !strcmp(pft->par->name,"tropical broadleaved raingreen tree") || 
      !strcmp(pft->par->name,"bioenergy tropical tree") ||
      !strcmp(pft->par->name,"woodplantation tropical tree"))
