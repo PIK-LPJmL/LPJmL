@@ -59,7 +59,6 @@ Bool fwrite_tree(Bstruct file,    /**< pointer to binary file */
   bstruct_writebool(file,"isphen",tree->isphen);
   fwritetreeturn(file,"turn",&tree->turn);
   fwritetreeturn(file,"turn_litt",&tree->turn_litt);
-  bstruct_writereal(file,"turn_nbminc",tree->turn_nbminc);
   fwritetreephys2(file,"ind",&tree->ind);
   if(pft->par->cultivation_type==ANNUAL_TREE)
   {

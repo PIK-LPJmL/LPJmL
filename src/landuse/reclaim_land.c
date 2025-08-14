@@ -119,6 +119,18 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
+    else
+    {
+      if(pft->par->type==TREE)
+      {
+        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
+        getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
+        cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        getoutput(&cell->output,DEFOREST_EMIS_N,config)+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        soil->NO3[0]+=stocks.nitrogen*param.q_ash;
+      }
+    }
 #if defined DEBUG_IMAGE && defined COUPLED
     /*if(ftimber>0 ||
       (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -142,7 +154,6 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
       fflush(stdout);
     }
 #endif
-
   } /* of foreachpft */
 #if defined IMAGE && defined COUPLED
   if(tharvest)

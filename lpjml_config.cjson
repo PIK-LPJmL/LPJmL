@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.28                          \n**/
+/** Default configuration file for LPJmL C Version 5.10.0                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -43,7 +43,7 @@
   "coupled_host" : "localhost", /* host where the coupled model is running */
   "coupled_port" : 2224,    /* port for socket communication */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "5.9",       /* LPJmL version expected */
+  "version"  : "5.10",      /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */

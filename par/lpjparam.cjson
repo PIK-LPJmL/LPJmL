@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.9.28                                \n**/
+/**     LPJ parameter file for LPJmL version 5.10.0                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -39,7 +39,7 @@
     "soil_infil" : 2.0,        /* default soil infiltration */
     "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
     "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-    "theta" : 0.9,             /* theta */
+    "theta" : 0.95,             /* theta */
     "alphac3" : 0.08,          /* alphac3 */
     "alphac4" : 0.053,         /* alphac4 */
     "r_growth" : 0.25,         /* r_growth */
@@ -63,7 +63,7 @@
     "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
     "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
-    "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
+    "k_temp" : 0.0693,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
     "min_c_bnf" : 20,          /* threshold C root content for BNF */
     "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
     "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
@@ -100,6 +100,7 @@
     "fuelratio" : 0.0,                  /* fraction of residue burnt outside field */
     "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
     "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
+    "luc_burn_startyear" : 9999,        /* start year for burning timber from land-use change instead of harvesting to product pools */
     "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
     "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
     "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
