@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.9.28                           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.10.0                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -48,7 +48,7 @@
 #else
 #define FN_TURNOVER_BMGR 0.69    /* 0.68 for green harvest + specific harvest dates */
 #endif
-#define ALPHAA 0.6
+#define ALPHAA 0.7
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 41.6
 #define CN_BL_EG_MN 14.8
@@ -394,7 +394,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 20.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -5.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -421,7 +421,7 @@
       "roughness_length" : 1.0,     /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -756,7 +756,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -32.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -32.5, "high" : -5.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -783,7 +783,7 @@
       "roughness_length" : 1.0, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 3.0, "sapwood" : 25.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 20.0, /* crownarea_max 20*/
@@ -876,7 +876,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -1000, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -1000, "high" : -5.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
