@@ -17,7 +17,7 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
-## [Unreleased]
+## [5.10.0] - 2025-08-14
 
 ### Contributors
 
@@ -32,32 +32,35 @@ of `major.minor.patch` with
 ### Changed
 
 - parameter changes: 
-  - `alphaa` from 0.5 to 0.6 for natural vegetation; 
+  - `alphaa` from 0.5 to 0.7 for natural vegetation; 
   - `theta` from 0.9 to 0.95; 
   - `fn_turnover` PFT1: 0.5, PFT2: 0.5, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3; updated values from [Sophia et al. 2024](https://doi.org/10.5194/bg-21-4169-2024) for all other PFTs except crops
   - `cnratio_leaf.low/median/high` for all PFTs updated from TRY data
   - `b` (ratio of dark respiration Rd to maximum photosynthetic capacity Vcmax) set to 0.031 for C3 and C4 plants (value for 25°C, from [Wang et al. 2020](https://doi.org/10.1111/gcb.14980), consistent with TRY data)
   - `aphen_min` from 60 to 90 and `aphen_max` from 245 to 180
   - `nfixpot` from 0.01 to 0.5 (middle of proposed range in [Yu and Zhuang 2020](https://doi.org/10.5194/bg-17-3643-2020))
+  - `turnover` parameter for leaves&roots set to 2 for TeNE and 3 BoNE 
+  - temperature boundary between temperate and boreal zone changed from -2°C to -5°C
 - acclimation of `b` to mean vegetation period temperature (following [Wang et al. 2020](https://doi.org/10.1111/gcb.14980))
 - calculation of structural leaf N content (leaf N independent of Vcmax) based on `ncleaf.low` in both `ndemand_xx` and `vmaxlimit_xx` (was `ncleaf.medium` in `ndemand_xx`)
-- scaling of vmax with f_LAI calcualtion removed
+- scaling of vmax with f_LAI removed
 - N recovery from turnover directly added to `bm_inc.nitrogen`
 - N uptake now separated for uptake of NH4 and NO3 with parameters from  [Craig et al. 2025](https://doi.org/10.1111/nph.70140) (median of values)
-- trees are burnt (instead of added to to the litter) when running with `luc_timber=FALSE`
+- trees are burnt (instead of added to the litter) when running with `luc_timber=FALSE`
+- beginning of vegetative period for tropical raingreen trees set at beginning of 6 month period with highest precipitation sum
+- leaf shedding for deciduous trees induced after `aphen_max` or when `phen<0.1` after `aphen_min`
+- `phen` permanently set to 1 for tropical evergreen trees
+
+### Removed
 
 ### Fixed
 
 - corrected conversion of vmax in computation of N demand, which was incorrectly scaled with `24/daylength`
-- corrected temperature sensitive of N demand (`k_temp` changed from 0.02 to 0.0693)
+- corrected temperature sensitivity of N demand (`k_temp` changed from 0.02 to 0.0693)
 - corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
-- consistent use of 
 - corrected phenology of trees:
   - leaf turnover of raingreen trees at leaf shedding (same as for summergreen trees, had continuous daily leaf turnover like evergreen trees)
-  - beginning of phenological cycle for tropical raingreen trees set at beginning of 6 month period with highest precipitation sum
-  - `phen` set to zero at leaf shedding until restart of phenological cycle
-  - leaf shedding for deciduous trees induced after `aphen_max` or when `phen<0.1` after `aphen_min`
-  - `phen` permanantely set to 1 for tropical evergreen trees
+  - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon 
 
 
 ## [5.9.28] - 2025-07-31
