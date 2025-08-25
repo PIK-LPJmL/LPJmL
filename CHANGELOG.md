@@ -29,7 +29,7 @@ of `major.minor.patch` with
 
 - Warning message added in `lpjml`, `lpjcheck`,`cdf2soil`, `txt2grid` and `cdf2coord` if cell size cannot be resolved by grid data in short format.
 - Function `isfloatcoord()` added in `coord.c` to check whether coordinate must be stored as a float variable, test function `test_isfloatcoord.c` added.
-- Test functions for `bisect`, `leftmostzero` and `getbufferavg` functions added.
+- Test functions for `vmaxlimit_tree`, `vmaxlimit_grass`, `vmaxlimit_crop`, `bisect`, `leftmostzero` and `getbufferavg` functions added.
 
 ### Changed
 

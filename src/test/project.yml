@@ -89,6 +89,9 @@
   :source:
     - ../soil/**
     - ../landuse/**
+    - ../tree/**
+    - ../grass/**
+    - ../crop/**
     - ../tools/**
     - ../bstruct/**
     - ../numeric/**
