@@ -1018,7 +1018,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
               foreachpft(pft,p,&stand->pftlist)
                 getoutput(&grid[cell].output,MG_VEGC,config)+=(vegc_sum(pft)*stand->frac);
         }
@@ -1034,7 +1034,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MG_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -1054,7 +1054,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
               getoutput(&grid[cell].output,MG_LITC,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
@@ -1069,7 +1069,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(getlandusetype(stand)))
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,SOILC_AGR,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -1089,7 +1089,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(getlandusetype(stand)))
               getoutput(&grid[cell].output,LITC_AGR,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
@@ -1321,7 +1321,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_NLIMIT,pft->par->id,config)+=pft->nlimit*ndate1;
           }
@@ -1340,7 +1340,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGC,pft->par->id,config)+=vegc_sum(pft);
           }
@@ -1359,7 +1359,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
           }
@@ -1426,12 +1426,12 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(getlandusetype(stand)))
               sumfrac+=stand->frac;
 
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(getlandusetype(stand)))
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutputindex(&grid[cell].output,SOILC_AGR_LAYER,0,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
@@ -1537,7 +1537,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=pft->par->lai(pft);
           }
@@ -1557,7 +1557,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1588,7 +1588,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1619,7 +1619,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1650,7 +1650,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+            if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1681,7 +1681,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1746,7 +1746,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1811,7 +1811,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1876,7 +1876,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1940,11 +1940,11 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MGRASS_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
@@ -1965,11 +1965,11 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MGRASS_SOILN,config)+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/sumfrac;
@@ -1990,11 +1990,11 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               getoutput(&grid[cell].output,MGRASS_LITC,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac/sumfrac;
           }
         }
@@ -2010,11 +2010,11 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               getoutput(&grid[cell].output,MGRASS_LITN,config)+=(litter_agtop_sum_n(&stand->soil.litter)+litter_agsub_sum_n(&stand->soil.litter))*stand->frac/sumfrac;
           }
         }
