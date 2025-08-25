@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               v  m  a  x  l  i  m  i  t  _  g  r  a  s  s  .  c                \n**/
+/**              f  s  c  a  n  n  u  p  t  a  k  e  p  a  r  .  c                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions reads N uptake parameter from configuration file                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,15 +15,22 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "grass.h"
 
-Real vmaxlimit_grass(const Pft *pft, /**< pointer to PFT */
-                     Real temp       /**< temperature (deg C) */
-                    )                /** \return vmax (gC/m2/day) */
+Bool fscannuptakepar(LPJfile *file,       /**< pointer to LPJ file */
+                     Nuptake_param *nuppar, /**< on return N uptake params read */
+                     const char *key,     /**< name of N uptake parameter */
+                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                     /** \return TRUE on error */
 {
-  const Pftgrass *grass;
-  Real vmax;
-  grass=pft->data; 
-  vmax=(pft->nleaf-pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*cmass*1e-6);
-  return min(pft->vmax,max(vmax,0.0001));
-  } /* of 'vmaxlimit_grass' */
+  LPJfile *f;
+  f=fscanstruct(file,key,verb);
+  if(f==NULL)
+    return TRUE;
+  if(fscanreal(f,&nuppar->vmax,"vmax",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&nuppar->kmin,"kmin",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&nuppar->Km,"Km",FALSE,verb))
+    return TRUE;
+  return FALSE;
+} /* of 'fscannuptakepar' */

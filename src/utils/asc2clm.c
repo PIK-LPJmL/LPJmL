@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 
 #define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-nstep n] [-header s]\n       [-version v] [-{int|float}] [-scale s] [-json] infile ... clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"asc2clm --help\" for more information.\n"
 #define FIRSTYEAR 1901
 
 int main(int argc,char **argv)
@@ -96,7 +97,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-firstyear' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++i],&endptr,10);
@@ -120,7 +121,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-grid' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         gridfile=fopen(argv[++i],"wb");
@@ -138,7 +139,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-nbands' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         nbands=strtol(argv[++i],&endptr,10);
@@ -159,7 +160,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-nstep' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         nstep=strtol(argv[++i],&endptr,10);
@@ -180,7 +181,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-version' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++i],&endptr,10);
@@ -201,7 +202,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-header' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         head=argv[++i];
@@ -211,7 +212,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-scale' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++i],&endptr);
@@ -230,7 +231,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: invalid option '%s'.\n"
-                USAGE,argv[i]);
+                ERR_USAGE,argv[i]);
         return EXIT_FAILURE;
       }
     }
@@ -239,7 +240,7 @@ int main(int argc,char **argv)
   if(argc<i+2)
   {
     fputs("Filename(s) missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
   }
   argc-=i;

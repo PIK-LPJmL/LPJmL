@@ -14,7 +14,8 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-longheader] [-search] [-zero] [-json] coord_old.clm coord_new.clm soil_old.bin soil_new.bin\n"
+#define USAGE "Usage: %s [-longheader] [-search] [-zero] [-json] coord_old.clm coord_new.clm\n       soil_old.bin soil_new.bin\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {
@@ -23,20 +24,43 @@ int main(int argc,char **argv)
   Bool iszero,issearch,isjson;
   Byte *soil,zero=0;
   char *arglist,*out_json;
+  const char *progname;
   Coordfile grid;
   float lon,lat;
   Coord res,res2;
   Real dist_min;
-  int i,j,setversion,ngrid,ngrid2,count,iarg;
+  int i,j,setversion,ngrid,ngrid2,count,iarg,rc;
   Filename filename,grid_name;
   Type grid_type;
   Header header;
   setversion=READ_VERSION;
   iszero=issearch=isjson=FALSE;
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-longheader"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
+      {
+        printf("     ");
+        rc=printf("%s (" __DATE__ ") Help",progname);
+        printf("\n     ");
+        repeatch('=',rc);
+        printf("\n\nRegrid raw binary soil file to a new grid for LPJmL version %s\n",getversion());
+        printf(USAGE
+               "\nArguments:\n"
+               "-h,--help    print this help text\n"
+               "-search      if cell is not found, nearest cell is used\n"
+               "-zero        id cell is not found, data is set to zero\n"
+               "-json        an additional JSON metafile with suffix .json is created\n"
+               "grid_old.clm corresponding grid filename of input data\n"
+               "grid_new_clm grid filename data should be regridded to\n"
+               "soil_old_clm filename of data that should be regridded\n"
+               "soil_new.clm filename of data file where regridded data is written\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
       else if(!strcmp(argv[iarg],"-search"))
         issearch=TRUE;
@@ -47,7 +71,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -57,7 +81,7 @@ int main(int argc,char **argv)
   if(argc<4+iarg)
   {
     fprintf(stderr,"Missing arguments.\n"
-            USAGE,argv[0]);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   filename.name=argv[iarg];

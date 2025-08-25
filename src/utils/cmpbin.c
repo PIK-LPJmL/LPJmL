@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-verbose] [-csv] file1.bin file2.bin\n"
+#define USAGE "Usage: %s [-metafile] [-verbose] [-csv] [-short] file1.bin file2.bin\n"
 
 int main(int argc,char **argv)
 {
@@ -27,7 +27,10 @@ int main(int argc,char **argv)
   Header header1,header2;
   Bool ismeta,swap1,swap2,verbose,iscsv;
   int iarg;
+  short sval1,sval2;
   ismeta=swap1=swap2=verbose=iscsv=FALSE;
+  header1.datatype=LPJ_FLOAT;
+  header2.datatype=LPJ_FLOAT;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -37,6 +40,8 @@ int main(int argc,char **argv)
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-csv"))
         iscsv=TRUE;
+      else if(!strcmp(argv[iarg],"-short"))
+        header1.datatype=header2.datatype=LPJ_SHORT;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
@@ -62,7 +67,6 @@ int main(int argc,char **argv)
     header1.nbands=1;
     header1.nstep=1;
     header1.timestep=1;
-    header1.datatype=LPJ_FLOAT;
     header1.order=CELLSEQ;
     header1.scalar=1;
     file1=openmetafile(&header1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap1,&offset,argv[iarg],TRUE);
@@ -70,7 +74,14 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     if(fseek(file1,offset,SEEK_CUR))
     {
+      fclose(file1);
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg],offset);
+      return EXIT_FAILURE;
+    }
+    if(header1.datatype!=LPJ_FLOAT && header1.datatype!=LPJ_SHORT)
+    {
+      fprintf(stderr,"Datatype in '%s' is %s, must be float or short .\n",argv[iarg],typenames[header1.datatype]);
+      fclose(file1);
       return EXIT_FAILURE;
     }
     header2.scalar=1;
@@ -81,15 +92,19 @@ int main(int argc,char **argv)
     header2.nbands=1;
     header2.nstep=1;
     header2.timestep=1;
-    header2.datatype=LPJ_FLOAT;
     header2.order=CELLSEQ;
     header2.scalar=1;
     file2=openmetafile(&header2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap2,&offset,argv[iarg+1],TRUE);
     if(file2==NULL)
+    {
+      fclose(file1);
       return EXIT_FAILURE;
+    }
     if(fseek(file2,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg+1],offset);
+      fclose(file1);
+      fclose(file2);
       return EXIT_FAILURE;
     }
     if(header1.nyear!=header2.nyear)
@@ -102,28 +117,32 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Number of cells in '%s'=%d differs from number of cells in '%s'=%d.\n",
               argv[iarg],header1.ncell,argv[iarg+1],header2.ncell);
+      fclose(file1);
+      fclose(file2);
       return EXIT_FAILURE;
     }
     if(header1.nbands!=header2.nbands)
     {
       fprintf(stderr,"Number of bands in '%s'=%d differs from number of bands in '%s'=%d.\n",
               argv[iarg],header1.nbands,argv[iarg+1],header2.nbands);
+      fclose(file1);
+      fclose(file2);
       return EXIT_FAILURE;
     }
     if(header1.nstep!=header2.nstep)
     {
       fprintf(stderr,"Number of steps in '%s'=%d differs from number of steps in '%s'=%d.\n",
               argv[iarg],header1.nstep,argv[iarg+1],header2.nstep);
+      fclose(file1);
+      fclose(file2);
       return EXIT_FAILURE;
     }
-    if(header1.datatype!=LPJ_FLOAT)
+    if(header2.datatype!=header1.datatype)
     {
-      fprintf(stderr,"Datatype in '%s' is %s, must be float.\n",argv[iarg],typenames[header1.datatype]);
-      return EXIT_FAILURE;
-    }
-    if(header2.datatype!=LPJ_FLOAT)
-    {
-      fprintf(stderr,"Datatype in '%s' is %s, must be float.\n",argv[iarg+1],typenames[header2.datatype]);
+      fprintf(stderr,"Datatype in '%s' is %s, must be %s of '%s'.\n",
+              argv[iarg+1],typenames[header2.datatype],typenames[header1.datatype],argv[iarg]);
+      fclose(file1);
+      fclose(file2);
       return EXIT_FAILURE;
     }
     count=(long)header1.nyear*header1.ncell*header1.nbands*header1.nstep/header1.timestep;
@@ -139,29 +158,38 @@ int main(int argc,char **argv)
     file2=fopen(argv[iarg+1],"rb");
     if(file2==NULL)
     {
+      fclose(file1);
       fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+1],strerror(errno));
       return EXIT_FAILURE;
     }
     size1=getfilesizep(file1);
     if(size1==0)
     {
+      fclose(file1);
+      fclose(file2);
       fprintf(stderr,"File '%s' is empty.\n",argv[iarg]);
       return EXIT_FAILURE;
     }
-    if(size1 % sizeof(float))
+    if(size1 % typesizes[header1.datatype])
     {
-      fprintf(stderr,"File size of '%s' is not multiple of float size.\n",argv[iarg+1]);
+      fclose(file1);
+      fclose(file2);
+      fprintf(stderr,"File size of '%s' is not multiple of %s size.\n",argv[iarg],typenames[header1.datatype]);
       return EXIT_FAILURE;
     }
     size2=getfilesizep(file2);
     if(size2==0)
     {
+      fclose(file1);
+      fclose(file2);
       fprintf(stderr,"File '%s' is empty.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
-    if(size2 % sizeof(float))
+    if(size2 % typesizes[header2.datatype])
     {
-      fprintf(stderr,"File size of '%s' is not multiple of float size.\n",argv[iarg+1]);
+      fclose(file1);
+      fclose(file2);
+      fprintf(stderr,"File size of '%s' is not multiple of %s size.\n",argv[iarg+1],typenames[header2.datatype]);
       return EXIT_FAILURE;
     }
     if(size1!=size2)
@@ -169,15 +197,25 @@ int main(int argc,char **argv)
       fprintf(stderr,"File size of '%s'=%lld differs from file size of '%s'=%lld.\n",argv[iarg],size1,argv[iarg+1],size2);
       size1=min(size1,size2);
     }
-    count=size1/sizeof(float);
+    count=size1/typesizes[header1.datatype];
   }
   max=0;
   nmax=0;
   diff=0;
   for(n=0;n<count;n++)
   {
-    freadfloat(&val1,1,swap1,file1);
-    freadfloat(&val2,1,swap2,file2);
+    if(header1.datatype==LPJ_FLOAT)
+    {
+      freadfloat(&val1,1,swap1,file1);
+      freadfloat(&val2,1,swap2,file2);
+    }
+    else
+    {
+      freadshort(&sval1,1,swap1,file1);
+      freadshort(&sval2,1,swap2,file2);
+      val1=sval1;
+      val2=sval2;
+    }
     if(max<fabs(val1-val2))
     {
       max=fabs(val1-val2);
@@ -197,6 +235,8 @@ int main(int argc,char **argv)
     }
     diff+=fabs(val1-val2);
   }
+  fclose(file1);
+  fclose(file2);
   if(max==0)
   {
     if(iscsv)

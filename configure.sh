@@ -41,8 +41,8 @@ while(( "$#" )); do
       echo "-nompi          do not build MPI version"
       echo "-Dmacro[=value] define macro for compilation"
       echo
-      echo After successfull completion of $0 LPJmL can be compiled by make all
-      echo Invoke make clean after change in configuration
+      echo "After successfull completion of $0 LPJmL can be compiled by 'make all'"
+      echo "Invoke 'make clean; make all' after change in configuration"
       echo -e "\nSee LICENSE file or invoke $0 -l to print license"
       echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
       exit 0
@@ -162,7 +162,8 @@ then
        echo >&2 No batch system found
     fi
   fi
-  echo Create executables with make all
+  echo "Create executables with 'make all'"
+  echo "Invoke 'make clean; make all' after change in configuration"
 else
   echo >&2 Warning: unsupported operating system, Makefile.$osname created
   cp config/Makefile.gcc Makefile.$osname
@@ -218,6 +219,8 @@ export MANPATH=\$LPJROOT/man:\$MANPATH
 
 alias printheader="printclm -data"
 alias soil2cdf="clm2cdf -notime -raw -byte"
+alias grid2clm="addheader -nbands 2 -nyear 1 -scale 0.01 -ncell 0 -id LPJGRID"
+alias cft2clm="addheader -nbands 64 -firstyear 1700 -lastyear 2005 -scale 0.001 -ncell 0 -id LPJLUSE"
 alias restart2json="restart2yaml -json"
 EOF
 
@@ -262,6 +265,8 @@ setenv MANPATH \$LPJROOT/man\:\$MANPATH
 
 alias printheader "printclm -data"
 alias soil2cdf "clm2cdf -notime -raw -byte"
+alias grid2clm "addheader -nbands 2 -nyear 1 -scale 0.01 -ncell 0 -id LPJGRID"
+alias cft2clm "addheader -nbands 64 -firstyear 1700 -lastyear 2005 -scale 0.001 -ncell 0 -id LPJLUSE"
 alias restart2json "restart2yaml -json"
 EOF
 chmod +x bin/lpj_paths.csh

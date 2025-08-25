@@ -239,6 +239,7 @@
     <ClCompile Include="src\lpj\fscanparam.c" />
     <ClCompile Include="src\lpj\fscanpftpar.c" />
     <ClCompile Include="src\lpj\fscanphenparam.c" />
+    <ClCompile Include="src\lpj\fscannuptakeparam.c" />
     <ClCompile Include="src\lpj\fwritecell.c" />
     <ClCompile Include="src\lpj\fwriteoutput_annual.c" />
     <ClCompile Include="src\lpj\fwriteoutput_daily.c" />
