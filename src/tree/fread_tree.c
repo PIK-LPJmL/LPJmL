@@ -82,8 +82,6 @@ Bool fread_tree(Bstruct file, /**< pointer to binary file */
     return TRUE;
   if(freadtreeturn(file,"turn_litt",&tree->turn_litt))
     return TRUE;
-  if(bstruct_readreal(file,"turn_nbminc",&tree->turn_nbminc))
-    return TRUE;
   if(freadtreephys2(file,"ind",&tree->ind))
     return TRUE;
   if(pft->par->cultivation_type==ANNUAL_TREE)
