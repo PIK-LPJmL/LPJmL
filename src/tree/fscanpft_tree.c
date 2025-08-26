@@ -161,6 +161,8 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
               pft->name);
     return TRUE;
   }
+  fscanbool2(verb,file,&tree->evergreen,pft->name,"evergreen");
+  fscanbool2(verb,file,&tree->rainyseason,pft->name,"rainyseason");
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
   if(iskeydefined(file,"sla"))
   {
