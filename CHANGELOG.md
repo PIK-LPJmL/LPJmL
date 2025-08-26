@@ -17,6 +17,22 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+## [Unreleased]
+
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+ - 2 boolean flags `evergreen` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+
+### Fixed
+
+- Arguments of `npp` function corrected in `daily_woodplantation.c`.
+
+
 ## [5.10.0] - 2025-08-14
 
 ### Contributors
