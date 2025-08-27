@@ -24,6 +24,10 @@ of `major.minor.patch` with
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
+### Added
+
+- Variables `phen` and `b` added to output in `fprintpft.c`.
+
 ### Changed
 
 - 2 boolean flags `evergreen` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
@@ -35,6 +39,8 @@ of `major.minor.patch` with
 - `nuptake_crop.c` changed to compile with `-DDEBUG_N` option.
 - `update_daily_cell.c` changed to compile with `-DDEBUG` option.
 - `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
+- Typo in error message in `bstruct_writearrayindex.c` corrected.
+- Error number corrected in `bstruct_finish.c`.
 
 
 ## [5.10.0] - 2025-08-14
