@@ -34,6 +34,7 @@ of `major.minor.patch` with
 - Arguments of `npp` function corrected in `daily_woodplantation.c`.
 - `nuptake_crop.c` changed to compile with `-DDEBUG_N` option.
 - `update_daily_cell.c` changed to compile with `-DDEBUG` option.
+- `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
 
 
 ## [5.10.0] - 2025-08-14
