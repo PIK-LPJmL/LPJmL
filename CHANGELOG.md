@@ -27,6 +27,7 @@ of `major.minor.patch` with
 ### Added
 
 - Variables `phen` and `b` added to output in `fprintpft.c`.
+- Compile option `NRECOVERY_COST` added to `INSTALL` and man page of `configure.sh`.
 
 ### Changed
 
@@ -41,6 +42,7 @@ of `major.minor.patch` with
 - `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
 - Typo in error message in `bstruct_writearrayindex.c` corrected.
 - Error number corrected in `bstruct_finish.c`.
+- Argument `temp` added to `f_turnover_tree` function to compile with `-DNRECOVERY_COST` option.
 
 
 ## [5.10.0] - 2025-08-14
