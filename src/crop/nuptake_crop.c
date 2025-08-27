@@ -85,7 +85,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           NO3_up[l]=soil->NO3[l];
         nupsum+=NO3_up[l];
 #ifdef DEBUG_N
-        printf("layer %d NO3_up=%g\n",l,NO3_up);
+        printf("layer %d NO3_up=%g\n",l,NO3_up[l]);
 #endif
       }
       else
@@ -114,7 +114,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       forrootsoillayer(l)
       {
         soil->NO3[l]-=NO3_up[l]*n_uptake/nupsum;
-        soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;      
+        soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
           fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NO3=%g<0 in layer %d, NO3_up=%g, nuptake=%g, nupsum=%g",
