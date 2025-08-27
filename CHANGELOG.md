@@ -26,7 +26,8 @@ of `major.minor.patch` with
 
 ### Changed
 
- - 2 boolean flags `evergreen` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+- 2 boolean flags `evergreen` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+- Unused argument `aet_layer` removed from `nitrogen_stress()` function.
 
 ### Fixed
 
