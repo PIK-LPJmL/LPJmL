@@ -48,11 +48,12 @@ void fprinttiming(FILE *file,          /**< pointer to text file */
 
   if(isroot(*config))
   {
+    fprintf(file,"\nLPJmL performance summary\n\n");
     if(config->ntask>1)
     {
       getminmax((const double *)vec,config->ntask,sizeof(Timing)/sizeof(double),(double *)&t_min,(double *)&t_max,(double *)&t_avg);
       fprintf(file,"Function                  Tmin (sec) %%Total Tavg (sec) %%Total Tmax (sec) %%Total\n"
-                   "------------------------- ---------- ------ ---------- ------ ---------- ------\n");
+              "------------------------- ---------- ------ ---------- ------ ---------- ------\n");
       fprintf(file,"drain                     %10.2f %6.1f %10.2f %6.1f %10.2f %6.1f\n",
               t_min.drain,t_min.drain/total*100,
               t_avg.drain,t_avg.drain/total*100,
