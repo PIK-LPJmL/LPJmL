@@ -130,50 +130,27 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
-  if(climate->data.sun!=NULL)
+  if(readclimate(&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year,config))
   {
-    if(readclimate(&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year,config))
+    if(isroot(*config))
     {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->cloud_filename);
-        fprintf(stderr,"ERROR131: Cannot read cloudiness of year %d from '%s'.\n",
-                year,name);
-        free(name);
-      }
-      return TRUE;
+      name=getrealfilename(&config->lwnet_filename);
+      fprintf(stderr,"ERROR131: Cannot read lwnet of year %d from '%s'.\n",
+              year,name);
+      free(name);
     }
-    if(config->cloud_filename.fmt==CDF)
-      for(i=0;i<climate->file_cloud.n;i++)
-        climate->data.sun[i]=100-climate->data.sun[i];
+    return TRUE;
   }
-  if(climate->data.lwnet!=NULL)
+  if(readclimate(&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year,config))
   {
-    if(readclimate(&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year,config))
+    if(isroot(*config))
     {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->lwnet_filename);
-        fprintf(stderr,"ERROR131: Cannot read lwnet of year %d from '%s'.\n",
-                year,name);
-        free(name);
-      }
-      return TRUE;
+      name=getrealfilename(&config->swdown_filename);
+      fprintf(stderr,"ERROR131: Cannot read swdown of year %d from '%s'.\n",
+              year,name);
+      free(name);
     }
-  }
-  if(climate->data.swdown!=NULL)
-  {
-    if(readclimate(&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year,config))
-    {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->swdown_filename);
-        fprintf(stderr,"ERROR131: Cannot read swdown of year %d from '%s'.\n",
-                year,name);
-        free(name);
-      }
-      return TRUE;
-    }
+    return TRUE;
   }
   if(climate->data.humid!=NULL)
   {

@@ -45,15 +45,10 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     daily->isdailytemp=TRUE;
     climbuf->mtemp+=daily->temp;
   }
-  if(climate->data.sun!=NULL)
-    daily->sun=isdaily(climate->file_cloud) ? climate->data.sun[cell*NDAYYEAR+day-1]
-                      : interpolate(getcellsun(climate,cell),month,dayofmonth);
-  if(climate->data.lwnet!=NULL)
-    daily->lwnet=isdaily(climate->file_lwnet) ? climate->data.lwnet[cell*NDAYYEAR+day-1]
-                      : interpolate(getcelllwnet(climate,cell),month,dayofmonth);
-  if(climate->data.swdown!=NULL)
-    daily->swdown=isdaily(climate->file_swdown) ? climate->data.swdown[cell*NDAYYEAR+day-1]
-                      : interpolate(getcellswdown(climate,cell),month,dayofmonth);
+  daily->lwnet=isdaily(climate->file_lwnet) ? climate->data.lwnet[cell*NDAYYEAR+day-1]
+                    : interpolate(getcelllwnet(climate,cell),month,dayofmonth);
+  daily->swdown=isdaily(climate->file_swdown) ? climate->data.swdown[cell*NDAYYEAR+day-1]
+                    : interpolate(getcellswdown(climate,cell),month,dayofmonth);
   if(climate->data.humid!=NULL)
     daily->humid=isdaily(climate->file_humid) ? climate->data.humid[cell*NDAYYEAR+day-1]
                       : interpolate(getcellhumid(climate,cell),month,dayofmonth);

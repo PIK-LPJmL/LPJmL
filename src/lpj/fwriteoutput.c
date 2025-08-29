@@ -570,7 +570,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(TWS,ndate1);
   writeoutputvar(DAYLENGTH,ndate1);
   writeoutputvar(TEMP,ndate1);
-  writeoutputvar(SUN,ndate1);
   writeoutputvar(NPP_AGR,1);
   writeoutputvar(RH,1);
   writeoutputvar(RH_AGR,1);

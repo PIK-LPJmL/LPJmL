@@ -207,7 +207,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *landuse[]={"no","yes","const","all_crops","only_crops"};
   char *fertilizer[]={"no","yes","auto"};
   char *irrigation[]={"no","lim","pot","all"};
-  char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
+  char *radiation[]={"radiation","radiation_lwdown"};
   char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
   char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate"};
   char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
@@ -299,7 +299,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   if(fscankeywords(file,&config->unlim_nitrogen,"with_nitrogen",nitrogen,2,!config->pedantic,verbose))
     return TRUE;
-  if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
+  if(fscankeywords(file,&config->radiation_lwdown,"radiation",radiation,2,FALSE,verbose))
     return TRUE;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE && config->with_radiation)
@@ -844,27 +844,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   scanclimatefilename(input,&config->temp_filename,TRUE,TRUE,"temp");
   scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
-  switch(config->with_radiation)
-  {
-    case RADIATION:
-      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
-      break;
-    case RADIATION_LWDOWN:
-      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
-      break;
-    case CLOUDINESS:
-      scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
-      break;
-    case RADIATION_SWONLY:
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
-      break;
-    default:
-      if(verbose)
-        fprintf(stderr,"ERROR213: Invalid setting %d for radiation.\n",config->with_radiation);
-      return TRUE;
-  }
+  scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+  scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,config->radiation_lwdown ? "lwdown" : "lwnet");
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     scanclimatefilename(input,&config->no3deposition_filename,TRUE,TRUE,"no3deposition");

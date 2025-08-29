@@ -113,16 +113,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
              (getcelltemp(input.climate,cell))[month],
              (getcellprec(input.climate,cell))[month],
              (israndomprec(input.climate)) ? (getcellwet(input.climate,cell))[month] : 0);
-       if(config->with_radiation)
-       {
-         if(config->with_radiation==RADIATION)
-           printf("lwnet = %.2f ",(getcelllwnet(input.climate,cell))[month]);
-         else if(config->with_radiation==RADIATION_LWDOWN)
-           printf("lwdown = %.2f ",(getcelllwnet(input.climate,cell))[month]);
-         printf("swdown = %.2f\n",(getcellswdown(input.climate,cell))[month]);
-       }
+       if(config->with_radiation==RADIATION_LWDOWN)
+         printf("lwdown = %.2f ",(getcelllwnet(input.climate,cell))[month]);
        else
-         printf("sun = %.2f\n",(getcellsun(input.climate,cell))[month]);
+         printf("lwnet = %.2f ",(getcelllwnet(input.climate,cell))[month]);
+       printf("swdown = %.2f\n",(getcellswdown(input.climate,cell))[month]);
        if(config->prescribe_burntarea)
          printf("burntarea = %.2f \n",
                 (getcellburntarea(input.climate,cell))[month]);
@@ -149,22 +144,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
               fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
             daily.temp=-273.15;
           }
-          if(config->with_radiation)
-          {
-            if(daily.swdown<0)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
-          }
-          else
-          {
-            if(daily.sun<-1e-5 || daily.sun>100)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
-            getoutput(&grid[cell].output,SUN,config)+=daily.sun;
-          }
+          if(daily.swdown<0)
+            fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
           if(daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
-          if(config->with_radiation==CLOUDINESS && daily.sun<0)
-            daily.sun=0;
           /* get daily values for temperature, precipitation and sunshine */
           getoutput(&grid[cell].output,TEMP,config)+=daily.temp;
           getoutput(&grid[cell].output,PREC,config)+=daily.prec;

@@ -92,7 +92,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     beta=albedo_stand(stand);
-    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
+    petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate.temp,
+           climate.lwnet,climate.swdown,config->radiation_lwdown,beta);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
@@ -367,7 +368,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.awater_flux+=cell->discharge.drunoff;
   if(config->with_lakes)
   {
-    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
+    petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate.temp,
+           climate.lwnet,climate.swdown,config->radiation_lwdown,c_albwater);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
     getoutput(&cell->output,ALBEDO,config)+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);

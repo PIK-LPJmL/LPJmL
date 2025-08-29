@@ -26,7 +26,6 @@ typedef struct
 {
   Real *temp; /**< temperature data (deg C) */
   Real *prec; /**< precipitation data (mm) */
-  Real *sun;  /**< sunshine data (%) */
   Real *wet;  /**< number of wet days in a month */
   Real *wind; /**< wind speed (m/min) */
   Real *tamp; /**< temperature amplitude */
@@ -45,7 +44,6 @@ typedef struct Dailyclimate
 {
   Real temp;       /**< temperature (deg C) */
   Real prec;       /**< precipitation (mm) */
-  Real sun;        /**< sunshine (%) */
   Real windspeed;  /**< windspeed (m/min) */
   Real tmin;       /**< minimum temperature (deg C) */
   Real tmax;       /**< maximum temperature (deg C) */
@@ -72,7 +70,7 @@ typedef struct
   int firstyear;    /**< first year of data available for all variables (AD) */
   Co2data co2;      /**< CO2 data */
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
-  Climatefile file_cloud,file_lwnet,file_swdown;
+  Climatefile file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
@@ -87,7 +85,6 @@ typedef struct
 
 #define getcelltemp(climate,cell) climate->data.temp+(cell)*NMONTH
 #define getcellprec(climate,cell) climate->data.prec+(cell)*NMONTH
-#define getcellsun(climate,cell) climate->data.sun+(cell)*NMONTH
 #define getcelllwnet(climate,cell) climate->data.lwnet+(cell)*NMONTH
 #define getcellswdown(climate,cell) climate->data.swdown+(cell)*NMONTH
 #define getcellwet(climate,cell) climate->data.wet+(cell)*NMONTH
@@ -130,7 +127,6 @@ extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
 extern Bool readco2(Co2data *,const Filename *,Config *);
-extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
 extern Bool openclmdata(Climatefile *,const Filename *,const char *,const char *,

@@ -488,14 +488,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if (config.wateruse_wd_filename.name != NULL)
     bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
 #endif
-  if(config.with_radiation)
-  {
-    if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
-    bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",LPJ_SHORT,TRUE);
-  }
-  else
-    bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",LPJ_SHORT,TRUE);
+  bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
+  bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",LPJ_SHORT,TRUE);
   bad+=checkfile(&config,"co2",&config.co2_filename);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",LPJ_SHORT,FALSE);

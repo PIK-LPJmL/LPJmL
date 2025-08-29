@@ -1326,12 +1326,9 @@ void lpj_update_
                      (getcelltemp(input.climate,cell))[month],
                      (getcellprec(input.climate,cell))[month],
                      (israndomprec(input.climate)) ? (getcellwet(input.climate,cell))[month] : 0);
-              if(config.with_radiation)
-                printf("lwnet = %.2f swdown = %.2f\n",
-                       (getcelllwnet(input.climate,cell))[month],
-                       (getcellswdown(input.climate,cell))[month]);
-              else
-                printf("sun = %.2f\n",(getcellsun(input.climate,cell))[month]);
+              printf("lwnet = %.2f swdown = %.2f\n",
+                     (getcelllwnet(input.climate,cell))[month],
+                     (getcellswdown(input.climate,cell))[month]);
 #endif
             }
           } /* of 'for(cell=...)' */

@@ -90,14 +90,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
 #endif
   freefilename(&config->temp_filename);
   freefilename(&config->prec_filename);
-  if(config->with_radiation)
-  {
-    if(config->with_radiation!=RADIATION_SWONLY)
-      freefilename(&config->lwnet_filename);
-    freefilename(&config->swdown_filename);
-  }
-  else
-    freefilename(&config->cloud_filename);
+  freefilename(&config->lwnet_filename);
+  freefilename(&config->swdown_filename);
   freefilename(&config->co2_filename);
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);

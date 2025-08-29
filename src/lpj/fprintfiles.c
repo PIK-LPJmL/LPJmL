@@ -137,14 +137,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     addfilename(table,&config->prodpool_init_filename,FALSE);
   }
 #endif
-  if(config->with_radiation)
-  {
-    if(config->with_radiation!=RADIATION_SWONLY)
-      addfilename(table,&config->lwnet_filename,TRUE);
-    addfilename(table,&config->swdown_filename,TRUE);
-  }
-  else
-    addfilename(table,&config->cloud_filename,TRUE);
+  addfilename(table,&config->lwnet_filename,TRUE);
+  addfilename(table,&config->swdown_filename,TRUE);
   addfilename(table,&config->co2_filename,FALSE);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {

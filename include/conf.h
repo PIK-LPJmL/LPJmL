@@ -52,10 +52,8 @@
 #define READ_RESIDUE_DATA 2
 #define BMGR_GREEN 0
 #define BMGR_BROWN 1
-#define RADIATION_LWDOWN 3
-#define RADIATION_SWONLY 2
-#define RADIATION 1
-#define CLOUDINESS 0
+#define RADIATION 0
+#define RADIATION_LWDOWN 1
 #define ALL -1
 #define RAW 0
 #define CLM 1
@@ -82,7 +80,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 337            /* number of output files */
+#define NOUT 336            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -145,7 +143,7 @@
 #define WD_AQ 53
 #define YDISCHARGE 54
 #define TEMP 55
-#define SUN 56
+#define TWS 56
 #define DAYLENGTH 57
 #define EVAP_RES 58
 #define PREC_RES 59
@@ -425,7 +423,6 @@
 #define NDEPO_MG 333
 #define LITTERTEMP 334
 #define NBP 335
-#define TWS 336
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

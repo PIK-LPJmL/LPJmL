@@ -50,10 +50,10 @@
                    },       /* Global attributes for NetCDF output files */
   #ifdef CRU_MONTHLY
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+    "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
   #else
     "random_prec" : false,     /* Random weather generator for precipitation disabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+    "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
   #endif
   "random_seed" : 2,        /* seed for random number generator */
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
