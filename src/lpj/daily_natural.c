@@ -107,7 +107,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #endif
     /* calculate old or new phenology*/
     if (config->gsi_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,daylength,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     cover_stand+=pft->fpc*pft->phen;
@@ -150,8 +150,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf);
-    pft->npp_bnf=0.0;
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery);
+    pft->npp_bnf=pft->npp_nrecovery=0.0;
     output->dcflux-=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL)

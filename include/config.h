@@ -141,6 +141,7 @@ struct config
 #endif
   int wait;               /**< time to wait for connection (sec) */
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
+  Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */
   Bool pedantic;          /**< enables pedantic mode, stops on some warnings (TRUE/FALSE) */
   char *sim_name;         /**< Desciption of LPJ simulation */
   char *coupled_model;    /**< name of coupled model or NULL */

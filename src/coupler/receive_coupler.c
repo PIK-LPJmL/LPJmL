@@ -117,6 +117,8 @@ Bool receive_coupler(int index,           /**< index of input file */
     case LPJ_DOUBLE:
       rc=readdouble_socket(config->socket,data,config->nall*size);
       break;
+    default:
+      rc=TRUE;
   }
 #ifdef DEBUG_COUPLER
   printf(", received.\n");

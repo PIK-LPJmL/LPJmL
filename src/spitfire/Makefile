@@ -31,7 +31,7 @@ LIBDIR  = ../../lib
 LIB     = libspitfire.$A
 
 HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
-          $(INC)/soil.h $(INC)/manage.h $(INC)/spitfire.h\
+          $(INC)/soil.h $(INC)/manage.h $(INC)/spitfire.h $(INC)/bstruct.h\
           $(INC)/climate.h $(INC)/date.h $(INC)/pft.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/cropdates.h $(INC)/crop.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/grass.h\

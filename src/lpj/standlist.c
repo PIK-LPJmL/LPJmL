@@ -16,18 +16,19 @@
 
 #include "lpj.h"
 
-int fwritestandlist(FILE *file,                /**< pointer to binary file */
-                    const Standlist standlist, /**< stand list */
-                    int ntotpft                /**< total number of PFTs */
-                   ) /** \return number of stands written */
+Bool fwritestandlist(Bstruct file,              /**< pointer to restart file */
+                     const char *key,           /**< name of object */
+                     const Standlist standlist, /**< stand list */
+                     int ntotpft                /**< total number of PFTs */
+                    ) /** \return TRUE on error */
 {
   const Stand *stand;
   int s;
-  fwrite(&standlist->n,sizeof(int),1,file);
+  bstruct_writebeginarray(file,key,standlist->n);
   foreachstand(stand,s,standlist)
-    if(fwritestand(file,stand,ntotpft))
-      return s;
-  return s;
+    if(fwritestand(file,NULL,stand,ntotpft))
+      return TRUE;
+  return bstruct_writeendarray(file);
 } /* of 'fwritestandlist' */
 
 void fprintstandlist(FILE *file,                /**< Pointer to text file */
@@ -46,23 +47,23 @@ void fprintstandlist(FILE *file,                /**< Pointer to text file */
   }
 } /* of 'fprintstandlist' */
 
-Standlist freadstandlist(FILE *file,            /**< File pointer to binary file */
+Standlist freadstandlist(Bstruct file,          /**< pointer to restart file */
+                         const char *name,      /**< name of object */
                          Cell *cell,            /**< Cell pointer */
                          const Pftpar pftpar[], /**< pft parameter array */
                          int ntotpft,           /**< total number of PFTs */
                          const Soilpar *soilpar,/**< soil parameter */
                          const Standtype standtype[],
                          int nstand,            /**< number of stand types */
-                         Bool separate_harvests,
-                         Bool swap              /**< Byte order has to be changed */
+                         Bool separate_harvests
                         ) /** \return allocated stand list or NULL */
 {
   /* Function reads stand list from file */
   int s,n;
   Standlist standlist;
-  /* Read number of stands */
-  if(freadint1(&n,swap,file)!=1)
+  if(bstruct_readbeginarray(file,name,&n))
     return NULL;
+  /* Read number of stands */
   standlist=newlist(n);
   if(standlist==NULL)
   {
@@ -71,12 +72,16 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   }
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
-    if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
-                                            standtype,nstand,separate_harvests,swap))==NULL)
+    if((getlistitem(standlist,s)=freadstand(file,NULL,cell,pftpar,ntotpft,soilpar,
+                                            standtype,nstand,separate_harvests))==NULL)
     {
-      fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
+      fprintf(stderr,"ERROR254: Cannot read stand item %d of %s.\n",s,name);
       return NULL;
     }
+  if(bstruct_readendarray(file,name))
+  {
+    return NULL;
+  }
   return standlist;
 } /* of 'freadstandlist' */
 

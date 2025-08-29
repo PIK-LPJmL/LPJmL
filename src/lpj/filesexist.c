@@ -350,14 +350,12 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
 
 static int checkrestartfile(Config *config, const char *filename)
 {
-  FILE *file;
-  Bool swap;
+  Bstruct file;
   file=openrestart(filename,config,
-                   config->npft[GRASS]+config->npft[TREE]+config->npft[CROP],
-                   &swap);
+                   config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
   if(file==NULL)
     return 1;
-  fclose(file);
+  bstruct_finish(file);
   return 0;
 } /* of 'checkrestartfile' */
 

@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-timestep t] [\-ispft] [\-firstyear y] [\-baseyear y] [\-scale s] [\-notime] [\-metafile] [\-config file] [\-netcdf4] [\-map name]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [\-nounit u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-timestep t] [\-ispft] [\-firstyear y] [\-baseyear y] [\-scale s] [\-notime] [\-metafile] [\-config file] [\-netcdf4] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -52,7 +52,10 @@ Set missing value for variable in NetCDF file to val.
 Set global attribute name in NetCDF file to value.
 .TP
 \-units u
-Set units for variable in NetCDF file.
+Set units for variable in NetCDF file. If set this overrides the unit defined in a JSON metafile.
+.TP
+\-nounit u
+Set unit for variable to u if unit is the empty string in a JSON metafile.
 .TP
 \-global
 Use global grid for NetCDF file.
@@ -82,7 +85,7 @@ Set first year in NetCDF file. Default is 1901.
 Set base year of time axis in NetCDF file. Default is firstyear.
 .TP
 \-scale s
-Scale output with factor s, default is 1.
+Scale output with factor s, default is 1. If set this overrides the scaling factor defined in a JSON metafile.
 .TP
 \-notime
 Omit time axis.
@@ -135,4 +138,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-cdf2bin(1), cmpbin(1), soil2cdf(1), clm2cdf(1), country2cdf(1), drainage2cdf(1), reservoir2cdf(1), lpjml(1)
+allbin2cdf(1), cdf2bin(1), cmpbin(1), soil2cdf(1), clm2cdf(1), country2cdf(1), drainage2cdf(1), reservoir2cdf(1), lpjml(1)

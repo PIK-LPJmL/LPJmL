@@ -48,7 +48,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
 #ifdef CHECK_BALANCE
   sum_before=litterstocks(litter);
   sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
-  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc-pft->establish.nitrogen;
+  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
 #endif
   cmass_excess=0;
   /* reproduction */
@@ -151,8 +151,6 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   tree->ind.leaf.nitrogen-= turn.leaf.nitrogen;
   tree->ind.sapwood.nitrogen-= turn.sapwood.nitrogen;
   tree->ind.root.nitrogen-= turn.root.nitrogen;
-  pft->bm_inc.nitrogen+=tree->turn_nbminc;
-  tree->turn_nbminc=0;
   tree->ind.heartwood.nitrogen+=turn.sapwood.nitrogen;
   if (tree->ind.leaf.nitrogen<epsilon)
   {

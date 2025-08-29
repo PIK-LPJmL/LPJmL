@@ -17,9 +17,23 @@
 #include "lpj.h"
 #include "grassland.h"
 
-Bool fread_grassland(FILE *file,   /**< pointer to binary file */
-                     Stand *stand, /**< stand pointer */
-                     Bool swap     /**< byte order has to be changed */
+static Bool readrotation(Bstruct file,const char *name,Rotation *rotation)
+{
+  if(bstruct_readbeginstruct(file,name))
+    return TRUE;
+  if(bstruct_readint(file,"grazing_days",&rotation->grazing_days))
+    return TRUE;
+  if(bstruct_readint(file,"recovery_dates",&rotation->recovery_days))
+    return TRUE;
+  if(bstruct_readint(file,"paddocks",&rotation->paddocks))
+    return TRUE;
+  if(bstruct_readint(file,"mode",(int *)(&rotation->mode)))
+    return TRUE;
+  return bstruct_readendstruct(file,name);
+} /* of 'readrotation' */
+
+Bool fread_grassland(Bstruct file, /**< pointer to restart file */
+                     Stand *stand  /**< stand pointer */
                     )              /** \return TRUE on error */
 {
   Grassland *grassland;
@@ -30,13 +44,13 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
     printallocerr("grassland");
     return TRUE;
   }
-  if(fread_irrigation(file,&grassland->irrigation,swap))
+  if(fread_irrigation(file,"irrigation",&grassland->irrigation))
     return TRUE;
-  freadint1(&stand->growing_days,swap,file);
-  freadreal1(&grassland->deficit_lsu_ne,swap,file);
-  freadreal1(&grassland->deficit_lsu_mp,swap,file);
-  freadint1(&grassland->rotation.grazing_days,swap,file);
-  freadint1(&grassland->rotation.recovery_days,swap,file);
-  freadint1(&grassland->rotation.paddocks,swap,file);
-  return freadint1((int *)(&grassland->rotation.mode),swap,file)!=1;
+  if(bstruct_readint(file,"growing_days",&stand->growing_days))
+    return TRUE;
+  if(bstruct_readreal(file,"deficit_lsu_ne",&grassland->deficit_lsu_ne))
+    return TRUE;
+  if(bstruct_readreal(file,"deficit_lsu_mp",&grassland->deficit_lsu_mp))
+    return TRUE;
+  return readrotation(file,"rotation",&grassland->rotation);
 } /* of 'fread_grassland' */

@@ -16,14 +16,12 @@
 #include "tree.h"
 
 Real vmaxlimit_tree(const Pft *pft, /**< pointer to PFT */
-                    Real daylength, /**< day length (h) */
                     Real temp       /**< temperature (deg C) */
                    )                /** \return vmax (gC/m2/day) */
 {
   Real vmax;
   const Pfttree *tree;
-  tree=pft->data; 
-  vmax=(pft->nleaf-pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
-
+  tree=pft->data;
+  vmax=(pft->nleaf-pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*cmass*1e-6);
   return min(pft->vmax,max(vmax,0.0001));
 } /* of 'vmaxlimit_tree' */

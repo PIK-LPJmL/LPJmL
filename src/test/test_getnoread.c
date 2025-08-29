@@ -1,0 +1,103 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "lpj.h"
+#include "unity.h"
+
+/* ------- headers with corresponding .c files that will be compiled/linked in by ceedling ------- */
+/* c unit testing framework */
+
+#include "support_fail_stub.h"
+#include "list.h"
+#include "hash.h"
+#include "swap.h"
+#include "freadtopheader.h"
+#include "fwritetopheader.h"
+#include "fputprintable.h"
+#include "bstruct_intern.h"
+#include "bstruct_skipdata.h"
+#include "bstruct_findobject.h"
+#include "bstruct_wopen.h"
+#include "bstruct_open.h"
+#include "bstruct_writename.h"
+#include "bstruct_writefloat.h"
+#include "bstruct_readfloat.h"
+#include "bstruct_readbeginstruct.h"
+#include "bstruct_writeendstruct.h"
+#include "bstruct_readendstruct.h"
+#include "bstruct_finish.h"
+#include "bstruct_writebeginstruct.h"
+#include "bstruct_fprintnamestack.h"
+#include "bstruct_getnoread.h"
+#include "bstruct_readid.h"
+#include "bstruct_readtoken.h"
+
+void test_getnoread(void)
+{
+  int noread;
+  struct
+  {
+    float a;
+    float b;
+    float c;
+    float d;
+  } data1={1.0,2.0,3.0,4.0},data2={};
+  Bstruct bstr;
+  bstr=bstruct_create("test.lpj");
+  TEST_ASSERT_NOT_NULL(bstr);
+  bstruct_writebeginstruct(bstr,"s");
+  bstruct_writefloat(bstr,"a",data1.a);
+  bstruct_writefloat(bstr,"b",data1.b);
+  bstruct_writefloat(bstr,"c",data1.c);
+  bstruct_writefloat(bstr,"d",data1.d);
+  bstruct_writeendstruct(bstr);
+  bstruct_finish(bstr);
+  bstr=bstruct_open("test.lpj",TRUE);
+  TEST_ASSERT_NOT_NULL(bstr);
+  bstruct_readbeginstruct(bstr,"s");
+  bstruct_readfloat(bstr,"a",&data2.a);
+  TEST_ASSERT_EQUAL_FLOAT(data1.a,data2.a);
+  bstruct_readfloat(bstr,"b",&data2.b);
+  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
+  bstruct_readfloat(bstr,"c",&data2.c);
+  TEST_ASSERT_EQUAL_FLOAT(data1.c,data2.c);
+  bstruct_readfloat(bstr,"d",&data2.d);
+  TEST_ASSERT_EQUAL_FLOAT(data1.d,data2.d);
+  bstruct_readendstruct(bstr,"s");
+  noread=bstruct_getnoread(bstr);
+  TEST_ASSERT_EQUAL_INT(0,noread);
+  bstruct_readbeginstruct(bstr,"s");
+  bstruct_readfloat(bstr,"a",&data2.a);
+  TEST_ASSERT_EQUAL_FLOAT(data1.a,data2.a);
+  bstruct_readfloat(bstr,"c",&data2.c);
+  TEST_ASSERT_EQUAL_FLOAT(data1.c,data2.c);
+  bstruct_readfloat(bstr,"b",&data2.b);
+  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
+  bstruct_readfloat(bstr,"d",&data2.d);
+  TEST_ASSERT_EQUAL_FLOAT(data1.d,data2.d);
+  bstruct_readendstruct(bstr,"s");
+  noread=bstruct_getnoread(bstr);
+  TEST_ASSERT_EQUAL_INT(0,noread);
+  bstruct_readbeginstruct(bstr,"s");
+  bstruct_readfloat(bstr,"a",&data2.a);
+  TEST_ASSERT_EQUAL_FLOAT(data1.a,data2.a);
+  bstruct_readfloat(bstr,"c",&data2.c);
+  TEST_ASSERT_EQUAL_FLOAT(data1.c,data2.c);
+  bstruct_readfloat(bstr,"b",&data2.b);
+  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
+  bstruct_readendstruct(bstr,"s");
+  noread=bstruct_getnoread(bstr);
+  TEST_ASSERT_EQUAL_INT(1,noread);
+  bstruct_readbeginstruct(bstr,"s");
+  bstruct_readfloat(bstr,"a",&data2.a);
+  TEST_ASSERT_EQUAL_FLOAT(data1.a,data2.a);
+  bstruct_readfloat(bstr,"b",&data2.b);
+  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
+  bstruct_readfloat(bstr,"c",&data2.c);
+  TEST_ASSERT_EQUAL_FLOAT(data1.c,data2.c);
+  bstruct_readendstruct(bstr,"s");
+  noread=bstruct_getnoread(bstr);
+  TEST_ASSERT_EQUAL_INT(2,noread);
+  bstruct_finish(bstr);
+  unlink("test.lpj");
+}

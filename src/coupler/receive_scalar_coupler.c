@@ -73,6 +73,8 @@ Bool receive_scalar_coupler(int index,           /**< index of input stream */
       case LPJ_DOUBLE:
         readdouble_socket(config->socket,data,size);
         break;
+      default:
+        return TRUE;
     }
 #ifdef DEBUG_COUPLER
     printf(", done.\n");

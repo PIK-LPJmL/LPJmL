@@ -21,6 +21,8 @@
 #include <math.h>
 #include "types.h"
 #include "date.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "numeric.h"
 #include "units.h"
 

@@ -32,8 +32,8 @@ extern Real daily_biomass_tree(Stand *,Real,const Dailyclimate *, int,int,
                                Real,Real,Real,Real,
                                Real ,int, int, int,Bool,Real,const Config *);
 extern void new_biomass_tree(Stand *);
-extern Bool fwrite_biomass_tree(FILE *,const Stand *);
+extern Bool fwrite_biomass_tree(Bstruct,const Stand *);
 extern void fprint_biomass_tree(FILE *,const Stand *,const Pftpar *);
-extern Bool fread_biomass_tree(FILE *,Stand *,Bool);
+extern Bool fread_biomass_tree(Bstruct,Stand *);
 
 #endif

@@ -24,48 +24,9 @@ Bool freadheader(FILE *file,     /**< file pointer of binary file */
                  Bool isout      /**< write output on stdout (TRUE/FALSE) */
                 ) /** \return TRUE on error */
 {
-  char *buffer;
-  int file_version,*ptr;
-  buffer=newvec(char,strlen(headername)+1);
-  if(buffer==NULL)
+  int *ptr;
+  if(freadtopheader(file,swap,headername,version,isout))
     return TRUE;
-  if(fread(buffer,strlen(headername),1,file)!=1)
-  {
-    if(isout)
-      fprintf(stderr,"ERROR239: Cannot read header id: %s.\n",strerror(errno));
-    free(buffer);
-    return TRUE;
-  }
-  /* set ending '\0' in string */
-  buffer[strlen(headername)]='\0';
-  if(strcmp(buffer,headername))
-  {
-    if(isout)
-    {
-      fputs("ERROR239: Header id '",stderr);
-      fputprintable(stderr,buffer);
-      fprintf(stderr,"' does not match '%s'.\n",headername);
-    }
-    free(buffer);
-    return TRUE;
-  }
-  free(buffer);
-  if(fread(&file_version,sizeof(file_version),1,file)!=1)
-  {
-    if(isout)
-      fprintf(stderr,"ERROR239: Cannot read header version: %s.\n",strerror(errno));
-    return TRUE;
-  }
-  if((file_version & 0xff)==0)
-  {
-    /* byte order has to be changed in file */
-    *swap=TRUE;
-    file_version=swapint(file_version);
-  }
-  else
-    *swap=FALSE;
-  if(*version==READ_VERSION)
-    *version=file_version;
   switch(*version)
   {
     case 1: /* old header? */

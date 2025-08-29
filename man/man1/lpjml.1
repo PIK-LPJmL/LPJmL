@@ -3,7 +3,7 @@
 lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [\-repo] [\-hash] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [\-repo] [\-hash] [-vv] [-pedantic] [-print_noread] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
@@ -39,6 +39,9 @@ Verbosely print the actual values during reading of the configuration files.
 .TP
 \-pedantic
 Stop on warnings.
+.TP
+\-print_noread
+Print variable names not read from restart file.
 .TP
 \-ofiles
 List only all available output variables.

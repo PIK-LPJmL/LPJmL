@@ -17,15 +17,25 @@
 #include "lpj.h"
 #include "grassland.h"
 
-Bool fwrite_grassland(FILE *file,        /**< pointer to binary file */
+static Bool writerotation(Bstruct file,const char *name,const Rotation *rotation)
+{
+  bstruct_writebeginstruct(file,name);
+  bstruct_writeint(file,"grazing_days",rotation->grazing_days);
+  bstruct_writeint(file,"recovery_dates",rotation->recovery_days);
+  bstruct_writeint(file,"paddocks",rotation->paddocks);
+  bstruct_writeint(file,"mode",rotation->mode);
+  return bstruct_writeendstruct(file);
+} /* of 'writerotation' */
+
+Bool fwrite_grassland(Bstruct file,      /**< pointer to restart file */
                       const Stand *stand /**< stand pointer */
                      )                   /** \return TRUE on error */
 {
   const Grassland *grassland;
   grassland=stand->data;
-  fwrite_irrigation(file,&grassland->irrigation);
-  fwrite(&stand->growing_days,sizeof(int),1,file);
-  fwrite(&grassland->deficit_lsu_ne,sizeof(Real),1,file);
-  fwrite(&grassland->deficit_lsu_mp,sizeof(Real),1,file);
-  return (fwrite(&grassland->rotation,sizeof(Rotation),1,file)!=1);
+  fwrite_irrigation(file,"irrigation",&grassland->irrigation);
+  bstruct_writeint(file,"growing_days",stand->growing_days);
+  bstruct_writereal(file,"deficit_lsu_ne",grassland->deficit_lsu_ne);
+  bstruct_writereal(file,"deficit_lsu_mp",grassland->deficit_lsu_mp);
+  return writerotation(file,"rotation",&grassland->rotation);
 } /* of 'fwrite_grassland' */

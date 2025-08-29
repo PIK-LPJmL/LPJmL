@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
+void fwriteoutputdata(Bstruct file,         /**< pointer to restart file */
+                      const char *name,     /**< name of object */
                       const Output *output, /**< output data */
                       const Config *config  /**< LPJ configuration */
                      )
 {
-  fwrite(&config->totalsize,sizeof(int),1,file);
-  fwrite(output->data,sizeof(Real),config->totalsize,file);
+  bstruct_writerealarray(file,name,output->data,config->totalsize);
 } /* of 'fwriteoutputdata' */

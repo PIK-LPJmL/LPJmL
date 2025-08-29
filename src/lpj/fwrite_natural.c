@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include "natural.h"
 
-Bool fwrite_natural(FILE * UNUSED(file),const Stand * UNUSED(stand))
+Bool fwrite_natural(Bstruct UNUSED(file),const Stand * UNUSED(stand))
 {
   return FALSE;
 } /* of 'fwrite_natural' */

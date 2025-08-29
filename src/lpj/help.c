@@ -26,8 +26,8 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-repo] [-hash] [-vv] [-pedantic] [-ofiles]\n"\
-                "       [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+#define USAGE "\nUsage: %s [-h] [-l] [-v] [-repo] [-hash] [-vv] [-pedantic] [-print_noread]\n"\
+                "       [-ofiles] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
@@ -63,6 +63,7 @@ void help(const char *progname /**< program filename */
           "-vv                 verbosely print the actual values during reading of the\n"
           "                    configuration files\n"
           "-pedantic           stops on warnings\n"
+          "-print_noread       print variable names not read from restart file\n"
           "-ofiles             list only all available output variables\n"
           "-param              print LPJmL parameter\n"
           "-nopp               disable preprocessing\n"

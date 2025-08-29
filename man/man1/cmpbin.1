@@ -3,7 +3,7 @@
 cmpbin \- compares two binary output files
 .SH SYNOPSIS
 .B cmpbin
-[\-metafile] [\-verbose] [\-csv] \fIfile1.bin\fP \fIfile2.bin\fP
+[\-metafile] [\-verbose] [\-csv] [\-short] \fIfile1.bin\fP \fIfile2.bin\fP
 
 .SH DESCRIPTION
 Program compares two binary output files. The maximum difference and its location, the sum of all absolute differences and the average difference are printed.
@@ -17,6 +17,9 @@ Print values and absolute difference for each different data item.
 .TP
 \-csv
 Print output in comma-separated format.
+.TP
+\-short
+Datatype of binary data is short, default is float. If \-metafile option is set then datatype is read from JSON metafile.
 .TP
 .I file1.bin file2.bin
 Filenames of binary output data files to compare.

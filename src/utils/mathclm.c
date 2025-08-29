@@ -473,7 +473,7 @@ int main(int argc,char **argv)
     header3.datatype=LPJ_FLOAT;
     header3.nstep=1;
   }
-  else
+  else if(op==SUM)
   {
     if(isint)
     {
