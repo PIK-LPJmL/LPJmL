@@ -29,8 +29,8 @@ extern void dailyfire_natural(Stand *,Output *,Livefuel *,Real *,Real,
                               Dailyclimate,const Pftpar *,int);
 extern void new_natural(Stand *);
 extern void free_natural(Stand *);
-extern Bool fread_natural(FILE *,Stand *,Bool);
-extern Bool fwrite_natural(FILE *,const Stand *);
+extern Bool fread_natural(Bstruct,Stand *);
+extern Bool fwrite_natural(Bstruct,const Stand *);
 extern void fprint_natural(FILE *,const Stand *,const Pftpar *);
 
 #endif

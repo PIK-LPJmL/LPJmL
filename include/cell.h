@@ -148,10 +148,10 @@ extern void update_annual(Cell *,int,int,
                           int,Bool,Bool,const Config *);
 extern void update_monthly_grid(Outputfile *,Cell *,Climate *,int,int,int,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
-extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);
+extern int fwritecell(Bstruct,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
-extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
-                      const Standtype [],int,Bool,Config *);
+extern Bool freadcell(Bstruct,Cell *,int,int,const Soilpar *,
+                      const Standtype [],int,Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
@@ -184,6 +184,10 @@ extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
 extern void closecelldata(Celldata,const Config *);
 extern Real albedo(Cell *, Real , Real );
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
+extern Bool fwritestocks(Bstruct,const char *,const Stocks *);
+extern Bool fwritestocksarray(Bstruct,const char *,const Stocks [],int);
+extern Bool freadstocks(Bstruct,const char *,Stocks *);
+extern Bool freadstocksarray(Bstruct,const char *,Stocks [],int);
 extern Bool setupannual_grid(Outputfile*,Cell *,Input *,int,int,int,Bool,const Config *);
 extern void initmonthly_grid(Cell *,int,int,Climate *,const Config *);
 extern void updateannual_grid(Outputfile *,Cell *,Landcover,int,int,int,Bool,Bool,const Config *);

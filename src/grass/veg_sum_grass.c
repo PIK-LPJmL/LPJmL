@@ -22,7 +22,7 @@ Real vegc_sum_grass(const Pft *pft /**< pointer to grass PFT */
 {
   const Pftgrass *grass;
   grass=pft->data;
-  return (phys_sum_grass(grass->ind)+grass->excess_carbon)*pft->nind;
+  return (phys_sum_grass(grass->ind)+grass->excess_carbon)*pft->nind-grass->turn_litt.leaf.carbon-grass->turn_litt.root.carbon;
 } /* of 'vegc_sum_grass' */
 
 Real vegn_sum_grass(const Pft *pft /**< pointer to grass PFT */
@@ -30,5 +30,5 @@ Real vegn_sum_grass(const Pft *pft /**< pointer to grass PFT */
 {
   const Pftgrass *grass;
   grass=pft->data;
-  return phys_sum_grass_n(grass->ind)*pft->nind;
+  return phys_sum_grass_n(grass->ind)*pft->nind-grass->turn_litt.leaf.nitrogen-grass->turn_litt.root.nitrogen;
 } /* of 'vegn_sum_grass' */

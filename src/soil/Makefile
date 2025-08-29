@@ -33,7 +33,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O\
           calc_soil_thermal_props.$O apply_heatconduction_of_a_day.$O compute_mean_layer_temps_from_enth.$O\
           apply_enth_of_untracked_mass_shifts.$O freezefrac2soil.$O enth2freezefrac.$O\
-          apply_perc_enthalpy.$O update_soil_thermal_state.$O
+          apply_perc_enthalpy.$O update_soil_thermal_state.$O freadpool.$O fwritepool.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -46,7 +46,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/stand.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h $(INC)/discharge.h\
-          $(INC)/climbuf.h $(INC)/reservoir.h $(INC)/agriculture.h $(INC)/timing.h
+          $(INC)/climbuf.h $(INC)/reservoir.h $(INC)/agriculture.h\
+          $(INC)/bstruct.h $(INC)/timing.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

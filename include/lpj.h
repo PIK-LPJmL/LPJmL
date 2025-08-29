@@ -56,6 +56,8 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "timing.h"
 #include "list.h"
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "numeric.h"
 #include "header.h"
@@ -122,12 +124,15 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 /* Declaration of variables */
 
 extern char *lpj_usage;
+#ifdef USE_TIMING
+extern double tread,twrite;         /* timing of read/write of restart file */
+#endif
 
 /* Declaration of functions */
 
 extern Cell *newgrid(Config *,const Standtype [],int,int,int);
 extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Config *);
-extern FILE *openrestart(const char *,Config *,int,Bool *);
+extern Bstruct openrestart(const char *,Config *,int,int);
 extern void copyright(const char *);
 extern void printlicense(void);
 extern void help(const char *);
@@ -137,6 +142,8 @@ extern void failonerror(const Config *,int,int,const char *);
 extern void fprinttiming(FILE *,double,const Config *);
 #ifdef USE_MPI
 extern Bool iserror(int,const Config *);
+extern void sendhash(const Hash,int,MPI_Comm);
+extern void receivehash(Hash,int,MPI_Comm);
 #else
 #define iserror(rc,config) rc
 #endif

@@ -123,6 +123,7 @@ void initsetting_netcdf(Netcdf_config *nc_config)
   nc_config->pft.dim=PFT_DIM_NAME;
   nc_config->pft.standard_name=PFT_STANDARD_NAME;
   nc_config->pft.long_name=PFT_LONG_NAME;
+  nc_config->pft.comment=NULL;
   nc_config->pft.unit="";
   nc_config->pft_name.name=PFTNAME_NAME;
   nc_config->pft_name.dim=PFTNAME_DIM_NAME;

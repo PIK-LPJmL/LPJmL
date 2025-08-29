@@ -19,14 +19,133 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: David Hötten (davidho@pik-potsdam.de)
 
 ### Added
 
 - Flag `-DUSE_TIMING` enables now timing for several LPJmL functions for performance analysis.
+
+### Changed
+
+- Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -DUSE_TIMING`.
+
+
+## [5.10.0] - 2025-08-14
+
+### Contributors
+
+- author: Jens Heinke (heinke@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- option to specify year after which deforestation is no longer feeding product pools but biomass is burnt instead: `luc_burn_startyear` (disabled)
+- option to specify costs for N recovery upon turnover (pre-compiler switch `NRECOVERY_COST`, disabled)
+
+### Changed
+
+- parameter changes: 
+  - `alphaa` from 0.5 to 0.7 for natural vegetation; 
+  - `theta` from 0.9 to 0.95; 
+  - `fn_turnover` PFT1: 0.5, PFT2: 0.5, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3; updated values from [Sophia et al. 2024](https://doi.org/10.5194/bg-21-4169-2024) for all other PFTs except crops
+  - `cnratio_leaf.low/median/high` for all PFTs updated from TRY data
+  - `b` (ratio of dark respiration Rd to maximum photosynthetic capacity Vcmax) set to 0.031 for C3 and C4 plants (value for 25°C, from [Wang et al. 2020](https://doi.org/10.1111/gcb.14980), consistent with TRY data)
+  - `aphen_min` from 60 to 90 and `aphen_max` from 245 to 180
+  - `nfixpot` from 0.01 to 0.5 (middle of proposed range in [Yu and Zhuang 2020](https://doi.org/10.5194/bg-17-3643-2020))
+  - `turnover` parameter for leaves&roots set to 2 for TeNE and 3 BoNE 
+  - temperature boundary between temperate and boreal zone changed from -2°C to -5°C
+- acclimation of `b` to mean vegetation period temperature (following [Wang et al. 2020](https://doi.org/10.1111/gcb.14980))
+- calculation of structural leaf N content (leaf N independent of Vcmax) based on `ncleaf.low` in both `ndemand_xx` and `vmaxlimit_xx` (was `ncleaf.medium` in `ndemand_xx`)
+- scaling of vmax with f_LAI removed
+- N recovery from turnover directly added to `bm_inc.nitrogen`
+- N uptake now separated for uptake of NH4 and NO3 with parameters from  [Craig et al. 2025](https://doi.org/10.1111/nph.70140) (median of values)
+- trees are burnt (instead of added to the litter) when running with `luc_timber=FALSE`
+- beginning of vegetative period for tropical raingreen trees set at beginning of 6 month period with highest precipitation sum
+- leaf shedding for deciduous trees induced after `aphen_max` or when `phen<0.1` after `aphen_min`
+- `phen` permanently set to 1 for tropical evergreen trees
+
+### Removed
+
+### Fixed
+
+- corrected conversion of vmax in computation of N demand, which was incorrectly scaled with `24/daylength`
+- corrected temperature sensitivity of N demand (`k_temp` changed from 0.02 to 0.0693)
+- corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
+- corrected phenology of trees:
+  - leaf turnover of raingreen trees at leaf shedding (same as for summergreen trees, had continuous daily leaf turnover like evergreen trees)
+  - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon 
+
+
+## [5.9.28] - 2025-07-31
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-h` added to utilities `addheader`, `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
+- Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
+- Support for short datatype added in `cmpbin` utility.
+- Shell script `allbin2cdf` added to convert all binary raw output files in a directory to NetCDF files.
+- Option `-nounit` added to `bin2cdf` to set unit if unit is defined in the metafile as an empty string.
+
+### Changed
+
+- If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
+- Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
+- File `default.md` converted from DOS to Linux format.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- Man pages updated.
+
+### Fixed
+
+- Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
+- Missing deallocation of list added in `open_config.c`.
+- Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
+- Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
+- Typo in man page of `configure.sh` fixed.
+- Comment for `pft` initialized in `initsetting_netcdf.c`.
+- Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
+- Short data handled correctly for metafile input in `bin2cdf`.
+- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
+- Man page for `mathclm` corrected for option `-v`.
+
+
+## [5.9.27] - 2025-07-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- Utility `json2restart` added to convert JSON files into restart files.
+- alias `restart2json` added for `restart2yaml -json`.
+- Output of time spent in reading and writing the restart file added.
+- Option `-print_noread` added to `lpjml` to print variable names not read from restart file.
+- Check added that PFT names in restart file match PFT names in LPJmL configuration file.
+- Unit tests added for bstruct library functions.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
+- Utility `lpjcat` updated to support the new restart file format.
+- Preprint's doi:10.5194/egusphere-2023-2946 changed to the final BNF paper doi:10.5194/gmd-17-7889-2024 in `.zenodo.json`.
+
+
+## [5.9.26] - 2025-07-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Changed
 
@@ -35,11 +154,12 @@ of `major.minor.patch` with
 - `lpj_climber4.c` renamed to `lpj_poem.c`.
 - `update_daily.c` renamed to `update_daily_cell.c`.
 - `update_monthly.c` renamed to `update_monthly_grid.c`.
-- `AFTER_STRESS` debugging output in `update_daily_cell.c' moved after N update really happened.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c` (former `updatedaily.c`) moved after N update really happened.
 
 ### Fixed
 
-- Macro `isequilyear()` has been defined  for calling equilibration function in a consistent way (issue #375).
+- Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
+
 
 ## [5.9.25] - 2025-05-22
 

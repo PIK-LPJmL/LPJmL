@@ -128,7 +128,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
 
   *wdf=wdf(pft,demand,supply);
 
-  if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0)
+  if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0 && pft->phen>0)
   {
     pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
@@ -199,7 +199,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.fac=gpd/1.6*ppm2bar(co2);
     data.path=pft->par->path;
     data.temp=temp;
-    data.b=pft->par->b;
+    data.b=pft->b;
     data.co2=ppm2Pa(co2);
     data.compvm=FALSE;
     data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_manage)*fpar(pft); /** par calculation do not include albedo*/
@@ -211,7 +211,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     vmax=pft->vmax;
     gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
-    nitrogen_stress(pft,temp,daylength,aet_layer,(agd-*rd),npft,ncft,config);
+    nitrogen_stress(pft,temp,aet_layer,(agd-*rd),npft,ncft,config);
 
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                          temp,data.apar,daylength,FALSE);

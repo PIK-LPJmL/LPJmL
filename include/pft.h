@@ -26,6 +26,7 @@
 #define LAMBDA_OPT 0.8  /* optimal Ci/Ca ratio */
 #define NHSG 4 /* number of hydrological soil groups */
 #define CCpDM 0.4763 /*leaf carbon content per dry mass  Kattge et al. 2011*/
+#define cmass 12.0    /* atomic mass of carbon */
 
 /* Definitions of datatypes */
 
@@ -83,6 +84,13 @@ typedef struct
   Real base; /**< half-value value at which the function is 0.5 */
   Real tau;  /**< rate of change of function to actual value */
 } Phen_param;
+
+typedef struct
+{
+  Real vmax; /**< maximum uptake capacity per unit fine root mass (g N kg-1 C d-1) */
+  Real kmin; /**< Rate of uptake not associated with Michaelis-Menten kinetics (unitless) */
+  Real Km;   /**< Michaelis-Menten constant for uptake (g N kg-1 C d-1) */
+} Nuptake_param;
 
 typedef struct
 {
@@ -146,9 +154,8 @@ typedef struct Pft
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;
     Traitpar k_litter10;
-    Real vmax_up;               /**< maximum N uptake capacity per unit fine root mass (g N g-1 C d-1), non PFT specific */
-    Real kNmin;                 /**< Rate of N uptake not associated with Michaelis-Menten kinetics (unitless), non PFT specific*/
-    Real KNmin;                 /**< Half saturation concentration of fine root N uptake (g N m-2), non-PFT specific */
+    Nuptake_param NO3_up;       /**< NO3 uptake parameters */
+    Nuptake_param NH4_up;       /**< NH4 uptake parameters */
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
     Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
@@ -159,6 +166,7 @@ typedef struct Pft
     Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
     Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
     Real bnf_cost;              /**< cost for N fixation (gC/gN) */
+    Real fnpp_nrecovery;         /**< NPP fraction for N recovery from leaf turnover (-) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -180,8 +188,8 @@ typedef struct Pft
     Real (*alphaa_manage) (const struct Pft*,int);
     void (*leaf_phenology)(struct Pft *,Real,int,Bool,const Config *);
     void (*albedo_pft) (struct Pft *, Real, Real);
-    Bool (*fwrite)(FILE *,const struct Pft *);
-    Bool (*fread)(FILE *,struct Pft *,Bool,Bool);
+    Bool (*fwrite)(Bstruct,const struct Pft *);
+    Bool (*fread)(Bstruct,struct Pft *,Bool);
     void (*fprint)(FILE *,const struct Pft *);
     void (*litter_update)(Litter *,struct Pft *,Real,const Config *);
     Stocks (*establishment)(struct Pft *,Real,Real,int);
@@ -203,8 +211,8 @@ typedef struct Pft
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
-    Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
-    Real (*vmaxlimit)(const struct Pft *,Real,Real);
+    Real (*ndemand)(const struct Pft *,Real *,Real,Real);
+    Real (*vmaxlimit)(const struct Pft *,Real);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
@@ -218,10 +226,12 @@ typedef struct Pft
   Real wscal_mean;
   Real phen,aphen;
   Real vmax;
+  Real b;                /**< leaf respiration as fraction of vmax acclimated to mean temperature in vegetative period */
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
   Real npp_bnf;
+  Real npp_nrecovery; /**< N recovery from leaf turnover */
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -257,9 +267,9 @@ extern Real interception(Real *,const Pft *,Real,Real);
 extern void initgdd(Real [],int);
 extern void updategdd(Real [],const Pftpar [],int,Real);
 extern Real gp(Pft *,Real,Real,Real,Real);
-extern Bool fwritepft(FILE *,const Pft *);
+extern Bool fwritepft(Bstruct,const Pft *);
 extern void fprintpft(FILE *,const Pft *);
-extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool,Bool);
+extern Bool freadpft(Bstruct,Stand *,Pft *,const Pftpar[],int,Bool);
 extern void noinit(Pft *);
 extern Stocks nofire(Pft *,Real *);
 extern Real nowdf(Pft *,Real,Real);
@@ -271,6 +281,7 @@ extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
 extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
 extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
+extern Bool fscannuptakepar(LPJfile *,Nuptake_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void output_daily(const Pft *,Real,Real,const Config *);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
@@ -279,8 +290,8 @@ extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
-extern void phenology_gsi(Pft *, Real, Real, int,Bool,const Config *);
-extern Real nitrogen_stress(Pft *,Real,Real,Real [LASTLAYER],Real,int,int,const Config *);
+extern void phenology_gsi(Pft *, Real, Real, int,Bool,Real,const Config *);
+extern Real nitrogen_stress(Pft *,Real,Real [LASTLAYER],Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
@@ -329,7 +340,11 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define annualpft(stand,pft,fpc_inc,isdaily,config) pft->par->annual(stand,pft,fpc_inc,isdaily,config)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
-#define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
-#define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
+#define ndemand(pft,nleaf,vcmax,temp) pft->par->ndemand(pft,nleaf,vcmax,temp)
+#define vmaxlimit(pft,temp) pft->par->vmaxlimit(pft,temp)
+
+#ifdef NRECOVERY_COST
+#define nrecover_price(leafN,leafC,sla) (0.01/((leafN)/((leafC) * (sla))))
+#endif
 
 #endif

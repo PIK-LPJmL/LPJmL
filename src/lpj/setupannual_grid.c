@@ -25,8 +25,9 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
                      )                     /** \return TRUE on error */
 {
   Stand *stand;
-  Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
-  int cell,s,landuse_year,rc;
+  Pft *pft;
+  Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr,tscal_b;
+  int cell,s,landuse_year,rc,p;
 #ifndef COUPLED
   int wateruse_year;
 #endif
@@ -181,6 +182,11 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
           if(stand->type->landusetype==GRASSLAND)
             getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
       }
+      tscal_b=exp(-0.017*(getgdd(&grid[cell].climbuf,0)-25));
+      foreachstand(stand,s,(grid+cell)->standlist)
+        foreachpft(pft,p,&stand->pftlist)
+          if(pft->par->type!=CROP)
+            pft->b=pft->par->b*tscal_b;
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */

@@ -16,13 +16,12 @@
 #include "grass.h"
 
 Real vmaxlimit_grass(const Pft *pft, /**< pointer to PFT */
-                     Real daylength, /**< day length (h) */
                      Real temp       /**< temperature (deg C) */
                     )                /** \return vmax (gC/m2/day) */
 {
   const Pftgrass *grass;
   Real vmax;
   grass=pft->data; 
-  vmax=(pft->nleaf-pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/f_lai(lai_grass(pft))/param.p/0.02314815*daylength;
+  vmax=(pft->nleaf-pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*cmass*1e-6);
   return min(pft->vmax,max(vmax,0.0001));
   } /* of 'vmaxlimit_grass' */

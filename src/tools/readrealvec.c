@@ -101,6 +101,8 @@ Bool readrealvec(FILE *file,     /**< pointer to binary file */
         data[i]=intercept+dvec[i]*slope; 
       free(dvec);
       break;
+    default:
+      return TRUE;
   } /* of switch */
   return FALSE;
 } /* of 'readrealvec' */

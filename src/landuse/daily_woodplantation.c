@@ -134,7 +134,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     /* calculate old or new phenology */
     if (config->gsi_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,daylength,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     sprink_interc = (data->irrigation.irrig_system == SPRINK) ? 1 : 0;
@@ -186,8 +186,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
      getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
      getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
-   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf);
-   pft->npp_bnf=0.0;
+   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf)-pft->npp_nrecovery;
+   pft->npp_bnf=pft->npp_nrecovery=0.0;
    getoutput(output,NPP,config)+=npp*stand->frac;
    getoutput(output,FAPAR,config)+= pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    getoutput(output,PHEN_TMIN,config) += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
