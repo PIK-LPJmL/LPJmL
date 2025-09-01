@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      t  i  m  i  n  g  .  h                                    \n**/
+/**                      t  i  m  i  n  g  .  c                                    \n**/
 /**                                                                                \n**/
-/**     Declaration of global variable timing                                      \n**/
+/**     Declaration of global variable timing and timing_fcn                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,4 +14,39 @@
 
 #include "lpj.h"
 
-Timing timing={}; /* Global variable for timing */
+#ifdef USE_TIMING
+
+/* Global variable for timing */
+
+double timing[N_FCN]={};
+
+char *timing_fcn[N_FCN]=
+{
+  "drain",
+  "fopenoutput",
+  "fwriterestart",
+  "fwriteoutput",
+  "getclimate",
+  "initinput",
+  "initoutput",
+  "irrig_amount_reservoir",
+  "iterate",
+  "iterateyear",
+  "littersom",
+  "MPI_Barrier",
+  "MPI_Init",
+  "newgrid",
+  "pedotransfer",
+  "readconfig",
+  "read_socket",
+  "setupannual_grid",
+  "storeclimate",
+  "update_daily_cell",
+  "updatedaily_grid",
+  "water_stressed",
+  "wateruse",
+  "withdrawal_demand",
+  "write_socket",
+};
+
+#endif /* of USE_TIMING */

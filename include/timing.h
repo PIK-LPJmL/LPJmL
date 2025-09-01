@@ -15,34 +15,37 @@
 #ifndef TIMING_H
 #define TIMING_H
 
-typedef struct
+typedef enum
 {
-  double drain;
-  double fopenoutput;
-  double fwriterestart;
-  double fwriteoutput;
-  double getclimate;
-  double initinput;
-  double initoutput;
-  double irrig_amount_reservoir;
-  double iterate;
-  double iterateyear;
-  double MPI_Init;
-  double newgrid;
-  double readconfig;
-  double read_socket;
-  double setupannual_grid;
-  double storeclimate;
-  double wateruse;
-  double littersom;
-  double pedotransfer;
-  double update_daily_cell;
-  double updatedaily_grid;
-  double water_stressed;
-  double withdrawal_demand;
-  double write_socket;
-  double barrier;
-} Timing;
+  DRAIN_FCN,
+  FOPENOUTPUT_FCN,
+  FWRITERESTART_FCN,
+  FWRITEOUTPUT_FCN,
+  GETCLIMATE_FCN,
+  INITINPUT_FCN,
+  INITOUTPUT_FCN,
+  IRRIG_AMOUNT_RESERVOIR_FCN,
+  ITERATE_FCN,
+  ITERATEYEAR_FCN,
+  LITTERSOM_FCN,
+  MPI_BARRIER_FCN,
+  MPI_INIT_FCN,
+  NEWGRID_FCN,
+  PEDOTRANSFER_FCN,
+  READCONFIG_FCN,
+  READ_SOCKET_FCN,
+  SETUPANNUAL_GRID_FCN,
+  STORECLIMATE_FCN,
+  UPDATE_DAILY_CELL_FCN,
+  UPDATEDAILY_GRID_FCN,
+  WATER_STRESSED_FCN,
+  WATERUSE_FCN,
+  WITHDRAWAL_DEMAND_FCN,
+  WRITE_SOCKET_FCN,
+  N_FCN
+} Timing_id;
 
-extern Timing timing;
+extern double timing[N_FCN];
+extern char *timing_fcn[N_FCN];
+
 #endif

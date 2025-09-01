@@ -98,6 +98,6 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
     }
    }
 #ifdef USE_TIMING
-  timing.irrig_amount_reservoir+=mrun()-t;
+  timing[IRRIG_AMOUNT_RESERVOIR_FCN]+=mrun()-t;
 #endif
 } /* of 'irrig_amount_reservoir' */

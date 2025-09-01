@@ -41,7 +41,7 @@ Bool write_socket(Socket *socket,const void *buffer,int n)
     n-=j;
   }while(n);
 #ifdef USE_TIMING
-  timing.write_socket+=mrun()-tstart;
+  timing[WRITE_SOCKET_FCN]+=mrun()-tstart;
 #endif
   return FALSE;
 } /* of 'write_socket' */

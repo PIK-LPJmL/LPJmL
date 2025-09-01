@@ -257,7 +257,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
 #ifdef USE_TIMING
-  timing.water_stressed+=mrun()-tstart;
+  timing[WATER_STRESSED_FCN]+=mrun()-tstart;
 #endif
   return agd;
 } /* of 'water_stressed' */

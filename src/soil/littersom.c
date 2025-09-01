@@ -414,7 +414,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
 #ifdef USE_TIMING
-   timing.littersom+=mrun()-tstart;
+   timing[LITTERSOM_FCN]+=mrun()-tstart;
 #endif
   return flux;
 } /* of 'littersom' */

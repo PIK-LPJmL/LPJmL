@@ -53,7 +53,9 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 /*  Defined header files for LPJ */
 
 #include "conf.h"
+#ifdef USE_TIMING
 #include "timing.h"
+#endif
 #include "list.h"
 #include "types.h"
 #include "hash.h"

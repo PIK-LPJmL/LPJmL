@@ -191,7 +191,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     } /*gridcell skipped*/
   } /* of for(cell=...) */
 #ifdef USE_TIMING
-  timing.setupannual_grid+=mrun()-t;
+  timing[SETUPANNUAL_GRID_FCN]+=mrun()-t;
 #endif
   return FALSE;
 } /* of 'setupannual_grid' */

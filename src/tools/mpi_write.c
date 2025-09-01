@@ -52,7 +52,7 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
 #endif
   MPI_Barrier(comm);
 #ifdef USE_TIMING
-  timing.barrier+=mrun()-tstart;
+  timing[MPI_BARRIER_FCN]+=mrun()-tstart;
 #endif
   return rc;
 } /* of 'mpi_write' */

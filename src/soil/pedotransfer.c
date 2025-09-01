@@ -220,7 +220,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   } /* end of if not ROCK */
 #ifdef USE_TIMING
-  timing.pedotransfer+=mrun()-tstart;
+  timing[PEDOTRANSFER_FCN]+=mrun()-tstart;
 #endif
 } /* of 'pedotransfer' */
 
