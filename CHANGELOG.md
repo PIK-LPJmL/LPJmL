@@ -26,11 +26,12 @@ of `major.minor.patch` with
 
 ### Added
 
+- Option `-with_timing` add to `configure.sh` to enable timing, corresponding man page updated.
 - Flag `-DUSE_TIMING` enables now timing for several LPJmL functions for performance analysis.
 
 ### Changed
 
-- Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -DUSE_TIMING`.
+- Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -with_timing`.
 
 
 ## [5.10.0] - 2025-08-14
