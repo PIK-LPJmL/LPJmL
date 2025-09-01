@@ -68,7 +68,7 @@ void fprinttiming(FILE *file,          /**< pointer to text file */
       for(i=0;i<N_FCN;i++)
         fprintf(file,"%-25s %10.2f %6.1f %10.2f %6.1f %10.2f %6.1f\n",
                 timing_fcn[i],t_min[i],t_min[i]/total*100,t_avg[i],t_avg[i]/total*100,t_max[i],t_max[i]/total*100);
-      fprintf(file,"------------------------- ---------- ------ ---------- ------ ----------- ------\n");
+      fprintf(file,"------------------------- ---------- ------ ---------- ------ ---------- ------\n");
       free(t_min);
       free(t_avg);
       free(t_max);
@@ -82,6 +82,7 @@ void fprinttiming(FILE *file,          /**< pointer to text file */
                "------------------------- ---------- ------\n");
   for(i=0;i<N_FCN;i++)
     fprintf(file,"%-25s %10.2f %6.1f\n",timing_fcn[i],timing[i],timing[i]/total*100);
+  fprintf(file,"------------------------- ---------- ------\n");
 #ifdef USE_MPI
     }
     free(vec);
