@@ -70,9 +70,8 @@ static int npft;           /*< Number of natural PFT's */
 static int ncft;           /*< Number of crop PFT's */
 
 /// from iterate()
-static Real co2,cflux_total;
-static Flux flux;
-static int year, landuse_year, wateruse_year;
+static Real co2;
+static int year;
 
 static double glon_min, glon_max, glat_min, glat_max;
 
@@ -1221,7 +1220,7 @@ void lpj_update_
         if (happynewyear)
         { /* things from iterateyear_river() to be done at begin of year */
           intercrop=getintercrop(input.landuse);
-          setupannual_grid(grid,year,npft,ncft,intercrop,config);
+          setupannual_grid(output,grid,&input,year,npft,ncft,intercrop,&config);
           dayofyear = 1;
         } /* if (happynewyear) */
 
@@ -1300,7 +1299,7 @@ void lpj_update_
                 co2 = tmp_co2[cell];
               }
               /******* now do the MAIN work ****************************************         \n**/
-              update_daily_cell(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
+              update_daily_cell(grid+cell,cell,&daily,co2,&input,dayofyear,dayofmonth,month,year,npft,ncft,intercrop,&config);
               //grid[cell].output.daily.sun=daily.sun; not used for FMS coupling
 
 
@@ -1309,7 +1308,7 @@ void lpj_update_
 #endif
             }
           }
-          updatedaily_grid(output,grid,input.extflow,day,month,year,npft,ncft,&config);
+          updatedaily_grid(output,grid,input.extflow,dayofyear,month,year,npft,ncft,&config);
 
           /******* prepare OUTPUT for land_lad ****************************************         \n**/
 
