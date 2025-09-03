@@ -113,7 +113,10 @@ tar:
             src/image/Makefile src/image/*.c src/reservoir/*.c src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
+            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c\
+            src/test/*.c src/test/support/header_of_lpjml_files_to_link/*.h\
+            src/test/support/helper_code/src/*.c src/test/support/helper_code/header/*.h\
+            src/test/project.yml
 	    gzip -f $(TARFILE)
 
 zipfile:
@@ -130,4 +133,7 @@ zipfile:
             src/image/*.c src/image/Makefile src/reservoir/*.c src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
+            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c\
+            src/test/*.c src/test/support/header_of_lpjml_files_to_link/*.h\
+            src/test/support/helper_code/src/*.c src/test/support/helper_code/header/*.h\
+            src/test/project.yml
