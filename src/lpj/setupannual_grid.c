@@ -52,12 +52,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)
     {
-      if(receive_image_data(grid,npft,ncft,config))
-      {
-        fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
-        fflush(stderr);
-        return TRUE; /* leave time loop */
-      }
+      rc=receive_image_data(grid,npft,ncft,config);
     }
     else
 #endif
@@ -67,7 +62,11 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     {
       if(isroot(*config))
       {
+#if defined IMAGE && defined COUPLED
+        fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
+#else
         fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
+#endif
         fflush(stderr);
       }
       return TRUE; /* leave time loop */
