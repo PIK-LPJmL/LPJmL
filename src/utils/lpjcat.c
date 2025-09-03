@@ -56,7 +56,7 @@ int main(int argc,char **argv)
     int sdate_option;
     Bool crop_phu_option;
     Bool separate_harvests;
-  } header,header_first;
+  } header,header_first={};
   Seed seed;
   long long filepos;
   char *s,*arglist,*pftname;
@@ -314,7 +314,7 @@ int main(int argc,char **argv)
       if(header.datatype!=header_first.datatype)
       {
         fprintf(stderr,"ERROR180: Datatype %s is different from %s in file '%s'.\n",
-                typenames[header.crop_phu_option],typenames[header_first.crop_phu_option],argv[i]);
+                typenames[header.datatype],typenames[header_first.datatype],argv[i]);
         bstruct_finish(item[count].file);
         return EXIT_FAILURE;
       }
