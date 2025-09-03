@@ -46,6 +46,7 @@ of `major.minor.patch` with
 - Expected number of bands set correctly for raw input files in `openinputdata.c`.
 - Hard-coded filename `test.lpj` replaced by temporary filename in `test_append.c`, `test_getnoread.c`, `test_indexarray.c`, `test_isdefined.c`, `test_isnull.c`, `test_restart.c`, and `test_writename.c` in order to allow parallel execution of tests.
 - Arguments corrected in calls of lpjml functions in `lpj_poem.c`.
+- Missing `-print_noread` option added in `INSTALL`.
 
 
 ## [5.10.0] - 2025-08-14

@@ -314,14 +314,15 @@ Runtime options of lpjml
 
 The following runtime options are defined:
 
--Iincludepath      - Adds include path for LPJmL configuration file
--Dmacro[=value]    - Defines macro
+-Iincludepath      - add include path for LPJmL configuration file
+-Dmacro[=value]    - define macro
 -h                 - print usage of lpjml
 -l                 - print license
 -v                 - print compiler used and LPJmL flags set
 -vv                - verbosely print the actual values during reading of the
                      configuration files
--pedantic          - stops on warnings\n"
+-pedantic          - stop on warnings
+-print_noread      - print variable names not read from restart file
 -ofiles            - list only all available output variables
 -param             - print LPJmL parameter for soils and PFTs
 -nopp              - disable preprocessing
