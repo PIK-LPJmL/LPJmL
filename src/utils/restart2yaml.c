@@ -46,7 +46,7 @@ int main(int argc,char **argv)
   char *key=NULL;
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE,setnull=FALSE;
-  int firstcell,lastcell,last,cell,decimals=16,rc;
+  int firstcell,lastcell,last=0,cell,decimals=16,rc;
   Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE,istable=FALSE;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
