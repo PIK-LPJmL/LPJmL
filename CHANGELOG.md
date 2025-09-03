@@ -17,6 +17,27 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+## [Unreleased]
+
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Added
+
+- Check for valic `swc_bnf` parameter added in `fscanpftpar.c`.
+
+### Changed
+
+- `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
+
+### Removed
+
+- Parameter `phi_bnf` removed from `pft.cjson`.
+
+
 ## [5.10.0] - 2025-08-14
 
 ### Contributors
