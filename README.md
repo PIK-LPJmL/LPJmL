@@ -1,24 +1,14 @@
 # <a href=''><img src='man/logo.png' align='right' alt='logo' height=139 /></a> Lund-Potsdam-Jena managed Land (LPJmL)
 
 
-LPJmL is a **Dynamic Global Vegetation Model (DGVM)** written in **C**, designed to simulate terrestrial vegetation, hydrology, and carbon cycles at global scales.
-Developed and maintained by the **Potsdam Institute for Climate Impact Research (PIK)** in Potsdam, Germany, LPJmL has been widely used in climate impact research.
-
-
-## About LPJmL
-
-LPJmL simulates the dynamics of terrestrial ecosystems, focusing on:
-- Vegetation structure and function.
-- Land-use and water management impacts.
-- Carbon, water, and energy cycles under changing climate conditions.
-
-For detailed functionality and scientific background, refer to the model documentation.
+LPJmL is a **Dynamic Global Vegetation Model (DGVM)** written in **C**, designed to simulate terrestrial natural vegetation, agriculture and hydrology at global scales.  
+It is currently developed and maintained mainly by the **Potsdam Institute for Climate Impact Research (PIK)** in Potsdam, Germany.
 
 
 ## Features
 
-- **Dynamic Vegetation Modeling**: Simulates interactions between climate, vegetation, and biogeochemical processes.
-- **Land-Use Integration**: Accounts for human land-use impacts and irrigation.
+- **Dynamic Vegetation Modeling**: Dynamic natural vegetation composition based on climate and underlying biophysical processes.
+- **Land-Use Integration**: Representation of land use such as cropping systems, managed grassland and wood plantations
 - **Flexible Configuration**: Highly configurable through input files and parameters.
 - **Scalability**: Designed for global-scale simulations, with support for parallel computation.
 
