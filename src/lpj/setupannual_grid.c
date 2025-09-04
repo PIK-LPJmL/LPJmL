@@ -25,8 +25,9 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
                      )                     /** \return TRUE on error */
 {
   Stand *stand;
-  Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
-  int cell,s,landuse_year,rc;
+  Pft *pft;
+  Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr,tscal_b;
+  int cell,s,landuse_year,rc,p;
 #ifndef COUPLED
   int wateruse_year;
 #endif
@@ -192,11 +193,16 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
         }
       }
       grid[cell].was_glaciated=grid[cell].is_glaciated;
+      tscal_b=exp(-0.017*(getgdd(&grid[cell].climbuf,0)-25));
+      foreachstand(stand,s,(grid+cell)->standlist)
+        foreachpft(pft,p,&stand->pftlist)
+          if(pft->par->type!=CROP)
+            pft->b=pft->par->b*tscal_b;
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
 #ifdef USE_TIMING
-  timing.setupannual_grid+=mrun()-t;
+  timing[SETUPANNUAL_GRID_FCN]+=mrun()-t;
 #endif
   return FALSE;
 } /* of 'setupannual_grid' */

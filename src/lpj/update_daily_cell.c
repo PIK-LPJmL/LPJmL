@@ -736,6 +736,6 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
   } /* of if(!cell->skip) */
 #ifdef USE_TIMING
-  timing.update_daily_cell+=mrun()-tstart;
+  timing[UPDATE_DAILY_CELL_FCN]+=mrun()-tstart;
 #endif
 } /* of 'update_daily_cell' */

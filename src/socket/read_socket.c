@@ -38,7 +38,7 @@ Bool read_socket(Socket *socket,void *data,int n)
     i-=j;
   }while(i);
 #ifdef USE_TIMING
-  timing.read_socket+=mrun()-tstart;
+  timing[READ_SOCKET_FCN]+=mrun()-tstart;
 #endif
   return FALSE;
 } /* of 'read_socket' */

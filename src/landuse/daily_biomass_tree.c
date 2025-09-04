@@ -184,8 +184,8 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
      getoutputindex(output,PFT_GCGP_COUNT,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)++;
      getoutputindex(output,PFT_GCGP,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
-   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config);
-   pft->npp_bnf=0.0;
+   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery,config);
+   pft->npp_bnf=pft->npp_nrecovery=0.0;
    getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
    stand->cell->balance.agpp+=gpp*stand->frac;

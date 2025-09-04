@@ -112,7 +112,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
 #ifdef USE_MPI
   t=mrun();
   MPI_Barrier(config->comm);
-  timing.barrier+=mrun()-t;
+  timing[MPI_BARRIER_FCN]+=mrun()-t;
 #endif
   t=mrun();
 #endif
@@ -130,7 +130,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
     grid[cell].discharge.wd_demand+=grid[cell].discharge.wd_neighbour;
   }
 #ifdef USE_TIMING
-  timing.withdrawal_demand+=mrun()-t;
+  timing[WITHDRAWAL_DEMAND_FCN]+=mrun()-t;
 #endif
   }
 } /* of 'withdrawal_demand' */

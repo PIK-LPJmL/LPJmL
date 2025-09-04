@@ -121,7 +121,7 @@ void drain(Cell grid[],         /**< Cell array */
 #ifdef USE_MPI
   tstart=mrun();
   MPI_Barrier(config->comm);
-  timing.barrier+=mrun()-tstart;
+  timing[MPI_BARRIER_FCN]+=mrun()-tstart;
 #endif
   tstart=mrun();
 #endif
@@ -239,6 +239,6 @@ void drain(Cell grid[],         /**< Cell array */
     getoutput(&grid[cell].output,WD_LOCAL,config)+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
   }
 #ifdef USE_TIMING
-  timing.drain+=mrun()-tstart;
+  timing[DRAIN_FCN]+=mrun()-tstart;
 #endif
 }  /* of 'drain' */

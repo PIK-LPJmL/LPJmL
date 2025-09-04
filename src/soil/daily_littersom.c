@@ -152,7 +152,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   free(data.response_agtop_wood);
   free(data.response_agsub_wood);
 #ifdef USE_TIMING
-  timing.littersom+=mrun()-tstart;
+  timing[DAILY_LITTERSOM_FCN]+=mrun()-tstart;
 #endif
   return hetres;
 } /* of 'daily_littersom' */

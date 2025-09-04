@@ -40,7 +40,7 @@ typedef struct
   Real mpet;
   Buffer min,max;
   Real mprec20[NMONTH]; /* 20-year average monthly precip */
-  Real mprec_sum[NMONTH]; 
+  Real mprec100[NMONTH]; /* 100-year average monthly precip */
   Real mpet20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp_min20; /*20-year average of coldest month temperature*/

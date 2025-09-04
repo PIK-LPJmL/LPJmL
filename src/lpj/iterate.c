@@ -71,7 +71,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
 #ifdef USE_TIMING
-    timing.storeclimate+=mrun()-t;
+    timing[STORECLIMATE_FCN]+=mrun()-t;
 #endif
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed, re-run with \"store_climate\" : false setting");
 
@@ -144,7 +144,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
         getclimate(input.climate,grid,data_index,firstspinupyear+spinup_year,config);
 #ifdef USE_TIMING
-        timing.getclimate+=mrun()-t;
+        timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
       }
       if (config->isanomaly)
@@ -154,7 +154,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
         getclimate(input.climate,grid,0,config->firstyear,config);
 #ifdef USE_TIMING
-        timing.getclimate+=mrun()-t;
+        timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
         if(config->with_glaciers)
           readicefrac(input.icefrac,grid,0,config->firstyear,config);
@@ -209,7 +209,7 @@ int iterate(Outputfile *output, /**< Output file data */
               break; /* leave time loop */
             }
 #ifdef USE_TIMING
-            timing.getclimate+=mrun()-t;
+            timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
             if(config->with_glaciers)
             {
@@ -240,7 +240,7 @@ int iterate(Outputfile *output, /**< Output file data */
               break; /* leave time loop */
             }
 #ifdef USE_TIMING
-            timing.getclimate+=mrun()-t;
+            timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
             if(config->with_glaciers)
             {
@@ -269,7 +269,7 @@ int iterate(Outputfile *output, /**< Output file data */
             break; /* leave time loop */
           }
 #ifdef USE_TIMING
-          timing.getclimate+=mrun()-t;
+          timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
           if(config->with_glaciers)
           {
@@ -305,7 +305,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
         rc=getclimate(input.climate,grid,0,climate_year,config);
 #ifdef USE_TIMING
-        timing.getclimate+=mrun()-t;
+        timing[GETCLIMATE_FCN]+=mrun()-t;
 #endif
         if(iserror(rc,config))
         {
@@ -355,7 +355,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
     rc=iterateyear(output,grid,&input,co2,&ch4,&pch4,npft,ncft,year,config);
 #ifdef USE_TIMING
-    timing.iterateyear+=mrun()-t;
+    timing[ITERATEYEAR_FCN]+=mrun()-t;
 #endif
     if(rc)
       break;

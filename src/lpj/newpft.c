@@ -40,7 +40,7 @@ void newpft(Pft *pft,            /**< PFT variables */
   pft->stand=stand;
   pft->fpc=pft->nind=pft->wscal=pft->aphen=pft->bm_inc.carbon=pft->bm_inc.nitrogen=
            pft->wscal_mean=pft->vscal=pft->vmax=pft->nlimit=
-           pft->gdd=pft->phen=pft->fapar=pft->npp_bnf=pft->nleaf=0.0;
+           pft->gdd=pft->phen=pft->fapar=pft->npp_bnf=pft->nleaf=pft->npp_nrecovery=0.0;
  pft->phen_gsi.tmin=pft->phen_gsi.light=pft->albedo=pft->snowcover=0;
  pft->phen_gsi.tmax=pft->phen_gsi.wscal=1;
  pft->inun_count=0;
@@ -49,5 +49,6 @@ void newpft(Pft *pft,            /**< PFT variables */
   pft->established=FALSE;
 #endif
   pft->establish.carbon=pft->establish.nitrogen=0;
+  pft->b=pft->par->b;
   pft->par->newpft(pft,year,day,config); /* type-specific allocation of memory */
 } /* of 'newpft' */

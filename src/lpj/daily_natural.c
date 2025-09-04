@@ -198,8 +198,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config);
-    pft->npp_bnf=0.0;
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery,config);
+    pft->npp_bnf=pft->npp_nrecovery=0.0;
     output->dcflux-=npp*stand->frac;
 #ifdef CHECK_BALANCE
     dcflux+=npp;

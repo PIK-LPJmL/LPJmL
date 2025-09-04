@@ -53,6 +53,6 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
     exit(WRITE_OUTPUT_ERR);
   }
 #ifdef USE_TIMING
-  timing.updatedaily_grid+=mrun()-tstart;
+  timing[UPDATEDAILY_GRID_FCN]+=mrun()-tstart;
 #endif
 } /* of 'updatedaily_grid' */

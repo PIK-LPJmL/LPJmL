@@ -99,6 +99,7 @@ typedef struct
   Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */
   Real esoil_reduction; /**< reduction of soil evaporation */
   Poolpar product_turnover; /**< fast and slow product turnover (1/yr) */
+  int luc_burn_startyear; /**< start year of land-use change burning instead of harvesting to product pools */
   Real rw_buffer_max;   /**< size of rainwater harvesting tank */
   Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
   Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */

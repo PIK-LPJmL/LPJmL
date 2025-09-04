@@ -130,6 +130,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
               param.product_turnover.fast,param.product_turnover.slow);
+      fprintf(file,"luc burn start year:\t%d\n",param.luc_burn_startyear);
     }
     if(config->residues_fire)
     {

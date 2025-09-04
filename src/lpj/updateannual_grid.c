@@ -172,9 +172,9 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
 #ifdef USE_MPI
     t2=mrun();
     MPI_Barrier(config->comm);
-    timing.barrier+=mrun()-t2;
+    timing[MPI_BARRIER_FCN]+=mrun()-t2;
 #endif
-    timing.fwriterestart+=mrun()-t;
+    timing[FWRITERESTART_FCN]+=mrun()-t;
 #endif
    }
 } /* of 'updateannual_grid' */

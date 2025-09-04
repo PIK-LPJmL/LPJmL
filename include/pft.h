@@ -26,6 +26,7 @@
 #define LAMBDA_OPT 0.8  /* optimal Ci/Ca ratio */
 #define NHSG 4 /* number of hydrological soil groups */
 #define CCpDM 0.4763 /*leaf carbon content per dry mass  Kattge et al. 2011*/
+#define cmass 12.0    /* atomic mass of carbon */
 
 /* Definitions of datatypes */
 
@@ -166,6 +167,7 @@ typedef struct Pft
     Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
     Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
     Real bnf_cost;              /**< cost for N fixation (gC/gN) */
+    Real fnpp_nrecovery;         /**< NPP fraction for N recovery from leaf turnover (-) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real inun_thres;            /**< inund_height: max WTP tolerated [m]*/
@@ -231,12 +233,14 @@ typedef struct Pft
   Real wscal_mean;
   Real phen,aphen;
   Real vmax;
+  Real b;                /**< leaf respiration as fraction of vmax acclimated to mean temperature in vegetative period */
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
   Real inun_stress;
   int inun_count;
   Real npp_bnf;
+  Real npp_nrecovery; /**< N recovery from leaf turnover */
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -352,5 +356,9 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
 #define ndemand(pft,nleaf,vcmax,temp) pft->par->ndemand(pft,nleaf,vcmax,temp)
 #define vmaxlimit(pft,temp) pft->par->vmaxlimit(pft,temp)
+
+#ifdef NRECOVERY_COST
+#define nrecover_price(leafN,leafC,sla) (0.01/((leafN)/((leafC) * (sla))))
+#endif
 
 #endif

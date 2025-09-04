@@ -191,6 +191,6 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     }
   }
 #ifdef USE_TIMING
-  timing.wateruse+=mrun()-t;
+  timing[WATERUSE_FCN]+=mrun()-t;
 #endif
 } /* of 'wateruse' */

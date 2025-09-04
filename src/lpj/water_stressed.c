@@ -228,7 +228,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.fac=gpd/1.6*ppm2bar(co2);
     data.path=pft->par->path;
     data.temp=temp;
-    data.b=pft->par->b;
+    data.b=pft->b;
     data.co2=ppm2Pa(co2);
     data.compvm=FALSE;
     data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_manage)*fpar(pft); /** par calculation do not include albedo*/
@@ -288,7 +288,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   }
   getoutput(&pft->stand->cell->output,RA,config)+=*rd*pft->stand->frac;
 #ifdef USE_TIMING
-  timing.water_stressed+=mrun()-tstart;
+  timing[WATER_STRESSED_FCN]+=mrun()-tstart;
 #endif
   return agd;
 } /* of 'water_stressed' */

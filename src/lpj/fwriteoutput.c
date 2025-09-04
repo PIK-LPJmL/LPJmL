@@ -2111,7 +2111,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   }
   free(vec);
 #ifdef USE_TIMING
-  timing.fwriteoutput+=mrun()-t;
+  timing[FWRITEOUTPUT_FCN]+=mrun()-t;
 #endif
   return FALSE;
 } /* of 'fwriteoutput' */

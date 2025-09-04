@@ -116,7 +116,7 @@ int main(int argc,char **argv)
 #ifdef USE_MPI
   MPI_Init(&argc,&argv); /* Initialize MPI */
 #ifdef USE_TIMING
-  timing.MPI_Init+=mrun()-tbegin;
+  timing[MPI_INIT_FCN]+=mrun()-tbegin;
 #endif
 /*
  * Use default communicator containing all processors. In defining your own
@@ -195,7 +195,7 @@ int main(int argc,char **argv)
 #endif
   rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
 #ifdef USE_TIMING
-  timing.readconfig+=mrun()-t;
+  timing[READCONFIG_FCN]+=mrun()-t;
 #endif
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(argc)
@@ -259,7 +259,7 @@ int main(int argc,char **argv)
 #endif
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
 #ifdef USE_TIMING
-  timing.newgrid+=mrun()-t;
+  timing[NEWGRID_FCN]+=mrun()-t;
 #endif
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   if(iscoupled(config))
@@ -273,7 +273,7 @@ int main(int argc,char **argv)
 #endif
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
 #ifdef USE_TIMING
-  timing.initinput+=mrun()-t;
+  timing[INITINPUT_FCN]+=mrun()-t;
 #endif
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
@@ -288,7 +288,7 @@ int main(int argc,char **argv)
 #endif
   output=fopenoutput(grid,NOUT,&config);
 #ifdef USE_TIMING
-  timing.fopenoutput+=mrun()-t;
+  timing[FOPENOUTPUT_FCN]+=mrun()-t;
 #endif
   rc=(output==NULL);
   failonerror(&config,rc,INIT_OUTPUT_ERR,
@@ -298,7 +298,7 @@ int main(int argc,char **argv)
 #endif
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
 #ifdef USE_TIMING
-  timing.initoutput+=mrun()-t;
+  timing[INITOUTPUT_FCN]+=mrun()-t;
 #endif
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
@@ -327,7 +327,7 @@ int main(int argc,char **argv)
                config.npft[GRASS]+config.npft[TREE],config.npft[CROP],
                &config);
 #ifdef USE_TIMING
-  timing.iterate+=mrun()-t;
+  timing[ITERATE_FCN]+=mrun()-t;
 #endif
   /* Simulation has finished */
   time(&tend); /* Stop timing */

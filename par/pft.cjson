@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 6.0.1                            \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.10.0                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -32,14 +32,20 @@
 #define ALLOM3 0.67     /*0.5*/
 #define ALLOM4 0.3
 #define APHEN_MAX 180
-#define APHEN_MIN 90    /* minimum aphen for cold-induced senescence */
+#define APHEN_MIN 90    /* minimum aphen for cold- and drought-induced senescence */
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #define MORT_MAX 0.02
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.5      /* fraction of N not recovered before turnover */
-#define ALPHAA 0.7            /* alphaa for simulations with nitrogen limitation */
+#define FN_TURNOVER_CROP 0.30      /* fraction of N not recovered before turnover */
+#ifdef BMGR_BROWN
+#define FN_TURNOVER_BMGR 0.30    /* 0.30 for brown harvest + specific harvest dates */
+#else
+#define FN_TURNOVER_BMGR 0.69    /* 0.68 for green harvest + specific harvest dates */
+#endif
+#define ALPHAA 0.7
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 41.6
 #define CN_BL_EG_MN 14.8
@@ -78,6 +84,7 @@
 #define MAXBNFCOSTBO 0.0056
 #define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
+#define FNPP_RECOVERY 0.05 /* fraction of NPP available for N recovery */
 
   [
     /* first pft */
@@ -198,9 +205,10 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
 
   /*--------------------------------------------------------------------------*/
@@ -323,7 +331,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. pft */
@@ -446,9 +455,10 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*---------------------------------------------------------------------------------------------*/
   /* 3. pft */
@@ -569,10 +579,11 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
-   },
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+  },
   /*--------------------------------------------------------------------------*/
   /* 4. pft */
     {
@@ -693,9 +704,10 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5, /* Yu and Zhuang 2020 temperate evergreen forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 5. pft */
@@ -818,9 +830,10 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5, /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 6. pft */
@@ -941,9 +954,10 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 7. pft */
@@ -1066,9 +1080,10 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 8. pft */
@@ -1191,10 +1206,11 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
-   },
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
+  },
   /*--------------------------------------------------------------------------*/
   /* 9. pft */
     {
@@ -1282,6 +1298,7 @@
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fnpp_nrecovery" : FNPP_RECOVERY, /* fraction of NPP available for N recovery */ 
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1296,7 +1313,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -1335,7 +1352,7 @@
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
       "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
-      {
+      {    
         "slope" : 0.13,     /* new phenology: slope of cold-temperature limiting function */
         "base" : 5.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
@@ -1350,7 +1367,7 @@
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
         "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.22          /* newnew phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
@@ -1403,7 +1420,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 11. pft */
@@ -1506,9 +1524,10 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 12. pft */
@@ -1613,7 +1632,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 13. pft */
@@ -1718,7 +1738,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
@@ -1842,7 +1863,15 @@
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
       "rotation" : 8,         /* rotation */
-      "max_rotation_length" : 40 /* max_rotation_length */
+      "max_rotation_length" : 40, /* max_rotation_length */
+      "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+      "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+      "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
+      "maxbnfcost" : MAXBNFCOSTTE,
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. bft */
@@ -1966,9 +1995,10 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 3. bft ONLY FOR BIOENERGY*/
@@ -2067,12 +2097,13 @@
       "ratio" : 1.16,
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
-      "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+      "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 1. wft */
@@ -2194,9 +2225,10 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY, /* fraction of NPP available for N recovery */
       "rotation" : 500,            /* rotation */
       "max_rotation_length" : 500, /* max_rotation_length */
       "P_init" : 0.15394           /* Initial stand density (only used for wood plantations) */
@@ -2321,9 +2353,10 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY, /* fraction of NPP available for N recovery */
       "rotation" : 500,              /* rotation */
       "max_rotation_length" : 500,   /* max_rotation_length */
       "P_init" : 0.147257            /* Initial stand density (only used for wood plantations) */
@@ -2448,9 +2481,10 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY, /* fraction of NPP available for N recovery */
       "rotation" : 500,            /* rotation */
       "max_rotation_length" : 500, /* max_rotation_length */
       "P_init" : 0.169781          /* Initial stand density (only used for wood plantations) */
@@ -2576,7 +2610,8 @@
       "max_rotation_length" : 25, /* max_rotation_length */
       "harvest_ratio" : 0,        /* harvest ratio for cultural trees */
       "cnratio_fruit" : 10,
-      "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : true,   /* grass PFT allowed under agriculture tree? */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 14. cft */
@@ -2699,7 +2734,8 @@
       "max_rotation_length" : 200, /* max_rotation_length */
       "harvest_ratio" : 0.15,      /* harvest ratio for cultural trees */
       "cnratio_fruit" : 10,
-      "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : true,   /* grass PFT allowed under agriculture tree? */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 15. cft */
@@ -2786,7 +2822,7 @@
       },
       "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -2821,7 +2857,8 @@
       "max_rotation_length" : 1, /* max_rotation_length */
       "harvest_ratio" : 0.19,    /* fraction of biomass increment put into fruits */
       "cnratio_fruit" : 10,
-      "with_grass" : false   /* grass PFT allowed under agriculture tree? */
+      "with_grass" : false,   /* grass PFT allowed under agriculture tree? */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 1. cft */
@@ -2911,7 +2948,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03, /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -2944,7 +2981,8 @@
       "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 2. cft */
@@ -3034,7 +3072,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : 1.0, "humid" : 1.0 },
@@ -3067,7 +3105,8 @@
       "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.3, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.3, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 3. cft */
@@ -3145,7 +3184,7 @@
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-       "NO3_up" : {            /* NO3 uptake parameters */
+      "NO3_up" : {            /* NO3 uptake parameters */
         "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
         "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
         "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
@@ -3157,7 +3196,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -3190,7 +3229,8 @@
       "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.83, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.83, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 4. cft */
@@ -3280,7 +3320,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -3313,7 +3353,8 @@
       "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.99, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 5. cft */
@@ -3403,7 +3444,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3443,7 +3484,8 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST, 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 6. cft */
@@ -3533,7 +3575,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,   /* windspeed dampening */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "roughness_length" : 0.03,     /* roughness length */
@@ -3566,7 +3608,8 @@
       "himin" : 1.25,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.74, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.74, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 7. cft */
@@ -3656,7 +3699,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
@@ -3689,7 +3732,8 @@
       "himin" : 1.10,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 3.27, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 3.27, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 8. cft */
@@ -3779,7 +3823,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3812,7 +3856,8 @@
       "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 1.04, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 1.04, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 9. cft */
@@ -3902,7 +3947,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -3942,7 +3987,8 @@
       "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST
+      "bnf_cost" : BNF_COST,
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
     },
   /*--------------------------------------------------------------------------*/
   /* 10. cft */
@@ -4032,7 +4078,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -4065,7 +4111,8 @@
       "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.68, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.68, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 11. cft */
@@ -4155,7 +4202,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -4188,7 +4235,8 @@
       "himin" : 0.15,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 0.76, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 0.76, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 12. cft */
@@ -4278,7 +4326,7 @@
       },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER_CROP, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -4311,7 +4359,8 @@
       "himin" : 0.80,         /* himin: minimum harvest index HI reached at harvest*/
       "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-      "ratio" : {"root": 1.16, "so": 4.57, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "ratio" : {"root": 1.16, "so": 4.57, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     }
   ]
 /*--------------------------------------------------------------------------*/
