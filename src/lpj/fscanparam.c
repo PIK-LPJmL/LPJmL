@@ -163,7 +163,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(f,&param.k_2,"k_2");
   fscanparamreal(f,&param.p,"p");
   fscanparamreal(f,&param.n0,"n0");
-  fscanparamreal(f,&param.k_temp,"k_temp");
   fscanparamreal(f,&param.min_c_bnf,"min_c_bnf");
   fscanparamreal(f,&param.par_sink_limit,"par_sink_limit");
   fscanparamreal01(f,&param.q_ash,"q_ash");

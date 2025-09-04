@@ -120,12 +120,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          "=====003: delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
          "=====004: estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
          "=====005: deforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f\n"
-         "=====006: product pools %.2f %.2f timber_harvest.carbon: %.2f c_influx %.2f totalfrac: %.5f",
+         "=====006: product pools %.2f %.2f timber_harvest.carbon: %.2f c_influx %.2f totalfrac: %.5f reservoirfrac: %.5f",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp,cell->balance.arh,cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.trad_biofuel.carbon,
-         cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon,fraction);
+         cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon,fraction,cell->ml.reservoirfrac);
 #endif
   }
 #ifdef CHECK_BALANCE2

@@ -266,7 +266,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #endif
 
         soil->NH4[l]-=F_NO3;
-        soil->O2[l]-=F_NO3*2*WO2/WN;   // Nitrification: NH4+ + 2O2 -> NO3- + 2H+ + H2O  (WN = 14 g/mol)
+        soil->O2[l]-=F_NO3*2*WO2/WN;   // Nitrification: NH4+ + 2O2 -> NO3- + 2H + H2O  (WN = 14 g/mol)
 
 #ifdef SAFE
          if(soil->NH4[l]<-epsilon)
@@ -910,7 +910,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef MICRO_HEATING
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/
 #endif
-  soil->count++;
   getoutput(&stand->cell->output,RH_LITTER,config)+=decom_litter.carbon*param.atmfrac*stand->frac;
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;

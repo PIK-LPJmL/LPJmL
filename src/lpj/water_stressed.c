@@ -15,6 +15,7 @@
 #include "lpj.h"
 
 #define EPSILON 0.001  /* min precision of solution in bisection method */
+#define k 0.1          /* steepness parameter for inundation stress */
 
 typedef struct
 {
@@ -97,11 +98,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(pft->inun_count>pft->par->inun_dur)
     pft->inun_count=pft->par->inun_dur;
 
-  istress=pft->inun_count/(pft->inun_count+pft->par->inun_dur);
+  if(pft->inun_count>pft->par->inun_dur)
+   istress = (1.0 / (1.0 + exp(-k * (pft->inun_count - pft->par->inun_dur))) - 0.5) * 2.0;
 
   if(istress>1 || istress<0)
     fail(INVALID_INUNDSTRESS_ERR,TRUE,TRUE,"Inundation stress %g>1, isstress inun_count=%d, inun_dur=%d",
          pft->nind,istress,pft->inun_count,pft->par->inun_dur);
+
   pft->inun_stress+=istress/NDAYYEAR;
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -154,8 +157,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   }
 
   *wdf=wdf(pft,demand,supply);
-
-  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0)
+  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0 && pft->phen>0)
   {
     pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
@@ -238,7 +240,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     vmax=pft->vmax;
     gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
-    nitrogen_stress(pft,temp,daylength,aet_layer,(agd-*rd),npft,ncft,config);
+    nitrogen_stress(pft,temp,aet_layer,(agd-*rd),npft,ncft,config);
 
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                          temp,data.apar,daylength,FALSE);

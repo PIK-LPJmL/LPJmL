@@ -76,6 +76,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   check(data.response_agtop_wood);
   data.response_agsub_wood=newvec(Real,ncft+npft);
   check(data.response_agsub_wood);
+  soil->count++;
+
   moist=(soil->w[0]*soil->whcs[0]+(soil->wpwps[0]*(1-soil->ice_pwp[0]))+soil->w_fw[0])
   /(soil->wsats[0]-soil->ice_depth[0]-soil->ice_fw[0]-(soil->wpwps[0]*soil->ice_pwp[0]));
 
@@ -124,9 +126,9 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     if(istoolarge(soil,savesoil.O2,savesoil.CH4))
     {
       soil_status(soil, &savesoil, npft+ncft);
-      for (i=0;i<10;i++)
+      for (i=0;i<5;i++)
       {
-        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,&data,timesteps*10);
+        hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,&data,timesteps*5);
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;

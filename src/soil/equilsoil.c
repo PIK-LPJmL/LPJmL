@@ -62,8 +62,6 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     }
     for(p=0;p<ntotpft;p++)
     {
-      soil->socfraction[l][p]=pow(10,pftpar[p].soc_k*logmidlayer[l])
-                - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
       soil->c_shift[l][p].fast=soil->decay_rate[l].fast*soil->socfraction[l][p];
       soil->c_shift[l][p].slow=soil->decay_rate[l].slow*soil->socfraction[l][p];
       sum[p].fast+=soil->c_shift[l][p].fast;

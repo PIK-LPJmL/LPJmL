@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               v  m  a  x  l  i  m  i  t  _  c  r  o  p  .  c                   \n**/
+/**              f  s  c  a  n  n  u  p  t  a  k  e  p  a  r  .  c                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions reads N uptake parameter from configuration file                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,18 +15,22 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "crop.h"
 
-Real vmaxlimit_crop(const Pft *pft, /**< pointer to PFT */
-                    Real temp       /**< temperature (deg C) */
-                   )                /** \return vmax (gC/m2/day) */
+Bool fscannuptakepar(LPJfile *file,       /**< pointer to LPJ file */
+                     Nuptake_param *nuppar, /**< on return N uptake params read */
+                     const char *key,     /**< name of N uptake parameter */
+                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                     /** \return TRUE on error */
 {
-  const Pftcrop *crop;
-  Real vmax;
-  crop=pft->data;
-#ifdef DEBUG_N
-  printf("LAI=%g, N0=%g\n",lai_crop(pft),param.n0*0.001*crop->ind.leaf.carbon);
-#endif
-  vmax=(crop->ind.leaf.nitrogen-pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind)/exp(-param.k_temp*(temp-25))/(param.p*1e-3)*(NSECONDSDAY*WC*1e-6);
-  return max(vmax,epsilon);
-} /* of 'vmaxlimit_crop' */
+  LPJfile *f;
+  f=fscanstruct(file,key,verb);
+  if(f==NULL)
+    return TRUE;
+  if(fscanreal(f,&nuppar->vmax,"vmax",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&nuppar->kmin,"kmin",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&nuppar->Km,"Km",FALSE,verb))
+    return TRUE;
+  return FALSE;
+} /* of 'fscannuptakepar' */

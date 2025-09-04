@@ -1539,7 +1539,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(getlandusetype(stand) == NATURAL || getlandusetype(stand) == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
-                getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=pft->par->lai(pft);
+                getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=lai(pft);
           }
         }
       }

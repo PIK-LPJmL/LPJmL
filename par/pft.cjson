@@ -31,37 +31,34 @@
 #define ALLOM2 40.0
 #define ALLOM3 0.67     /*0.5*/
 #define ALLOM4 0.3
-#define APHEN_MAX 245
-#define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
+#define APHEN_MAX 180
+#define APHEN_MIN 90    /* minimum aphen for cold-induced senescence */
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#define MORT_MAX 0.01
+#define MORT_MAX 0.02
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.45      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.65   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.55   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.48   /* fraction of N not recovered before turnover */
-#define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
+#define FN_TURNOVER 0.5      /* fraction of N not recovered before turnover */
+#define ALPHAA 0.7            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
-#define CN_BL_EG_MX 46.2
-#define CN_BL_EG_MN 15.6
-#define CN_BL_EG_MD 26.8
-#define CN_NL_EG_MX 63.8
-#define CN_NL_EG_MN 31.8
-#define CN_NL_EG_MD 45.0
-#define CN_BL_DC_MX 34.6
-#define CN_BL_DC_MN 15.4
-#define CN_BL_DC_MD 23.1
-#define CN_NL_DC_MX 36.9
-#define CN_NL_DC_MN 18.4
+#define CN_BL_EG_MX 41.6
+#define CN_BL_EG_MN 14.8
+#define CN_BL_EG_MD 24.8
+#define CN_NL_EG_MX 65.1
+#define CN_NL_EG_MN 28.9
+#define CN_NL_EG_MD 43.4
+#define CN_BL_DC_MX 32.8
+#define CN_BL_DC_MN 13.5
+#define CN_BL_DC_MD 22.1
+#define CN_NL_DC_MX 36.3
+#define CN_NL_DC_MN 18.6
 #define CN_NL_DC_MD 26.0
-#define CN_GC3_MX 37.9
-#define CN_GC3_MN 10.5
-#define CN_GC3_MD 19.9
-#define CN_GC4_MX 66.9
-#define CN_GC4_MN 17.4
-#define CN_GC4_MD 34.0
+#define CN_GC3_MX 41.6
+#define CN_GC3_MN 9.9
+#define CN_GC3_MD 24.8
+#define CN_GC4_MX 61.2
+#define CN_GC4_MN 13.1
+#define CN_GC4_MD 28.4
 #define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
 #define K_LATOSA 4e3       /* leaf area to sapwood area */
 #define BC3 0.031          /*leaf respiration as fraction of Vmax for C3 plants */
@@ -79,11 +76,6 @@
 #define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
 #define MAXBNFCOSTTE 0.0014
 #define MAXBNFCOSTBO 0.0056
-#define MAXBNFCOSTGR 0.007
-//#define MAXBNFCOSTTR 0.021 /* Fraction of NPP available for BNF multiplied by climates legume share */
-//#define MAXBNFCOSTTE 0.07
-//#define MAXBNFCOSTBO 0.0126
-//#define MAXBNFCOSTGR 0.021
 #define BNF_COST 6.0
 #define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
@@ -159,18 +151,25 @@
       "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
       "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
       "flam" : FLAM_TREE,  /* flam */
-      "k_litter10" : { "leaf" : 0.93, "wood" : 0.039}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 }*/
-      "k_litter10_q10_wood" : 2.75, /* Q10_wood 3*/
-      "vmax_up" : 2.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+      "k_litter10_q10_wood" : 2.75, /* Q10_wood */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.4, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
-      "idt_d" : 30.0,             /* inundation duration threshold [days] */
+      "idt_d" : 35.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
@@ -199,7 +198,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.35,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -220,7 +219,7 @@
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
       "sla" : 0.01986,         /* specific leaf area */
-      "lmro_ratio" : 1.2,     /* lmro_ratio 18*/
+      "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 1000.0,         /* ramp 19*/
       "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -240,7 +239,7 @@
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 10.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -253,12 +252,12 @@
       {
         "slope" : 77.17,      /* new phenology: slope of light limiting function */
         "base" : 55.53,       /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.8          /* new phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.52          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
         "slope" : 5.14,       /* new phenology: slope of water limiting function */
-        "base": 70,            /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base": 4.997,        /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -277,12 +276,19 @@
       "flam" : FLAM_TREE,  /* flam */
       "k_litter10" : { "leaf" : 0.93, "wood" : 0.039}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.104 }*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood 3*/
-      "vmax_up" : 3,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.4, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */
@@ -315,7 +321,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.35,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -362,7 +368,7 @@
       "tmax" :
       {
         "slope" : 1.625,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
-        "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+        "base" : 40,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
         "tau" : 0.1           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
       },
       "light" :
@@ -374,7 +380,7 @@
       "wscal" :
       {
         "slope" : 7.97,       /* new phenology: slope of water limiting function */
-        "base" : 22.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 25.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.1348        /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -393,12 +399,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 1.17, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.039 },*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.57, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.3, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
@@ -411,6 +424,8 @@
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
       "wood_sapl" : 1.2,      /* sapwood sapling 22*/
+      "aphen_min" : APHEN_MIN,
+      "aphen_max" : APHEN_MAX,
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : ALLOM1,      /* allometry */
       "allom2" : ALLOM2,
@@ -431,7 +446,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.25,  /* Yu and Zhuang 2020 tropical forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 tropical forest*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
@@ -447,7 +462,7 @@
       "beta_root" : 0.976,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -461,14 +476,14 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
-      "emax": 7.0, //7.0,            /* emax 35*/
-      "intc" : 0.02,          /* intc 36*/
+      "emax": 7.0,             /* emax 35*/
+      "intc" : 0.06,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,  /* albedo of green leaves */
       "albedo_stem" : 0.1,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.1, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.2172,     /* new phenology: slope of cold-temperature limiting function */
@@ -490,7 +505,7 @@
       "wscal" :
       {
         "slope" : 5,          /* new phenology: slope of water limiting function */
-        "base" : 8.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 18.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -499,7 +514,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -5.0, "high" : 20.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -509,12 +524,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.7, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.53, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.7, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.4,             /* inundation stress threshold [m] */
@@ -522,7 +544,7 @@
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 5.0, "sapwood" : 25.0, "root" : 5.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -547,7 +569,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.2,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
    },
@@ -563,7 +585,7 @@
       "beta_root" : 0.974,    /* beta_root 1 */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -586,9 +608,9 @@
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
       "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
-      {
+       {
         "slope" : 0.55,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : -7.6297,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : -0.6297,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -600,7 +622,7 @@
       "light" :
       {
         "slope" : 18.83,      /* new phenology: slope of light limiting function */
-        "base" : 4,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "base" : 39.32,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
@@ -609,13 +631,14 @@
         "base" : 8.821,       /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
       },
+
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "evergreen",/* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : 3.0, "high" : 20.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -625,12 +648,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.86, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.52, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.4,            /* inundation stress threshold [m] */
@@ -638,7 +668,7 @@
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
-      "turnover" : {"leaf" : 3.0, "sapwood" : 25.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -663,7 +693,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.2, /* Yu and Zhuang 2020 temperate evergreen forest*/
+      "nfixpot" : 0.5, /* Yu and Zhuang 2020 temperate evergreen forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -679,7 +709,7 @@
       "beta_root" : 0.966,    /* beta_root */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 120.0,          /* nmax 7*/
       "resist" : 0.3,         /* resist 8*/
       "longevity" : 0.45,     /* leaf longevity 10*/
@@ -703,7 +733,7 @@
       "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
-        "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+        "slope" : 0.5591,     /* new phenology: slope of cold-temperature limiting function */
         "base" : 5.69,        /* new phenology: inflection point of cold-temperature limiting function (deg C), originally 13.69 from Forkel etal. */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
@@ -715,23 +745,23 @@
       },
       "light" :
       {
-        "slope" : 58,         /* new phenology: slope of light limiting function */
-        "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "slope" : 28,         /* new phenology: slope of light limiting function */
+        "base" : 39.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 5.24,       /* new phenology: slope of water limiting function */
+        "slope" : 3.24,       /* new phenology: slope of water limiting function */
         "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.6           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "summergreen",/* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-      "temp_photos" : { "low" : 20.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+      "temp_photos" : { "low" : 20.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -17.0, "high" : 20.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.31880,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -741,12 +771,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.49, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.3, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -781,7 +818,7 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.3, /* Yu and Zhuang 2020 temperate deciduous forest*/
+      "nfixpot" : 0.5, /* Yu and Zhuang 2020 temperate deciduous forest*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
@@ -797,7 +834,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 4.0,      /* leaf longevity 10*/
@@ -840,7 +877,7 @@
       "wscal" :
       {
         "slope" : 5,          /* new phenology: slope of water limiting function */
-        "base" : 0.007695,    /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 2,    /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -849,7 +886,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -32.5, "high" : -2.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -32.5, "high" : -5.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -859,12 +896,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 0.95, "wood" : 0.104 }*/
       "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-      "vmax_up" : 3.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.4, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.7, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.30,             /* inundation stress threshold [m] */
@@ -872,7 +916,7 @@
       "alpha_e" : 0.4,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
-      "turnover" : {"leaf" : 5.0, "sapwood" : 25.0, "root" : 5.0}, /* turnover leaf  sapwood root 9 11 12*/
+      "turnover" : {"leaf" : 3.0, "sapwood" : 25.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
       "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
       "crownarea_max" : 20.0, /* crownarea_max 20*/
@@ -897,7 +941,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -913,7 +957,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 1.0,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.3,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -965,7 +1009,7 @@
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 15.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-      "temp" : { "low" : -1000, "high" : -2.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+      "temp" : { "low" : -1000, "high" : -5.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
       "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
       "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -973,14 +1017,21 @@
       "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
       "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
       "flam" : FLAM_TREE,     /* flam */
-      "k_litter10" : { "leaf" : 1.2, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.2, "wood" : 0.104 }*/
-      "k_litter10_q10_wood" : 1.62, /* Q10_wood 1.62*/
-      "vmax_up" : 3.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "k_litter10" : { "leaf" : 0.94, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+      "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.43, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.35, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1015,7 +1066,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1031,7 +1082,7 @@
       "beta_root" : 0.943,     /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.3,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 0.65,     /* leaf longevity 10*/
@@ -1093,12 +1144,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 0.95, "wood" : 0.104 }*/
       "k_litter10_q10_wood" : 1.97, /* Q10_wood 2.22*/
-      "vmax_up" : 4.8,              /* 2.8 vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.33, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.3, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
@@ -1112,7 +1170,7 @@
       "crownarea_max" : 20.0, /* crownarea_max 20*/
       "wood_sapl" : 1.2,      /* sapwood sapling 22*/
       "aphen_min" : 10,
-      "aphen_max" : 245,
+      "aphen_max" : APHEN_MAX,
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : ALLOM1,      /* allometry */
       "allom2" : ALLOM2,
@@ -1133,7 +1191,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 boreal forest*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 boreal forest*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
    },
@@ -1149,7 +1207,7 @@
       "beta_root" : 0.972,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
@@ -1165,12 +1223,12 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.21,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.91,       /* new phenology: slope of cold-temperature limiting function */
@@ -1211,12 +1269,19 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.2, "wood" : 0.97 }*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : 0.5, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1231,8 +1296,8 @@
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1244,10 +1309,10 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.943,    /* beta_root */
+      "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.5,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1263,16 +1328,16 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
-      "albedo_litter" : 0.1,  /* albedo of litter */
+      "albedo_litter" : 0.15,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
-        "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
-        "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "slope" : 0.13,     /* new phenology: slope of cold-temperature limiting function */
+        "base" : 5.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -1290,13 +1355,13 @@
       "wscal" :
       {
         "slope" : 0.5222,     /* new phenology: slope of water limiting function */
-        "base" : 30.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
+        "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
+        "tau" : 0.1001       /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
       "path" : "C3",            /* pathway */
-      "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+      "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
       "temp_photos" : { "low" : 10.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
       "temp" : { "low" : -30.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
@@ -1309,12 +1374,19 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 4.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1329,8 +1401,8 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1342,10 +1414,10 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.943,    /* beta_root */
+      "beta_root" : 0.93,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1361,7 +1433,7 @@
       "min_temprange" : 18.0,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1388,7 +1460,7 @@
       "wscal" :
       {
         "slope" : 0.88,       /* new phenology: slope of water limiting function */
-        "base" : 2,           /* new phenology: inflection point of water limiting function (% water availability)  */
+        "base" : 5,           /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -1407,12 +1479,19 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 4.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1427,7 +1506,7 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST
     },
@@ -1442,8 +1521,8 @@
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
       "beta_root" : 0.93,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
-      "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "gmin"  : 0.1,          /* gmin 4*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
@@ -1459,12 +1538,12 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
@@ -1480,14 +1559,14 @@
       "light" :
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
-        "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
+        "base" : 55.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
         "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 8,       /* new phenology: slope of water limiting function */
+        "slope" : 5,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.4          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.2          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
@@ -1505,12 +1584,19 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 0.8, "wood" : 0.8 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.2,             /* inundation stress threshold [m] */
@@ -1525,8 +1611,8 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.15,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
@@ -1541,11 +1627,11 @@
       "beta_root" : 0.90,     /* beta_root */
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.1,      /* respcoeff 5*/
+      "respcoeff" : 1.0,      /* respcoeff 5*/
       "nmax" : 20.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
-      "sla" : 0.18,        /* specific leaf area */
+      "sla" : 0.04,        /* specific leaf area */
       "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
@@ -1557,16 +1643,16 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 4.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 0.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -1579,19 +1665,19 @@
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
         "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.2          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
-        "slope" : 0.88,       /* new phenology: slope of water limiting function */
+        "slope" : 0.8,       /* new phenology: slope of water limiting function */
         "base" : 50,           /* new phenology: inflection point of water limiting function (% water availability)  */
-        "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+        "tau" : 0.3          /* new phenology: change rate of actual to previous day water limiting function */
       },
       "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
       "phenology" : "any",      /* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-      "temp_photos" : { "low" : 0.0, "high" : 20.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+      "temp_photos" : { "low" : 0.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
       "temp" : { "low" : -1000.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.60235 ,     /* shape factor for soil organic matter vertical distribution*/
@@ -1603,15 +1689,22 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 0.97, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
-      "ist_m" : 0.5,             /* inundation stress threshold [m] */
+      "ist_m" : 0.1,             /* inundation stress threshold [m] */
       "idt_d" : 35.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1623,8 +1716,8 @@
       "temp_bnf_opt" : {"low" : 12, "high" : 30},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-      "nfixpot" : 0.1,  /* Yu and Zhuang 2020 grassland*/
-      "maxbnfcost" : MAXBNFCOSTGR,
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
+      "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST
     },
   /*----------------------------------------------------------------------------------------*/
@@ -1663,7 +1756,7 @@
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
-        "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+        "base" : 12.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
       },
       "tmax" :
@@ -1700,11 +1793,18 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.93, "wood" : 0.124 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
+      "knstore" : 0.15,       /* knstore */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
@@ -1817,11 +1917,18 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
+      "knstore" : 0.15,       /* knstore */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
@@ -1936,12 +2043,19 @@
       "flam" : FLAM_GRASS,     /* flam */
       "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-      "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": 34.0, "median" : 90.0, "high" : 132.0}, /* interannual variability in Heaton et al. (2009) */
+      "knstore" : 0.05,       /* knstore, acc. to PFT 9 */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2033,10 +2147,17 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.825, "wood" : 0.073 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.67, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -2153,10 +2274,17 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -2273,12 +2401,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 1.0,/* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2393,12 +2528,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2509,12 +2651,19 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+      "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
@@ -2625,10 +2774,17 @@
       "flam" : FLAM_TREE,     /* flam */
       "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-      "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -2743,9 +2899,16 @@
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -2859,9 +3022,16 @@
       "ist_m" : 1,                /* inundation stress threshold [m] */
       "idt_d" : 200.0,              /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -2975,9 +3145,16 @@
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+       "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3091,9 +3268,16 @@
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 25.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3207,9 +3391,16 @@
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3250,7 +3441,7 @@
       "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
       "bnf_cost" : BNF_COST
     },
@@ -3330,9 +3521,16 @@
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3446,9 +3644,16 @@
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3562,9 +3767,16 @@
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3678,9 +3890,16 @@
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3721,7 +3940,7 @@
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
       "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
       "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
-      "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+      "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOST,
       "bnf_cost" : BNF_COST
     },
@@ -3801,9 +4020,16 @@
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 10.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -3917,9 +4143,16 @@
       "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -4033,9 +4266,16 @@
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
       "idt_d" : 30.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
-      "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-      "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-      "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+      "NO3_up" : {            /* NO3 uptake parameters */
+        "vmax" : 1.5,           /* maximum NO3 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NO3 uptake not associated with Michaelis-Menten kinetics (unitless), Zaehle&Friend 2000 */
+        "Km" : 0.70             /* Half saturation concentration of fine root NO3 uptake (g N m-3), Craig et al. 2025 */
+      },
+      "NH4_up" : {            /* NH4 uptake parameters */
+        "vmax" : 4.7,           /* maximum NH4 uptake capacity per unit fine root mass (g N kg-1 C d-1), Craig et al. 2025 */
+        "kmin" : 0.05,           /* Rate of NH4 uptake not associated with Michaelis-Menten kinetics (unitless) */
+        "Km" : 0.45             /* Half saturation concentration of fine root NH4 uptake (g N m-3), Craig et al. 2025 */
+      },
       "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */

@@ -95,8 +95,8 @@ extern void turnover_daily_grass(Litter *,Pft *,Real,int,Bool,const Config *);
 extern void albedo_grass(Pft *,Real,Real);
 extern void copy_grass(Pft *, const Pft *);
 extern Real nuptake_grass(Pft *,Real *,Real *,int,int,const Config *);
-extern Real ndemand_grass(const Pft *,Real *,Real,Real,Real);
-extern Real vmaxlimit_grass(const Pft *,Real,Real);
+extern Real ndemand_grass(const Pft *,Real *,Real,Real);
+extern Real vmaxlimit_grass(const Pft *,Real);
 
 /* Definition of macros */
 
