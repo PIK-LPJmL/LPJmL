@@ -109,8 +109,6 @@ directory config:
 |Makefile.mpiicx | Intel C-compiler icx and Intel MPI       |
 |Makefile.mpich  | GNU C-Compiler and MPI Chameleon settings|
 |Makefile.win32  | Windows settings (used by configure.bat) |
-|----------------|------------------------------------------|
-
 
 ---
 
@@ -135,60 +133,57 @@ make utils
 ```
 The following programs are created in the bin directory:
 
-| Program     | Description|
-|---------------|-----------------|
-|`adddrain`     | add river basin to coordinate file |
-|`addheader`    | add CLM header to binary file |
-|`allbin2cdf`   | convert all binary output files into NetCDF files |
-|`arr2clm`      | convert 2-D float arrays into CLM file |
-|`asc2clm`      | convert ARC/Info ASCII files to CLM data files for LPJmL |
-|`backtrace`    | print backtrace from core |
-|`bin2cdf`      | convert binary output files into NetCDF files |
-|`binsum`       | aggregate daily and monthly binary output |
-|`cat2bsq`      | concatenate output files from distributed LPJmL simulations |
-|`catclm`       | concatenate LPJmL climate data files |
-|`cdf2bin`      | convert NetCDF files into raw binary data |
-|`cdf2clm`      | convert NetCDF files into CLM files |
-|`cdf2coord`    | extract CLM grid file from NetCDF file |
-|`cdf2grid`     | convert grid NetCDF file into grid CLM or raw file |
-|`cdf2soil`     | convert NetCDF file into binary file |
-|`cft2clm`      | convert binary landuse data files to CLM data files for LPJmL |
-|`clm2cdf`      | convert CLM files into NetCDF files |
-|`cmpbin`       | compare two binary output files |
-|`country2cdf`  | convert country/region code file into NetCDF file |
-|`cru2clm`      | convert CRU data into file format suitable for LPJmL. |
-|               |CRU data files have to be in the format specified in |
-|               |`http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html`. |
-|`cutclm`       | cut LPJmL climate data files |
-|`cvrtclm`      | convert version of CLM file to version 3 or 4 |
-|`drainage2cdf` | convert CLM drainage file into NetCDF file |
-|`getcellindex` | get cell index from latitude, longitude values |
-|`grid2clm`     | convert grid data file to CLM data files for LPJmL |
-|`headersize`   | print header size of CLM files |
-|`json2restart` | convert JSON file into LPJmL restart file |
-|`lpjcat`       | concatenate restart files from distributed LPJmL simulations. |
-|`lpjcheck`     | check syntax of LPJmL configuration files |
-|`lpjfiles`     | print list of input/output files of LPJmL |
-|`lpjprint`     | print contents of restart file of LPJmL model runs |
-|`printclm`     | print contents of CLM files for LPJmL |
-|`output_bsq`   | concatenate all output files from distributed LPJmL simulations |
-|`manage2js`    | convert management  `*.par` files to JSON files |
-|`mathclm`      | perform mathematical operations with CLM files |
-|`mergeclm`     | merge LPJmL climate data files |
-|`printglobal`  | print global values for raw binary output files |
-|`printharvest` | print global harvested carbon for crops and managed grasslands |
-|`regridclm`    | regrid CLM file to new grid |
+| Program       | Description                                                         |
+|---------------|---------------------------------------------------------------------|
+|`adddrain`     | add river basin to coordinate file                                  |
+|`addheader`    | add CLM header to binary file                                       |
+|`allbin2cdf`   | convert all binary output files into NetCDF files                   |
+|`arr2clm`      | convert 2-D float arrays into CLM file                              |
+|`asc2clm`      | convert ARC/Info ASCII files to CLM data files for LPJmL            |
+|`backtrace`    | print backtrace from core                                           |
+|`bin2cdf`      | convert binary output files into NetCDF files                       |
+|`binsum`       | aggregate daily and monthly binary output                           |
+|`cat2bsq`      | concatenate output files from distributed LPJmL simulations         |
+|`catclm`       | concatenate LPJmL climate data files                                |
+|`cdf2bin`      | convert NetCDF files into raw binary data                           |
+|`cdf2clm`      | convert NetCDF files into CLM files                                 |
+|`cdf2coord`    | extract CLM grid file from NetCDF file                              |
+|`cdf2grid`     | convert grid NetCDF file into grid CLM or raw file                  |
+|`cdf2soil`     | convert NetCDF file into binary file                                |
+|`cft2clm`      | convert binary landuse data files to CLM data files for LPJmL       |
+|`clm2cdf`      | convert CLM files into NetCDF files                                 |
+|`cmpbin`       | compare two binary output files                                     |
+|`country2cdf`  | convert country/region code file into NetCDF file                   |
+|`cru2clm`      | convert CRU data into file format suitable for LPJmL                |
+|`cutclm`       | cut LPJmL climate data files                                        |
+|`cvrtclm`      | convert version of CLM file to version 3 or 4                       |
+|`drainage2cdf` | convert CLM drainage file into NetCDF file                          |
+|`getcellindex` | get cell index from latitude, longitude values                      |
+|`grid2clm`     | convert grid data file to CLM data files for LPJmL                  |
+|`headersize`   | print header size of CLM files                                      |
+|`json2restart` | convert JSON file into LPJmL restart file                           |
+|`lpjcat`       | concatenate restart files from distributed LPJmL simulations.       |
+|`lpjcheck`     | check syntax of LPJmL configuration files                           |
+|`lpjfiles`     | print list of input/output files of LPJmL                           |
+|`lpjprint`     | print contents of restart file of LPJmL model runs                  |
+|`printclm`     | print contents of CLM files for LPJmL                               |
+|`output_bsq`   | concatenate all output files from distributed LPJmL simulations     |
+|`manage2js`    | convert management  `*.par` files to JSON files                     |
+|`mathclm`      | perform mathematical operations with CLM files                      |
+|`mergeclm`     | merge LPJmL climate data files                                      |
+|`printglobal`  | print global values for raw binary output files                     |
+|`printharvest` | print global harvested carbon for crops and managed grasslands      |
+|`regridclm`    | regrid CLM file to new grid                                         |
 |`regridlpj`    | regrid input data set for selected countries or specified grid file |
-|`regridsoil`   | regrid binary soil file to different grid file |
-|`reservoir2cdf`| convert CLM reservoir file into NetCDF file |
-|`restart2yaml` | convert LPJmL restart file into YAML |
-|`setclm`       | set value in header of CLM files for LPJmL |
-|`soil2cdf`     | convert binary files into NetCDF files |
-|`splitclm`     | copy specific bands of clm data files |
-|`statclm`      | print statistics of clm files |
-|`txt2grid`     | convert text files to CLM grid data files for LPJmL |
-|`txt2clm`      | convert text files to CLM data files for LPJmL |
-|---------------|-----------------|
+|`regridsoil`   | regrid binary soil file to different grid file                      |
+|`reservoir2cdf`| convert CLM reservoir file into NetCDF file                         |
+|`restart2yaml` | convert LPJmL restart file into YAML                                |
+|`setclm`       | set value in header of CLM files for LPJmL                          |
+|`soil2cdf`     | convert binary files into NetCDF files                              |
+|`splitclm`     | copy specific bands of clm data files                               |
+|`statclm`      | print statistics of clm files                                       |
+|`txt2grid`     | convert text files to CLM grid data files for LPJmL                 |
+|`txt2clm`      | convert text files to CLM data files for LPJmL                      |
 
 ---
 
@@ -207,31 +202,30 @@ make install
 
 Compilation of LPJmL can be customized using the following flags in the `LPJFLAGS` section of `Makefile.inc`:
 
-| Flag                | Description                                      |
-|---------------------|--------------------------------------------------|
-|`CHECK_BOUNDARY`     |check array boundaries of output
-|`COUPLING_WITH_FMS`  |enable coupling to FMS
-|`DAILY_ESTABLISHMENT`|enable daily establishment
-|`DEBUG`              |diagnostic output is generated for debugging purposes
-|`DEBUG_BSTRUCT`      |diagnostic output is generated for reading/writing of restart
-|`DEBUG_COUPLER`      |diagnostic output is generated for the coupler
-|`DEBUG_IMAGE`        |diagnostic output is generated for the IMAGE coupler
-|`DEBUG_N`            |diagnostic output is generated for the nitrogen cycle
-|`IMAGE`              |include coupler to IMAGE model
-|`LINEAR_DECAY`       |use linearized functions for litter decay
-|`MICRO_HEATING`      |enable microbial heating
-|`NO_FAIL_BALANCE`    |lpjml does not terminate on balance errors
-|`PERMUTE`            |random permutation of PFT list
-|`SAFE`               |code is compiled with additional checks
-|`STRICT_JSON`        |strict JSON checking
-|`USE_MPI`            |compile parallel version of LPJmL
-|`USE_NETCDF`         |enable NetCDF input/output
-|`USE_RAND48`         |use drand48() random number generator
-|`USE_UDUNITS`        |enable unit conversion in NetCDF files
-|`USE_TIMING`         |enable timing for socket I/O
-|`WITH_FIRE_MOISTURE` |enable moisture dependent fire emissions
-|`WITH_FPE`           |floating point exceptions are enabled for debugging purposes
-|---------------------|--------------------------------------------------|
+| Flag                | Description                                                 |
+|---------------------|-------------------------------------------------------------|
+|`CHECK_BOUNDARY`     |check array boundaries of output                             |
+|`COUPLING_WITH_FMS`  |enable coupling to FMS                                       |
+|`DAILY_ESTABLISHMENT`|enable daily establishment                                   |
+|`DEBUG`              |diagnostic output is generated for debugging purposes        |
+|`DEBUG_BSTRUCT`      |diagnostic output is generated for reading/writing of restart|
+|`DEBUG_COUPLER`      |diagnostic output is generated for the coupler               |
+|`DEBUG_IMAGE`        |diagnostic output is generated for the IMAGE coupler         |
+|`DEBUG_N`            |diagnostic output is generated for the nitrogen cycle        |
+|`IMAGE`              |include coupler to IMAGE model                               |
+|`LINEAR_DECAY`       |use linearized functions for litter decay                    |
+|`MICRO_HEATING`      |enable microbial heating                                     |
+|`NO_FAIL_BALANCE`    |lpjml does not terminate on balance errors                   |
+|`PERMUTE`            |random permutation of PFT list                               |
+|`SAFE`               |code is compiled with additional checks                      |
+|`STRICT_JSON`        |strict JSON checking                                         |
+|`USE_MPI`            |compile parallel version of LPJmL                            |
+|`USE_NETCDF`         |enable NetCDF input/output                                   |
+|`USE_RAND48`         |use drand48() random number generator                        |
+|`USE_UDUNITS`        |enable unit conversion in NetCDF files                       |
+|`USE_TIMING`         |enable timing for socket I/O                                 |
+|`WITH_FIRE_MOISTURE` |enable moisture dependent fire emissions                     |
+|`WITH_FPE`           |floating point exceptions are enabled for debugging purposes |
 
 ---
 
@@ -265,30 +259,29 @@ Or run interactively:
 ```bash
 mpirun -np 32 ./bin/lpjml lpjml_config.cjson
 ```
-### Runtime options of lpjml
+### Runtime Options of Lpjml
 
 The following runtime options are defined:
-| Option           | Descritiption                                     |
-|----------------------|---------------------------------------------------|
-| `-Iincludepath`      | add include path for LPJmL configuration file |
-| `-Dmacro[=value]`    | define macro |
-| `-h`                 | print usage of lpjml |
-| `-l`                 | print license |
-| `-v`                 | print compiler used and LPJmL flags set |
-| `-vv`                | verbosely print the actual values during reading of the configuration files |
-| `-pedantic`          | stops on warnings |
-| `-ofiles`            | list only all available output variables|
-| `-param`             | print LPJmL parameter for soils and PFTs|
-| `-nopp`              | disable preprocessing|
-| `-pp cmd`            | set preprocessor program. Default is 'cpp'|
-| `-fpe`               | enable floating point exceptions|
+| Option               | Descritiption                                                                        |
+|----------------------|--------------------------------------------------------------------------------------|
+| `-Iincludepath`      | add include path for LPJmL configuration file                                        |
+| `-Dmacro[=value]`    | define macro                                                                         |
+| `-h`                 | print usage of lpjml                                                                 |
+| `-l`                 | print license                                                                        |
+| `-v`                 | print compiler used and LPJmL flags set                                              |
+| `-vv`                | verbosely print the actual values during reading of the configuration files          |
+| `-pedantic`          | stops on warnings                                                                    |
+| `-ofiles`            | list only all available output variables                                             |
+| `-param`             | print LPJmL parameter for soils and PFTs                                             |
+| `-nopp`              | disable preprocessing                                                                |
+| `-pp cmd`            | set preprocessor program. Default is 'cpp'                                           |
+| `-fpe`               | enable floating point exceptions                                                     |
 | `-image host`        | set host where IMAGE model is running. Option is only available for the IMAGE version|
-| `-couple host[:port]`| set host and port where the coupled model is running|
-| `-wait time`         | set time to wait for connection to IMAGE/coupled model|
-| `-inpath dir`        | input directory path|
-| `-outpath dir`       | output directory path|
-| `-restartpath dir`   | restart directory path|
-|----------------------|---------------------------------------------------|
+| `-couple host[:port]`| set host and port where the coupled model is running                                 |
+| `-wait time`         | set time to wait for connection to IMAGE/coupled model                               |
+| `-inpath dir`        | input directory path                                                                 |
+| `-outpath dir`       | output directory path                                                                |
+| `-restartpath dir`   | restart directory path                                                               |
 
 ---
 
@@ -347,7 +340,6 @@ ERRORxxx: message
 |       45   |Error initializing output data                 | External   |
 |       46   |Invalid crop PHU option                        | Internal   |
 |       47   |Invalid fire danger index                      | Internal   |
-|------------|-----------------------------------------------|------------|
 
 - **External Errors**: Caused by invalid or missing input files.
 - **Internal Errors**: Caused by issues in the LPJmL code and may require debugging.
@@ -371,7 +363,6 @@ The following environment variables are used by LPJmL:
 | `LPJRESTARTPATH` | Path appended to the restart filenames. Only done for filenames without absolute path|
 | `LPJOPTIONS`     | cpp runtime options for LPJmL|
 | `LPJOUTPATH`     | Path appended to the output filenames. Only done for filenames without absolute path|
-|------------------|-----------------------------------------------------|
 
 ---
 
