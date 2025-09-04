@@ -28,16 +28,18 @@ void fail(int errcode,     /**< Error code (0...999) */
 {
   char *s;
   va_list ap;
+  int len;
   /*
    * Output is put in one printf statement. This has to be done because output
    * in multiple printf's is mixed up in the parallel version using MPI
    */
-  s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1);
+  len=strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1;
+  s=alloca(len);
   if(errcode>999)
     errcode=999;
   if(errcode<0)
     errcode=1;
-  sprintf(s,"ERROR%03d: ",errcode);
+  snprintf(s,len,"ERROR%03d: ",errcode);
   strcat(s,msg);
   strcat(s,", program terminated unsuccessfully.\n");
   va_start(ap,msg);

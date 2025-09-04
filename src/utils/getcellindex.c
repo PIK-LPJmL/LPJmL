@@ -60,12 +60,15 @@ int main(int argc,char **argv)
   if(coords==NULL)
   {
     printallocerr("coords");
+    closecoord(file);
     return EXIT_FAILURE;
   }
   for(i=0;i<n;i++)
     if(readcoord(file,coords+i,&res))
     {
-      fprintf(stderr,"Error reading grid at %d from '%s'.\n",i+1,argv[1]);
+      fprintf(stderr,"Error reading grid at %d from '%s'.\n",i+1,argv[iarg]);
+      free(coords);
+      closecoord(file);
       return EXIT_FAILURE;
     }
   closecoord(file);
@@ -81,26 +84,28 @@ int main(int argc,char **argv)
       pos.lat=strtod(argv[i],&endptr);
       switch(*endptr)
       {
-         case 'N': case '\0':
-           break;
-         case 'S':
-           pos.lat= -pos.lat;
-           break;
-         default:
-           fprintf(stderr,"Invalid argument '%s' for latitude.\n",argv[i]);
-           return EXIT_FAILURE;
+        case 'N': case '\0':
+          break;
+        case 'S':
+          pos.lat= -pos.lat;
+          break;
+        default:
+          fprintf(stderr,"Invalid argument '%s' for latitude.\n",argv[i]);
+          free(coords);
+          return EXIT_FAILURE;
       }
       pos.lon=strtod(argv[i+1],&endptr);
       switch(*endptr)
       {
-         case 'E': case '\0':
-           break;
-         case 'W':
-           pos.lon= -pos.lon;
-           break;
-         default:
-           fprintf(stderr,"Invalid argument '%s' for longitude.\n",argv[i+1]);
-           return EXIT_FAILURE;
+        case 'E': case '\0':
+          break;
+        case 'W':
+          pos.lon= -pos.lon;
+          break;
+        default:
+          fprintf(stderr,"Invalid argument '%s' for longitude.\n",argv[i+1]);
+          free(coords);
+          return EXIT_FAILURE;
       }
       index=findcoord(&pos,coords,&res,n);
       if(index==NOT_FOUND)
@@ -113,7 +118,6 @@ int main(int argc,char **argv)
           fputs(" mapped to ",stdout);
           printcoord(coords+index);
           printf(", distance=%g\n",dist_min);
-
         }
         else
           fprintf(stderr,"Coordinate not found for (%g, %g) in '%s'.\n",
@@ -122,5 +126,6 @@ int main(int argc,char **argv)
       else
         printf("%d\n",index);
     }
+  free(coords);
   return EXIT_SUCCESS;
 } /* of 'main' */

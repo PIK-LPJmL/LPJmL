@@ -3,7 +3,7 @@
 lpjprint \- Print contents of restart file of LPJmL model runs
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-v] [\-nopp] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
+[\-h] [\-v] [\-nopp] [\-pp cmd] [\-pedantic] [\-print_noread] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
@@ -19,6 +19,12 @@ Disable preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.
+.TP
+\-pedantic
+Stop on warnings.
+.TP
+\-print_noread
+Print variable names not read from restart file.
 .TP
 \-inpath \fIdir\fP
 Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
@@ -36,7 +42,7 @@ Define include directory for the preprocessor of the configuration file.
 Name of configuration file.
 .TP
 \-check
-Check only restart file, do not print
+Check only restart file, do not print.
 .TP
 .I start
 Index of first grid cell to be printed.
@@ -49,21 +55,31 @@ Index of last grid cell to be printed.
 Print restart file with configuration file lpjml.cjson with restart file located in the /p/tmp file system
 .B lpjprint
 \-restartpath /p/tmp/user/lpj lpjml.cjson
+.TP 
+Print variable names not read from restart file
+.B lpjprint
+-print_noread lpjml.cjson -check
 .PP
 .SH ENVIRONMENT
 .TP
+LPJNOPP
+Disables preprocessor if set to "true", same as -nopp option.
+.TP
+LPJPEDANTIC
+Enables pedantic mode if set to "true", same as -pedantic option.
+.TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
-include directories of the preprocessor
+Defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor.
 .TP
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.
 .TP
 LPJOPTIONS
-runtime options for the preprocessor of LPJmL configuration files
+Runtime options for the preprocessor of LPJmL configuration files.
 .TP
 LPJRESTARTPATH
 Path appended to the restart filenames. Only done for filenames without absolute path.
@@ -83,4 +99,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjcheck(1), lpjfiles(1)
+restart2yaml(1), lpjml(1), lpjcheck(1), lpjfiles(1)

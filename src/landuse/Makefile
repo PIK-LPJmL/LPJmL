@@ -63,7 +63,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/biomes.h\
           $(INC)/reservoir.h $(INC)/soil.h $(INC)/cropdates.h $(INC)/grass.h\
           $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h $(INC)/param.h\
           $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/woodplantation.h\
-          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h
+          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
+          $(INC)/bstruct.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

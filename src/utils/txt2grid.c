@@ -20,26 +20,47 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
+#define USAGE "\nUsage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size]\n       [-float] [-double] [-latlon] [-json] gridfile clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"txt2grid --help\" for more information.\n"
 
 typedef  struct
 {
   float lon,lat;
 } Float_coord;
 
-static Bool scancoord(FILE *file,const char *fmt,Float_coord *coord,Bool latlon)
+typedef  struct
 {
+  double lon,lat;
+} Double_coord;
+
+static Bool scancoord(FILE *file,const char *fmt,Double_coord *coord,Bool latlon,Type type)
+{
+  Float_coord fcoord;
   char *pos,clon,clat;
   if((pos=strstr(fmt,"%c"))!=NULL && strstr(pos,"%c")!=NULL)
   {
     if(latlon)
     {
-      if(fscanf(file,fmt,&coord->lat,&clat,&coord->lon,&clon)!=4)
+      if(type!=LPJ_DOUBLE)
+      {
+        if(fscanf(file,fmt,&fcoord.lat,&clat,&fcoord.lon,&clon)!=4)
+          return FALSE;
+        coord->lat=fcoord.lat;
+        coord->lon=fcoord.lon;
+      }
+      else if(fscanf(file,fmt,&coord->lat,&clat,&coord->lon,&clon)!=4)
         return FALSE;
     }
     else
     {
-      if(fscanf(file,fmt,&coord->lon,&clon,&coord->lat,&clat)!=4)
+      if(type!=LPJ_DOUBLE)
+      {
+        if(fscanf(file,fmt,&fcoord.lon,&clon,&fcoord.lat,&clat)!=4)
+          return FALSE;
+        coord->lat=fcoord.lat;
+        coord->lon=fcoord.lon;
+      }
+      else if(fscanf(file,fmt,&coord->lon,&clon,&coord->lat,&clat)!=4)
         return FALSE;
     }
     if(clon=='W')
@@ -59,7 +80,18 @@ static Bool scancoord(FILE *file,const char *fmt,Float_coord *coord,Bool latlon)
     return TRUE;
   }
   else
-    return (fscanf(file,fmt,(latlon) ? &coord->lat : &coord->lon,(latlon) ? &coord->lon : &coord->lat)==2);
+  {
+    if(type!=LPJ_DOUBLE)
+    {
+      if(fscanf(file,fmt,(latlon) ? &fcoord.lat : &fcoord.lon,(latlon) ? &fcoord.lon : &fcoord.lat)!=2)
+        return FALSE;
+      coord->lat=fcoord.lat;
+      coord->lon=fcoord.lon;
+      return TRUE;
+    }
+    else
+     return (fscanf(file,fmt,(latlon) ? &coord->lat : &coord->lon,(latlon) ? &coord->lon : &coord->lat)==2);
+  }
 } /* of 'scancoord' */
 
 int main(int argc,char **argv)
@@ -71,15 +103,19 @@ int main(int argc,char **argv)
   Coord grid,*grid_ref=NULL,res;
   String line;
   int i,iarg,nskip,n,index;
+  Double_coord dcoord;
   Float_coord coord;
   Real dist_min;
   Header header;
   char *endptr,*map_name;
-  Bool isfloat,latlon,verbose;
+  char *arglist,*out_json;
+  Bool latlon,verbose,isjson;
   fmt="%*d,%f,%f,%*d,%*d";
+  Type type;
   nskip=1;
   header.cellsize_lon=header.cellsize_lat=0.5;
-  isfloat=latlon=verbose=FALSE;
+  type=LPJ_SHORT;
+  latlon=verbose=isjson=FALSE;
   map_name=NULL;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -99,8 +135,10 @@ int main(int argc,char **argv)
                "-cellsize_lat size latitudinal cell size, default is %g\n"
                "-cellsize_lon size longitudinal cell size, default is %g\n"
                "-float             write float data, default is short\n"
+               "-double            write double data, default is short\n"
                "-skip n            skip first n lines, default is one\n"
                "-latlon            read latitude then longitude\n"
+               "-json              JSON metafile is created with suffix '.json'\n"
                "gridfile           filename of grid text file\n"
                "clmfile            filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
@@ -112,7 +150,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-fmt' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         fmt=argv[++iarg];
@@ -120,15 +158,19 @@ int main(int argc,char **argv)
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-float"))
-        isfloat=TRUE;
+        type=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-double"))
+        type=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-latlon"))
         latlon=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-cellsize"))
       {
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -143,7 +185,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize_lat' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -158,7 +200,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize_lon' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lon=(float)strtod(argv[++iarg],&endptr);
@@ -173,7 +215,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-map' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         map_name=argv[++iarg];
@@ -183,7 +225,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-skip' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         nskip=strtol(argv[++iarg],&endptr,10);
@@ -196,7 +238,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: invalid option '%s'.\n"
-                USAGE,argv[iarg]);
+                ERR_USAGE,argv[iarg]);
         return EXIT_FAILURE;
       }
     }
@@ -205,7 +247,7 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fputs("Filenames missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
   }
   if(map_name!=NULL)
@@ -246,15 +288,14 @@ int main(int argc,char **argv)
   header.nyear=1;
   header.nstep=1;
   header.timestep=1;
-  if(isfloat)
+  header.datatype=type;
+  if(type==LPJ_SHORT)
   {
-   header.scalar=1;
-   header.datatype=LPJ_FLOAT;
+    header.scalar=0.01;
   }
   else
   {
-    header.scalar=0.01;
-    header.datatype=LPJ_SHORT;
+    header.scalar=1;
   }
   gridfile=fopen(argv[iarg+1],"wb");
   if(gridfile==NULL)
@@ -263,12 +304,12 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
-  while(scancoord(file,fmt, &coord,latlon))
+  while(scancoord(file,fmt, &dcoord,latlon,type))
   {
     if(map_name!=NULL)
     {
-      grid.lon=coord.lon;
-      grid.lat=coord.lat;
+      grid.lon=dcoord.lon;
+      grid.lat=dcoord.lat;
       if(verbose)
       {
         fputs("Coordinate ",stdout);
@@ -281,30 +322,37 @@ int main(int argc,char **argv)
         printcoord(grid_ref+index);
         printf(", distance=%g\n",dist_min);
       }
-      coord.lon=(float)grid_ref[index].lon;
-      coord.lat=(float)grid_ref[index].lat;
+      dcoord.lon=grid_ref[index].lon;
+      dcoord.lat=grid_ref[index].lat;
     }
     else if(verbose)
     {
-      grid.lon=coord.lon;
-      grid.lat=coord.lat;
+      grid.lon=dcoord.lon;
+      grid.lat=dcoord.lat;
       printcoord(&grid);
       putchar('\n');
     }
-    if(isfloat)
-      fwrite(&coord,sizeof(coord),1,gridfile);
-    else
+    switch(type)
     {
-      grid.lon=coord.lon;
-      grid.lat=coord.lat;
-      if(fabs(coord.lon*100-round(coord.lon*100))>1e-3)
-        fprintf(stderr,"Warning: Longitude of %.6g at %d cannot be represented by short value of %g.\n",
-                coord.lon,header.ncell,round(coord.lon*100));
-      if(fabs(coord.lat*100-round(coord.lat*100))>1e-3)
-        fprintf(stderr,"Warning: Latitude of %.6g at %d cannot be represented by short value of %g.\n",
-                coord.lat,header.ncell,round(coord.lat*100));
-      writecoord(gridfile,&grid);
-    }
+       case LPJ_FLOAT:
+         coord.lat=(float)dcoord.lat;
+         coord.lon=(float)dcoord.lon;
+         fwrite(&coord,sizeof(coord),1,gridfile);
+         break;
+       case LPJ_DOUBLE:
+         fwrite(&dcoord,sizeof(dcoord),1,gridfile);
+         break;
+       default:
+         grid.lon=dcoord.lon;
+         grid.lat=dcoord.lat;
+         if(fabs(coord.lon*100-round(coord.lon*100))>1e-3)
+           fprintf(stderr,"Warning: Longitude of %.6g at %d cannot be represented by short value of %g.\n",
+                   coord.lon,header.ncell,round(coord.lon*100));
+         if(fabs(coord.lat*100-round(coord.lat*100))>1e-3)
+           fprintf(stderr,"Warning: Latitude of %.6g at %d cannot be represented by short value of %g.\n",
+                   coord.lat,header.ncell,round(coord.lat*100));
+         writecoord(gridfile,&grid);
+    } /* of switch(type) */
     header.ncell++;
   }
   if(header.ncell==0)
@@ -314,6 +362,26 @@ int main(int argc,char **argv)
   rewind(gridfile);
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(gridfile);
+  if(isjson)
+  {
+    /* write JSON metafile */
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    gridfile=fopen(out_json,"w");
+    if(gridfile==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(gridfile,argv[iarg+1],NULL,"txt2grid",NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fclose(gridfile);
+  }
   if(map_name!=NULL)
     closecoord(coordfile);
   fclose(file);

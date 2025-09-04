@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                     g  e  t  b  u  i  l  d  .  c                               \n**/
 /**                                                                                \n**/
-/**     Get build number, build date and SVN revision number                       \n**/
+/**     Get build date, git hash and repository                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,15 +16,27 @@
 #include <string.h>
 #include "types.h"
 
+
+#ifndef GIT_REPO
+#define GIT_REPO ""
+#endif
+#ifndef GIT_HASH
+#define GIT_HASH "N/A"
+#endif
+
 char *getbuilddate(void)
 {
   static char *s=__DATE__;
   return s;
 } /* of 'getbuilddate' */
 
-char *getrepo(void)
+char* getrepo(void)
 {
-  static char *s=(strlen(GIT_REPO)==0) ?  "https://github.com/PIK-LPJmL/LPJmL" : GIT_REPO;
+  static char* s = NULL;
+  if (s == NULL)
+  {
+    s = (strlen(GIT_REPO) == 0) ? "https://github.com/PIK-LPJmL/LPJmL" : GIT_REPO;
+  }
   return s;
 } /* of 'getrepo' */
 

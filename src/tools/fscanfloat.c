@@ -27,7 +27,7 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
                 Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                )                  /** \return TRUE on error */
 {
-  struct json_object *item;  
+  struct json_object *item;
   if(!json_object_object_get_ex(file,name,&item))
   {
     if(with_default)

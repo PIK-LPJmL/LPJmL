@@ -47,7 +47,7 @@ Bool write_pft_short_netcdf(const Netcdf *cdf,const short vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE_SHORT;
+    grid[i]=cdf->missing_value.s;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   rc=nc_put_vara_short(cdf->ncid,cdf->varid,offsets,counts,grid);

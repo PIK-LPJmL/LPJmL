@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "numeric.h"
 
 int ivec_sum(const int vec[], /**< array of integer values */

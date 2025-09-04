@@ -55,6 +55,7 @@ int main(int argc,char **argv)
   for(i=0;i<ngrid;i++)
     if(readcoord(grid,c+i,&res))
     {
+      free(c);
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
       return EXIT_FAILURE;
@@ -64,18 +65,24 @@ int main(int argc,char **argv)
   filename.fmt=CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
+  {
+    free(c);
     return EXIT_FAILURE;
+  }
   ngrid2=numcoord(grid);
   getcellsizecoord(&lon,&lat,grid);
   if(res.lon!=lon || res.lat!=lat)
   {
     fprintf(stderr,"Cell size (%g,%g) in '%s' differs from (%g,%g) in '%s'.\n",
             lon,lat,argv[2],res.lon,res.lat,argv[1]);
+    free(c);
+    closecoord(grid);
     return EXIT_FAILURE;
   }
   index=newvec(int,ngrid);
   if(index==NULL)
   {
+    free(c);
     closecoord(grid);
     printallocerr("index");
     return EXIT_FAILURE;
@@ -85,6 +92,8 @@ int main(int argc,char **argv)
   index2=newvec(int,ngrid2);
   if(index2==NULL)
   {
+    free(c);
+    free(index);
     closecoord(grid);
     printallocerr("index2");
     return EXIT_FAILURE;
@@ -93,6 +102,9 @@ int main(int argc,char **argv)
   {
     if(readcoord(grid,&c2,&res))
     {
+      free(c);
+      free(index);
+      free(index2);
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[2]);
       return EXIT_FAILURE;
@@ -103,6 +115,10 @@ int main(int argc,char **argv)
       fputs("Coordinate ",stderr);
       fprintcoord(stderr,&c2);
       fputs(" not found.\n",stderr);
+      free(c);
+      free(index);
+      free(index2);
+      closecoord(grid);
       return EXIT_FAILURE;
     }
     index[j]=i;
@@ -112,37 +128,61 @@ int main(int argc,char **argv)
   file=fopen(argv[3],"rb");
   if(file==NULL)
   {
+    free(c);
+    free(index);
+    free(index2);
     printfopenerr(argv[3]);
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
   if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
   {
+    free(c);
+    free(index);
+    free(index2);
     fprintf(stderr,"Invalid header in '%s'.\n",argv[3]);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(res.lon!=header.cellsize_lon || res.lat!=header.cellsize_lat)
   {
     fprintf(stderr,"Cell size (%g,%g) in '%s' differs from (%g,%g) in '%s'.\n",
             header.cellsize_lon,header.cellsize_lat,argv[4],res.lon,res.lat,argv[1]);
+    free(c);
+    free(index);
+    free(index2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(header.ncell!=ngrid)
   {
     fprintf(stderr,"Number of cells=%d in '%s' differs from %d in '%s'.\n",
             header.ncell,argv[3],ngrid,argv[1]);
+    free(c);
+    free(index);
+    free(index2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   r=newvec(Routing,header.ncell);
   if(r==NULL)
   {
     printallocerr("r");
+    free(c);
+    free(index);
+    free(index2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   for(i=0;i<header.ncell;i++)
   {
     if(getroute(file,r+i,swap))
     {
+      free(r);
+      free(c);
+      free(index);
+      free(index2);
+      fclose(file);
       fprintf(stderr,"Error reading route %d in '%s'.\n",i,argv[3]);
       return EXIT_FAILURE;
     }
@@ -151,6 +191,10 @@ int main(int argc,char **argv)
   file=fopen(argv[4],"wb");
   if(file==NULL)
   {
+    free(r);
+    free(c);
+    free(index);
+    free(index2);
     printfcreateerr(argv[4]);
     return EXIT_FAILURE;
   }
@@ -160,7 +204,7 @@ int main(int argc,char **argv)
   {
     r2.len=r[index2[i]].len;
     if(r[index2[i]].index<0)
-      r2.len=r[index2[i]].index;
+      r2.index=r[index2[i]].index;
     else
     {
       r2.index=index[r[index2[i]].index];
@@ -173,6 +217,10 @@ int main(int argc,char **argv)
     }
     fwrite(&r2,sizeof(r2),1,file);
   }
+  free(c);
+  free(index);
+  free(index2);
+  free(r);
   fclose(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

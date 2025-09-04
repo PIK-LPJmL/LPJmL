@@ -295,6 +295,8 @@ int main(int argc,char **argv)
     fclose(in);
     oldheader=header;
   }
+  free(index);
+  free(index2);
   header.nyear=header.firstyear+header.nyear-firstyear;
   header.firstyear=firstyear;
   rewind(out);

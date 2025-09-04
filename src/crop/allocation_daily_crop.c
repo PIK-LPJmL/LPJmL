@@ -54,7 +54,6 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   /* root growth */
   crop->vscal_sum+=pft->vscal;
   ndf=(crop->growingdays>0.0) ? crop->vscal_sum/crop->growingdays*100 : 100.0;
-  /* this work also without with_nitrogen, as ndf is initialized to 100 */
   df=min(wdf,ndf);
   froot=FROOTMAX-(FROOTMIN*crop->fphu)*df/(df+exp(6.13-0.0883*df));
 

@@ -60,10 +60,10 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                       var_unit,filename->name,unit);
     free(var_unit);
 
-  /*  if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
+    if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR154: Longitudinal cell size %g different from %g in '%s'.\n",
+        fprintf(stderr,"ERROR154: Longitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lon,config->resolution.lon,filename->name);
       fclose(file);  
       return NULL;
@@ -71,11 +71,11 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     if(fabs(header->cellsize_lat-config->resolution.lat)>epsilon)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR154: Latitudinal cell size %g different from %g in '%s'.\n",
+        fprintf(stderr,"ERROR154: Latitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lat,config->resolution.lat,filename->name);
       fclose(file);  
       return NULL;
-    }*/
+    }
     if(header->firstyear>config->firstyear)
       if(isyear && isroot(*config))
         fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",

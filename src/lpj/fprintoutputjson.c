@@ -87,20 +87,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char **pftnames;
   time_t t;
   Type type;
-  int p,nbands,len,count,id;
+  int p,nbands,len,id;
   id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
   {
-    count=snprintf(NULL,0,config->outputvars[index].filename.name,year);
-    if(count==-1)
-      return TRUE;
-    filename=malloc(count+1);
+    filename=getsprintf(config->outputvars[index].filename.name,year);
     if(filename==NULL)
     {
       printallocerr("filename");
       return TRUE;
     }
-    snprintf(filename,count+1,config->outputvars[index].filename.name,year);
   }
   else
     filename=config->outputvars[index].filename.name;
@@ -142,8 +138,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
-  fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
-  fprintf(file,"  \"cellsize_lat\" : %f,\n",config->resolution.lat);
+  fprintf(file,"  \"cellsize_lon\" : %.8g,\n",config->resolution.lon);
+  fprintf(file,"  \"cellsize_lat\" : %.8g,\n",config->resolution.lat);
   fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,id)));
   fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
   nbands=outputsize(id,

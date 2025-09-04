@@ -68,9 +68,9 @@ extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
 extern Stocks turnover_grass(Litter *,Pft *,Real,const Config *);
 extern void phenology_grass(Pft *,Real,int,Bool,const Config *);
-extern Bool fwrite_grass(FILE *,const Pft *);
+extern Bool fwrite_grass(Bstruct,const Pft *);
 extern void fprint_grass(FILE *,const Pft *);
-extern Bool fread_grass(FILE *,Pft *,Bool,Bool);
+extern Bool fread_grass(Bstruct,Pft *,Bool);
 extern Bool fscanpft_grass(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_grass(Pft *,Real,Real,int);
 extern Real vegc_sum_grass(const Pft *);
@@ -91,8 +91,8 @@ extern void turnover_monthly_grass(Litter *,Pft *,const Config *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,int,Bool,const Config *);
 extern void albedo_grass(Pft *,Real,Real);
 extern Real nuptake_grass(Pft *,Real *,Real *,int,int,const Config *);
-extern Real ndemand_grass(const Pft *,Real *,Real,Real,Real);
-extern Real vmaxlimit_grass(const Pft *,Real,Real);
+extern Real ndemand_grass(const Pft *,Real *,Real,Real);
+extern Real vmaxlimit_grass(const Pft *,Real);
 
 /* Definition of macros */
 

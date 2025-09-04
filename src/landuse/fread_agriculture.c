@@ -17,10 +17,9 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Bool fread_agriculture(FILE *file,   /**< pointer to binary file */
-                       Stand *stand, /**< stand pointer */
-                       Bool swap     /**< byte order has to be changed */
-                      )              /** \return TRUE on error */
+Bool fread_agriculture(Bstruct file,  /**< pointer to restart file */
+                       Stand *stand   /**< stand pointer */
+                      )               /** \return TRUE on error */
 {
   Irrigation *irrigation;
   irrigation=new(Irrigation);
@@ -30,7 +29,7 @@ Bool fread_agriculture(FILE *file,   /**< pointer to binary file */
     printallocerr("agriculture");
     return TRUE;
   }
-  if(fread_irrigation(file,irrigation,swap))
+  if(fread_irrigation(file,"irrigation",irrigation))
     return TRUE;
-  return freadint1(&stand->growing_days,swap,file)!=1;
+  return bstruct_readint(file,"growing_days",&stand->growing_days);
 } /* of 'fread_agriculture' */

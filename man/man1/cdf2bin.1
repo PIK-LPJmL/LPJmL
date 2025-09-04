@@ -3,14 +3,17 @@
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-map name] [\-clm] [\-byte] [\-cellsize size] [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
+[\-h] [\-v] [\-swap] [\-units u] [\-var name] [\-map name] [\-clm] [\-byte] [\-cellsize size] [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data.
 .SH OPTIONS
 .TP
-\-v
-Print name of netcdf files.
+\-h,\--help
+Print a short help text.
+.TP
+\-v,\--verbose
+Print name of NetCDF files.
 .TP
 \-swap
 Byte order of grid file has to be swapped.

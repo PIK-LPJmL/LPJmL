@@ -1,0 +1,36 @@
+.TH allbin2cdf 1  "USER COMMANDS"
+.SH NAME
+allbin2cdf \- convert all binary output files into NetCDF files
+.SH SYNOPSIS
+.B allbin2cdf
+[[\-option op] ...] [[\fIbinpath\fP] [\fInetcdfpath\fP]]
+.SH DESCRIPTION
+Program converts all binary output files in the current or specified directory into NetCDF files. It is necessary that the corresponding JSON (*.bin.json) metafiles are present.
+.SH OPTIONS
+.TP
+\-option op
+Set options for bin2cdf.
+.TP
+.I binpath
+Directory path of the binary output files, default is current directory.
+.TP
+.I netcdfpath
+Directory path of the converted NetCDF files, default is current directory or directory specified by \FIbinpath\FP.
+.TP
+Create NetCDF files for output directory into output/netcdf directory with daily time axis:
+.B allbin2cdf
+-option -days output output/netcdf
+.SH EXIT STATUS
+.B allbin2cdf
+returns the number of files converted or zero in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+bin2cdf(1), cdf2bin(1), cmpbin(1), soil2cdf(1), clm2cdf(1), country2cdf(1), drainage2cdf(1), reservoir2cdf(1), lpjml(1)

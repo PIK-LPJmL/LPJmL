@@ -18,7 +18,7 @@
 
 int main(int argc,char **argv)
 {
-  Real *area;
+  Real *area=NULL;
   float val;
   Coord coord,resolution;
   Intcoord intcoord;
@@ -226,8 +226,8 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         area[i]=val;
+        area_sum+=area[i];
       }
-      area_sum+=area[i];
     }
     fclose(areafile);
   } /* of if(area_filename!=NULL) */
@@ -360,7 +360,10 @@ int main(int argc,char **argv)
         printf("\n");
       }
   }
+  free(area);
+  free(sum_array);
   for(i=0;i<argc-iarg-1;i++)
     fclose(file[i]);
+  free(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

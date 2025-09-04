@@ -257,6 +257,7 @@ int main(int argc,char **argv)
       }
     }
   }
+  free(data);
   fclose(soil);
   rewind(out);
   header.firstcell=0;

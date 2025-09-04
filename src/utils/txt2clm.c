@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
+#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-timestep t] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] [-json] txtfile clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"txt2clm --help\" for more information.\n"
 
 static int getfloat(FILE *file,char sep,float *value)
 {
@@ -77,7 +78,9 @@ int main(int argc,char **argv)
   Header header;
   int version;
   char *id;
+  char *arglist,*out_json;
   int i,iarg,rc;
+  Bool isjson;
   char sep;
   /* set default values */
   header.order=CELLYEAR;
@@ -92,6 +95,7 @@ int main(int argc,char **argv)
   header.cellsize_lon=header.cellsize_lat=0.5;
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
+  isjson=FALSE;
   sep='\0';
   /* parse command line options */
   for(iarg=1;iarg<argc;iarg++)
@@ -101,9 +105,9 @@ int main(int argc,char **argv)
       {
         printf("   txt2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert text files to clm data files for LPJmL version %s\n\n",getversion());
+               "Convert text files to clm data files for LPJmL version %s\n",getversion());
         printf(USAGE
-               "Arguments:\n"
+               "\nArguments:\n"
                "-h,--help    print this help text\n"
                "-version     set version, default is %d\n"
                "-cellindex   set order to cell index\n"
@@ -112,16 +116,18 @@ int main(int argc,char **argv)
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
                "-nstep n     number of steps, default is %d\n"
+               "-timestep n  number of years between time step, defauls is %d\n"
                "-firstcell n index of first cell\n"
                "-ncell n     number of cells, default is %d\n"
                "-firstyear f first year, default is %d\n"
                "-scale s     scale data by a factor of s\n"
                "-cellsize s  cell size, default is %g\n"
                "-header id   clm header string, default is '%s'\n"
+               "-json        JSON metafile is created with suffix '.json'\n"
                "txtfile      filename of text file\n"
                "clmfile      filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               version,header.nbands,header.nstep,header.ncell,header.firstyear,header.cellsize_lon,id);
+               version,header.nbands,header.nstep,header.timestep,header.ncell,header.firstyear,header.cellsize_lon,id);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-float"))
@@ -130,12 +136,14 @@ int main(int argc,char **argv)
         header.datatype=LPJ_INT;
       else if(!strcmp(argv[iarg],"-cellindex"))
         header.order=CELLINDEX;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-scale' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         multiplier=(float)strtod(argv[++iarg],&endptr);
@@ -156,7 +164,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-cellsize' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -177,7 +185,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-nbands' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.nbands=strtol(argv[++iarg],&endptr,10);
@@ -198,18 +206,17 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-csv' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         sep=argv[++iarg][0];
       }
-
       else if(!strcmp(argv[iarg],"-nstep"))
       {
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-nstep' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.nstep=strtol(argv[++iarg],&endptr,10);
@@ -219,9 +226,30 @@ int main(int argc,char **argv)
                   argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.nstep<1)
+        if(header.nstep!=1 && header.nstep!=NMONTH && header.nstep!=NDAYYEAR)
         {
-          fprintf(stderr,"Number of steps=%d must be greater than zero.\n",header.nstep);
+           fprintf(stderr,"Error: Number of steps=%d must be 1, 12, or 365.\n",header.nstep);
+           return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-timestep"))
+      {
+        if(iarg==argc-1)
+        {
+          fputs("Argument missing after '-timestep' option.\n"
+                ERR_USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        header.timestep=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-timestep'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.timestep<1)
+        {
+          fprintf(stderr,"Number of time steps=%d must be greater than zero.\n",header.timestep);
           return EXIT_FAILURE;
         }
       }
@@ -230,7 +258,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-version' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++iarg],&endptr,10);
@@ -257,7 +285,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-firstcell' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstcell=strtol(argv[++iarg],&endptr,10);
@@ -273,7 +301,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-ncell' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.ncell=strtol(argv[++iarg],&endptr,10);
@@ -294,7 +322,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-firstyear' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++iarg],&endptr,10);
@@ -310,7 +338,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-header' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         id=argv[++iarg];
@@ -318,7 +346,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n",argv[iarg]);
-        fprintf(stderr,USAGE);
+        fprintf(stderr,ERR_USAGE);
         return EXIT_FAILURE;
       }
     }
@@ -327,8 +355,31 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fputs("Filename(s) missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
+  }
+  if(header.timestep>1 && header.nstep>1)
+  {
+    fprintf(stderr,"Error: Number of time steps=%d within a year must be 1 if years between time steps=%d is greater than 1.\n",
+            header.nstep,header.timestep);
+    return EXIT_FAILURE;
+  }
+  if(version<4)
+  {
+    if(header.nstep>1 && header.nbands==1)
+    {
+      fprintf(stderr,"Warning: Version of clm file is %d and nstep>1, nbands set to nstep=%d\n",
+              version,header.nstep);
+      header.nbands=header.nstep;
+    }
+    else if(header.nstep>1 && header.nbands>1)
+    {
+      fprintf(stderr,"Error: Number of steps=%d and bands=%d must not be both >1 for verion %d clm files.\n",
+              header.nstep,header.nbands,version);
+      return EXIT_FAILURE;
+    }
+    if(header.timestep>1)
+      fprintf(stderr,"Warning: Version of clm file is %d and timestep>1, timestep is not written to clm file.\n",version);
   }
   file=fopen(argv[iarg],"r");
   if(file==NULL)
@@ -426,5 +477,24 @@ int main(int argc,char **argv)
   rewind(out);
   fwriteheader(out,&header,id,version);
   fclose(out);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[iarg+1],NULL,"txt2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,LPJ_SHORT,CLM,id,FALSE,version);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */

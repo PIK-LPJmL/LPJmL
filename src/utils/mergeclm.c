@@ -235,6 +235,8 @@ int main(int argc,char **argv)
     case LPJ_DOUBLE:
       vec=dvec=newvec(double,nbands_sum);
       break;
+    default:
+      return EXIT_FAILURE;
   }
   if(vec==NULL)
   {
@@ -280,6 +282,8 @@ int main(int argc,char **argv)
             else
               rc=freaddouble(dvec+index,nbands[i],swap[i],files[i]);
             break;
+          default:
+            return EXIT_FAILURE;
         }
         if(rc!=nbands[i])
         {
@@ -295,10 +299,14 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
     }
-   /* close all open files */
+  free(vec);
+  free(nbands);
+  free(swap);
+  /* close all open files */
   for(i=0;i<numfiles;i++)
     if(files[i]!=NULL)
       fclose(files[i]);
+  free(files);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */

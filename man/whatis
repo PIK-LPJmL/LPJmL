@@ -1,5 +1,6 @@
 adddrain (1) - add river basin to coordinate file
 addheader (1) - add clm header to binary file
+allbin2cdf (1) - convert all binary output files into NetCDF files
 arr2clm (1) - convert 2-D float arrays into CLM file
 asc2clm (1) - convert ARC/Info ASCII files to clm data files for LPJmL
 backtrace (1) - print backtrace from core
@@ -54,6 +55,7 @@ isopen (3) - determine whether output file is open
 isroot (3) - determine whether task is root task
 iterate (3) - main time loop for LPJmL
 iterateyear (3) - year time loop for LPJmL
+json2restart (1) - convert JSON file into LPJmL restart file
 lpjcat (1) - concatenate restart files from distributed LPJmL simulations.
 lpjcheck (1) - check syntax of LPJmL configuration files
 lpjfiles (1) - print list of input/output files of LPJmL
@@ -97,8 +99,11 @@ readpopdens (3) - read population density data
 regridclm (1) - regrid CLM file to new grid
 regridlpj (1) - regrid input data set for selected countries or specified grid file
 regridsoil (1) - regrid soil file to new grid
+reservoir2cdf (1) - convert CLM reservoir file into NetCDF file
+restart2yaml (1) - convert LPJmL restart file into YAML
 setclm (1) - set value in header of CLM files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
+splitclm (1) - copy specific bands of clm data files
 statclm (1) - print statistics of CLM files
 txt2grid (1) - convert text files to CLM grid data files for LPJmL
 txt2clm (1) - convert CRU ASCII files to CLM data files for LPJmL

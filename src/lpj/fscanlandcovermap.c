@@ -28,9 +28,8 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
   int *pftmap;
   Verbosity verbose;
   const char *s;
-  int pft,nnat;
+  int pft;
   Bool first;
-  nnat=getnnat(npft,config);
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if(iskeydefined(file,name))
   {
@@ -43,14 +42,14 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
       printallocerr(name);
       return NULL;
     }
-    undef=newvec(Bool,nnat);
+    undef=newvec(Bool,npft);
     if(undef==NULL)
     {
       printallocerr(name);
       free(pftmap);
       return NULL;
     }
-    for(pft=0;pft<nnat;pft++)
+    for(pft=0;pft<npft;pft++)
       undef[pft]=TRUE;
     for(pft=0;pft<*size;pft++)
     {
@@ -76,7 +75,7 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
         free(undef);
         return NULL;
       }
-      pftmap[pft]=findpftname(s,config->pftpar,nnat);
+      pftmap[pft]=findpftname(s,config->pftpar,npft);
       if(pftmap[pft]!=NOT_FOUND)
         undef[pftmap[pft]]=FALSE;
       else
@@ -91,7 +90,7 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
     if(verbose)
     {
       first=TRUE;
-      for(pft=0;pft<nnat;pft++)
+      for(pft=0;pft<npft;pft++)
         if(undef[pft])
         {
           if(first)
@@ -111,19 +110,19 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
   else
   {
     /* no map defined, set default one */
-    *size=nnat;
-    pftmap=newvec(int,nnat);
+    *size=npft;
+    pftmap=newvec(int,npft);
     if(pftmap==NULL)
     {
       printallocerr("pftmap");
       return NULL;
     }
-    for(pft=0;pft<nnat;pft++)
+    for(pft=0;pft<npft;pft++)
       pftmap[pft]=pft;
     if(verbose)
     {
       fprintf(stderr,"WARNING011: Map '%s' not found, set to [",name);
-      for(pft=0;pft<nnat;pft++)
+      for(pft=0;pft<npft;pft++)
       {
         if(pft)
           fputc(',',stderr);

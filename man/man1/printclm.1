@@ -3,13 +3,16 @@
 printclm, printheader \- Print contents of clm files for LPJmL
 .SH SYNOPSIS
 .B printclm
-[-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
+[-h] [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
 
 .B printheader
 \fIclmfile\fP ...
 .SH DESCRIPTION
 Program prints file header and data stored in clm data files for LPJmL. \fBprintheader\fP is an alias for \fBprintclm\fP printing the file header only.
 .SH OPTIONS
+.TP
+\-h,\--help
+Print a short help text.
 .TP
 -metafile
 File is a JSON metafile describing the structure of the raw binary file.
@@ -21,7 +24,7 @@ Print without header.
 Print without data.
 .TP
 -text
-Print data only.
+Print data without header and cell index.
 .TP
 -json
 Print header in JSON format only.
@@ -81,4 +84,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-setclm(1), statclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), statclm(1), clm(5)
+setclm(1), statclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), clm2cdf(1), cdf2clm(1), clm(5)

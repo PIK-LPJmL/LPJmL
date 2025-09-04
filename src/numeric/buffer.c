@@ -17,7 +17,8 @@
 #include <string.h>
 #include <errno.h>
 #include "types.h"
-#include "swap.h"
+#include "hash.h"
+#include "bstruct.h"
 #include "errmsg.h"
 #include "buffer.h"
 
@@ -69,24 +70,28 @@ void updatebuffer(Buffer buffer, /**< pointer to buffer */
   }
 } /* of 'updatebuffer' */
 
-Bool fwritebuffer(FILE *file,         /**< file pointer */
+Bool fwritebuffer(Bstruct file,       /**< pointer to restart file */
+                  const char *name,   /**< name of object */
                   const Buffer buffer /**< pointer to buffer */
                  )                    /** \return TRUE on error */
 {
-  fwrite(&buffer->size,sizeof(int),1,file);
-  fwrite(&buffer->n,sizeof(int),1,file);
-  fwrite(&buffer->index,sizeof(int),1,file);
-  fwrite(&buffer->sum,sizeof(Real),1,file);
-  return (fwrite(buffer->data,sizeof(Real),buffer->n,file)!=buffer->n);
+  bstruct_writebeginstruct(file,name);
+  bstruct_writeint(file,"size",buffer->size);
+  bstruct_writeint(file,"index",buffer->index);
+  bstruct_writereal(file,"sum",buffer->sum);
+  bstruct_writerealarray(file,"data",buffer->data,buffer->n);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritebuffer' */
 
-Buffer freadbuffer(FILE *file, /**< file pointer */
-                   Bool swap   /**< byte order has to be changed */
-                  )            /** \return allocated buffer or NULL */
+Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
+                   const char *name /**< name of object */
+                  )                 /** \return allocated buffer or NULL */
 {
-  int size;
+  int i,size;
   Buffer buffer;
-  if(freadint1(&size,swap,file)!=1)
+  if(bstruct_readbeginstruct(file,name))
+    return NULL;
+  if(bstruct_readint(file,"size",&size))
     return NULL;
   buffer=new(struct buffer);
   if(buffer==NULL)
@@ -102,16 +107,47 @@ Buffer freadbuffer(FILE *file, /**< file pointer */
     free(buffer);
     return NULL;
   }
-  freadint1(&buffer->n,swap,file);
-  if(buffer->n>buffer->size)
+  if(bstruct_readint(file,"index",&buffer->index))
   {
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  freadint1(&buffer->index,swap,file);
-  freadreal1(&buffer->sum,swap,file);
-  if(freadreal(buffer->data,buffer->n,swap,file)!=buffer->n)
+  if(bstruct_readreal(file,"sum",&buffer->sum))
+  {
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(bstruct_readbeginarray(file,"data",&buffer->n))
+  {
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(buffer->n>buffer->size)
+  {
+    fprintf(stderr,"ERROR250: Size of buffer '%s'=%d is >%d.\n",
+            name,buffer->n,buffer->size);
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  for(i=0;i<buffer->n;i++)
+    if(bstruct_readreal(file,NULL,buffer->data+i))
+    {
+      free(buffer->data);
+      free(buffer);
+      return NULL;
+    }
+  if(bstruct_readendarray(file,"data"))
+  {
+    /* read error occured */
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(bstruct_readendstruct(file,name))
   {
     /* read error occured */
     free(buffer->data);

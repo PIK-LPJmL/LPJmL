@@ -68,6 +68,7 @@ int main(int argc,char **argv)
   {
     cdf=opencoord_netcdf(config.soil_filename.name,
                          config.soil_filename.var,
+                         &config.netcdf,
                          TRUE);
     if(cdf==NULL)
       return EXIT_FAILURE;
@@ -318,8 +319,11 @@ int main(int argc,char **argv)
     }
     printf(",%g\n",harvest_total);
   }
+  free(area);
+  freelandfrac(harvest_sum);
   fclose(file);
   if(!config.pft_output_scaled)
     fclose(frac_file);
+  freeconfig(&config);
   return EXIT_SUCCESS;
 } /* of 'main' */

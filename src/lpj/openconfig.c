@@ -30,9 +30,11 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   char *lpjpath=NULL,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
+  const char *progname;
   Bool iscpp;
   FILE *file;
   int i,len,dcount;
+  progname=strippath((*argv)[0]);
   config->nopp=FALSE;
   config->cmd=NULL;
   config->filter=getenv(LPJPREP);
@@ -69,8 +71,15 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   }
   config->param_out=FALSE;
   config->pedantic=FALSE;
+  config->print_noread=FALSE;
   config->ofiles=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
+  pos=getenv(LPJNOPP);
+  if(pos!=NULL && !strcmp(pos,"true"))
+    config->nopp=TRUE;
+  pos=getenv(LPJPEDANTIC);
+  if(pos!=NULL && !strcmp(pos,"true"))
+    config->pedantic=TRUE;
   pos=getenv(LPJWAIT);
   if(pos!=NULL)
   {
@@ -128,24 +137,29 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     }
   }
 #else
-  config->coupler_port=DEFAULT_COUPLER_PORT;
+  config->coupled_host_set=FALSE;
+  config->coupled_port_set=FALSE;
+  config->coupled_port=DEFAULT_COUPLER_PORT;
   config->coupled_host=getenv(LPJCOUPLEDHOST);
   if(config->coupled_host==NULL)
-    config->coupled_host=DEFAULT_COUPLED_HOST;
+    config->coupled_host=strdup(DEFAULT_COUPLED_HOST);
   else
   {
+    config->coupled_host=strdup(getenv(LPJCOUPLEDHOST));
+    config->coupled_host_set=TRUE;
     pos=strchr(config->coupled_host,':');
     if(pos!=NULL)
     {
+      config->coupled_port_set=TRUE;
       *pos='\0';
-       config->coupler_port=strtol(pos+1,&endptr,10);
-       if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
-       {
-         if(isroot(*config))
-           fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
-                   config->coupler_port);
-         return NULL;
-       }
+      config->coupled_port=strtol(pos+1,&endptr,10);
+      if(pos+1==endptr || config->coupled_port<1 || config->coupled_port>USHRT_MAX)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
+                  config->coupled_port);
+        return NULL;
+      }
     }
   }
 #endif
@@ -178,7 +192,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-wait' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -211,7 +225,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-image' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -260,7 +274,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-couple' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -272,14 +286,14 @@ FILE *openconfig(Config *config,      /**< configuration struct */
            if(pos!=NULL)
            {
              *pos='\0';
-             config->coupler_port=strtol(pos+1,&endptr,10);
-             if(pos+1==endptr || config->coupler_port<1
-                              || config->coupler_port>USHRT_MAX)
+             config->coupled_port=strtol(pos+1,&endptr,10);
+             if(pos+1==endptr || config->coupled_port<1
+                              || config->coupled_port>USHRT_MAX)
              {
                if(isroot(*config))
                  fprintf(stderr,
                          "ERROR193: Invalid number %d for coupled port.\n",
-                         config->coupler_port);
+                         config->coupled_port);
                free(options);
                return NULL;
              }
@@ -297,7 +311,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-pp' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -309,6 +323,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         config->param_out=TRUE;
       else if(!strcmp((*argv)[i],"-pedantic"))
         config->pedantic=TRUE;
+      else if(!strcmp((*argv)[i],"-print_noread"))
+        config->print_noread=TRUE;
       else if(!strcmp((*argv)[i],"-ofiles"))
         config->ofiles=TRUE;
       else if(!strcmp((*argv)[i],"-vv"))
@@ -322,7 +338,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-inpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -343,7 +359,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-outpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -363,7 +379,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-restartpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -386,7 +402,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           fprintf(stderr,"ERROR162: Invalid option '%s'.\n",(*argv)[i]);
           if(usage!=NULL)
-            fprintf(stderr,usage,(*argv)[0]);
+            fprintf(stderr,usage,progname,progname);
         }
         free(options);
         return NULL;
@@ -399,9 +415,9 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   {
     if(isroot(*config))
     {
-      fprintf(stderr,"ERROR164: Configuration filename missing.\n");
+      fprintf(stderr,"ERROR164: Configuration (*.cjson) filename missing.\n");
       if(usage!=NULL)
-        fprintf(stderr,usage,(*argv)[0]);
+        fprintf(stderr,usage,progname,progname);
     }
     free(options);
     return NULL;

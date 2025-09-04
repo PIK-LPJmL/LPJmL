@@ -27,9 +27,9 @@ typedef struct
   int ilon,ilat;
 } Data;
 
-static int cmp(const Data *a,const Data *b)
+static int cmp(const void *a,const void *b)
 {
-  return a->index-b->index;
+  return ((const Data *)a)->index-((const Data *)b)->index;
 } /* of 'cmp' */
 #endif
 
@@ -53,6 +53,7 @@ int main(int argc,char **argv)
   {
     float lon,lat;
   } coord_f;
+  Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
   char *source=NULL,*history=NULL,*title=NULL;
@@ -64,6 +65,7 @@ int main(int argc,char **argv)
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
   israw=isjson=scalar_set=FALSE;
+  initsetting_netcdf(&netcdf_config);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -146,11 +148,15 @@ int main(int argc,char **argv)
     nc_inq_nvars(ncid,&nvars);
     for(j=0;j<nvars;j++)
     {
-      nc_inq_varndims(ncid,j,&ndims);
-      if(ndims==2)
+      nc_inq_varname(ncid,j,name);
+      if(strcmp(name,netcdf_config.lon_bnds.name) && strcmp(name,netcdf_config.lat_bnds.name))
       {
-        var_id=j;
-        break;
+        nc_inq_varndims(ncid,j,&ndims);
+        if(ndims==2)
+        {
+          var_id=j;
+          break;
+        }
       }
     }
     if(j==nvars)
@@ -237,8 +243,8 @@ int main(int argc,char **argv)
   if(rc)
   {
     fprintf(stderr,"WARNING402: Cannot read missing or fill value in '%s': %s, set to %d.\n",
-            argv[iarg],nc_strerror(rc),MISSING_VALUE_INT);
-    missing_value=MISSING_VALUE_INT;
+            argv[iarg],nc_strerror(rc),netcdf_config.missing_value.i);
+    missing_value=netcdf_config.missing_value.i;
   }
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
@@ -328,7 +334,7 @@ int main(int argc,char **argv)
     }
   free(index);
   /* sort in ascending order of index */
-  qsort(data,header.ncell,sizeof(Data),(int(*)(const void *,const void *))cmp);
+  qsort(data,header.ncell,sizeof(Data),cmp);
   header.firstcell=data[0].index;
   for(i=1;i<header.ncell;i++)
     if(data[i].index!=i+header.firstcell)

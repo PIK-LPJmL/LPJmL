@@ -183,8 +183,18 @@ int main(int argc,char **argv)
   /* Read configuration file */
   rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
-  if(isroot(config) && argc)
-    fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+  if(argc)
+  {
+    if(isroot(config))
+      fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+    if(config.pedantic)
+    {
+#ifdef USE_MPI
+      MPI_Finalize();
+#endif
+      return READ_CONFIG_ERR;
+    }
+  }
   if(config.ofiles)
   {
     if(isroot(config))
@@ -290,8 +300,12 @@ int main(int argc,char **argv)
                                                    config.nspinup,1));
 #ifdef USE_TIMING
     if(iscoupled(config))
-      printf("Time spent in communication to %s model: %.2g sec.\n",
+      printf("Time spent in communication to %s model: %.2f sec.\n",
              config.coupled_model,timing);
+    if(config.restart_filename!=NULL)
+      printf("Time spent in reading restart file: %.2f sec.\n",tread);
+    if(iswriterestart(&config))
+      printf("Time spent in writing restart file: %.2f sec.\n",twrite);
 #endif
   }
 #if defined IMAGE && defined COUPLED

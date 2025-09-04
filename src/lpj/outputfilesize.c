@@ -43,7 +43,7 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
            if(config->soil_filename.fmt==CDF)
            {
              coord=opencoord_netcdf(config->soil_filename.name,
-                                    config->soil_filename.var,isroot(*config));
+                                    config->soil_filename.var,&config->netcdf,isroot(*config));
              if(coord!=NULL)
              {
                getextension_netcdf(&ext,coord);
