@@ -24,7 +24,7 @@ LPJmL is written in **C** and requires the following tools and libraries:
 - [JSON-C library](https://github.com/json-c/json-c).
 - NetCDF and Udunits-2 library (optional).
 
-For additional dependencies, refer to the [INSTALL](./INSTALL) file.
+For additional dependencies, refer to the [INSTALL.md](./INSTALL.md) file.
 
 ### Setup & Usage
 
@@ -39,7 +39,7 @@ For additional dependencies, refer to the [INSTALL](./INSTALL) file.
     ./configure.sh
     make all
     ```
-For detailed setup instructions, see the [INSTALL](./INSTALL) file.
+For detailed setup instructions, see the [INSTALL.md](./INSTALL.md) file.
 LPJmL requires additional input data to run simulations. Input files can
 be generated applying the [Land Input Generator (LandInG)](https://github.com/PIK-LPJmL/LandInG)
 To test the model, use the provided test data:
