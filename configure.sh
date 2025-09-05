@@ -36,7 +36,7 @@ while(( "$#" )); do
       echo "-v,--version    print version"
       echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
-      echo "-inpath dir     set input directory directory for LPJmL"
+      echo "-inpath dir     set input directory for LPJmL"
       echo "-debug          set debug flags and disable optimization"
       echo "-check          enable run-time checking of memory leaks and access out of bounds"
       echo "-noerror        do not stop compilation on warnings"
