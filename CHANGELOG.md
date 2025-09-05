@@ -27,6 +27,9 @@ of `major.minor.patch` with
 
 ### Added
 
+- Option `-inpath` added to `configure.sh` to set path for input files.
+- Boolean flag `"isswnet"` added in `lpjml_config.cjson` to use net shortwave radiation instead of downward shortwave radiation as input.
+- Function `fprintclimbuf()` added in `climbuf.c` to print variables and is called in `fprintcell.c`.
 - Urban stand added.
 - Fire related outputs and settings added:
 ```java
@@ -44,6 +47,7 @@ of `major.minor.patch` with
 - SPITFIRE fire model updated, multi-day fire implemented ([Oberhagemann et al. 2025](https://doi.org/10.5194/gmd-18-2021-2025)).
 - The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
 - Keyword `"fire"` renamed to `"globfirm"`.
+- Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
 
 
 ## [5.10.0] - 2025-08-14
