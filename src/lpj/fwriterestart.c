@@ -109,6 +109,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writeint(file,"sdate_option",config->sdate_option);
     bstruct_writebool(file,"crop_phu_option",config->crop_phu_option>=PRESCRIBED_CROP_PHU);
     bstruct_writebool(file,"river_routing",config->river_routing);
+    bstruct_writebool(file,"lakes",config->with_lakes);
     bstruct_writebool(file,"separate_harvests",config->separate_harvests);
     /* write array of all PFT names */
     bstruct_writebeginarray(file,"pfts",npft+ncft);

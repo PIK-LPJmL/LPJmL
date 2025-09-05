@@ -111,8 +111,6 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
     }
-    if(!config->river_routing && config->river_routing_restart)
-      cell->lakefrac=1-standfracsum(cell->standlist);
     readreal(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
     readreal(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
     if(freadclimbuf(file,"climbuf",&cell->climbuf,ncft))

@@ -44,7 +44,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   char *lpjversion,*pftname;
   Real cellsize_lon,cellsize_lat;
   int i,offset,ncell,restart_npft,restart_ncft,firstcell,firstyear,size;
-  Bool separate_harvests;
+  Bool separate_harvests,with_lakes_restart;
   Type datatype;
   char *type;
   /* Open restart file */
@@ -96,6 +96,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readint(file,"sdate_option",&config->sdate_option_restart);
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
   readbool(file,"river_routing",&config->river_routing_restart);
+  readbool(file,"lakes",&with_lakes_restart);
   readbool(file,"separate_harvests",&separate_harvests);
   if(bstruct_readbeginarray(file,"pfts",&size))
   {
@@ -189,6 +190,14 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       bstruct_finish(file);
       return NULL;
     }
+  }
+  if(config->with_lakes != with_lakes_restart)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR181: Lakes setting=%s differs from %s in %s file '%s'.\n",
+              bool2str(config->with_lakes),bool2str(with_lakes_restart),type,filename);
+    bstruct_finish(file);
+    return NULL;
   }
   if(config->river_routing && !config->river_routing_restart)
   {
