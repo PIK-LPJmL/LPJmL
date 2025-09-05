@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-void initfwi(FWIdata *fwi)
+void initfwi(FWIdata *fwi /**< pointer to FWI data initialized */
+            )
 {
   fwi->ffmc=85;
   fwi->dmc=6;

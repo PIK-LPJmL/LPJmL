@@ -14,7 +14,9 @@
 
 #include "lpj.h"
 
-Real fuel_consumption_1hr(Real moist_par,Real fire_frac)
+Real fuel_consumption_1hr(Real moist_par,
+                          Real fire_frac  /**< fire fraction (0..1) */
+                         )
 {
   Real fuel_consum_1hr;
   if(moist_par <= 0.18)

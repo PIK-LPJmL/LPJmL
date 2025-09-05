@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           f  p  r  i  n  t  f  i  r  e  d  u  r  a  t  i  o  n  .  c           \n**/
 /**                                                                                \n**/
-/**     Function prints stand->specific maximum fire duration                      \n**/
+/**     Function prints stand-specific maximum fire duration                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,7 +14,10 @@
 
 #include "lpj.h"
 
-void fprintfireduration(FILE *file,Standtype **standtypes,int nstand)
+void fprintfireduration(FILE *file,             /**< pointer to text file */
+                        Standtype **standtypes, /**< pointer to stand type array */
+                        int nstand              /**< number of stand types */
+                       )
 {
   int i;
   Bool first=TRUE;

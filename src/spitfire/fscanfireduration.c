@@ -26,7 +26,7 @@ static int findstandname(const char *name,Standtype **standtypes,int nstand)
 Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
                        Standtype **standtypes, /**< stand type array */
                        int nstand,             /**< number of stand types */
-                       Verbosity verbose
+                       Verbosity verbose       /**< verbosity level (NO_ERR,ERR,VERB) */
                       )                        /** \return TRUE on error */
 {
   const char* name;

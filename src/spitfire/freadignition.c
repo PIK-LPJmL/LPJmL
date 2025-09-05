@@ -16,7 +16,10 @@
 
 #include "lpj.h"
 
-Bool freadignition(Bstruct file,const char *name,Ignition *ignition)
+Bool freadignition(Bstruct file,      /**< pointer to restart file */
+                   const char *name,  /**< name of object or NULL */
+                   Ignition *ignition /**< data read from file */
+                  )                   /** \return TRUE on error */
 {
   if(bstruct_readbeginstruct(file,name))
     return TRUE;

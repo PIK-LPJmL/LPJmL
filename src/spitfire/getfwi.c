@@ -19,7 +19,7 @@
 Real getfwi(FWIdata *fwi,
             const Coord *coord,           /**< cell coordinate */
             const Dailyclimate  *climate, /**< daily climate data */
-            int month,                     /**< month (0..11) */
+            int month,                    /**< month (0..11) */
             Bool relative_humidity        /**< humidity is relative humidity (TRUE/FALSE) */
            )                              /** \return Canadian fire danger index */
 {
