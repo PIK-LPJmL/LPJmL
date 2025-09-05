@@ -302,6 +302,7 @@ void fprintclimbuf(FILE *file,             /**< pointer to text file */
   fprintf(file,"atemp_mean20_fix: %g\n",climbuf->atemp_mean20_fix);
   fprintf(file,"gdd5: %g\n",climbuf->gdd5);
   fprintf(file,"dval_prec: %g\n",climbuf->dval_prec[0]);
+  fprintf(file,"startday_rainyseason: %d\n",climbuf->startday_rainyseason);
   fputs("temp:",file);
   for(m=0;m<NDAYS;m++)
     fprintf(file," %g",climbuf->temp[m]);
@@ -314,6 +315,9 @@ void fprintclimbuf(FILE *file,             /**< pointer to text file */
   fputs("\nmprec20:",file);
   for(m=0;m<NMONTH;m++)
     fprintf(file," %g",climbuf->mprec20[m]);
+  fputs("\nmprec100:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mprec100[m]);
   fputs("\nmtemp20:",file);
   for(m=0;m<NMONTH;m++)
     fprintf(file," %g",climbuf->mtemp20[m]);
