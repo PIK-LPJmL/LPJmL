@@ -17,6 +17,35 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+## [Unreleased]
+
+
+### Contributors
+
+- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de) , Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Added
+
+- Urban stand added.
+- Fire related outputs and settings added:
+```java
+  "gsilivefuel" : true,
+  "human_ign_prob" : false,   /* read human ignition probability from file */
+  "max_firesize" : false,     /* read maximum fire size from file */
+  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
+
+  "prescribe_ignition" : false, /* read ignitions from file */
+```
+
+### Changed
+
+- SPITFIRE fire model updated, multi-day fire implemented ([Oberhagemann et al. 2025](https://doi.org/10.5194/gmd-18-2021-2025)).
+- The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
+- Keyword `"fire"` renamed to `"globfirm"`.
+
+
 ## [5.10.0] - 2025-08-14
 
 ### Contributors
@@ -61,30 +90,6 @@ of `major.minor.patch` with
 - corrected phenology of trees:
   - leaf turnover of raingreen trees at leaf shedding (same as for summergreen trees, had continuous daily leaf turnover like evergreen trees)
   - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon 
-
-
-### Contributors
-
-- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de) , Werner von Bloh (bloh@pik-potsdam.de)
-
-### Added
-
-- Urban stand added.
-- Fire related outputs and settings added:
-```java
-  "gsilivefuel" : true,
-  "human_ign_prob" : false,   /* read human ignition probability from file */
-  "max_firesize" : false,     /* read maximum fire size from file */
-  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
-
-  "prescribe_ignition" : false, /* read ignitions from file */
-```
-
-### Changed
-
-- SPITFIRE fire model updated, multi-day fire implemented.
-- The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
 
 
 ## [5.9.28] - 2025-07-31
