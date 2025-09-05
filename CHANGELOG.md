@@ -30,6 +30,7 @@ of `major.minor.patch` with
 - Option `-inpath` added to `configure.sh` to set path for input files.
 - Boolean flag `"isswnet"` added in `lpjml_config.cjson` to use net shortwave radiation instead of downward shortwave radiation as input.
 - Function `fprintclimbuf()` added in `climbuf.c` to print variables and is called in `fprintcell.c`.
+- Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
 - Urban stand added.
 - Fire related outputs and settings added:
 ```java
