@@ -38,14 +38,14 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   Stocks total_fire;
   Fuel fuel;
   Bool isdead;
-  int p; 
+  int p;
   Output *output;
   Pft *pft;
   Livefuel livefuel={};
   Tracegas emission={0,0,0,0,0,0};
   output=&stand->cell->output;
   initfuel(&fuel);
-  
+
   //printf("STAND: %d\n", stand->type->landusetype);
 
   /*use maximum Nesterov index in previous 90 days for fire simulations if burnt area is prescribed */

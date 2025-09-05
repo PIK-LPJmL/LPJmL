@@ -109,7 +109,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
       /* loop over increasing age of fires in days */
       for(i=0;i<stand->type->max_ndayfire;i++)
       {
-        getqueue(stand->fires,(Real *)&fire,i); /* get fire properties up to today for fire age i+1 days */ 
+        getqueue(stand->fires,(Real *)&fire,i); /* get fire properties up to today for fire age i+1 days */
         wind_cover_cum+=fire.wind_cover;
         fire.dbf += (ros_backward+ros_forward) * *fire_durat;  /* fire duration in min , dbf in m*/
         /* calculating length breadth ratio based on average wind speed over the fire's spread days */
@@ -141,10 +141,10 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
         /* fire class emptied if maximum fire size condition is met */
         if((ismaxfire && M_PI_4/length_breadth_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize))
           fire.burnt_area=fire.dbf=fire.wind_cover=fire.num_fires=0;
-      
+
         if(fire.burnt_area>0)
         {
-          *ndayfire = 1; /* identify current day as a fire spread day */ 
+          *ndayfire = 1; /* identify current day as a fire spread day */
         }
         setqueue(stand->fires,(Real *)&fire,i); /* update fire properties of current fire age class */
       } /* of for(i=0,...) */
@@ -165,7 +165,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
       *firedurationdays=0;
     putqueue(stand->fires,(Real *)&fire);
   }
-  
+
   free(fpc_total);
   //printf("area burnt sum: %g\n", burnt_area_sum);
   return burnt_area_sum;

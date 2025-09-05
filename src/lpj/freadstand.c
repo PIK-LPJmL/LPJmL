@@ -73,7 +73,7 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
   }
   stand->data=NULL;
   if(bstruct_readbool(file,"isfire",&isfire))
-  { 
+  {
     free(stand);
     return NULL;
   }

@@ -6,7 +6,7 @@
 /**                                                                                \n**/
 /** Function pulls fuel loads and litter moisture, calculates weighting factors    \n**/
 /** and live grass and fuel moisture for use in rate of spread and fuel            \n**/
-/** consumption                                                                    \n**/ 
+/** consumption                                                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -24,7 +24,7 @@
 #define fbd_c4_livegrass 4.0
 #define NGLIM 5 /* length of Albini weighting factor array */
 
-Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume ratio of 1, 
+Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume ratio of 1,
                                                       10, 100 hr and cured grass fuel
                                                       component, respectively */
 Real sigma_live[2]={66.0,0}; /* surface area to volume ratio of live herbaceous and
