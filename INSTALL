@@ -140,7 +140,8 @@ LPJFLAGS= -Dflag1 ...
 
 Flag                Description
 ------------------- --------------------------------------------------------------
-CHECK_BALANCE       Local checks of water, carbon and nitrogen balance are enabled
+CALC_EFF_CARBON     enable implementation of the effective carbon concentration
+CHECK_BALANCE       local checks of water, carbon and nitrogen balance are enabled
 CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
