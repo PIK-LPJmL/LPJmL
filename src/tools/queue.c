@@ -64,13 +64,15 @@ Bool fwritequeue(Bstruct file,    /**< pointer to restart file */
                )                  /** \return TRUE on error */
 {
   int i,j;
+  bstruct_writebeginstruct(file,name);
   bstruct_writeint(file,"count",queue->count);
-  bstruct_writebeginarray(file,name,queue->size*queue->count);
+  bstruct_writebeginarray(file,"data",queue->size*queue->count);
   for(i=0;i<queue->size;i++)
     for(j=0;j<queue->count;j++)
       if(bstruct_writereal(file,NULL,queue->data[((queue->first+i) % queue->size)*queue->count+j]))
         return TRUE;
-  return bstruct_writeendarray(file);
+  bstruct_writeendarray(file);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritequeue' */
 
 void fprintqueue(FILE *file,       /**< pointer to text file */
@@ -99,12 +101,17 @@ Queue freadqueue(Bstruct file,    /**< pointer to restart file */
     printallocerr("queue");
     return NULL;
   }
+  if(bstruct_readbeginstruct(file,name))
+  {
+    free(queue);
+    return NULL;
+  }
   if(bstruct_readint(file,"count",&queue->count))
   {
     free(queue);
     return NULL;
   }
-  queue->data=bstruct_readvarrealarray(file,name,&size);
+  queue->data=bstruct_readvarrealarray(file,"data",&size);
   if(queue->data==NULL)
   {
     free(queue);
@@ -112,6 +119,12 @@ Queue freadqueue(Bstruct file,    /**< pointer to restart file */
   }
   queue->size=size/queue->count;
   queue->first=0;
+  if(bstruct_readendstruct(file,name))
+  {
+    free(queue->data);
+    free(queue);
+    return NULL;
+  }
   return queue;
 } /* of 'freadqueue' */
 
