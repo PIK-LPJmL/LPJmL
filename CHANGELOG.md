@@ -49,8 +49,9 @@ of `major.minor.patch` with
 - Arguments corrected in calls of lpjml functions in `lpj_poem.c`.
 - Missing `-print_noread` option added in `INSTALL`.
 - `setupannual_grid.c` corrected to compile with `-DIMAGE -DCOUPLED` flag.
-- Error message corrected for different datatypes in `lpcat.c`.
+- Error message for different datatypes corrected in `lpcat.c`.
 - Variables initialized to zero in `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
+- Man page for `json2restart` corrected.
 
 
 ## [5.10.0] - 2025-08-14
