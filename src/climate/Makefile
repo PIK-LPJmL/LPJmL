@@ -44,10 +44,10 @@ $(OBJS): $(HDRS)
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
-realdata.$O: realdata.h realdata.c
+realdata.$O: $(INC)/realdata.h realdata.c
 	$(CC) $(CFLAGS) -I$(INC) -c realdata.c
 
-getrealdata.$O: realdata.h getrealdata.c
+getrealdata.$O: $(INC)/realdata.h getrealdata.c
 	$(CC) $(CFLAGS) -I$(INC) -c getrealdata.c
 
 clean: 
