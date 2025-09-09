@@ -112,7 +112,7 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
   time(&tinvoke);
-  timing_start(tbegin);         /* Start timing for total wall clock time */
+  tbegin=mrun();         /* Start timing for total wall clock time */
 #ifdef USE_MPI
   MPI_Init(&argc,&argv); /* Initialize MPI */
 #ifdef USE_TIMING
