@@ -581,7 +581,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
 
 #ifdef USE_TIMING
   double t;
-  t=mrun();
+  timing_start(t);
 #endif
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
@@ -2111,7 +2111,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   }
   free(vec);
 #ifdef USE_TIMING
-  timing[FWRITEOUTPUT_FCN]+=mrun()-t;
+  timing_stop(FWRITEOUTPUT_FCN,t);
 #endif
   return FALSE;
 } /* of 'fwriteoutput' */

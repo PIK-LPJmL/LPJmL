@@ -30,7 +30,7 @@ Bool write_socket(Socket *socket,const void *buffer,int n)
   int i,j;
   i=0;
 #ifdef USE_TIMING
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   do
   {
@@ -41,7 +41,7 @@ Bool write_socket(Socket *socket,const void *buffer,int n)
     n-=j;
   }while(n);
 #ifdef USE_TIMING
-  timing[WRITE_SOCKET_FCN]+=mrun()-tstart;
+  timing_stop(WRITE_SOCKET_FCN,tstart);
 #endif
   return FALSE;
 } /* of 'write_socket' */

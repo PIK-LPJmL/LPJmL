@@ -33,7 +33,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
 #endif
 #ifdef USE_TIMING
   double t;
-  t=mrun();
+  timing_start(t);
 #endif
   if(input->landuse!=NULL)
   {
@@ -202,7 +202,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     } /*gridcell skipped*/
   } /* of for(cell=...) */
 #ifdef USE_TIMING
-  timing[SETUPANNUAL_GRID_FCN]+=mrun()-t;
+  timing_stop(SETUPANNUAL_GRID_FCN,t);
 #endif
   return FALSE;
 } /* of 'setupannual_grid' */

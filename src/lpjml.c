@@ -112,11 +112,11 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
   time(&tinvoke);
-  tbegin=mrun();         /* Start timing for total wall clock time */
+  timing_start(tbegin);         /* Start timing for total wall clock time */
 #ifdef USE_MPI
   MPI_Init(&argc,&argv); /* Initialize MPI */
 #ifdef USE_TIMING
-  timing[MPI_INIT_FCN]+=mrun()-tbegin;
+  timing_stop(MPI_INIT_FCN,tbegin);
 #endif
 /*
  * Use default communicator containing all processors. In defining your own
@@ -191,11 +191,11 @@ int main(int argc,char **argv)
    * crops must have last id-number */
   /* Read configuration file */
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
 #ifdef USE_TIMING
-  timing[READCONFIG_FCN]+=mrun()-t;
+  timing_stop(READCONFIG_FCN,t);
 #endif
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(argc)
@@ -255,11 +255,11 @@ int main(int argc,char **argv)
   standtype[KILL]=kill_stand;
   /* Allocation and initialization of grid */
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
 #ifdef USE_TIMING
-  timing[NEWGRID_FCN]+=mrun()-t;
+  timing_stop(NEWGRID_FCN,t);
 #endif
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   if(iscoupled(config))
@@ -269,11 +269,11 @@ int main(int argc,char **argv)
     failonerror(&config,rc,OPEN_COUPLER_ERR,s);
   }
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
 #ifdef USE_TIMING
-  timing[INITINPUT_FCN]+=mrun()-t;
+  timing_stop(INITINPUT_FCN,t);
 #endif
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
@@ -284,21 +284,21 @@ int main(int argc,char **argv)
   }
   /* open output files */  
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   output=fopenoutput(grid,NOUT,&config);
 #ifdef USE_TIMING
-  timing[FOPENOUTPUT_FCN]+=mrun()-t;
+  timing_stop(FOPENOUTPUT_FCN,t);
 #endif
   rc=(output==NULL);
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
 #ifdef USE_TIMING
-  timing[INITOUTPUT_FCN]+=mrun()-t;
+  timing_stop(INITOUTPUT_FCN,t);
 #endif
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
@@ -321,13 +321,13 @@ int main(int argc,char **argv)
   time(&tstart); /* Start timing */
   /* Starting simulation */
 #ifdef USE_TIMING
-  t=mrun();
+  timing_start(t);
 #endif
   year=iterate(output,grid,input,
                config.npft[GRASS]+config.npft[TREE],config.npft[CROP],
                &config);
 #ifdef USE_TIMING
-  timing[ITERATE_FCN]+=mrun()-t;
+  timing_stop(ITERATE_FCN,t);
 #endif
   /* Simulation has finished */
   time(&tend); /* Stop timing */

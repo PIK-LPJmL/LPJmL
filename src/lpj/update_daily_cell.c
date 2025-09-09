@@ -72,7 +72,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   Irrigation *data;
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   if(!cell->skip)
   {
@@ -736,6 +736,6 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
   } /* of if(!cell->skip) */
 #ifdef USE_TIMING
-  timing[UPDATE_DAILY_CELL_FCN]+=mrun()-tstart;
+  timing_stop(UPDATE_DAILY_CELL_FCN,tstart);
 #endif
 } /* of 'update_daily_cell' */

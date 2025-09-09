@@ -84,7 +84,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real istress=0;
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   aet_frac = 1;
   aet=0;
@@ -288,7 +288,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   }
   getoutput(&pft->stand->cell->output,RA,config)+=*rd*pft->stand->frac;
 #ifdef USE_TIMING
-  timing[WATER_STRESSED_FCN]+=mrun()-tstart;
+  timing_stop(WATER_STRESSED_FCN,tstart);
 #endif
   return agd;
 } /* of 'water_stressed' */

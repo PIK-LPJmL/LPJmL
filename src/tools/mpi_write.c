@@ -53,11 +53,11 @@ Bool mpi_write(FILE *file,        /**< File pointer to binary file */
   MPI_Bcast(&rc,1,MPI_INT,0,comm);
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   MPI_Barrier(comm);
 #ifdef USE_TIMING
-  timing[MPI_BARRIER_FCN]+=mrun()-tstart;
+  timing_stop(MPI_BARRIER_FCN,tstart);
 #endif
   return rc;
 } /* of 'mpi_write' */

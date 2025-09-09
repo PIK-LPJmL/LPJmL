@@ -67,11 +67,11 @@ int iterate(Outputfile *output, /**< Output file data */
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
 #ifdef USE_TIMING
-    t=mrun();
+    timing_start(t);
 #endif
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
 #ifdef USE_TIMING
-    timing[STORECLIMATE_FCN]+=mrun()-t;
+    timing_stop(STORECLIMATE_FCN,t);
 #endif
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed, re-run with \"store_climate\" : false setting");
 
@@ -140,11 +140,11 @@ int iterate(Outputfile *output, /**< Output file data */
       else
       {
 #ifdef USE_TIMING
-        t=mrun();
+        timing_start(t);
 #endif
         getclimate(input.climate,grid,data_index,firstspinupyear+spinup_year,config);
 #ifdef USE_TIMING
-        timing[GETCLIMATE_FCN]+=mrun()-t;
+        timing_stop(GETCLIMATE_FCN,t);
 #endif
       }
       if (config->isanomaly)
@@ -301,11 +301,11 @@ int iterate(Outputfile *output, /**< Output file data */
         else
           climate_year=year;
 #ifdef USE_TIMING
-        t=mrun();
+        timing_start(t);
 #endif
         rc=getclimate(input.climate,grid,0,climate_year,config);
 #ifdef USE_TIMING
-        timing[GETCLIMATE_FCN]+=mrun()-t;
+        timing_stop(GETCLIMATE_FCN,t);
 #endif
         if(iserror(rc,config))
         {
@@ -351,11 +351,11 @@ int iterate(Outputfile *output, /**< Output file data */
       break; /* leave time loop */
     }
 #ifdef USE_TIMING
-    t=mrun();
+    timing_start(t);
 #endif
     rc=iterateyear(output,grid,&input,co2,&ch4,&pch4,npft,ncft,year,config);
 #ifdef USE_TIMING
-    timing[ITERATEYEAR_FCN]+=mrun()-t;
+    timing_stop(ITERATEYEAR_FCN,t);
 #endif
     if(rc)
       break;
