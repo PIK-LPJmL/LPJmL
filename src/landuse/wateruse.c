@@ -33,7 +33,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
   Real wd_neighbour;
 #ifdef USE_TIMING
   double t;
-  t=mrun();
+  timing_start(t);
 #endif
 
   in=(Real *)pnet_input(config->irrig_back);
@@ -174,6 +174,6 @@ void wateruse(Cell *grid,          /**< LPJ grid */
   }
 #endif
 #ifdef USE_TIMING
-  timing[WATERUSE_FCN]+=mrun()-t;
+  timing_stop(WATERUSE_FCN,t);
 #endif
 } /* of 'wateruse' */
