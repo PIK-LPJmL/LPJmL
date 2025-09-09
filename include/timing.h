@@ -48,4 +48,7 @@ typedef enum
 extern double timing[N_FCN];
 extern char *timing_fcn[N_FCN];
 
+#define timing_start(t) t=mrun()
+#define timing_stop(id,t) timing[id]+=mrun()-t
+
 #endif

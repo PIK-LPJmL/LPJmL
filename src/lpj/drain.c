@@ -119,11 +119,11 @@ void drain(Cell grid[],         /**< Cell array */
                                               array needed for pnet library */
 #ifdef USE_TIMING
 #ifdef USE_MPI
-  tstart=mrun();
+  timing_start(tstart);
   MPI_Barrier(config->comm);
-  timing[MPI_BARRIER_FCN]+=mrun()-tstart;
+  timing_stop(MPI_BARRIER_FCN,tstart);
 #endif
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   for(iter=0;iter<count;iter++)
   {
@@ -239,6 +239,6 @@ void drain(Cell grid[],         /**< Cell array */
     getoutput(&grid[cell].output,WD_LOCAL,config)+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
   }
 #ifdef USE_TIMING
-  timing[DRAIN_FCN]+=mrun()-tstart;
+  timing_stop(DRAIN_FCN,tstart);
 #endif
 }  /* of 'drain' */

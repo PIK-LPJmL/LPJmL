@@ -27,7 +27,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
 {
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   if(config->river_routing)
   {
@@ -48,6 +48,6 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
     /* postpone last timestep until after annual processes */
     fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
 #ifdef USE_TIMING
-  timing[UPDATEDAILY_GRID_FCN]+=mrun()-tstart;
+  timing_stop(UPDATEDAILY_GRID_FCN,tstart);
 #endif
 } /* of 'updatedaily_grid' */

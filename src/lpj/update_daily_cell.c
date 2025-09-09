@@ -65,7 +65,7 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
   Real popdensity=0;
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   if(!cell->skip)
   {
@@ -494,6 +494,6 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
     cell->output.dcflux-=flux_estab.carbon;
   } /* of if(!cell->skip) */
 #ifdef USE_TIMING
-  timing[UPDATE_DAILY_CELL_FCN]+=mrun()-tstart;
+  timing_stop(UPDATE_DAILY_CELL_FCN,tstart);
 #endif
 } /* of 'update_daily_cell' */

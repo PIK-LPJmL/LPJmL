@@ -534,7 +534,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   short *svec;
 #ifdef USE_TIMING
   double t;
-  t=mrun();
+  timing_start(t);
 #endif
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
@@ -1957,6 +1957,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   free(vec);
 #ifdef USE_TIMING
-  timing[FWRITEOUTPUT_FCN]+=mrun()-t;
+  timing_stop(FWRITEOUTPUT_FCN,t);
 #endif
 } /* of 'fwriteoutput' */

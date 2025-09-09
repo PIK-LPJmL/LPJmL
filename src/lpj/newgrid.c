@@ -19,10 +19,6 @@
 #include "lpj.h"
 #include "natural.h"
 
-#ifdef USE_TIMING
-double tread=0; /* used for timing for reading restart file */
-#endif
-
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration */
@@ -192,10 +188,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   else
   {
-#ifdef USE_TIMING
-    if(isroot(*config))
-       tread=mrun();
-#endif
     file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft,ncft);
     if(file_restart==NULL)
     {
@@ -525,10 +517,6 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
 #endif
     return NULL;
   }
-#ifdef USE_TIMING
-  if(isroot(*config))
-    tread=mrun()-tread;
-#endif
 #ifdef USE_MPI
   MPI_Allgather(&config->count,1,MPI_INT,counts,1,MPI_INT,
                 config->comm);

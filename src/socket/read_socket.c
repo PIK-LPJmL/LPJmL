@@ -27,7 +27,7 @@ Bool read_socket(Socket *socket,void *data,int n)
   int i,j;
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   i=n;
   do
@@ -38,7 +38,7 @@ Bool read_socket(Socket *socket,void *data,int n)
     i-=j;
   }while(i);
 #ifdef USE_TIMING
-  timing[READ_SOCKET_FCN]+=mrun()-tstart;
+  timing_stop(READ_SOCKET_FCN,tstart);
 #endif
   return FALSE;
 } /* of 'read_socket' */

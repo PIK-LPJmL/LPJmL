@@ -136,16 +136,16 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
   if(iswriterestart(config) && year==config->restartyear)
   {
 #ifdef USE_TIMING
-    t=mrun();
+    timing_start(t);
 #endif
     fwriterestart(grid,npft,ncft,year,config->write_restart_filename,FALSE,config); /* write restart file */
 #ifdef USE_TIMING
 #ifdef USE_MPI
-    t2=mrun();
+    timing_start(t2);
     MPI_Barrier(config->comm);
-    timing[MPI_BARRIER_FCN]+=mrun()-t2;
+    timing_stop(MPI_BARRIER_FCN,t2);
 #endif
-    timing[FWRITERESTART_FCN]+=mrun()-t;
+    timing_stop(FWRITERESTART_FCN,t);
 #endif
    }
 } /* of 'updateannual_grid' */

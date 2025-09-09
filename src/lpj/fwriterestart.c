@@ -18,10 +18,6 @@
 
 #define MSGTAG 101 /* MPI message tag */
 
-#ifdef USE_TIMING
-double twrite=0; /* used for timing for writing restart file */
-#endif
-
 Bool fwriterestart(const Cell grid[],   /**< cell array               */
                    int npft,            /**< number of natural PFTs   */
                    int ncft,            /**< number of crop PFTs      */
@@ -43,9 +39,6 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   int p;
   if(isroot(*config))
   {
-#ifdef USE_TIMING
-    twrite=mrun();
-#endif
     /* create restart file */
     file=bstruct_create(filename);
   }
@@ -162,8 +155,6 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
 #ifdef USE_MPI
   MPI_Barrier(config->comm);
 #endif
-  if(isroot(*config))
-    twrite=mrun()-twrite;
 #endif
   return FALSE;
 } /* of 'fwriterestart' */
