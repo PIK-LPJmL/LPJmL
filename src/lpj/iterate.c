@@ -150,11 +150,11 @@ int iterate(Outputfile *output, /**< Output file data */
       if (config->isanomaly)
       {
 #ifdef USE_TIMING
-        t=mrun();
+        timing_start(t);
 #endif
         getclimate(input.climate,grid,0,config->firstyear,config);
 #ifdef USE_TIMING
-        timing[GETCLIMATE_FCN]+=mrun()-t;
+        timing_stop(GETCLIMATE_FCN,t);
 #endif
         if(config->with_glaciers)
           readicefrac(input.icefrac,grid,0,config->firstyear,config);
@@ -194,7 +194,7 @@ int iterate(Outputfile *output, /**< Output file data */
           if (year==config->firstyear || (config->ischeckpoint && year==startyear))
           {
 #ifdef USE_TIMING
-            t=mrun();
+            timing_start(t);
 #endif
             if (getclimate(input.climate,grid,1,year,config))
             {
@@ -209,7 +209,7 @@ int iterate(Outputfile *output, /**< Output file data */
               break; /* leave time loop */
             }
 #ifdef USE_TIMING
-            timing[GETCLIMATE_FCN]+=mrun()-t;
+            timing_stop(GETCLIMATE_FCN,t);
 #endif
             if(config->with_glaciers)
             {
@@ -231,7 +231,7 @@ int iterate(Outputfile *output, /**< Output file data */
           else if (year != config->lastyear && (year - config->firstyear) % config->delta_year == 0)
           {
 #ifdef USE_TIMING
-            t=mrun();
+            timing_start(t);
 #endif
             if (getclimate(input.climate, grid, index + 1, year, config))
             {
@@ -240,7 +240,7 @@ int iterate(Outputfile *output, /**< Output file data */
               break; /* leave time loop */
             }
 #ifdef USE_TIMING
-            timing[GETCLIMATE_FCN]+=mrun()-t;
+            timing_stop(GETCLIMATE_FCN,t);
 #endif
             if(config->with_glaciers)
             {
@@ -260,7 +260,7 @@ int iterate(Outputfile *output, /**< Output file data */
         else
         {
 #ifdef USE_TIMING
-          t=mrun();
+          timing_start(t);
 #endif
           if(getclimate(input.climate,grid,0,year,config))
           {
@@ -269,7 +269,7 @@ int iterate(Outputfile *output, /**< Output file data */
             break; /* leave time loop */
           }
 #ifdef USE_TIMING
-          timing[GETCLIMATE_FCN]+=mrun()-t;
+          timing_stop(GETCLIMATE_FCN,t);
 #endif
           if(config->with_glaciers)
           {
