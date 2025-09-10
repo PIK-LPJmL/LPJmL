@@ -52,6 +52,7 @@ int main(int argc,char **argv)
     Real cellsize_lon;
     int datatype;
     Bool river_routing;
+    Bool with_lakes;
     Bool landuse;
     int sdate_option;
     Bool crop_phu_option;
@@ -184,6 +185,12 @@ int main(int argc,char **argv)
       bstruct_finish(item[count].file);
       continue;
     }
+    if(bstruct_readbool(item[count].file,"lakes",&header.with_lakes))
+    {
+      free(header.version);
+      bstruct_finish(item[count].file);
+      continue;
+    }
     if(bstruct_readbool(item[count].file,"separate_harvests",&header.separate_harvests))
     {
       free(header.version);
@@ -294,6 +301,13 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"ERROR180: River routing setting %s is different from %s in file '%s'.\n",
                 bool2str(header.river_routing),bool2str(header_first.river_routing),argv[i]);
+        bstruct_finish(item[count].file);
+        return EXIT_FAILURE;
+      }
+      if(header.with_lakes!=header_first.with_lakes)
+      {
+        fprintf(stderr,"ERROR180: Lake setting %s is different from %s in file '%s'.\n",
+                bool2str(header.with_lakes),bool2str(header_first.with_lakes),argv[i]);
         bstruct_finish(item[count].file);
         return EXIT_FAILURE;
       }

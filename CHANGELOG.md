@@ -22,7 +22,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de) , Werner von Bloh (bloh@pik-potsdam.de)
+- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review:
 
 ### Added
@@ -31,6 +31,7 @@ of `major.minor.patch` with
 - Boolean flag `"isswnet"` added in `lpjml_config.cjson` to use net shortwave radiation instead of downward shortwave radiation as input.
 - Function `fprintclimbuf()` added in `climbuf.c` to print variables and is called in `fprintcell.c`.
 - Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
+- Utility `lpjcat` checks for identical lakes setting in restart files to concatenate.
 - Urban stand added.
 - Fire related outputs and settings added:
 ```java

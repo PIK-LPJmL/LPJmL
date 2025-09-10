@@ -21,12 +21,12 @@
       "water_global" : 1e-3 /* maximum error in global water balance (mm) */
     },
     "soildepth" : [
-       200.0,       /* soil depth layer (mm) */
-       300.0,       /* soil depth layer (mm) */
-       500.0,       /* soil depth layer (mm) */
-       1000.0,      /* soil depth layer (mm) */
-       1000.0,      /* soil depth layer (mm) */
-       10000.0      /* soil depth layer (mm) */
+      200.0,       /* soil depth layer (mm) */
+      300.0,       /* soil depth layer (mm) */
+      500.0,       /* soil depth layer (mm) */
+      1000.0,      /* soil depth layer (mm) */
+      1000.0,      /* soil depth layer (mm) */
+      10000.0      /* soil depth layer (mm) */
     ],
     "fbd_fac" : [1.0, 1.2, 1.4, 0.0], /* fuel bulk density factors */
     "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
