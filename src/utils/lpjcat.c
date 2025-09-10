@@ -70,13 +70,12 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-o"))
       {
-         if(argc==i+1)
-         {
-           fprintf(stderr,"Missing argument after option '-o'.\n"
-                  USAGE,argv[0]);
-           return EXIT_FAILURE;
-         }
-
+        if(argc==i+1)
+        {
+          fprintf(stderr,"Missing argument after option '-o'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
         outfile=argv[++i];
       }
       else
@@ -207,6 +206,7 @@ int main(int argc,char **argv)
     if(pfts==NULL)
     {
       pfts=newvec(char *,size);
+      check(pfts);
       for(j=0;j<size;j++)
       {
         pfts[j]=bstruct_readstring(item[count].file,NULL);
@@ -337,7 +337,7 @@ int main(int argc,char **argv)
       header_first=header;
     ncell+=item[count].ncell;
     count++;
-  } /*  for(;i<argc;i++) */
+  } /* for(;i<argc;i++) */
   if(count==0)
   {
     fprintf(stderr,"No restart file successfully read.\n");
@@ -384,7 +384,7 @@ int main(int argc,char **argv)
   bstruct_writebool(out,"crop_phu_option",header_first.crop_phu_option);
   bstruct_writebool(out,"river_routing",header_first.river_routing);
   bstruct_writebool(out,"separate_harvests",header_first.separate_harvests);
-  if(pfts[i]!=NULL)
+  if(pfts!=NULL)
   {
     bstruct_writebeginarray(out,"pfts",size);
     for(i=0;i<size;i++)

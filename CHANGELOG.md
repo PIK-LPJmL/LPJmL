@@ -54,6 +54,7 @@ of `major.minor.patch` with
 - Man page for `json2restart` corrected.
 - Missing option `-nooutput` added to man page of `lpjfiles`.
 - Help text for `-h` option of `printclm` corrected.
+- Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
 
 
 ## [5.10.0] - 2025-08-14
