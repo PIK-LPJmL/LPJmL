@@ -397,6 +397,7 @@ int main(int argc,char **argv)
   bstruct_writeint(out,"sdate_option",header_first.sdate_option);
   bstruct_writebool(out,"crop_phu_option",header_first.crop_phu_option);
   bstruct_writebool(out,"river_routing",header_first.river_routing);
+  bstruct_writebool(out,"lakes",header_first.with_lakes);
   bstruct_writebool(out,"separate_harvests",header_first.separate_harvests);
   if(pfts[i]!=NULL)
   {
