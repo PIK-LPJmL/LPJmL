@@ -52,6 +52,7 @@ of `major.minor.patch` with
 - Error message for different datatypes corrected in `lpcat.c`.
 - Variables initialized to zero in `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
 - Man page for `json2restart` corrected.
+- Missing option `-nooutput` added to man page of `lpjfiles`.
 
 
 ## [5.10.0] - 2025-08-14
@@ -118,7 +119,7 @@ of `major.minor.patch` with
 - If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
 - Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 - File `default.md` converted from DOS to Linux format.
-- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used instead that one defined in the JSON metafile.
 - Man pages updated.
 
 ### Fixed
