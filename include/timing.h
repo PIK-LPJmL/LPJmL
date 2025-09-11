@@ -15,6 +15,8 @@
 #ifndef TIMING_H
 #define TIMING_H
 
+/* Definition of datatypes */
+
 typedef enum
 {
   DRAIN_FCN,
@@ -45,8 +47,12 @@ typedef enum
   N_FCN
 } Timing_id;
 
+/* Declaration of variables */
+
 extern double timing[N_FCN];
 extern char *timing_fcn[N_FCN];
+
+/* Definition of macros */
 
 #define timing_start(t) t=mrun()
 #define timing_stop(id,t) timing[id]+=mrun()-t
