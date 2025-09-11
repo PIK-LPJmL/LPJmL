@@ -22,12 +22,13 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 - code review:
 
 ### Added
 
-- Check for valic `swc_bnf` parameter added in `fscanpftpar.c`.
+- Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
+- Wirth et al. (2024)  article added to `REFERENCES`.
 
 ### Changed
 
