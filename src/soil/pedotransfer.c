@@ -46,7 +46,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   soil=&stand->soil;
   soilpar = soil->par;
@@ -244,7 +244,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   } /* end of if not ROCK */
 #ifdef USE_TIMING
-  timing[PEDOTRANSFER_FCN]+=mrun()-tstart;
+  timing_stop(PEDOTRANSFER_FCN,tstart);
 #endif
 } /* of 'pedotransfer' */
 
