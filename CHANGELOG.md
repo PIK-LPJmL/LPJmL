@@ -33,6 +33,7 @@ of `major.minor.patch` with
 - Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
 - Utility `lpjcat` checks for identical lakes setting in restart files to concatenate.
 - Urban stand added.
+- Boolean `"relative_humidity"` added to lpjml configuration to use relative instead of absolutte humidity for input.
 - Fire related outputs and settings added:
 ```java
   "gsilivefuel" : true,
@@ -43,6 +44,9 @@ of `major.minor.patch` with
 
   "prescribe_ignition" : false, /* read ignitions from file */
 ```
+- Outputs `"pft_height"`, `"pft_litterc"`, `"littermoist"`, `"pft_phen"`, `"fireduration"`, `"firedurationdays"`, `"livegrass"`, `"dlm_livegrass"`, `"gsi_cum"`,
+  `"gsi_diff"`, `"ndayfire"`, `"fuel"`, `"max_firesize"`, `"stand_fireduration"`, `"stand_burntarea"`, `"stand_fdi"`, `"stand_surface_fi`", `"fwi"`,
+  `"human_ignition"`, `"lightning"`, `"surface_fi"`, `"ros"`, `"firesize"`, `"firedays"` added.
 
 ### Changed
 
