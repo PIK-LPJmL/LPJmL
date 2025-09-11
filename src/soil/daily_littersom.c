@@ -70,7 +70,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
 
 #ifdef USE_TIMING
   double tstart;
-  tstart=mrun();
+  timing_start(tstart);
 #endif
   data.response_agtop_wood=newvec(Real,ncft+npft);
   check(data.response_agtop_wood);
@@ -152,7 +152,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   free(data.response_agtop_wood);
   free(data.response_agsub_wood);
 #ifdef USE_TIMING
-  timing[DAILY_LITTERSOM_FCN]+=mrun()-tstart;
+  timing_stop(DAILY_LITTERSOM_FCN,tstart);
 #endif
   return hetres;
 } /* of 'daily_littersom' */
