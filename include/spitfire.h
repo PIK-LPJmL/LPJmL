@@ -15,10 +15,14 @@
 #ifndef SPITFIRE_H /* Already included? */
 #define SPITFIRE_H
 
-
 #define SPITFIRE_VERSION "1.9.0"
 
+/* Definition of constants */
+
+#define MINER_TOT 0.055
 #define PART_DENS 513.0
+
+/* Declaration of global variables */
 
 extern Real sigma_dead[NFUELCLASS];
 extern Real sigma_live[2];
@@ -97,10 +101,6 @@ extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int,Bool);
 extern void initfwi(FWIdata *);
 extern Bool fwritefwi(Bstruct,const char *,const FWIdata *);
 extern Bool freadfwi(Bstruct,const char *,FWIdata *);
-
-/* Definition of constants */
-
-#define MINER_TOT 0.055
 
 /* Definition of macros */
 
