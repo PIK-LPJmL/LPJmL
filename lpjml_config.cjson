@@ -49,7 +49,7 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  #ifdef CRU_MONTHLY
+#ifdef CRU_MONTHLY
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
 #ifdef GLOBFIRM
@@ -58,7 +58,7 @@
     "fire" : "spitfire", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
 #endif
     "fdi" : "nesterov",  /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
-  #else
+#else
     "random_prec" : false,     /* Random weather generator for precipitation disabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
 #ifdef GLOBFIRM
@@ -67,7 +67,7 @@
     "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
 #endif
     "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
-  #endif
+#endif /* CRU_MONTHLY */
   "isswnet" : false,          /* short-wave data is net radiation */
   "gsilivefuel" : true,
   "human_ign_prob" : false,   /* read human ignition probability from file */
@@ -107,7 +107,7 @@
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
 #ifdef GLOBFIRM
-  "population" : false      /* use population input (for spitfire) */
+  "population" : false,     /* use population input (for spitfire) */
 #else
   "population" : true,      /* use population input (for spitfire) */
 #endif
