@@ -74,7 +74,6 @@
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
-
   "prescribe_ignition" : false, /* read ignitions from file */
   "random_seed" : 2,        /* seed for random number generator */
   "gsi_phenology" : true,   /* enable GSI phenology */
@@ -107,7 +106,7 @@
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
 #ifdef GLOBFIRM
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : false,     /* population input not needed for globfirm fire model */
 #else
   "population" : true,      /* use population input (for spitfire) */
 #endif
@@ -320,7 +319,6 @@ ID                               Fmt                        filename
     { "id" : "phen_tmax",        "file" : { "name" : "output/mphen_tmax"}},
     { "id" : "phen_light",       "file" : { "name" : "output/mphen_light"}},
     { "id" : "phen_water",       "file" : { "name" : "output/mphen_water"}},
-#ifndef WITHOUT_NITROGEN
     { "id" : "vegn",             "file" : { "name" : "output/vegn"}},
     { "id" : "soiln",            "file" : { "name" : "output/soiln"}},
     { "id" : "litn",             "file" : { "name" : "output/litn"}},
@@ -340,31 +338,27 @@ ID                               Fmt                        filename
     { "id" : "n_immo",           "file" : { "name" : "output/mn_immo"}},
     { "id" : "pft_ndemand",      "file" : { "name" : "output/pft_ndemand"}},
     { "id" : "nfert_agr",        "file" : { "name" : "output/nfert_agr"}},
-#ifdef GLOBFIRM
-    { "id" : "firen",            "file" : { "name" : "output/firen"}},
-#else
-    { "id" : "firen",            "file" : { "timestep" : "monthly" , "unit" : "gN/m2/month", "name" : "output/mfiren"}},
-#endif
     { "id" : "n_mineralization", "file" : { "name" : "output/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output/mn_volatilization"}},
     { "id" : "ndepos",           "file" : { "name" : "output/ndepos"}},
     { "id" : "pft_nlimit",       "file" : { "name" : "output/pft_nlimit"}},
     { "id" : "pft_vegn",         "file" : { "name" : "output/pft_vegn"}},
+    { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
     { "id" : "pft_nleaf",        "file" : { "name" : "output/pft_nleaf"}},
+    { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
     { "id" : "pft_nroot",        "file" : { "name" : "output/pft_nroot"}},
+    { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
     { "id" : "pft_nsapw",        "file" : { "name" : "output/pft_nsapw"}},
+    { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},
-#endif
     { "id" : "pft_water_demand", "file" : { "name" : "output/pft_water_demand"}},
     { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
-    { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
-    { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
-    { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
-    { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
 #ifdef GLOBFIRM
     { "id" : "firec",            "file" : { "name" : "output/firec"}},
+    { "id" : "firen",            "file" : { "name" : "output/firen"}},
 #else
     { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec"}},
+    { "id" : "firen",            "file" : { "timestep" : "monthly" , "unit" : "gN/m2/month", "name" : "output/mfiren"}},
     { "id" : "nfire",            "file" : { "name" : "output/mnfire"}},
     { "id" : "fireduration",     "file" : { "name" : "output/mfireduration"}},
     { "id" : "firedurationdays", "file" : { "name" : "output/mfiredurationdays"}},

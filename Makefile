@@ -110,9 +110,8 @@ tar:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile\
-            src/image/Makefile src/image/*.c src/reservoir/*.c\
-            src/bstruct/Makefile src/bstruct/*.c\
+            src/socket/*.c src/reservoir/Makefile src/bstruct/Makefile\
+            src/image/Makefile src/image/*.c src/reservoir/*.c src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
@@ -128,9 +127,8 @@ zipfile:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile\
-            src/image/*.c src/image/Makefile src/reservoir/*.c\
-            src/bstruct/Makefile src/bstruct/*.c\
+            src/socket/*.c src/reservoir/Makefile src/bstruct/Makefile\
+            src/image/*.c src/image/Makefile src/reservoir/*.c src/bstruct/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
