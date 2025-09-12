@@ -35,8 +35,8 @@ typedef struct
   Real *tmax; /**< maximum temperature (deg C) */
   Real *humid; /**< specific humidity (kg/kg) */
   Real *tmin; /**< minimum temperature (deg C) */
-  Real *ignition;
-  Real *lightning;
+  Real *ignition; /**< fire ignitions */
+  Real *lightning; /**< lightning events */
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
   Real *burntarea;  /**< burnt area (ha) */
@@ -54,7 +54,7 @@ typedef struct Dailyclimate
   Real tmax;       /**< maximum temperature (deg C) */
   Real humid;      /**< specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
-  Real ignition;
+  Real ignition;   /**< daily fire ignitions */
   Real lwnet;      /**< long wave net downward flux (W/m2) */
   Real swdown;     /**< short wave downward flux component (W/m2) */
   Real burntarea;  /**< burnt area (ha) */

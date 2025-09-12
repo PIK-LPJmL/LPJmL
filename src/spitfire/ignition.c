@@ -22,8 +22,8 @@ struct human_ignition
 }; /* Definition of opaque datatype Human_ignition */
 
 Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
-                                 )                     /** \return pointer to human ignition
-                                                            struct or NULL */
+                                )                     /** \return pointer to human ignition
+                                                           struct or NULL */
 {
   Human_ignition ignition;
 

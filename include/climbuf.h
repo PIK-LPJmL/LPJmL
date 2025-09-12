@@ -20,7 +20,6 @@
 #define CLIMBUFSIZE 20 /* size of climate buffer */
 #define NDAYS 31       /* maximum number of days in a month */
 #define NDAYS_PREC 10
-#define NMEAN 10       /* number of years GPP is averaged */
 
 /* Definitions of datatypes */
 
