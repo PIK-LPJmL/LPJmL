@@ -185,7 +185,7 @@ int main(int argc,char **argv)
       bstruct_finish(item[count].file);
       continue;
     }
-    if(bstruct_readbool(item[count].file,"lakes",&header.with_lakes))
+    if(bstruct_readbool(item[count].file,"with_lakes",&header.with_lakes))
     {
       free(header.version);
       bstruct_finish(item[count].file);

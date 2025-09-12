@@ -96,7 +96,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readint(file,"sdate_option",&config->sdate_option_restart);
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
   readbool(file,"river_routing",&config->river_routing_restart);
-  readbool(file,"lakes",&with_lakes_restart);
+  readbool(file,"with_lakes",&with_lakes_restart);
   readbool(file,"separate_harvests",&separate_harvests);
   if(bstruct_readbeginarray(file,"pfts",&size))
   {
