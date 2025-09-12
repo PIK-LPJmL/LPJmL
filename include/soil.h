@@ -266,7 +266,6 @@ struct Dailyclimate; /* forward declaration */
  * NOTE: initsoiltemp() in cell.h */
 
 extern int addlitter(Litter *,const struct Pftpar *);
-extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
@@ -291,7 +290,6 @@ extern Bool fwritesoil(Bstruct,const char *,const Soil *,int);
 extern Bool fwritelitter(Bstruct,const char *,const Litter *);
 extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,const Netcdf_config *,unsigned int,Bool);
-extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_agtop_sum(const Litter *);
 extern Real litter_agtop_sum_n(const Litter *);
@@ -303,12 +301,10 @@ extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,int,int,const Confi
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
-extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
-extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif
@@ -317,8 +313,6 @@ extern Real soilcarbon(const Soil *);
 extern Real soilcarbon_slow(const Soil *);
 extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
-extern Real soilconduct(const Soil *,int,Bool);
-extern Real soilheatcap(const Soil *,int);
 extern void apply_heatconduction_of_a_day(Uniform_temp_sign, Real *, const Real *, Real, const Soil_thermal_prop *);
 extern void calc_soil_thermal_props(Uniform_temp_sign, Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
 extern void compute_mean_layer_temps_from_enth(Real *, const Real *,const  Soil_thermal_prop *);
@@ -326,7 +320,6 @@ extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real
 extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
 extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
-extern void soilice2moisture(Soil *, Real *,int);
 extern void update_soil_thermal_state(Soil *,Real,const Config *);
 extern Real temp_response(Real);
 extern Real litter_agtop_tree(const Litter *,int);
