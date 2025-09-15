@@ -29,10 +29,12 @@ of `major.minor.patch` with
 
 - Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
 - Wirth et al. (2024)  article added to `REFERENCES`.
+- New parameter `"tscal_b"` added in `lpjparam.cjson`.
 
 ### Changed
 
 - `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
+- Hard-coded parameter in temperature dependent calculation of b replaced by global parameter `tscal_b`.
 
 ### Removed
 
