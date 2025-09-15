@@ -178,7 +178,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
           if(stand->type->landusetype==GRASSLAND)
             getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
       }
-      tscal_b=exp(-0.017*(getgdd(&grid[cell].climbuf,0)-25));
+      tscal_b=exp(param.tscal_b*(getgdd(&grid[cell].climbuf,0)-25));
       foreachstand(stand,s,(grid+cell)->standlist)
         foreachpft(pft,p,&stand->pftlist)
           if(pft->par->type!=CROP)
