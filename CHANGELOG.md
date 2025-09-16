@@ -55,6 +55,7 @@ of `major.minor.patch` with
 - Missing option `-nooutput` added to man page of `lpjfiles`.
 - Help text for `-h` option of `printclm` corrected.
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
+- Double entry of `getlag.$O` removed in `src/soil/Makefile`.
 
 
 ## [5.10.0] - 2025-08-14
