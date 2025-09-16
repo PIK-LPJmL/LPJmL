@@ -24,7 +24,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
           soilwater.$O soilcarbon.$O litter_agtop_tree.$O litter_agtop_grass.$O\
           moistfactor.$O litter_agtop_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
-          soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
+          soilconduct.$O soilheatcap.$O soilice2moisture.$O convert_water.$O\
           getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
           fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
           litter_agtop_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\
