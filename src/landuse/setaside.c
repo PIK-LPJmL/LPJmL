@@ -17,8 +17,6 @@
 #include "tree.h"
 #include "agriculture.h"
 
-void mixsoilenergy(Stand *,const Stand *,const Config *config);
-
 void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config *config)
 {
   int l,index,i;
@@ -64,9 +62,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.litter.item[index].agsub.leaf.nitrogen,
             stand2->soil.litter.item[l].agsub.leaf.nitrogen,stand1->frac,stand2->frac);
     mixpool(stand1->soil.litter.item[index].bg.carbon,stand2->soil.litter.item[l].bg.carbon,
-          stand1->frac,stand2->frac);
+            stand1->frac,stand2->frac);
     mixpool(stand1->soil.litter.item[index].bg.nitrogen,stand2->soil.litter.item[l].bg.nitrogen,
-          stand1->frac,stand2->frac);
+            stand1->frac,stand2->frac);
     for(i=0;i<NFUELCLASS;i++)
     {
       mixpool(stand1->soil.litter.item[index].agtop.wood[i].carbon,
@@ -113,9 +111,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.litter.avg_fbd[i],stand2->soil.litter.avg_fbd[i],
             stand1->frac,stand2->frac);
 
-  mixpool(stand1->soil.meanw1,stand2->soil.meanw1,
-          stand1->frac,stand2->frac);
-
   /* snowpack is independent of fraction */
   mixpool(stand1->soil.decomp_litter_mean.carbon,stand2->soil.decomp_litter_mean.carbon,
           stand1->frac,stand2->frac);
@@ -140,7 +135,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
       mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
     else
       stand1->frac_g[l]=0;
-    //stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
     stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
     mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
     stand1->soil.w[l]/=stand1->soil.whcs[l];
@@ -171,7 +165,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     absolute_ice2 = stand2->soil.ice_depth[l] + stand2->soil.ice_fw[l] + stand2->soil.wpwps[l] * stand2->soil.ice_pwp[l];
     mixpool(absolute_ice1[l], absolute_ice2, stand1->frac, stand2->frac);
 */
-  }
+  } /* of forrootsoillayer(l) */
 
   for(l=0;l<NTILLLAYER;l++)
     mixpool(stand1->soil.df_tillage[l],stand2->soil.df_tillage[l],stand1->frac,stand2->frac);
@@ -205,8 +199,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
 
   mixpool(stand1->soil.mean_maxthaw,stand2->soil.mean_maxthaw,stand1->frac,
           stand2->frac);
-  mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
-  mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
   mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
   mixsoilenergy(stand1,stand2,config);
 #ifdef CHECK_BALANCE
@@ -247,9 +239,9 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   {
     if (isempty(&cropstand->pftlist)) /* should not happen as establishment of cover crops now happens on all stands after tillage */
     {
-    foreachpft(pft,p,&setasidestand->pftlist)
-      mix_veg(pft,setasidestand->frac/(setasidestand->frac+cropstand->frac));
-  }
+      foreachpft(pft,p,&setasidestand->pftlist)
+        mix_veg(pft,setasidestand->frac/(setasidestand->frac+cropstand->frac));
+    }
     else
     {
       foreachpft(pft, p, &setasidestand->pftlist)
@@ -308,7 +300,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
             pft->establish.nitrogen = weightedaverage(pft->establish.nitrogen, 0, setasidestand->frac, cropstand->frac);
           }
         }
-      }
+      } /* of foreachpft() */
       foreachpft(pft, p, &cropstand->pftlist)
       {
         if(pft->par->type==GRASS)
@@ -337,10 +329,9 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
           delpft(&cropstand->pftlist, p);
           p--; /* adjust loop variable */
         }
-      }
-
+      } /* of foreachpft() */
     }
-  }
+  } /* of if(intercrop) */
   setasidestand->frac+=cropstand->frac;
 } /* of 'mixsetaside' */
 
@@ -387,7 +378,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
       //flux_estab.nitrogen += stocks.nitrogen;
       /* to avoid artificial fertilization of setaside stands with small grass saplings planted as cover crops
          instead of sowing seeds, we take the biomass for the cover crop sapling from the litter pools */
-      
+
       cropstand->soil.litter.item->agtop.leaf.carbon -= stocks.carbon;
       if (cropstand->soil.litter.item->agtop.leaf.carbon < 0)
       {
@@ -410,7 +401,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
           cropstand->soil.litter.item->agsub.leaf.nitrogen = 0;
         }
       }
-    }
+    } /* of foreachpft() */
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*cropstand->frac;
     getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
     getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*cropstand->frac;

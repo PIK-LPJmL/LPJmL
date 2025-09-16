@@ -125,11 +125,7 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   readrealarray(file,"freeze_depth",soil->freeze_depth,NSOILLAYER);
   readrealarray(file,"ice_pwp",soil->ice_pwp,NSOILLAYER);
   readrealarray(file,"perc_energy",soil->perc_energy,NSOILLAYER);
-  if(bstruct_readshortarray(file,"state",soil->state,NSOILLAYER))
-    return TRUE;
   readreal(file,"mean_maxthaw",&soil->mean_maxthaw);
-  readreal(file,"alag",&soil->alag);
-  readreal(file,"amp",&soil->amp);
   readreal(file,"rw_buffer",&soil->rw_buffer);
 #ifdef MICRO_HEATING
   foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
@@ -149,7 +145,6 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   if(freadstocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft))
     return TRUE;
   readint(file,"count",&soil->count);
-  readreal(file,"meanw1",&soil->meanw1);
 #ifdef MICRO_HEATING
   soil->litter.decomC=0;
 #endif

@@ -45,11 +45,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   int l,nnat,nirrig;
   ndemand_all=*n_plant_demand;
   soil=&pft->stand->soil;
-  if(config->permafrost)
-    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
-  else
-    forrootsoillayer(l)
-      rootdist_n[l]=pft->par->rootdist[l];
+  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
   data=pft->stand->data;
   grass=pft->data;
   grasspar=pft->par->data;

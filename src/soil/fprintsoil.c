@@ -25,8 +25,6 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   int l,p;
   Pool sum={{0,0},{0,0}};
   Real sum_NO3=0, sum_NH4=0;
-  char *soilstates[]={"NOSTATE","BELOW_T_ZERO","AT_T_ZERO","ABOVE_T_ZERO",
-                      "FREEZING","THAWING"};
   fprintf(file,"Soil type:\t%s\n",soil->par->name);
   fputs("C shift fast:\n"
         "PFT                                     ",file);
@@ -116,9 +114,6 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("\n------------",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fputs(" ------------",file);
-  fputs("\nsoil-state  ",file);
-  foreachsoillayer(l)
-    fprintf(file," %12s",soilstates[soil->state[l]]);
   fputs("\nWater       ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->w[l]);

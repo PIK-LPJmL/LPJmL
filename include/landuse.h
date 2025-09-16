@@ -132,6 +132,7 @@ extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,int,const Config *
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
+extern void mixsoilenergy(Stand *,const Stand *,const Config *config);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,int,const Config *);
 extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,Bool,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);

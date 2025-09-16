@@ -336,8 +336,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
   len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
-  if(config->permafrost)
-    len=printsim(file,len,&count,"permafrost");
 #ifdef COUPLING_WITH_FMS
   if(!config->nitrogen_coupled)
     len=printsim(file,len,&count,"water and nitrogen limitations uncoupled");

@@ -17,6 +17,25 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+## [Unreleased]
+
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Changed
+
+- Declaration of `mixsoilenergy()` moved from `setaside.c` to `landuse.h`.
+
+### Removed
+
+- Unused function `snow.old(), `soiltemp()` and related functions removed.
+- Setting without permafrost removed
+- soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
+
+
 ## [5.10.0] - 2025-08-14
 
 ### Contributors

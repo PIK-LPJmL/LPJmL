@@ -31,7 +31,6 @@ typedef struct
   Real dval_prec[NDAYS+1]; /* daily precipitation values (mm) */
   Real temp_min; /* minimum annual temperature (deg C) */
   Real temp_max; /* maximum annual temperature (deg C) */
-  Real atemp_mean;
   Real atemp; /* annual mean temperature, used to update atemp_mean20 */
   Real atemp_mean20; /* 20-year mean of annual mean temperature */
   Real atemp_mean20_fix; /* 20-year mean of annual mean temperature, fixed for phen_variety computation*/

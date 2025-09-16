@@ -57,11 +57,7 @@ Real npp_contr_biol_n_fixation(Pft *pft,             /**< PFT */
   Real npp_requ=0.0;
   Real max_cost=0.0;
   int l;
-  if(config->permafrost)
-    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
-  else
-    forrootsoillayer(l)
-      rootdist_n[l]=pft->par->rootdist[l];
+  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
 
   for(l=0; l<=1; l++) //only first 50cm of soil considered for BNF
     bnf+=pft->par->nfixpot*rootdist_n[l]*f_temp_bnf(pft, soil->temp[l])*f_water_bnf(pft, soil->w[l]);

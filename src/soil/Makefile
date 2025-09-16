@@ -16,14 +16,14 @@
 include ../../Makefile.inc
 
 OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
-          getlag.$O temp_response.$O fscansoilpar.$O soiltemp_lag.$O laketemp.$O snow.$O\
+          temp_response.$O fscansoilpar.$O laketemp.$O snow.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
           fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
           soilwater.$O soilcarbon.$O litter_agtop_tree.$O litter_agtop_grass.$O\
-          moistfactor.$O litter_agtop_sum_quick.$O freesoilpar.$O getlag.$O\
+          moistfactor.$O litter_agtop_sum_quick.$O freesoilpar.$O\
           initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
           fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
           litter_agtop_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\

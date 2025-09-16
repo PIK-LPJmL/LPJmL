@@ -142,35 +142,24 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
 
       if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
         dailyfire_stand(stand,&livefuel,popdensity,avgprec,climate,config);
-      if(config->permafrost)
-      {
-        snowrunoff=snow(&stand->soil,&climate->prec,&melt,
-                        climate->temp,&evap)*stand->frac;
-        cell->discharge.drunoff+=snowrunoff;
-        getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
-        cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
+      snowrunoff=snow(&stand->soil,&climate->prec,&melt,
+                      climate->temp,&evap)*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
+      getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
+      cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
 #if defined IMAGE && defined COUPLED
-        if(cell->ml.image_data!=NULL)
-          cell->ml.image_data->mevapotr[month] += evap*stand->frac;
+      if(cell->ml.image_data!=NULL)
+        cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
 
 #ifdef MICRO_HEATING
-      /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
-        foreachsoillayer(l)
-          stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
-        stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
+    /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
+      foreachsoillayer(l)
+        stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
+      stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
 
-        update_soil_thermal_state(&stand->soil,climate->temp,config);
-      }
-      else
-      {
-        stand->soil.temp[0]=soiltemp_lag(&stand->soil,&cell->climbuf);
-        for(l=1;l<NSOILLAYER;l++)
-        stand->soil.temp[l]=stand->soil.temp[0];
-        snowrunoff=snow_old(&stand->soil.snowpack,&climate->prec,&melt,climate->temp)*stand->frac;
-        cell->discharge.drunoff+=snowrunoff;
-      }
+      update_soil_thermal_state(&stand->soil,climate->temp,config);
 
       foreachsoillayer(l)
         gtemp_soil[l]=temp_response(stand->soil.temp[l]);
