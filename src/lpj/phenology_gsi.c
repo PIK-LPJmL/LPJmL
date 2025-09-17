@@ -53,7 +53,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
     tree=pft->data;
   }
   /* phenology */
-  if(istree(pft) && treepar->evergreen)
+  if(istree(pft) && treepar->phen_to_one)
   {
     pft->phen=1.0;
   }

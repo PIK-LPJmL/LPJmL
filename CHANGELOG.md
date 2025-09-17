@@ -23,6 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -31,16 +32,17 @@ of `major.minor.patch` with
 
 ### Changed
 
-- 2 boolean flags `evergreen` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+- 2 boolean flags `phen_to_one` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
 - Unused argument `aet_layer` removed from `nitrogen_stress()` function.
 
 ### Fixed
 
-- Arguments of `npp` function corrected in `daily_woodplantation.c`.
+- Arguments of `npp` function corrected in `daily_woodplantation.c`. The current version leads to a too strong reduction in NPP.
 - `nuptake_crop.c` changed to compile with `-DDEBUG_N` option.
 - `update_daily_cell.c` changed to compile with `-DDEBUG` option.
 - `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
 - Typo in error message in `bstruct_writearrayindex.c` corrected.
+- Error message corrected in `bstruct_wopen.c`.
 - Error number corrected in `bstruct_finish.c`.
 - Argument `temp` added to `f_turnover_tree` function to compile with `-DNRECOVERY_COST` option.
 
@@ -111,7 +113,7 @@ of `major.minor.patch` with
 - If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
 - Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 - File `default.md` converted from DOS to Linux format.
-- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used instead that one defined in the JSON metafile.
 - Man pages updated.
 
 ### Fixed
