@@ -34,11 +34,13 @@ of `major.minor.patch` with
 ### Changed
 
 - `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
-- Hard-coded parameter in temperature dependent calculation of b replaced by global parameter `tscal_b`.
+- Hard-coded parameter in temperature dependent calculation of `b` replaced by global parameter `tscal_b`.
+- Calculation of `b` in `setupannual_grid.c` replaced by call to new virtual PFT function `getb()`.
 
 ### Removed
 
 - Parameter `phi_bnf` removed from `pft.cjson`.
+- Variable `b` removed from restart file.
 
 
 ## [5.10.0] - 2025-08-14
