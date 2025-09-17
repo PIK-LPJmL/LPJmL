@@ -398,17 +398,18 @@ Error code Description                                   Error type
         39 Invalid FPC value                             Internal
         40 Boundary check error                          Internal
         41 Invalid time step in soiltemp()               Internal
-        42 Gamma function error                          Internal
-        43 Wetland error                                 Internal
-        44 Invalid hag_beta error                        External
-        45 Cannot read external flow                     External
-        46 Opening connection to coupled model failed    External
-        47 Invalid inundation stress                     Internal
-        48 Error initializing output data                External
-        49 Invalid uniform temp sign value               Internal
-        50 Invalid crop PHU option                       Internal
-        51 Invalid fire danger index                     Internal
+        42 Cannot read external flow                     External
+        43 Opening connection to coupled model failed    External
+        44 Invalid uniform temp sign value               Internal
+        45 Error initializing output data                External
+        46 Invalid crop PHU option                       Internal
+        47 Invalid fire danger index                     Internal
+        48 Gamma function error                          Internal
+        49 Wetland error                                 Internal
+        50 Invalid hag_beta error                        External
+        51 Invalid inundation stress                     Internal
         52 Error writing output                          External
+        53 Negative soil carbon error                    Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
