@@ -1987,7 +1987,7 @@
       "name" : "woodplantation boreal tree",
       "type" : "tree",
       "phen_to_one" : false,
-      "rainyseason" : false       /* aphen set to zero on rainyseason from climbuf */
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2113,7 +2113,7 @@
       "name" : "oil palm",
       "type" : "tree",
       "phen_to_one" : false,
-      "rainyseason" : false       /* aphen set to zero on rainyseason from climbuf */
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2235,7 +2235,7 @@
       "name" : "tea",
       "type" : "tree",
       "phen_to_one" : false,
-      "rainyseason" : false       /* aphen set to zero on rainyseason from climbuf */
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2357,7 +2357,7 @@
       "name" : "cotton",
       "type" : "tree",
       "phen_to_one" : false,
-      "rainyseason" : false       /* aphen set to zero on rainyseason from climbuf */
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
