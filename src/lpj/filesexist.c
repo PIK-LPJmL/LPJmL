@@ -462,7 +462,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
   bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",LPJ_SHORT,TRUE);
-  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+  if(isspitfire(&config))
   {
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,LPJ_SHORT,TRUE);
