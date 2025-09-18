@@ -79,7 +79,7 @@ typedef struct
   Bool with_grass;                  /**< grass PFT allowed under agriculture tree? */
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
   Bool phen_to_one;                 /**< set phen always to 1 */
-  Bool rainyseason;                 /**< aphen set to zero on rainyseason */
+  Bool rainyseason;                 /**< aphen set to zero on rainyseason from climbuf */
 } Pfttreepar;
 
 typedef struct
