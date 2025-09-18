@@ -31,9 +31,9 @@ of `major.minor.patch` with
 
 ### Removed
 
-- Unused function `snow.old(), `soiltemp()` and related functions removed.
+- Unused functions `snow.old(), `soiltemp()` and related functions removed.
 - Setting without permafrost removed
-- soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
+- Soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
 
 
 ## [5.10.0] - 2025-08-14
