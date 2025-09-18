@@ -122,8 +122,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     }
     getoutputindex(&stand->cell->output,FPC,getpftpar(pft,id)+1,config)+=pft->fpc;
 #ifdef SAFE
-    //if(pft->fpc<0)
-    //  fail(INVALID_FPC_ERR,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);
+    if(pft->fpc<0)
+      fail(INVALID_FPC_ERR,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);
 #endif
   } /* of foreachpft */
   return FALSE;
