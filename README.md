@@ -51,6 +51,7 @@ To test the model, use the provided test data:
     ```
 
 For detailed usage instructions, refer to the [documentation](./man).
+For changes and bug fixes in the code refer to the [changelog](./CHANGELOG.md).
 
 
 ## Contributing
@@ -82,7 +83,7 @@ LPJmL is open-source software licensed under the GNU Affero General Public Licen
 See the [LICENSE](./LICENSE) file for details.
 
 ## Acknowledgments
-LPJmL is the result of collaborative work. See the [AUTHORS](./AUTHORS) file for contributors.
+LPJmL is the result of collaborative work. See the [AUTHORS](./AUTHORS.md) file for contributors.
 For scientific use of LPJmL, please cite the relevant publications listed in the [REFERENCES](./REFERENCES) file.
 
 ## Links and Resources

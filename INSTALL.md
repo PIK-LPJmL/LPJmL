@@ -96,7 +96,7 @@ sudo apt-get install mpich  # Optional: for parallel library
 ```
 
 - If the script exits with the message `Unsupported operating system`, a `Makefile.$osname` is created from `Makefile.gcc`. You may need to modify it for your operating system/compiler.
-- If an MPI environment is detected, a parallel version of LPJmL will be built.
+- If a MPI environment is detected, a parallel version of LPJmL will be built.
 - The configure script creates a copy of the following OS-specific makefiles from
 directory config:
 
@@ -350,19 +350,19 @@ ERRORxxx: message
 
 The following environment variables are used by LPJmL:
 
-| Variable         | Description                                         |
-|------------------|-----------------------------------------------------|
-| `LPPJNOPP`       | disables preprocessor if set to "true", same as -nopp option|
-| `LPJPEDANTIC`    | enables pedantic mode if set to "true", same as -pedantic option|
-| `LPJPREP`        | defines preprocessor command for LPJmL configuration  file, default is "cpp"|
+| Variable         | Description                                                                                                 |
+|------------------|-------------------------------------------------------------------------------------------------------------|
+| `LPPJNOPP`       | disables preprocessor if set to "true", same as -nopp option                                                |
+| `LPJPEDANTIC`    | enables pedantic mode if set to "true", same as -pedantic option                                            |
+| `LPJPREP`        | defines preprocessor command for LPJmL configuration  file, default is "cpp"                                |
 | `LPJROOT`        | defines the root directory for LPJmL. This directory is added to the include directories of the preprocessor|
-| `LPJIMAGE`       | sets host where IMAGE is running|
-| `LPJCOUPLEDHOST` | sets host where the coupled model is running|
-| `LPJWAIT`        | sets time to wait for connection to IMAGE/coupled model|
-| `LPJINPATH`      | Path appended to the input filenames. Only done for filenames without absolute path|
-| `LPJRESTARTPATH` | Path appended to the restart filenames. Only done for filenames without absolute path|
-| `LPJOPTIONS`     | cpp runtime options for LPJmL|
-| `LPJOUTPATH`     | Path appended to the output filenames. Only done for filenames without absolute path|
+| `LPJIMAGE`       | sets host where IMAGE is running                                                                            |
+| `LPJCOUPLEDHOST` | sets host where the coupled model is running                                                                |
+| `LPJWAIT`        | sets time to wait for connection to IMAGE/coupled model                                                     |
+| `LPJINPATH`      | path appended to the input filenames. Only done for filenames without absolute path                         |
+| `LPJRESTARTPATH` | path appended to the restart filenames. Only done for filenames without absolute path                       |
+| `LPJOPTIONS`     | cpp runtime options for LPJmL                                                                               |
+| `LPJOUTPATH`     | path appended to the output filenames. Only done for filenames without absolute path                        |
 
 ---
 
