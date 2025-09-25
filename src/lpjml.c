@@ -317,15 +317,9 @@ int main(int argc,char **argv)
     puts("Simulation begins...");
   time(&tstart); /* Start timing */
   /* Starting simulation */
-#ifdef USE_TIMING
-  timing_start(t);
-#endif
   year=iterate(output,grid,input,
                config.npft[GRASS]+config.npft[TREE],config.npft[CROP],
                &config);
-#ifdef USE_TIMING
-  timing_stop(ITERATE_FCN,t);
-#endif
   /* Simulation has finished */
   time(&tend); /* Stop timing */
   fcloseoutput(output,&config);

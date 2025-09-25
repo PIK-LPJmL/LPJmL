@@ -30,8 +30,6 @@ char *timing_fcn[N_FCN]=
   "initinput",
   "initoutput",
   "irrig_amount_reservoir",
-  "iterate",
-  "iterateyear",
   "littersom",
   "MPI_Barrier",
   "MPI_Init",

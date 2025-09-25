@@ -215,13 +215,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       break; /* leave time loop */
     }
-#ifdef USE_TIMING
-    timing_start(t);
-#endif
     rc=iterateyear(output,grid,input,co2,npft,ncft,year,config);
-#ifdef USE_TIMING
-    timing_stop(ITERATEYEAR_FCN,t);
-#endif
     if(rc)
       break;
 #if defined IMAGE && defined COUPLED
