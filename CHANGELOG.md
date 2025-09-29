@@ -42,6 +42,7 @@ of `major.minor.patch` with
 
 - Parameter `phi_bnf` removed from `pft.cjson`.
 - Variable `b` removed from restart file.
+- Unused macro `RESTART_VERSION` removed from `header.h`.
 
 
 ## [5.10.0] - 2025-08-14
