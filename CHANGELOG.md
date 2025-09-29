@@ -23,13 +23,14 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
-- code review:
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
 - Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
 - Wirth et al. (2024)  article added to `REFERENCES`.
 - New parameter `"tscal_b"` added in `lpjparam.cjson`.
+- New virtual function `getb()` added to type `Pft`.
 
 ### Changed
 
