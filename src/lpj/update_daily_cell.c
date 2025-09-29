@@ -101,7 +101,7 @@ void update_daily_cell(Cell *cell,            /**< pointer to cell */
     getoutput(&cell->output,PREC,config)+=climate->prec;
 
 #ifdef DEBUG
-    printf("day=%d cell=%d\n",day,cell);
+    printf("day=%d cell=%d\n",day,cell_id);
     fflush(stdout);
 #endif
     updategdd(cell->gdd,config->pftpar,npft,climate->temp);

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.10.0                           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.10.1                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -93,6 +93,8 @@
       "name" : "tropical broadleaved evergreen tree",
       "type" : "tree",
       "cultivation_type" : "none", /* cultivation_type */
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
       "beta_root" : 0.952,    /* beta_root original 0.962*/
@@ -211,6 +213,8 @@
     {
       "name" : "tropical broadleaved raingreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -332,6 +336,8 @@
     {
       "name": "temperate needleleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -451,6 +457,8 @@
     {
       "name" : "temperate broadleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -570,6 +578,8 @@
     {
       "name" : "temperate broadleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -691,6 +701,8 @@
     {
       "name" : "boreal needleleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -810,6 +822,8 @@
     {
       "name" : "boreal broadleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -931,6 +945,8 @@
     {
       "name" : "boreal needleleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1355,6 +1371,8 @@
     {
       "name" : "bioenergy tropical tree",
       "type" : "tree",
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "biomass",/* cultivation_type */
       "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1475,6 +1493,8 @@
     {
       "name" : "bioenergy temperate tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "biomass",/* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1698,6 +1718,8 @@
     {
       "name" : "woodplantation temperate tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1821,6 +1843,8 @@
     {
       "name" : "woodplantation tropical tree",
       "type" : "tree",
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1944,6 +1968,8 @@
     {
       "name" : "woodplantation boreal tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2067,6 +2093,8 @@
     {
       "name" : "oil palm",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2187,6 +2215,8 @@
     {
       "name" : "tea",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2307,6 +2337,8 @@
     {
       "name" : "cotton",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
