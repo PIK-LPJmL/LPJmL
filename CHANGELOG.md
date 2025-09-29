@@ -24,18 +24,31 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
-- Variables `phen` and `b` added to output in `fprintpft.c`.
+- Variable `phen` added to output in `fprintpft.c`.
 - Compile option `NRECOVERY_COST` added to `INSTALL` and man page of `configure.sh`.
+- Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
+- Wirth et al. (2024)  article added to `REFERENCES`.
+- New parameter `"tscal_b"` added in `lpjparam.cjson`.
+- New virtual function `getb()` added to type `Pft`.
 
 ### Changed
 
 - 2 boolean flags `phen_to_one` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
 - Unused argument `aet_layer` removed from `nitrogen_stress()` function.
+- `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
+- Hard-coded parameter in temperature dependent calculation of `b` replaced by global parameter `tscal_b`.
+- Calculation of `b` in `setupannual_grid.c` replaced by call to new virtual PFT function `getb()`.
+
+### Removed
+
+- Parameter `phi_bnf` removed from `pft.cjson`.
+- Variable `b` removed from restart file.
+- Unused macro `RESTART_VERSION` removed from `header.h`.
 
 ### Fixed
 

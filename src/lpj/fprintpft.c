@@ -33,7 +33,6 @@ void fprintpft(FILE *file,    /**< pointer to text file */
   fprintf(file,"vscal:\t\t%g\n",pft->vscal);
   fprintf(file,"aphen:\t\t%g\n",pft->aphen);
   fprintf(file,"phen:\t\t%g\n",pft->phen);
-  fprintf(file,"b:\t\t%g\n",pft->b);
   fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
           pft->bm_inc.nitrogen);
   fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
