@@ -107,7 +107,7 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
     if(bstruct->swap)
     {
       if(isout)
-        fprintf(stderr,"ERROR525: Byte order must not be different file '%s'.\n",
+        fprintf(stderr,"ERROR525: Byte order must not be different in file '%s'.\n",
                 filename);
       fclose(bstruct->file);
       freehash(bstruct->hash);

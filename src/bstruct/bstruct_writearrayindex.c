@@ -27,7 +27,7 @@ Bool bstruct_writearrayindex(Bstruct bstr,            /**< pointer to restart fi
   if(fseek(bstr->file,filepos+sizeof(long long)*offset,SEEK_SET))
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR519: Cannout skip to position %d in index array.\n",offset);
+      fprintf(stderr,"ERROR519: Cannot skip to position %d in index array.\n",offset);
     return TRUE;
   }
   /* write position vector */

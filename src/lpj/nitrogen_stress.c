@@ -16,8 +16,7 @@
 
 Real nitrogen_stress(Pft *pft,             /**< PFT */
                      Real temp,            /**< temperature (deg C) */
-                     Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
-                     Real npp,
+                     Real npp,             /**< net primary production (gC/m2/day) */
                      int npft,             /**< number of natural PFTs */
                      int ncft,             /**< number of crop PFTs */
                      const Config *config  /**< LPJmL configuration  */
