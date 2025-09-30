@@ -149,6 +149,7 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->nuptake=nuptake_crop;
   pft->ndemand=ndemand_crop;
   pft->vmaxlimit=vmaxlimit_crop;
+  pft->getb=getb_crop;
   crop=new(Pftcroppar);
   if(crop==NULL)
   {
