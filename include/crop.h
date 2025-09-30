@@ -170,6 +170,7 @@ extern Stocks livefuel_consum_crop(Litter *,Pft *,const Fuel *,Livefuel *,
                                    Bool *,Real, Real,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real);
+extern void getb_crop(Pft *,Real);
 
 /* Definitions of macros */
 

@@ -17,6 +17,7 @@
 
 static void f_turnover_tree(Pft *pft,       /**< pointer to tree PFT */
                             int day,        /**< day (1..365) */
+                            Real temp,      /**< air temperature (deg C) */
                             const Config *config, /**< LPJmL configuration */
                             Real factor
                           )
@@ -94,13 +95,13 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
         if(pft->aphen>treepar->aphen_max || (pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE-1) ||
            (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE-1))
         {
-          f_turnover_tree(pft,day,config,1.0);
+          f_turnover_tree(pft,day,temp,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
         }
         else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
-          f_turnover_tree(pft,day,config,1.0);
+          f_turnover_tree(pft,day,temp,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
         }
@@ -111,20 +112,20 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
       {
         if(pft->aphen>treepar->aphen_max || day==pft->stand->cell->climbuf.startday_rainyseason-1)
         {
-          f_turnover_tree(pft,day,config,1.0);
+          f_turnover_tree(pft,day,temp,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
         }
         else if(pft->phen<=0.1 && pft->aphen>treepar->aphen_min)
         {
-          f_turnover_tree(pft,day,config,1.0);
+          f_turnover_tree(pft,day,temp,config,1.0);
           pft->phen=0.0;
           tree->isphen=TRUE;
         }
       }
       break;
     default:
-      f_turnover_tree(pft,day,config,1.0/NDAYYEAR);
+      f_turnover_tree(pft,day,temp,config,1.0/NDAYYEAR);
       break;
   } /*switch*/
 } /* of 'turnover_daily_tree' */

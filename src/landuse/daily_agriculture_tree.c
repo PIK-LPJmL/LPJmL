@@ -253,7 +253,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     printf("tmin=%g, tmax=%g, light=%g, wscal=%g\n",pft->phen_gsi.tmin,pft->phen_gsi.tmax,pft->phen_gsi.light,pft->phen_gsi.wscal);
     if(istree(pft))
     {
-      treepar=tree->data;
+      treepar=pft->par->data;
       printf("%s %d %d\n",pft->par->name,data->age,treepar->rotation);
     }
 #endif
