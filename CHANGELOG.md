@@ -19,6 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: David Hötten (davidho@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de)
+- code review: 
+
+### Fixed
+
+- `pft->fapar` computation for maize in `albedo_crop.c`
+- `albedo_green_leaves` computation for crops in `albedo_crop.c`
+- `pft->albedo`, which is now a sum of `albedo_green_leaves`, `albedo_brown_litter`, and `albedo_soil`
 
 ## [5.10.1] - 2025-09-30
 
