@@ -87,20 +87,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char **pftnames;
   time_t t;
   Type type;
-  int p,nbands,len,count,id;
+  int p,nbands,len,id;
   id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
   {
-    count=snprintf(NULL,0,config->outputvars[index].filename.name,year);
-    if(count==-1)
-      return TRUE;
-    filename=malloc(count+1);
+    filename=getsprintf(config->outputvars[index].filename.name,year);
     if(filename==NULL)
     {
       printallocerr("filename");
       return TRUE;
     }
-    snprintf(filename,count+1,config->outputvars[index].filename.name,year);
   }
   else
     filename=config->outputvars[index].filename.name;
@@ -127,32 +123,29 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
-  fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
+  fprintf(file,"  \"source\" : \"LPJmL C Version %s\",\n",getversion());
   time(&t);
   fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
-  if(config->n_global)
+  fprintf(file,"  \"global_attrs\" :\n  {\n");
+  fprintf(file,"    \"GIT_repo\" : \"%s\",\n",getrepo());
+  fprintf(file,"    \"GIT_hash\" : \"%s\"",gethash());
+  for(p=0;p<config->n_global;p++)
   {
-    fprintf(file,"  \"global_attrs\" : {");
-    for(p=0;p<config->n_global;p++)
-    {
-      fprintf(file,"\"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
-      if(p<config->n_global-1)
-        fprintf(file,", ");
-    }
-    fprintf(file,"},\n");
+    fprintf(file,",\n    \"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
   }
+  fprintf(file,"\n  },\n");
   fprintf(file,"  \"name\" : \"%s\",\n",config->outnames[id].name);
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
-  fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
-  fprintf(file,"  \"cellsize_lat\" : %f,\n",config->resolution.lat);
+  fprintf(file,"  \"cellsize_lon\" : %.8g,\n",config->resolution.lon);
+  fprintf(file,"  \"cellsize_lat\" : %.8g,\n",config->resolution.lat);
   fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,id)));
   fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
   nbands=outputsize(id,
                     config->npft[GRASS]+config->npft[TREE],
                     config->npft[CROP],config);
-  fprintf(file,"  \"nbands\" : %d,\n",id==GRID ? 2 : nbands);
+  fprintf(file,"  \"nbands\" : %d,\n",(id==GRID) ? ((config->outputvars[GRID].filename.fmt==CDF) ? 1 : 2) : nbands);
   if(nbands>1)
   {
    if(issoil(id))

@@ -143,7 +143,14 @@ static size_t isnetcdfinput(const Config *config)
     if(config->elevation_filename.fmt==CDF)
       width=max(width,strlen(config->elevation_filename.var));
     if(config->reservoir_filename.fmt==CDF)
+    {
       width=max(width,strlen(config->reservoir_filename.var));
+      width=max(width,strlen(config->capacity_reservoir_filename.var));
+      width=max(width,strlen(config->area_reservoir_filename.var));
+      width=max(width,strlen(config->inst_cap_reservoir_filename.var));
+      width=max(width,strlen(config->height_reservoir_filename.var));
+      width=max(width,strlen(config->purpose_reservoir_filename.var));
+    }
   }
   if(config->wet_filename.name!=NULL && config->wet_filename.fmt==CDF)
     width=max(width,strlen(config->wet_filename.var));
@@ -206,7 +213,7 @@ static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
   {
     if(filename->fmt!=SOCK)
       fputs(", ",file);
-    fprintf(file,"%d -> %s:%d",filename->id,config->coupled_host,config->coupler_port);
+    fprintf(file,"%d -> %s:%d",filename->id,config->coupled_host,config->coupled_port);
   }
 } /* of printoutname' */
 
@@ -225,7 +232,7 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
       fputs(", ",file);
   }
   if(iscoupled(*config) && filename->issocket)
-    fprintf(file,"%d <- %s:%d",filename->id,config->coupled_host,config->coupler_port);
+    fprintf(file,"%d <- %s:%d",filename->id,config->coupled_host,config->coupled_port);
   fputc('\n',file);
 } /* of 'printinputfile' */
 
@@ -622,7 +629,17 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(config->reservoir)
   {
     printinputfile(file,"elevation",&config->elevation_filename,width,config);
-    printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
+    if(config->reservoir_filename.fmt==CDF)
+    {
+      printinputfile(file,"year res.",&config->reservoir_filename,width,config);
+      printinputfile(file,"cap res.",&config->capacity_reservoir_filename,width,config);
+      printinputfile(file,"area res.",&config->area_reservoir_filename,width,config);
+      printinputfile(file,"inst_cap res",&config->inst_cap_reservoir_filename,width,config);
+      printinputfile(file,"height res.",&config->height_reservoir_filename,width,config);
+      printinputfile(file,"purpose res.",&config->purpose_reservoir_filename,width,config);
+    }
+    else
+      printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
   }
 #ifdef IMAGE
   if(config->aquifer_irrig)
@@ -679,7 +696,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(iscoupled(*config))
   {
     fprintf(file,"Coupled to %s model running on host %s using port %d.\n",
-            config->coupled_model,config->coupled_host,config->coupler_port);
+            config->coupled_model,config->coupled_host,config->coupled_port);
     if(config->wait)
       fprintf(file,"Time to wait for connection: %5d sec\n",config->wait);
     fprintf(file,"Number of inputs from %s: %5d\n"
@@ -747,7 +764,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       fprintf(file,"Missing value in NetCDF:      %g\n"
                    "Base year in NetCDF:          %d\n"
                    "NetCDF grid:                  %s\n",
-              config->missing_value,config->baseyear,
+              config->netcdf.missing_value.f,config->baseyear,
               config->global_netcdf ? "global" : "local");
     }
     fprintf(file,"%*s Fmt  %*s Type   tstep nbd Filename\n",-width,"Variable",-width_unit,"Unit");

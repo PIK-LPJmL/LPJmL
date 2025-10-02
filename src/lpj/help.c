@@ -26,12 +26,13 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+#define USAGE "\nUsage: %s [-h] [-l] [-v] [-repo] [-hash] [-vv] [-pedantic] [-print_noread]\n"\
+                "       [-ofiles] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
-char *lpj_usage=USAGE;
+char *lpj_usage=USAGE "\nTry \"%s --help\" for more information.\n";
 
 void help(const char *progname /**< program filename */
          )
@@ -44,22 +45,25 @@ void help(const char *progname /**< program filename */
     file=stdout;
   }
   fprintf(file,"    ");
-  count=fprintf(file,"%s C Version " LPJ_VERSION " (%s) Help",
-                progname,getbuilddate());
+  count=fprintf(file,"%s C Version %s (%s) Help",
+                progname,getversion(),getbuilddate());
   fprintf(file,"\n    ");
   frepeatch(file,'=',count);
   fprintf(file,"\n\nDynamic global vegetation model with managed land\n");
 #if defined IMAGE && defined COUPLED
   fputs("and IMAGE coupler\n",file);
 #endif
-  fprintf(file,lpj_usage,progname);
+  fprintf(file,USAGE,progname);
   fprintf(file,"\nArguments:\n"
           "-h,--help           print this help text\n"
           "-l,--license        print license file\n"
           "-v,--version        print version, compiler and compile flags\n"
+          "-repo               print GIT repository\n"
+          "-hash               print GIT hash\n"
           "-vv                 verbosely print the actual values during reading of the\n"
           "                    configuration files\n"
           "-pedantic           stops on warnings\n"
+          "-print_noread       print variable names not read from restart file\n"
           "-ofiles             list only all available output variables\n"
           "-param              print LPJmL parameter\n"
           "-nopp               disable preprocessing\n"
@@ -77,7 +81,7 @@ void help(const char *progname /**< program filename */
           "-restartpath dir    directory appended to restart filename\n"
           "-Dmacro[=value]     define macro for preprocessor of configuration file\n"
           "-Idir               directory to search for include files\n"
-          "filename            configuration filename\n\n"
+          "filename            configuration (*.cjson) filename\n\n"
           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
   if(file!=stdout)
     pclose(file);

@@ -146,9 +146,9 @@ extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
 extern Bool phenology_crop(Pft *,Real,Real,int,const Config *);
-extern Bool fwrite_crop(FILE *,const Pft *);
+extern Bool fwrite_crop(Bstruct,const Pft *);
 extern void fprint_crop(FILE *,const Pft *);
-extern Bool fread_crop(FILE *,Pft *,Bool,Bool);
+extern Bool fread_crop(Bstruct,Pft *,Bool);
 extern Bool fscanpft_crop(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
@@ -166,9 +166,9 @@ extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void separate_harvests(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
-extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
-extern Real vmaxlimit_crop(const Pft *,Real,Real);
-
+extern Real ndemand_crop(const Pft *,Real *,Real,Real);
+extern Real vmaxlimit_crop(const Pft *,Real);
+extern void getb_crop(Pft *,Real);
 
 /* Definitions of macros */
 

@@ -82,3 +82,21 @@ int nleapyears(int startyear, /**< start year of interval */
   return count;
 } /* of 'nleapyears' */
 
+int getnyearfromdays(Bool *isfullyear, /** \return number of days are full years incl. leap years */
+                     int startyear,    /**< start year */
+                     size_t ndays      /**< number of days */
+                    )                  /** \return number of years */
+{
+  size_t days=0;
+  int year=startyear;
+  while(days<ndays)
+  {
+    if (isleapyear(year))
+      days+=366;
+    else
+      days+=365;
+    year++;
+  }
+  *isfullyear=(days==ndays);
+  return year-startyear;
+} /* of 'getnyearfromdays' */

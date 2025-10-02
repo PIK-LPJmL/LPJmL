@@ -147,6 +147,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->ndemand=ndemand_tree;
   pft->vmaxlimit=vmaxlimit_tree;
   pft->agb=agb_tree;
+  pft->getb=getb;
   tree=new(Pfttreepar);
   if(tree==NULL)
   {
@@ -161,6 +162,8 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
               pft->name);
     return TRUE;
   }
+  fscanbool2(verb,file,&tree->phen_to_one,pft->name,"phen_to_one");
+  fscanbool2(verb,file,&tree->rainyseason,pft->name,"rainyseason");
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
   if(iskeydefined(file,"sla"))
   {
@@ -190,7 +193,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
-  if(pft->phenology==SUMMERGREEN)
+  if(pft->phenology==SUMMERGREEN || pft->phenology==RAINGREEN)
   {
     fscanreal2(verb,file,&tree->aphen_min,pft->name,"aphen_min");
     fscanreal2(verb,file,&tree->aphen_max,pft->name,"aphen_max");

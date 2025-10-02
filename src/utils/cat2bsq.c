@@ -49,7 +49,7 @@ int main(int argc,char **argv)
         }
         else
         {
-          k=findstr(argv[++i],typenames,5);
+          k=findstr(argv[++i],typenames,N_TYPES);
           if(k==NOT_FOUND)
           {
             fprintf(stderr,"Invalid argument '%s' for option '-type'.\n",argv[i]);
@@ -132,7 +132,7 @@ int main(int argc,char **argv)
     fstat(fileno(ifp[j]),&filestat);
     if(filestat.st_size % (bands*typesizes[k]))
     {
-      fprintf(stderr,"Error: Filesize=%zd is not divisible without remainder=%d, bands=%d, size=%d.",
+      fprintf(stderr,"Error: Filesize=%ld is not divisible without remainder=%d, bands=%d, size=%d.",
            filestat.st_size,(int)(filestat.st_size % (bands*typesizes[k])),bands,(int)typesizes[k]);
       return EXIT_FAILURE;
     }

@@ -46,6 +46,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "K_MORT:\t\t%g\n"
                "fpc_tree_max:\t%g\n"
                "temp_response:\t%g\n"
+               "tscal_b:\t%g\n"
                "percthres:\t%g\n",
           param.error_limit.stocks.carbon,param.error_limit.stocks.nitrogen,
           param.error_limit.w_local,param.error_limit.w_global,
@@ -55,7 +56,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
-          param.fpc_tree_max,param.temp_response,param.percthres);
+          param.fpc_tree_max,param.temp_response,param.tscal_b,param.percthres);
   if(config->landfrac_from_file)
     fprintf(file,"minlandfrac:\t%g\n",param.minlandfrac);
   if(config->equilsoil)
@@ -129,6 +130,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
               param.product_turnover.fast,param.product_turnover.slow);
+      fprintf(file,"luc burn start year:\t%d\n",param.luc_burn_startyear);
     }
     if(config->residues_fire)
     {

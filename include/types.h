@@ -33,6 +33,8 @@
 #endif
 
 #define STRING_LEN 255 /* Maximum length of default strings  */
+#define READ_VERSION -1
+
 
 #ifdef _WIN32
 #ifndef isnan /* isnan is already defined in math.h of Microsoft Visual Studio 2015, but not in 2010 */
@@ -54,6 +56,7 @@
 #endif
 
 #define N_FMT 8 /* number of format types for input/output files */
+#define N_TYPES 5 /* number of different types */
 
 /* Definition of datatypes */
 
@@ -65,8 +68,8 @@ typedef unsigned char Byte;
 
 typedef char String[STRING_LEN+1];
 
-extern const size_t typesizes[];
-extern char *typenames[];
+extern const size_t typesizes[N_TYPES];
+extern char *typenames[N_TYPES];
 extern char *fmt[N_FMT];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
@@ -142,6 +145,8 @@ extern long long diskfree(const char *);
 extern void fprintintf(FILE *,long long);
 extern void getcounts(int [],int [],int,int,int);
 extern char *getbuilddate(void);
+extern char *gethash(void);
+extern char *getrepo(void);
 extern time_t getfiledate(const char *);
 extern char *stripsuffix(const char *);
 extern Bool hassuffix(const char *,const char *);
@@ -155,6 +160,7 @@ extern Bool ffscanint(FILE *,int *,const char *,Verbosity);
 extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
 extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
+extern Bool fscandouble(LPJfile *,double *,const char *,Bool,Verbosity);
 extern Bool fscanattrs(LPJfile *,Attr **,int *,const char *,Verbosity);
 extern void fprintattrs(FILE *,const Attr *,int);
 extern void freeattrs(Attr *,int);
@@ -182,6 +188,10 @@ extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
 extern double mrun(void);
 void mergeattrs(Attr **,int *,const Attr *, int,Bool);
+extern char *getversion(void);
+extern char *getsprintf(const char *,...);
+extern Bool fwritetopheader(FILE *, const char *,int);
+extern Bool freadtopheader(FILE *,Bool *,const char *,int *,Bool);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

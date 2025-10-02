@@ -3,13 +3,16 @@
 addheader \- Add clm header to binary file
 .SH SYNOPSIS
 .B addheader
-[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
+[-h] [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-timestep n] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
 .SH DESCRIPTION
 Program adds clm header to raw  binary file for LPJmL.
 .SH OPTIONS
+TP
+\-h,\--help
+Print a short help text.
 .TP
 -swap
-Byte order is change in raw binary file.
+Byte order is changed in raw binary file.
 .TP
 -nyear n
 Set number of years, default is 109.
@@ -17,11 +20,11 @@ Set number of years, default is 109.
 -firstyear n
 Set first year, default is 1901.
 .TP
--lastyear
+-lastyear n
 Set last year, default is 2009.
 .TP
 -ncell n
-Set number of cells, default is 67420.
+Set number of cells, default is 67420. If set to 0 the number of cells is calculated from the file size of the binary file.
 .TP
 -firstcell n
 Set index of first cell, default is 0.
@@ -30,7 +33,10 @@ Set index of first cell, default is 0.
 Set number of bands, default is 12.
 .TP
 -nstep n
-Set number of steps, default is 1.
+Set number of steps within years, default is 1. Only used if version is set to 4.
+.TP
+-timestep n
+Set number of years between time steps, default is 1. Only used if version is set to 4.
 .TP
 -order n
 Set order of data, default is 0.
@@ -45,7 +51,7 @@ Set cell size, default is 0.5.
 Set scaling factor, default is 1.
 .TP
 -id s
-Set id string factor, default is LPJCLIM.
+Set id string, default is LPJCLIM.
 .TP
 -type {byte|short|int|float|double}
 Set datatype of clm file. Default is short.
@@ -58,11 +64,12 @@ filename of clm data file.
 .SH EXAMPLE
 .TP
 Add header to daily climate float data:
-.B  addheader -type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
+.B  addheader
+-type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
 .PP
 .SH EXIT STATUS
 .B addheader
-return a zero exit status if clm file could be created.
+returns a zero exit status if clm file could be created.
 Non zero is returned in case of failure.
 
 .SH AUTHORS

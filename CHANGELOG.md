@@ -19,14 +19,490 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.10.1] - 2025-09-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Variable `phen` added to output in `fprintpft.c`.
+- Compile option `NRECOVERY_COST` added to `INSTALL` and man page of `configure.sh`.
+- Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
+- Wirth et al. (2024)  article added to `REFERENCES`.
+- New parameter `"tscal_b"` added in `lpjparam.cjson`.
+- New virtual function `getb()` added to type `Pft`.
+
+### Changed
+
+- 2 boolean flags `phen_to_one` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+- Unused argument `aet_layer` removed from `nitrogen_stress()` function.
+- `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
+- Hard-coded parameter in temperature dependent calculation of `b` replaced by global parameter `tscal_b`.
+- Calculation of `b` in `setupannual_grid.c` replaced by call to new virtual PFT function `getb()`.
+
+### Removed
+
+- Parameter `phi_bnf` removed from `pft.cjson`.
+- Variable `b` removed from restart file.
+- Unused macro `RESTART_VERSION` removed from `header.h`.
+
+### Fixed
+
+- Arguments of `npp` function corrected in `daily_woodplantation.c`. The current version leads to a too strong reduction in NPP.
+- `nuptake_crop.c` changed to compile with `-DDEBUG_N` option.
+- `update_daily_cell.c` changed to compile with `-DDEBUG` option.
+- `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
+- Typo in error message in `bstruct_writearrayindex.c` corrected.
+- Error message corrected in `bstruct_wopen.c`.
+- Error number corrected in `bstruct_finish.c`.
+- Argument `temp` added to `f_turnover_tree` function to compile with `-DNRECOVERY_COST` option.
+
+
+## [5.10.0] - 2025-08-14
+
+### Contributors
+
+- author: Jens Heinke (heinke@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- option to specify year after which deforestation is no longer feeding product pools but biomass is burnt instead: `luc_burn_startyear` (disabled)
+- option to specify costs for N recovery upon turnover (pre-compiler switch `NRECOVERY_COST`, disabled)
+
+### Changed
+
+- parameter changes: 
+  - `alphaa` from 0.5 to 0.7 for natural vegetation; 
+  - `theta` from 0.9 to 0.95; 
+  - `fn_turnover` PFT1: 0.5, PFT2: 0.5, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3; updated values from [Sophia et al. 2024](https://doi.org/10.5194/bg-21-4169-2024) for all other PFTs except crops
+  - `cnratio_leaf.low/median/high` for all PFTs updated from TRY data
+  - `b` (ratio of dark respiration Rd to maximum photosynthetic capacity Vcmax) set to 0.031 for C3 and C4 plants (value for 25°C, from [Wang et al. 2020](https://doi.org/10.1111/gcb.14980), consistent with TRY data)
+  - `aphen_min` from 60 to 90 and `aphen_max` from 245 to 180
+  - `nfixpot` from 0.01 to 0.5 (middle of proposed range in [Yu and Zhuang 2020](https://doi.org/10.5194/bg-17-3643-2020))
+  - `turnover` parameter for leaves&roots set to 2 for TeNE and 3 BoNE 
+  - temperature boundary between temperate and boreal zone changed from -2°C to -5°C
+- acclimation of `b` to mean vegetation period temperature (following [Wang et al. 2020](https://doi.org/10.1111/gcb.14980))
+- calculation of structural leaf N content (leaf N independent of Vcmax) based on `ncleaf.low` in both `ndemand_xx` and `vmaxlimit_xx` (was `ncleaf.medium` in `ndemand_xx`)
+- scaling of vmax with f_LAI removed
+- N recovery from turnover directly added to `bm_inc.nitrogen`
+- N uptake now separated for uptake of NH4 and NO3 with parameters from  [Craig et al. 2025](https://doi.org/10.1111/nph.70140) (median of values)
+- trees are burnt (instead of added to the litter) when running with `luc_timber=FALSE`
+- beginning of vegetative period for tropical raingreen trees set at beginning of 6 month period with highest precipitation sum
+- leaf shedding for deciduous trees induced after `aphen_max` or when `phen<0.1` after `aphen_min`
+- `phen` permanently set to 1 for tropical evergreen trees
+
+### Removed
+
+### Fixed
+
+- corrected conversion of vmax in computation of N demand, which was incorrectly scaled with `24/daylength`
+- corrected temperature sensitivity of N demand (`k_temp` changed from 0.02 to 0.0693)
+- corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
+- corrected phenology of trees:
+  - leaf turnover of raingreen trees at leaf shedding (same as for summergreen trees, had continuous daily leaf turnover like evergreen trees)
+  - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon 
+
+
+## [5.9.28] - 2025-07-31
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-h` added to utilities `addheader`, `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
+- Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
+- Support for short datatype added in `cmpbin` utility.
+- Shell script `allbin2cdf` added to convert all binary raw output files in a directory to NetCDF files.
+- Option `-nounit` added to `bin2cdf` to set unit if unit is defined in the metafile as an empty string.
+
+### Changed
+
+- If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
+- Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
+- File `default.md` converted from DOS to Linux format.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used instead that one defined in the JSON metafile.
+- Man pages updated.
+
+### Fixed
+
+- Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
+- Missing deallocation of list added in `open_config.c`.
+- Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
+- Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
+- Typo in man page of `configure.sh` fixed.
+- Comment for `pft` initialized in `initsetting_netcdf.c`.
+- Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
+- Short data handled correctly for metafile input in `bin2cdf`.
+- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
+- Man page for `mathclm` corrected for option `-v`.
+
+
+## [5.9.27] - 2025-07-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- Utility `json2restart` added to convert JSON files into restart files.
+- alias `restart2json` added for `restart2yaml -json`.
+- Output of time spent in reading and writing the restart file added.
+- Option `-print_noread` added to `lpjml` to print variable names not read from restart file.
+- Check added that PFT names in restart file match PFT names in LPJmL configuration file.
+- Unit tests added for bstruct library functions.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can be degraded.
+- Utility `lpjcat` updated to support the new restart file format.
+- Preprint's doi:10.5194/egusphere-2023-2946 changed to the final BNF paper doi:10.5194/gmd-17-7889-2024 in `.zenodo.json`.
+
+
+## [5.9.26] - 2025-07-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- New functions `setupannual_grid`, `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and `iterate.c` and minimize duplicate code in `lpj_poem.c`.
+- Parts of code in `iterateyear.c` has been moved to `update_daily_cell.c` and `update_monthly_grid.c`.
+- `lpj_climber4.c` renamed to `lpj_poem.c`.
+- `update_daily.c` renamed to `update_daily_cell.c`.
+- `update_monthly.c` renamed to `update_monthly_grid.c`.
+- `AFTER_STRESS` debugging output in `update_daily_cell.c` (former `updatedaily.c`) moved after N update really happened.
+
+### Fixed
+
+- Macro `isequilyear()` has been defined for calling equilibration function in a consistent way (issue #375).
+
+
+## [5.9.25] - 2025-05-22
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de)
+
+### Changed
+
+- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson` instead of being hard coded.
+- Warnings in `addheader` replaced by terminating errors.
+- Function `openinputfile()` returns an error if cell size differs in JSON metafile.
+- Function `openmetafile()` returns an error if binary file is empty.
+- Output format for cell size updated in `fprintheader.c`, `fprintoutputjson.c`, `fprintjson.c`, and `openinputfile.c`.
+
+### Added
+
+- New utility `splitclm` added to copy specific bands from a clm file.
+- Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
+- Info about `--help` option added in case of error in command line arguments.
+- Option `-config` added to `cdf2clm`, `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
+- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, `txt2clm`, `getcountry`, and `cdf2coord` in order to create additional JSON metafiles.
+- Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
+- Options `-zero` and `-search` added to `regridlpj`.
+- Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
+- Option `-timestep` added to `addheader`, `txt2clm` and `bin2cdf`.
+- Option `sum`, `tsum` and `tmean` to `mathclm` added.
+- Check for correct setting of nstep and nbands added in `txt2clm`.
+
+### Fixed
+
+- Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
+- Missing `free(cmd)` added in `fprintincludes.c`.
+- Parsing of options corrected in `fprintincludes.c`.
+- Utility `bin2cdf` fixed for timestep>1.
+
+
+## [5.9.24] - 2025-05-15
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
+
+### Added
+
+- Merge request template ``.gitlab/merge_request_templates/default.md`` that includes several checklists.
+
+
+## [5.9.23] - 2025-05-08
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Fabian Stenzel(stenzel@pik-potsdam.de)
+
+### Changed
+
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and undefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
+- Datatype `List` used in `fprintfiles.c`.
+- All allocated memory is now freed in utilities.
+- Prescribed landcover input file changed in `input.cjson` to a file with the same number of natural PFTs.
+- All remaining unsafe calls to `sprintf()` replaced by calls to `snprinf()` or `getsprinf()`.
+
+### Fixed
+
+- Check for missing values for integer input corrected in `readclimate_netcdf.c`.
+- Memory leak fixed in `filesexist.c`.
+- Calculation of global area fixed in `printglobal.c`.
+- Check for null attribute pointer added in `fprintjson.c`.
+- Uninitialized grid name initialized in `mathclm.c`.
+- Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
+- Datatype for index and writing the header corrected in `lpjcat.c`.
+- Functions for qsort(), bisect(), and leftmostzero() changed to avoid run-time errors with `-check` option.
+- Pointer set to NULL  if `k_est`is NULL in `initmanage.c`.
+- Missing argument added in opening aquifer file for IMAGE.
+- Scaling of coordinates fixed in `joingrid.c`.
+- Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
+- Index set correctly for outflow cells in `regriddrain.c`.
+- Check for maximum discharge length corrected in `printdrain.c`.
+- Number of years of clm file set to 1 in `grid2clm.c`.
+- Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
+- Access out of bounds for `soil->freezdepth` fixed in `soiltemp.c`.
+- Format specifier changed in `cat2bsq.c` and `cutclm.c` to compile without warnings using the clang compiler (issue #372).
+
+
+## [5.9.22] - 2025-03-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Changed
+
+- `input_netcdf.cjson` changed to the default dataset of `input.cjson` but in NetCDF format.
+- Code changed to compile under Windows OS.
+- New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
+- Default settings for `GIT_HASH` and `GIT_REPO` added.
+- Duplicate filenames removed from list of input/output filenames in utility `lpjfiles`.
+
+### Added
+
+- Option `-int` added to utility `cdf2clm`.
+- Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
+- Utility `cdf2reservoir` added to convert NetCDF reservoir file into CLM file.
+- Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
+- Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
+- Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
+```java
+"drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+"neighb_irrig" :       { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+"river" :              { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
+"reservoir" :          { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+"capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+"area_reservoir" :     { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+"inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+"height_reservoir" :   { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+"purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
+```
+
+### Fixed
+
+- River length is now correctly read in `initdrain.c` for data in NetCDF format.
+- Man page of `cvrtclm` corrected.
+- Missing check for open NetCDF file added to `openclimate.c`.
+
+
+## [5.9.21] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- `"coupled_host"` and `"coupled_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
+
+
+## [5.9.20] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `timestep` added to `setclm`.
+
+### Changed
+
+- Function `freegrid()` is calling `freecell()` to avoid redundant code.
+- References in man pages updated.
+- `-v` option of `cdf2clm` prints leap days setting for daily time step.
+- Missing file `CHANGELOG.md` added to tar and zip file.
+- Longitude and latitude boundaries excluded as variables in `cdf2grid`.
+- Ids for sowing date and crop PHU input added to `couplerpar.h`.
+- Length of GIT repository output limited in `copyright.c`.
+
+### Fixed
+
+- Memory leaks in utility `lpjprint` closed.
+- Handling of NaN as missing value corrected in reading NetCDF files.
+- Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
+- Option `type` corrected in `setclm`.
+- Handling of different endianness corrected in `setclm`.
+- If version is changed with `setclm` only version is updated in the clm file.
+- Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+- Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
+- Check for identical filenames corrected in `cutclm.c`.
+- Missing `else` added in `readclimate()`.
+
+
+## [5.9.19] - 2025-03-12
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-partition` added to `lpjsubmit` script.
+
+### Changed
+
+- Man page of lpjsubmit refers only to slurm commands.
+- If `icc` compiler is found, this compiler is used.
+- `enablefpc.c` updated to compile under Mac OS.
+
+### Removed
+
+- Support for old PIK cluster removed.
+- Support for LoadLeveler batch queueing system removed.
+- Support for AIX OS removed.
+- Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
+
+
+## [5.9.18] - 2025-01-31
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Fixed
+
+- `basetemp` and `hlimit` parameters fixed to fit to standard growing season inputs (issue #346).
+- `laimax` values corrected from 5 to 7 for `temperate cereals`, `rice`, and `tropical cereals`
+
+
+## [5.9.17] - 2025-01-29
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Marie Hemmen (hemmen@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
+- Command `module list` added to slurm script to show all loaded modules.
+
+### Removed
+
+- Obsolete `#ifdef WITHOUT_NITROGEN` check removed from `pft.cjson`.
+
+### Fixed
+
+- `ALLOM3` parameter corrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- Missing `break` added in `convert_water.c`.
+
+
+## [5.9.16] - 2024-11-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- GIT repository and GIT hash printed in the LPJmL banner and in output of NetCDF and JSON files.
+- Options `-repo` and `-hash` added to `lpjml` to print GIT repository and hash.
+- The JSON file created by `createconfig` contains now name and hash of GIT repository.
+- Command `lpjml -v` prints GIT repository and hash.
+- Target `hash` added to Makefile to update hash after committing changes to the GIT repository.
+
+### Changed
+
+- `LPJ_VERSION` macro in `lpj.h` replaced by function `getversion()`.
+
+### Removed
+
+- Obsolete header columns cereal and maize removed from `fprintcountrypar.c`.
+
+### Fixed
+
+- Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+- `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
+- Typos in error messages in `filesexist.c` and `cdf2soil.c`fixed.
+- Missing check for open file added to `joingrid.c`.
+
+
+## [5.9.15] - 2024-11-07
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Option `-scale` added to `bin2cdf` in order to scale output.
+- Option `-notime` added to `bin2cdf` in order to omit time axis.
+- `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
+- Check for identical output filenames added in `fscanoutput.c`.
+
+### Changed
+
+- If `"with_days"` is set to true in the lpjml configuration file, time axis of yearly output is also set in units of days instead of years.
+- Time in NetCDF output is always set in the middle between the lower and upper time boundaries.
+
+### Removed
+
+- Unused file `cflux_sum.c` removed.
+- Conversion of obsolete file `manage.par` removed from utility `manage2js`.
+
+### Fixed
+
+- Separate output for each year by setting `"name" : "filename_%d"` is now written correctly (issue #360).
+- Number of bands set to 1 in metafile of grid NetCDF output.
+- Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
+- Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
+- `lpj_climber4.c` updated to compile without errors.
+- Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band and same time step can be written to one file.
+- Formatting of man pages corrected.
+- Missing `shift 1` for `-crumonthly` case added in `regridlpj`.
+
+
 ## [5.9.14] - 2024-09-30
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Fixed
 
-- `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+- `pft->vscal` not set to `NDAYYEAR` in `update_annual.c`. (issue #364).
 - `freezefrac2soil.c` corrected to avoid division by zero.
 - size of option array for `sowing_date_option` and `crop_phu_option` now correctly specified in `fscanconfig.c`.
 

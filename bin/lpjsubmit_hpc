@@ -6,10 +6,11 @@
 ##    sh script to generate and submit parallel SLURM jobs using               ##
 ##    Intel MPI.                                                               ##
 ##                                                                             ##
-##    Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n]  ##
-##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     [-dependency id] [-couple progran] [-constraint c]      ##
-##                     [-option a=b] ntask LPJargs...                          ##
+##    Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p] [-wtime time] ##
+##                     [-blocking n] [-o output] [-e error] [-q] [-nocheck]    ##
+##                     [-norun] [-dependency id] [-couple program]             ##
+##                     [-constraint c] [[-option a=b] ...] [-cmd prg]          ##
+##                     ntask LPJargs...                                        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -19,12 +20,15 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks args ..."
+USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] [-cmd prg] ntasks args ..."
+ERR_USAGE="\nTry \"lpjsubmit --help\" for more information."
 
 class=short
 group=""
 wtime=""
 depend=""
+partition=""
+cmd=""
 constraint=""
 blocking="unlimited"
 output="lpjml.%j.out"
@@ -38,10 +42,11 @@ while(( "$#" )); do
     -h|--help)
       echo -e "lpjsubmit - Submit parallel SLURM job for LPJmL simulations\n"
       echo -e $USAGE
-      echo -e "\nArguments"
+      echo -e "\nArguments:"
       echo "-h,--help      print this help text"
-      echo "-class c       set SLURM class, default is 'short'"
-      echo "-group g       set SLURM group"
+      echo "-class c       set SLURM QOS, default is 'short'"
+      echo "-group g       set SLURM group account"
+      echo "-partition p   set SLURM partition"
       echo "-wtime time    set wall clock limit of job. Time must be in the format hh:mm:ss"
       echo "-blocking n    set blocking (number of tasks per node), default is unlimited"
       echo "-o output      set filename of output file"
@@ -55,6 +60,7 @@ while(( "$#" )); do
 
       echo "-constraint c  define constraint c for SLURM job"
       echo "-option op=txt set option op to txt for SLURM job. This option can be repeated multiple times"
+      echo "-cmd prg       execute program prg before lpjml is started"
       echo "-couple prg    start couple prg in the background before starting LPJmL"
       echo "ntasks         number of MPI tasks"
       echo "args           arguments and options of lpjml"
@@ -66,10 +72,22 @@ while(( "$#" )); do
     then
       echo >&2 Error: class missing
       echo -e >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
     fi
     shift 1
     class=$1
+    shift 1
+    ;;
+    -partition)
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: partition missing
+      echo -e >&2 $USAGE
+      exit 1
+    fi
+    shift 1
+    partition=$1
     shift 1
     ;;
     -group)
@@ -77,6 +95,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: group missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -88,6 +107,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: wall clock time missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -99,6 +119,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: blocking factor missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -110,6 +131,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: output filename missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -119,8 +141,9 @@ while(( "$#" )); do
    -e)
      if [ $# -lt 2 ]
      then
-       echo >&2 Error: error filename  missing
+       echo >&2 Error: error filename missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -136,6 +159,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: jobid missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -147,10 +171,22 @@ while(( "$#" )); do
      then
        echo >&2 Error: program name missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
      couple=$1
+     shift 1
+     ;;
+   -cmd)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: program to execute missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     cmd=$1
      shift 1
      ;;
    -constraint)
@@ -158,6 +194,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: constraint missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -169,6 +206,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: option missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -184,8 +222,9 @@ while(( "$#" )); do
      norun=1
      ;;
    -*)
-     echo >&2 Invalid option $1
+     echo >&2 Invalid option \'$1\'
      echo -e >&2 $USAGE
+     echo -e >&2 $ERR_USAGE
      exit 1
      ;;
    *)
@@ -198,6 +237,7 @@ if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
   echo -e >&2 $USAGE
+  echo -e >&2 $ERR_USAGE
   exit 1
 fi
 
@@ -251,6 +291,10 @@ if [ "$group" != "" ]
 then
   echo "#SBATCH --account="$group >>slurm.jcf
 fi
+if [ "$partition" != "" ]
+then
+  echo "#SBATCH --partition="$partition >>slurm.jcf
+fi
 if [ "$blocking" != "unlimited" ]
 then
   echo "#SBATCH --tasks-per-node="$blocking >>slurm.jcf
@@ -272,12 +316,21 @@ export LPJROOT=$LPJROOT
 ulimit -c unlimited
 
 EOF
+if [ "$cmd" != "" ]
+then
+  echo $cmd >>slurm.jcf
+  echo >>slurm.jcf
+fi
+echo "module list 2>&1 # show all loaded modules" >>slurm.jcf
+echo >>slurm.jcf
 if [ "$couple" != "" ]
 then
   echo $couple " &" >>slurm.jcf
   echo >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf
+mpirun \$LPJROOT/bin/lpjml --version
+
 mpirun \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of mpirun

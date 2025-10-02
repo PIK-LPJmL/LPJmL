@@ -28,7 +28,7 @@ int main(int argc,char **argv)
   char *arglist;
   char *out_json;
   Map *map=NULL;
-  Attr *attrs;
+  Attr *attrs=NULL;
   int n_attr;
   char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
   Header header;
@@ -39,6 +39,7 @@ int main(int argc,char **argv)
   nitem=1;
   nsum=NMONTH;
   grid_name.fmt=RAW;
+  grid_name.name=NULL;
   grid_type=LPJ_SHORT;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -282,6 +283,8 @@ int main(int argc,char **argv)
       }
     }
   }
+  free(data);
+  free(data_sum);
   fclose(file);
   fclose(out);
   if(ismeta)
@@ -301,7 +304,18 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     fprintjson(file,argv[iarg+1],NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    free(out_json);
+    free(arglist);
     fclose(file);
   }
+  free(grid_name.name);
+  free(units);
+  free(long_name);
+  free(variable);
+  free(standard_name);
+  free(source);
+  free(history);
+  freemap(map);
+  freeattrs(attrs,n_attr);
   return EXIT_SUCCESS;
 } /* of 'main' */

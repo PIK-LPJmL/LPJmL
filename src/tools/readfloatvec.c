@@ -90,6 +90,8 @@ Bool readfloatvec(FILE *file,   /**< pointer to binary file */
         data[i]=(float)dvec[i]; 
       free(dvec);
       break;
+    default:
+      return TRUE;
   } /* of switch */
   return FALSE;
 } /* of 'readfloatvec' */

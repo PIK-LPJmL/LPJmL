@@ -18,7 +18,6 @@
 Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
                   Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
                   Real vmax,          /**< vmax (gC/m2/day) */
-                  Real daylength,     /**< day length (h) */
                   Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {
@@ -28,9 +27,7 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
   Real ndemand_tot;
   crop=pft->data;
   croppar=pft->par->data;
-  //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+param.n0*0.001*crop->ind.leaf.carbon;
-  //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.low*crop->ind.leaf.carbon;
-  *ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.median*crop->ind.leaf.carbon*pft->nind;
+  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*cmass*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind;
   if(crop->ind.leaf.carbon>0)
     nc_ratio=*ndemand_leaf/crop->ind.leaf.carbon;
   else

@@ -157,6 +157,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(f,&param.k_mort,"k_mort");
   fscanparamreal01(f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(f,&param.temp_response,"temp_response");
+  fscanparamreal(f,&param.tscal_b,"tscal_b");
   fscanparamreal01(f,&param.percthres,"percthres");
   fscanparamreal(f,&param.k_max,"k_max");
   fscanparamreal(f,&param.k_2,"k_2");
@@ -216,6 +217,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(f,&param.harvest_fast_frac,"harvest_fast_frac");
       fscanparampoolpar(f,&param.product_turnover,"product_turnover");
     }
+    fscanparamint(f,&param.luc_burn_startyear,"luc_burn_startyear");
     if(config->residues_fire)
     {
       fscanparamreal01(f,&param.bifratio,"bifratio");

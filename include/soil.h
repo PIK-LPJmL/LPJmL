@@ -274,8 +274,10 @@ extern Bool fscansoilpar(LPJfile *,Config *);
 extern int *fscansoilmap(LPJfile *,int *,const Config *);
 extern int *defaultsoilmap(int *,const Config *);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
-extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
-extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
+extern Bool freadpool(Bstruct,const char *,Pool *);
+extern Bool fwritepool(Bstruct,const char *,const Pool *);
+extern Bool freadlitter(Bstruct,const char *,Litter *,const struct Pftpar *,int);
+extern Bool freadsoil(Bstruct,const char *,Soil *,const Soilpar *,const struct Pftpar *,int);
 extern Bool freadsoilcode(FILE *,unsigned int *,Bool,Type);
 extern void freesoil(Soil *);
 extern void freelitter(Litter *);
@@ -285,10 +287,10 @@ extern void fprintsoilpar(FILE *,const Config *);
 extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int);
 extern FILE *fopensoilcode(const Filename *,Map **,Bool *,size_t *,Type *,unsigned int,Bool);
 extern int *getsoilmap(Map *,const Config *);
-extern Bool fwritesoil(FILE *,const Soil *,int);
-extern Bool fwritelitter(FILE *,const Litter *);
+extern Bool fwritesoil(Bstruct,const char *,const Soil *,int);
+extern Bool fwritelitter(Bstruct,const char *,const Litter *);
 extern void getlag(Soil *,int);
-extern int getnsoilcode(const Filename *,unsigned int,Bool);
+extern int getnsoilcode(const Filename *,const Netcdf_config *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_agtop_sum(const Litter *);
@@ -363,11 +365,11 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
  (((e)[(gp)]<0                       ?  (e)[(gp)]                            / (th)->c_frozen[(gp)]   : 0) +\
   ((e)[(gp)]>(th)->latent_heat[(gp)] ? ((e)[(gp)] - (th)->latent_heat[(gp)]) / (th)->c_unfrozen[(gp)] : 0))
 /* Calculate the energy of percolating water and add it to perc_energy */
-#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
+#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) {\
         if(config->percolation_heattransfer)\
         {\
           soil->perc_energy[layer]+=amount/1000*vol_enthalpy; /* add enthalpy of water coming from above */ \
           soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
         }\
-        })
+        }
 #endif /* SOIL_H */

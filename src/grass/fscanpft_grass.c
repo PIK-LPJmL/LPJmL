@@ -99,6 +99,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->nuptake=nuptake_grass;
   pft->ndemand=ndemand_grass;
   pft->vmaxlimit=vmaxlimit_grass;
+  pft->getb=getb;
   grass=new(Pftgrasspar);
   if(grass==NULL)
   {

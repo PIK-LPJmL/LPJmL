@@ -34,7 +34,7 @@ Set installation directory for LPJmL. Default is current working directory.
 Set debug flags and disable optimization of compiler.
 .TP
 -check
-Set debug flags, enable pointer checking for access out of bounds and disable optimization of compiler.
+Enable run-time checking of memory leaks and access out of bounds.
 .TP
 -nompi
 Do not build the MPI version of the code.
@@ -59,6 +59,9 @@ Enable daily establishment
 DEBUG
 Diagnostic output is generated for debugging purposes
 .TP
+DEBUG_BSTRUCT
+Diagnostic output is generated for reading/writing of restart files
+.TP
 DEBUG_COUPLER
 Diagnostic output is generated for the coupler
 .TP
@@ -79,6 +82,9 @@ Enable microbial heating
 .TP
 NO_FAIL_BALANCE
 lpjml does not terminate on balance errors
+.TP
+NRECOVEY_COST
+Costs for N recovery enabled
 .TP
 PERMUTE
 Random permutation of PFT list

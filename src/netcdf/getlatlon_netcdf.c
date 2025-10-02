@@ -51,11 +51,15 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   rc=nc_inq_varid(file->ncid,name,&var_id);
   if(rc)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
-              name,filename,nc_strerror(rc));
-    free(dimids);
-    return TRUE;
+    rc=nc_inq_varid(file->ncid,config->netcdf.lon.name,&var_id);
+    if(rc)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
+                config->netcdf.lon.name,filename,nc_strerror(rc));
+      free(dimids);
+      return TRUE;
+    }
   }
   nc_inq_varndims(file->ncid,var_id,&ndims);
   if(ndims!=1)
@@ -106,11 +110,15 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   rc=nc_inq_varid(file->ncid,name,&var_id);
   if(rc)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
-              name,filename,nc_strerror(rc));
-    free(dimids);
-    return TRUE;
+    rc=nc_inq_varid(file->ncid,config->netcdf.lat.name,&var_id);
+    if(rc)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
+                config->netcdf.lat.name,filename,nc_strerror(rc));
+      free(dimids);
+      return TRUE;
+    }
   }
   nc_inq_varndims(file->ncid,var_id,&ndims);
   if(ndims!=1)

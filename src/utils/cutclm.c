@@ -60,7 +60,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid number '%s' for year.\n",argv[index]);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[index],argv[index+1]))
+  if(!strcmp(argv[index+1],argv[index+2]))
   {
     fputs("Error: source and destination filename are the same.\n",stderr);
     return EXIT_FAILURE;
@@ -89,10 +89,10 @@ int main(int argc,char **argv)
   {
     filesize=getfilesizep(file);
     size=(filesize-headersize(id,version))/header.ncell/header.nbands/header.nyear/header.nstep;
-    printf("Size of data: %Ld bytes\n",size);
+    printf("Size of data: %lld bytes\n",size);
     if(size!=1 && size!=2 && size!=4 && size!=8)
     {
-      fprintf(stderr,"Invalid size of data=%Ld.\n",size);
+      fprintf(stderr,"Invalid size of data=%lld.\n",size);
       return EXIT_FAILURE;
     }
     if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear*header.nstep)!=0)

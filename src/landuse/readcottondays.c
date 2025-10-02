@@ -23,7 +23,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
   int cell;
   Bool missing;
   Infile input;
-  if(openinputdata(&input,&config->sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT,1,config))
+  if(openinputdata(&input,&config->sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT,1,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -36,7 +36,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       grid[cell].ml.sowing_day_cotton[0]=-1;
   }
   closeinput(&input);
-  if(openinputdata(&input,&config->harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT,1,config))
+  if(openinputdata(&input,&config->harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT,1,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -49,7 +49,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       grid[cell].ml.growing_season_cotton[0]=-1;
   }
   closeinput(&input);
-  if(openinputdata(&input,&config->sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT,1,config))
+  if(openinputdata(&input,&config->sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT,1,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -62,7 +62,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       grid[cell].ml.sowing_day_cotton[1]=-1;
   }
   closeinput(&input);
-  if(openinputdata(&input,&config->harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT,1,config))
+  if(openinputdata(&input,&config->harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT,1,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {
