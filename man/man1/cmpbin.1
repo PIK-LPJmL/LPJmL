@@ -3,7 +3,7 @@
 cmpbin \- compares two binary output files
 .SH SYNOPSIS
 .B cmpbin
-[\-metafile] [\-verbose] [\-csv] \fIfile1.bin\fP \fIfile2.bin\fP
+[\-metafile] [\-verbose] [\-csv] [\-short] \fIfile1.bin\fP \fIfile2.bin\fP
 
 .SH DESCRIPTION
 Program compares two binary output files. The maximum difference and its location, the sum of all absolute differences and the average difference are printed.
@@ -17,6 +17,9 @@ Print values and absolute difference for each different data item.
 .TP
 \-csv
 Print output in comma-separated format.
+.TP
+\-short
+Datatype of binary data is short, default is float. If \-metafile option is set then datatype is read from JSON metafile.
 .TP
 .I file1.bin file2.bin
 Filenames of binary output data files to compare.
@@ -32,7 +35,7 @@ or
 .PP
 .SH EXIT STATUS
 .B cmpbin
-return a zero exit status if binary files could be compared.
+returns a zero exit status if binary files could be compared.
 Non zero is returned in case of failure.
 
 .SH AUTHORS
@@ -44,4 +47,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-setclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), statclm(5), clm(5)
+bin2cdf(1), cdf2bin(1), lpjml(1)

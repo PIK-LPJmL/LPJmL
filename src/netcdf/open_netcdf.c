@@ -83,6 +83,7 @@ void free_netcdf(int ncid)
   if(list==NULL)
     nc_close(ncid);
   else
+  {
     for(i=0;i<getlistlen(list);i++)
     {
       item=(Item *)getlistitem(list,i);
@@ -97,7 +98,13 @@ void free_netcdf(int ncid)
           dellistitem(list,i);
         }
         break;
-     }
-   }
+      }
+    }
+    if(isempty(list))
+    {
+      freelist(list);
+      list=NULL;
+    }
+  }
 #endif
 } /* of 'free_netcdf' */

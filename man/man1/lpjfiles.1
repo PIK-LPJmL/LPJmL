@@ -43,16 +43,22 @@ Name of configuration file.
 .TP
 Archive files for configuration file lpjml.cjson with input files located in the /p/projects/lpjml file system
 .B lpjfiles
-\-input /p/projects/lpjml lpjml.cjson | tail -n +2 | tar -cf files.tar -T -
+\-inpath /p/projects/lpjml lpjml.cjson | tail -n +2 | tar -cf files.tar -T -
 .PP
 .SH ENVIRONMENT
 .TP
+LPJNOPP
+Disables preprocessor if set to "true", same as -nopp option.
+.TP
+LPJPEDANTIC
+Enables pedantic mode if set to "true", same as -pedantic option.
+.TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
-include directories of the preprocessor
+Defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor.
 .TP
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.

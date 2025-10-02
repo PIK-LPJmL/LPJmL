@@ -110,7 +110,7 @@ int main(int argc,char **argv)
   rc=nc_inq_varid(ncid,var,&var_id);
   if(rc)
   {
-    fprintf(stderr,"ERRO405: No variable '%s' found in '%s'.\n",var,argv[i]);
+    fprintf(stderr,"ERROR405: No variable '%s' found in '%s'.\n",var,argv[i]);
     nc_close(ncid);
     return EXIT_FAILURE;
   }
@@ -257,6 +257,7 @@ int main(int argc,char **argv)
       }
     }
   }
+  free(data);
   fclose(soil);
   rewind(out);
   header.firstcell=0;

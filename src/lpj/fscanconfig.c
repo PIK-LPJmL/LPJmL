@@ -242,6 +242,26 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       config->coupled_model=strdup(name);
       checkptr(config->coupled_model);
+#if !defined IMAGE || !defined COUPLED
+      if(!config->coupled_host_set && iskeydefined(file,"coupled_host"))
+      {
+        fscanname(file,name,"coupled_host");
+        free(config->coupled_host);
+        config->coupled_host=strdup(name);
+        checkptr(config->coupled_host);
+      }
+      if(!config->coupled_port_set && iskeydefined(file,"coupled_port"))
+      {
+        fscanint2(file,&config->coupled_port,"coupled_port");
+        if(config->coupled_port<1 || config->coupled_port>USHRT_MAX)
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR193: Invalid number %d for coupler port.\n",
+                    config->coupled_port);
+          return TRUE;
+        }
+      }
+#endif
     }
   }
   else
@@ -674,15 +694,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
       return TRUE;
   }
-  config->missing_value=MISSING_VALUE_FLOAT;
-  if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
+  if(fscanconfig_netcdf(file,&config->netcdf,"netcdf_config",verbose))
+  {
+    if(verbose)
+      fputs("ERRROR230: Cannot read setting for NetCDF output.\n",stderr);
     return TRUE;
-  fscanname(file,name,"pft_index");
-  config->pft_index=strdup(name);
-  checkptr(config->pft_index);
-  fscanname(file,name,"layer_index");
-  config->layer_index=strdup(name);
-  checkptr(config->layer_index);
+  }
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
   {
@@ -809,7 +826,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->reservoir)
       {
         scanclimatefilename(input,&config->elevation_filename,FALSE,FALSE,"elevation");
-        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(input,&config->reservoir_filename,FALSE,FALSE,"reservoir");
+        if(config->reservoir_filename.fmt==CDF)
+        {
+          scanclimatefilename(input,&config->capacity_reservoir_filename,FALSE,FALSE,"capacity_reservoir");
+          scanclimatefilename(input,&config->area_reservoir_filename,FALSE,FALSE,"area_reservoir");
+          scanclimatefilename(input,&config->inst_cap_reservoir_filename,FALSE,FALSE,"inst_cap_reservoir");
+          scanclimatefilename(input,&config->height_reservoir_filename,FALSE,FALSE,"height_reservoir");
+          scanclimatefilename(input,&config->purpose_reservoir_filename,FALSE,FALSE,"purpose_reservoir");
+        }
       }
 #ifdef IMAGE
       if(config->aquifer_irrig)
@@ -984,7 +1009,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->startgrid==ALL)
   {
     config->startgrid=0;
-    endgrid=getnsoilcode(&config->soil_filename,config->nsoil,isroot(*config));
+    endgrid=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,isroot(*config));
     if(endgrid==0)
     {
       if(verbose)

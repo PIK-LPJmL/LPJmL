@@ -15,8 +15,7 @@
 #include "lpj.h"
 #include "natural.h"
 
-Bool fread_natural(FILE * UNUSED(file),Stand * UNUSED(stand),
-                   Bool UNUSED(swap))
+Bool fread_natural(Bstruct UNUSED(file),Stand * UNUSED(stand))
 {
   return FALSE;
 } /* of 'fread_natural' */

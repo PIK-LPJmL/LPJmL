@@ -2,7 +2,7 @@
 .SH NAME
 cvrtclm \- convert version of clm file to version 3 or 4
 .SH SYNOPSIS
-.B cvtrclm
+.B cvrtclm
 [\-4] [\-type {byte|short|int|float|double}] [\-scale s] [\-cellsize size] [\-swapnstep] [-timestep n]
 .I infile outfile
 .SH DESCRIPTION
@@ -25,7 +25,7 @@ Set cell size in header, default is 0.5.
 Swap nbands for nstep for version 4 clm files.
 .TP
 \-timestep n
-Swap time step for version 4 clm files, default is 1.
+Set time step for version 4 clm files, default is 1.
 .TP
 .I infile
 Filename of clm file to convert.

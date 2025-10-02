@@ -34,6 +34,11 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
   config->coupled_model=NULL;
+  config->route=NULL;
+  config->irrig_neighbour=NULL;
+  config->irrig_back=NULL;
+  config->irrig_res=NULL;
+  config->irrig_res_back=NULL;
   file=openconfig(config,argc,argv,usage);
   if(file==NULL)
     return TRUE;
@@ -70,10 +75,10 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       closeconfig(lpjfile);
       return TRUE;
     }
-    if(strncmp(s,LPJ_VERSION,strlen(s)))
+    if(strncmp(s,getversion(),strlen(s)))
     {
       if(verbosity)
-        fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+        fprintf(stderr,"WARNING025: LPJ version '%s' does not match '%s'.\n",s,getversion());
       if(config->pedantic)
       {
         closeconfig(lpjfile);

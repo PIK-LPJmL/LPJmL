@@ -35,6 +35,7 @@ extern void cvrtdaymonth(int *,int *,int);
 extern Bool isleapyear(int);
 extern char *int2date(long);
 extern int nleapyears(int,int);
+extern int getnyearfromdays(Bool *,int,size_t);
 
 /* Definition of macros */
 

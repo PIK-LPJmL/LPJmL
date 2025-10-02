@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads atmopsheric CO2 concentration from text file.               \n**/
+/**     Function reads atmospheric CO2 concentration from text file.               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -46,7 +46,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
   }
   if(filename->fmt==TXT)
   {
-    if(iscoupled(*config) && config->start_coupling<=config->firstyear-config->nspinup)
+    if(iscoupled(*config) && filename->issocket && config->start_coupling<=config->firstyear-config->nspinup)
       return FALSE;
     if((file=fopen(filename->name,"r"))==NULL)
     {

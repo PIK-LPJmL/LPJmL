@@ -83,6 +83,13 @@
     fprintf(stderr,"ERROR128: Cannot read emission factor '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
+#define fscanpftnuptakepar(verb,file,var,pft,name) \
+  if(fscannuptakepar(file,var,name,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR112: Cannot read N uptake param '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
 
 #define fscanpftirrig2(verb,file,var,pft,name)\
   if(fscanpftirrig(file,var,name,verb))\
@@ -393,9 +400,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,item,&pft->k_litter10.q10_wood,pft->name,
                  "k_litter10_q10_wood");
     fscanpftbool(verb,item,&pft->nfixing,pft->name,"nfixing");
-    fscanpftreal(verb,item,&pft->vmax_up,pft->name,"vmax_up");
-    fscanpftreal(verb,item,&pft->kNmin,pft->name,"kNmin");
-    fscanpftreal(verb,item,&pft->KNmin,pft->name,"KNmin");
+    fscanpftnuptakepar(verb,item,&pft->NO3_up,pft->name,"NO3_up");
+    fscanpftnuptakepar(verb,item,&pft->NH4_up,pft->name,"NH4_up");
     fscanpftreal(verb,item,&pft->knstore,pft->name,"knstore");
     fscanpftreal01(verb,item,&pft->fn_turnover,pft->name,"fn_turnover");
     fscanpftcnratio(verb,item,&cnratio,pft->name,"cnratio_leaf");
@@ -414,11 +420,20 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftlimit(verb,item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
       fscanpftlimit(verb,item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
       fscanpftlimit(verb,item,&pft->swc_bnf,pft->name,"swc_bnf");
-      fscanpftrealarray(verb,item,pft->phi_bnf,2,pft->name,"phi_bnf");
+      if(pft->swc_bnf.high<=pft->swc_bnf.low)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR235: High limit for sw_bnf=%g less or equal low limit=%g for PFT '%s'.\n",
+                  pft->swc_bnf.high,pft->swc_bnf.low,pft->name);
+        return TRUE;
+      }
+      pft->phi_bnf[0]=-pft->swc_bnf.low/(pft->swc_bnf.high-pft->swc_bnf.low);
+      pft->phi_bnf[1]=1.0/(pft->swc_bnf.high-pft->swc_bnf.low);
       fscanpftreal(verb,item,&pft->nfixpot,pft->name,"nfixpot");
       fscanpftreal(verb,item,&pft->maxbnfcost,pft->name,"maxbnfcost");
       fscanpftreal(verb,item,&pft->bnf_cost,pft->name,"bnf_cost");
     }
+    fscanpftreal(verb,item,&pft->fnpp_nrecovery,pft->name,"fnpp_nrecovery");
     fscanpftreal(verb,item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,item,&pft->roughness,pft->name,"roughness_length");
     fscanpftirrig2(verb,item,&pft->irrig_threshold,pft->name,"irrig_threshold");
@@ -436,6 +451,6 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     /* Now scan PFT-specific parameters and set specific functions */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
-  }
+  } /* of for(n=0;n<count;n++) */
   return FALSE;
 } /* of 'fscanpftpar' */

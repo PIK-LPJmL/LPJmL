@@ -17,7 +17,11 @@
 
 void turnover_daily_grass(Litter *litter,
                           Pft *pft,
+#ifdef NRECOVERY_COST
+                          Real temp,
+#else
                           Real UNUSED(temp),
+#endif
                           int UNUSED(day),
                           Bool UNUSED(isdaily),
                           const Config *config /**< LPJmL configuration*/
@@ -26,6 +30,12 @@ void turnover_daily_grass(Litter *litter,
   Pftgrass *grass;
   Pftgrasspar *grasspar;
   Output *output;
+  #ifdef NRECOVERY_COST
+  Real nrecovered=0.0, navailable=0.0;
+  Real nplant_demand=0.0, ndemand_leaf=0.0;
+  Real npp_for_recovery=0.0;
+  #endif
+
   if(pft->stand->type->landusetype==NATURAL)
   {
     grass=pft->data;
@@ -39,6 +49,33 @@ void turnover_daily_grass(Litter *litter,
     getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
     litter->item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac*pft->par->fn_turnover;
+#ifdef NRECOVERY_COST
+    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,temp)*(1+pft->par->knstore);
+    npp_for_recovery = max(0.0,pft->bm_inc.carbon * pft->par->fnpp_nrecovery);
+    if((nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2) && npp_for_recovery > epsilon)
+    {
+      navailable=nrecovered=max(0.0,grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover));
+      if(nrecovered < npp_for_recovery / nrecover_price(grass->ind.leaf.nitrogen, grass->ind.leaf.carbon, pft->par->sla)) 
+      {
+        pft->bm_inc.nitrogen += nrecovered;
+        pft->npp_nrecovery += nrecovered * nrecover_price(grass->ind.leaf.nitrogen, grass->ind.leaf.carbon, pft->par->sla); 
+      }
+      else
+      {
+        nrecovered = npp_for_recovery / nrecover_price(grass->ind.leaf.nitrogen, grass->ind.leaf.carbon, pft->par->sla); /* limited by available NPP */
+        pft->bm_inc.nitrogen +=  nrecovered;
+        pft->stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen += (navailable - nrecovered);
+        pft->npp_nrecovery += npp_for_recovery;
+      }
+    }
+    else
+    {
+      /* if no N demand, N recovery is skipped and the shared available for recovery is returned to litter */
+      pft->stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1.0-pft->par->fn_turnover);
+    }
+#else
+    pft->bm_inc.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1.0-pft->par->fn_turnover);
+#endif
     update_fbd_grass(litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
   }
 } /* of 'turnover_daily_grass' */

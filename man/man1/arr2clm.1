@@ -3,10 +3,10 @@
 arr2clm \- convert 2-D float arrays into CLM file
 .SH SYNOPSIS
 .B arr2clm
-[\-firstyear y] [\-scale factor] [\-id string] [\-float] [\-version v] [\-r value] [\-invalid value]
+[\-firstyear y] [\-scale factor] [\-id string] [\-float] [\-version v] [\-r value] [\-invalid value] [\-json]
 gridfile arrfile clmfile
 .SH DESCRIPTION
-Program converts binary 2-D float arrays into CLM input data. The array has to be of size 360/lon_resolution x 180/lat_resolution. The latitudes have to start with 90-0.5*lat_resolution, the longitudes with -180+0.5*lon_resolution. The reolution is taken from the grid file.
+Program converts binary 2-D float arrays into CLM input data. The array has to be of size 360/lon_resolution x 180/lat_resolution. The latitudes have to start with 90-0.5*lat_resolution, the longitudes with -180+0.5*lon_resolution. The resolution is taken from the grid file.
 .SH OPTIONS
 .TP
 \-firstyear y
@@ -30,6 +30,9 @@ Value of invalid data in array file, default is -9999.
 \-r value
 Value to replace invalid data in CLM file, default is the invalid value.
 .TP
+\-json
+JSON metafile is created with suffix '.json'
+.TP
 .I gridfile
 Filename of grid data file.
 .TP
@@ -40,7 +43,7 @@ Filename of array file to convert.
 Filename of CLM file.
 .SH EXAMPLES
 .TP
-Create CLMata file replacing invalid data by 10.
+Create CLM data file replacing invalid data by 10.
 .B arr2clm
 -float -r 10.0 grid.clm array.bin data.clm
 .PP

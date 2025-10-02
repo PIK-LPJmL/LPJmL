@@ -16,9 +16,7 @@
 
 Real nitrogen_stress(Pft *pft,             /**< PFT */
                      Real temp,            /**< temperature (deg C) */
-                     Real daylength,       /**< daylength (h) */
-                     Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
-                     Real npp,
+                     Real npp,             /**< net primary production (gC/m2/day) */
                      int npft,             /**< number of natural PFTs */
                      int ncft,             /**< number of crop PFTs */
                      const Config *config  /**< LPJmL configuration  */
@@ -35,7 +33,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
   nup=0;
   if(pft->bm_inc.carbon>0 || ((pft->stand->type->landusetype==GRASSLAND || (pft->stand->type->landusetype==OTHERS && !config->others_to_crop) || pft->stand->type->landusetype==BIOMASS_GRASS|| pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR) && pft->bm_inc.carbon>=0))
   {
-    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
+    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,temp)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
 #ifdef DEBUG_N
     nplant_demand_opt=nplant_demand;
@@ -44,7 +42,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
     {
       if(pft->par->nfixing && config->npp_controlled_bnf)
-        pft->npp_bnf=npp;
+        pft->npp_bnf=npp-pft->npp_nrecovery;
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
     }
     else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))
@@ -55,7 +53,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     pft->nleaf=max(0,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)
     {
-      pft->vmax=vmaxlimit(pft,daylength,temp);
+      pft->vmax=vmaxlimit(pft,temp);
 #ifdef DEBUG_N
       printf("PFT: %s vmax_limit=%g  vscal=%g ndemand_leaf_opt:%g nleaf:%g nplant_demand_opt:%g nplant_demand:%g\n\n",pft->par->name,pft->vmax,pft->vscal,ndemand_leaf_opt,ndemand_leaf,nplant_demand_opt,nplant_demand);
 #endif

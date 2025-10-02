@@ -60,6 +60,7 @@ typedef struct
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
   Real fpc_tree_max; /**< maximum foliage projective cover for trees */
   Real temp_response; /**< parameter in temperature response function */
+  Real tscal_b;      /**< exponential scaling factor for b */
   Real percthres;
   Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
   Real n0;           /**< regression coefficient from Haxltine and Prentice */
@@ -98,6 +99,7 @@ typedef struct
   Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */
   Real esoil_reduction; /**< reduction of soil evaporation */
   Poolpar product_turnover; /**< fast and slow product turnover (1/yr) */
+  int luc_burn_startyear; /**< start year of land-use change burning instead of harvesting to product pools */
   Real rw_buffer_max;   /**< size of rainwater harvesting tank */
   Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
   Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */

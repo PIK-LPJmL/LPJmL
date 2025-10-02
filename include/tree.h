@@ -78,6 +78,8 @@ typedef struct
   Real cnratio_fruit;               /**< C:N ration of fruits */
   Bool with_grass;                  /**< grass PFT allowed under agriculture tree? */
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
+  Bool phen_to_one;                 /**< set phen always to 1 (used by phenology_gsi()) */
+  Bool rainyseason;                 /**< aphen set to zero on rainyseason from climbuf (used by phenology_gsi()) */
 } Pfttreepar;
 
 typedef struct
@@ -93,7 +95,6 @@ typedef struct
   Treephys2 ind;
   Stocks fruit;
   Treephyspar falloc;
-  Real turn_nbminc;     /**< storage for recovered nitrogen from turnover */
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
   Real nfertilizer;     /**< gN/m2; fertilier N to be applied in 2nd or additional doses */
   Real nmanure;         /**< gN/m2; manure N to be applied in 2nd or additional doses */
@@ -120,9 +121,9 @@ extern Real lai_tree(const Pft *);
 extern Real actual_lai_tree(const Pft *);
 extern Stocks turnover_tree(Litter *,Pft *,const Config *);
 extern void phenology_tree(Pft *,Real,int,Bool,const Config *);
-extern Bool fwrite_tree(FILE *,const Pft *);
+extern Bool fwrite_tree(Bstruct,const Pft *);
 extern void fprint_tree(FILE *,const Pft *);
-extern Bool fread_tree(FILE *,Pft *,Bool,Bool);
+extern Bool fread_tree(Bstruct,Pft *,Bool);
 extern Bool fscanpft_tree(LPJfile *,Pftpar *,const Config *);
 extern Bool isneg_tree(const Pft *);
 extern Stocks establishment_tree(Pft *,Real,Real,int);
@@ -147,8 +148,8 @@ extern void turnover_monthly_tree(Litter *,Pft *,const Config *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,int,Bool,const Config *);
 extern Stocks harvest_tree(Pft *);
 extern Real nuptake_tree(Pft *,Real *,Real *,int,int,const Config *);
-extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real);
-extern Real vmaxlimit_tree(const Pft *,Real,Real);
+extern Real ndemand_tree(const Pft *,Real *,Real,Real);
+extern Real vmaxlimit_tree(const Pft *,Real);
 extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,Real,Real,Real);
 
 /* Definitions of macros */

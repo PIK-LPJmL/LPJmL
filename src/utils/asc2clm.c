@@ -24,13 +24,14 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-nstep n] [-header s]\n       [-version v] [-{int|float}] [-scale s] infile ... clmfile\n"
+#define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-nstep n] [-header s]\n       [-version v] [-{int|float}] [-scale s] [-json] infile ... clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"asc2clm --help\" for more information.\n"
 #define FIRSTYEAR 1901
 
 int main(int argc,char **argv)
 {
   FILE *file,*gridfile,*out;
-  Bool first;
+  Bool first,isjson;
   float scale;
   int row,col,nrows,ncols,nyear,nbands,nodata_int,nstep,version;
   int nrows_first,ncols_first,ncell_first;
@@ -39,7 +40,9 @@ int main(int argc,char **argv)
   short **data=NULL;
   int **data_int=NULL,value_int;
   float **data_float=NULL;
-  char *endptr;
+  char *endptr,*arglist,*out_json;
+  Filename coord_filename;
+  Type coord_type=LPJ_FLOAT;
   Coord grid;
   Type type;
   Header header;
@@ -58,7 +61,7 @@ int main(int argc,char **argv)
   scale=1;
   head=LPJ_CLIMATE_HEADER;
   gridfile=NULL;
-  force=FALSE;
+  force=isjson=FALSE;
   type=LPJ_SHORT;
   version=LPJ_CLIMATE_VERSION;
   /* parse command line options */
@@ -69,7 +72,7 @@ int main(int argc,char **argv)
       {
         printf("   asc2clm (" __DATE__ ") help\n"
                "   ==========================\n\n"
-               "Convert gridded ASCII files to clm data files for LPJmL version " LPJ_VERSION "\n\n"
+               "Convert gridded ASCII files to clm data files for LPJmL version %s\n\n"
                USAGE
                "\nArguments:\n"
                "-h,--help    print this help text\n"
@@ -86,7 +89,7 @@ int main(int argc,char **argv)
                "infile       filename(s) of gridded data file\n"
                "clmfile      filename of clm data file\n\n"
                 "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-                FIRSTYEAR,LPJ_CLIMATE_VERSION);
+                getversion(),FIRSTYEAR,LPJ_CLIMATE_VERSION);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-firstyear"))
@@ -94,7 +97,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-firstyear' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++i],&endptr,10);
@@ -105,6 +108,8 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-f"))
         force=TRUE;
       else if(!strcmp(argv[i],"-int"))
@@ -116,7 +121,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-grid' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         gridfile=fopen(argv[++i],"wb");
@@ -125,6 +130,8 @@ int main(int argc,char **argv)
           fprintf(stderr,"Error creating '%s': %s.\n",argv[i],strerror(errno));
           return EXIT_FAILURE;
         }
+        coord_filename.name=argv[i];
+        coord_filename.fmt=CLM;
         fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
       }
       else if(!strcmp(argv[i],"-nbands"))
@@ -132,7 +139,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-nbands' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         nbands=strtol(argv[++i],&endptr,10);
@@ -153,7 +160,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-nstep' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         nstep=strtol(argv[++i],&endptr,10);
@@ -174,7 +181,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-version' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++i],&endptr,10);
@@ -195,7 +202,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-header' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         head=argv[++i];
@@ -205,7 +212,7 @@ int main(int argc,char **argv)
         if(i==argc-1)
         {
           fputs("Argument missing after '-scale' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++i],&endptr);
@@ -224,7 +231,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: invalid option '%s'.\n"
-                USAGE,argv[i]);
+                ERR_USAGE,argv[i]);
         return EXIT_FAILURE;
       }
     }
@@ -233,7 +240,7 @@ int main(int argc,char **argv)
   if(argc<i+2)
   {
     fputs("Filename(s) missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
   }
   argc-=i;
@@ -505,5 +512,24 @@ int main(int argc,char **argv)
   header.scalar=(type==LPJ_SHORT) ? (float)(1./scale) : 1;
   fwriteheader(out,&header,head,version);
   fclose(out);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[argc-1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[argc-1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[argc-1],NULL,"asc2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,(gridfile==NULL) ? NULL : &coord_filename,coord_type,CLM,head,FALSE,version);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */

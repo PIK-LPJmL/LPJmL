@@ -15,6 +15,8 @@
 
 include ../../Makefile.inc
 
+VERSION = $(shell cat ../../VERSION)
+
 OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanreal.$O fail.$O list.$O headersize.$O\
           bigendian.$O fprintheader.$O sysname.$O queue.$O\
@@ -22,7 +24,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           getpath.$O getuser.$O gethost.$O failonerror.$O\
           addpath.$O frepeatch.$O isabspath.$O mpi_write.$O\
           printflags.$O getfilesize.$O enablefpe.$O getfilesizep.$O\
-          strippath.$O diskfree.$O fprintintf.$O freadrestartheader.$O\
+          strippath.$O diskfree.$O fprintintf.$O\
           fwriteheader.$O getcounts.$O getfiledate.$O fscanint.$O\
           iserror.$O mpi_write_txt.$O mkfilename.$O stripsuffix.$O\
           hassuffix.$O checkfmt.$O findstr.$O fputstring.$O fscanfloat.$O\
@@ -32,11 +34,13 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscaninteof.$O fputprintable.$O fscanrealarray.$O fscanstruct.$O\
           fscanarray.$O fscanarrayindex.$O fscanbool.$O iskeydefined.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
-          sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
+          sprinttimestep.$O fscantimestep.$O isnull.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
-          freadheaderid.$O newarray.$O
+          freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
+          getversion.$O getsprintf.$O freadtopheader.$O hash.$O sendhash.$O\
+          fwritetopheader.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -47,8 +51,9 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/channel.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
-          $(INC)/list.h $(INC)/cell.h $(INC)/units.h\
-          $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/coupler.h
+          $(INC)/list.h $(INC)/cell.h $(INC)/units.h $(INC)/bstruct.h\
+          $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/coupler.h\
+          $(INC)/hash.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)
@@ -58,6 +63,9 @@ $(OBJS): $(HDRS)
 
 printflags.$O: printflags.c
 	$(CC) $(CFLAGS) -DCFLAGS='"$(CFLAGS)"' -I$(INC) -c $*.c
+
+getversion.$O: getversion.c ../../VERSION
+	$(CC) $(CFLAGS) -DLPJ_VERSION=\"$(VERSION)\" -I$(INC) -c $*.c
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c

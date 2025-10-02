@@ -38,7 +38,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   double *date;
   size_t len,time_len;
   char var_name[NC_MAX_NAME];
-  Bool isopen,isdim;
+  Bool isopen,isdim,isfullyear;
   file->isopen=FALSE;
   if(filename==NULL || file==NULL)
     return TRUE;
@@ -83,7 +83,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       }
       nc_get_att_text(file->ncid, var_id, "units",s);
       s[len]='\0';
-      if(!strcasecmp(YEARS_NAME,s))
+      if(!strcasecmp(config->netcdf.years_name,s))
       {
         file->time_step=YEAR;
         time=newvec(int,time_len);
@@ -193,26 +193,56 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         }
         else if(!strcmp(name,"days"))
         {
-          if(time[1]-time[0]==1)
-            file->time_step=DAY;
-          else if(time[1]-time[0]==NDAYYEAR)
+          if(time_len==1)
+          {
             file->time_step=YEAR;
+            file->delta_year=1;
+          }
           else
-            file->time_step=MONTH;
+          {
+            if(time[1]-time[0]==1)
+            {
+              file->time_step=DAY;
+              file->delta_year=1;
+            }
+            else if(time[1]-time[0]>=NDAYYEAR)
+            {
+              file->time_step=YEAR;
+              file->delta_year=(time[1]-time[0])/NDAYYEAR;
+            }
+            else
+            {
+              file->delta_year=1;
+              file->time_step=MONTH;
+            }
+          }
           file->firstyear+=time[0]/NDAYYEAR;
         }
         else if(strstr(name,"months")!=NULL)
         {
           if(time_len==1)
+          {
             file->time_step=YEAR;
-          else
+            file->delta_year=1;
+          }
+          else if(time[1]-time[0]==1)
+          {
             file->time_step=MONTH;
-          file->firstyear+=time[0]/12;
+            file->delta_year=1;
+          }
+          else if((time[1]-time[0]) % NMONTH==0)
+          {
+            file->time_step=YEAR;
+            file->delta_year=(time[1]-time[0])/NMONTH;
+          }
+          file->firstyear+=time[0]/NMONTH;
         }
         else if(!strcmp(name,"hours"))
         {
+          file->delta_year=1;
           if(time_len==1)
             file->time_step=YEAR;
+          else
           {
             if(time_len>2)
               time_diff=time[2]-time[1];
@@ -220,7 +250,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
               time_diff=time[1]-time[0];
             if(time_diff<24)
             {
-              fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed '%s'.\n",
+              fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed in '%s'.\n",
                       time_diff,filename);
               free(name);
               free(time);
@@ -321,10 +351,35 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   switch(file->time_step)
   {
     case DAY:
-      file->nyear=time_len/NDAYYEAR;
+      if(time_len<NDAYYEAR)
+      {
+        fprintf(stderr,"ERROR438: Number of days=%zu in '%s' less than %d.\n",time_len,filename,NDAYYEAR);
+        free_netcdf(file->ncid);
+        return TRUE;
+      }
+      if(file->isleap)
+      {
+        file->nyear=getnyearfromdays(&isfullyear,file->firstyear,time_len);
+        if(!isfullyear)
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
+      }
+      else
+      {
+        if(time_len % NDAYYEAR)
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,filename,NDAYYEAR);
+        file->nyear=time_len/NDAYYEAR;
+      }
       file->n=config->ngridcell*NDAYYEAR;
       break;
     case MONTH:
+      if(time_len<NMONTH)
+      {
+        fprintf(stderr,"ERROR438: Number of months=%zu in '%s' less than %d.\n",time_len,filename,NMONTH);
+        free_netcdf(file->ncid);
+        return TRUE;
+      }
+      else if(time_len % NMONTH)
+        fprintf(stderr,"ERROR439: Number of months=%zu in '%s' is not multiple of %d.\n",time_len,filename,NMONTH);
       file->nyear=time_len/NMONTH;
       file->n=config->ngridcell*NMONTH;
       break;
@@ -335,6 +390,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     case MISSING_TIME:
       file->firstyear=0;
       file->nyear=1;
+      file->delta_year=1;
       file->n=config->ngridcell;
       break;
     case SECOND:

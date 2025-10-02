@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  freeconfig_netcdf(&config->netcdf);
   free(config->cmd);
   free(config->json_filename);
   free(config->coupled_model);
@@ -44,8 +45,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
-  free(config->pft_index);
-  free(config->layer_index);
   free(config->json_suffix);
   freeattrs(config->global_attrs,config->n_global);
   if(config->with_lakes)
@@ -66,6 +65,14 @@ void freeconfig(Config *config /**< LPJmL configuration */
         pnet_free(config->irrig_res_back);
         freefilename(&config->elevation_filename);
         freefilename(&config->reservoir_filename);
+        if(config->reservoir_filename.fmt==CDF)
+        {
+          freefilename(&config->capacity_reservoir_filename);
+          freefilename(&config->area_reservoir_filename);
+          freefilename(&config->inst_cap_reservoir_filename);
+          freefilename(&config->height_reservoir_filename);
+          freefilename(&config->purpose_reservoir_filename);
+        }
       }
       pnet_free(config->irrig_neighbour);
       pnet_free(config->irrig_back);
@@ -77,6 +84,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
     freefilename(&config->wateruse_wd_filename);
+#endif
+#if !defined IMAGE || !defined COUPLED
+  free(config->coupled_host);
 #endif
   freefilename(&config->temp_filename);
   freefilename(&config->prec_filename);

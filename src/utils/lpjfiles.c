@@ -21,6 +21,7 @@
 
 #define USAGE "Usage: %s [-h] [-v] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
+#define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {
@@ -53,7 +54,7 @@ int main(int argc,char **argv)
               progname);
       fputs("\n     ",file);
       frepeatch(file,'=',rc);
-      fputs("\n\nPrint input/output files of LPJmL version " LPJ_VERSION "\n\n",file);
+      fprintf(file,"\n\nPrint input/output files of LPJmL version %s\n\n",getversion());
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h,--help        print this help text\n"
@@ -75,7 +76,7 @@ int main(int argc,char **argv)
     }
     else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
-      puts(LPJ_VERSION);
+      puts(getversion());
       return EXIT_SUCCESS;
     }
   }
@@ -98,7 +99,7 @@ int main(int argc,char **argv)
   argv+=iarg-1;
   argc_save=argc;
   argv_save=argv;
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
   {
     fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
@@ -107,5 +108,6 @@ int main(int argc,char **argv)
     printincludes(config.filename,argc_save,argv_save);
     printfiles(input,output,&config);
   }
+  freeconfig(&config);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -14,6 +14,8 @@
 
 include ../Makefile.inc
 
+GIT_HASH= $(shell git rev-parse HEAD)
+
 OBJ    = lpjml.$O  
 
 SRC    = lpjml.c
@@ -43,7 +45,8 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LI
           $(LIBDIR)/libclimate.$A $(LIBDIR)/libnum.$A $(LIBDIR)/libtools.$A\
           $(LIBDIR)/libcrop.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libsocket.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A $(LIBDIR)/liblpj.$A\
-          $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A
+          $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A $(LIBDIR)/libnum.$A\
+          $(LIBDIR)/libbstruct.$A $(LIBDIR)/libtools.$A
 
 EXE     = $(BINDIR)/lpjml$E
 
@@ -60,6 +63,7 @@ libs:
 	(cd grass && $(MAKE))
 	(cd crop && $(MAKE))
 	(cd tools && $(MAKE))
+	(cd bstruct && $(MAKE))
 	(cd landuse && $(MAKE))
 	(cd pnet && $(MAKE))
 	(cd image && $(MAKE))
@@ -70,6 +74,10 @@ libs:
 	(cd cpl && $(MAKE))
 	(cd coupler && $(MAKE))
 
+hash:
+	$(RM) $(RMFLAGS) $(EXE)
+	$(MAKE) $(EXE)
+
 clean:
 	(cd climate && $(MAKE) clean)
 	(cd lpj && $(MAKE) clean)
@@ -79,6 +87,7 @@ clean:
 	(cd grass && $(MAKE) clean)
 	(cd crop && $(MAKE) clean)
 	(cd tools && $(MAKE) clean)
+	(cd bstruct && $(MAKE) clean)
 	(cd landuse && $(MAKE) clean)
 	(cd pnet && $(MAKE) clean)
 	(cd utils && $(MAKE) clean)
@@ -97,6 +106,6 @@ $(OBJ): $(HDRS)
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 
-$(EXE): $(LPJLIBS) $(OBJ)
-	$(CC) $(CFLAGS) -I$(INC) -c getbuild.c
+$(EXE): $(LPJLIBS) $(OBJ) getbuild.c
+	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -DGIT_REPO=\"$(GIT_REPO)\" -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 

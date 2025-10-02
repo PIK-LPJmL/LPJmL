@@ -3,7 +3,7 @@
 lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [\-repo] [\-hash] [-vv] [-pedantic] [-print_noread] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
@@ -28,11 +28,20 @@ Print the license file.
 \-v,\--version
 Print information about program version, operating system, compiler used, and compiler flags set.
 .TP
+\-repo
+Print GIT repository.
+.TP
+\-hash
+Print GIT hash.
+.TP
 \-vv
 Verbosely print the actual values during reading of the configuration files.
 .TP
 \-pedantic
 Stop on warnings.
+.TP
+\-print_noread
+Print variable names not read from restart file.
 .TP
 \-ofiles
 List only all available output variables.
@@ -90,6 +99,12 @@ For running the MPI version of the program on more than one task the
 .B lpjsubmit
 script has to be used.
 .SH ENVIRONMENT
+.TP
+LPJNOPP
+disables preprocessor if set to "true", same as -nopp option
+.TP
+LPJPEDANTIC
+enables pedantic mode if set to "true", same as -pedantic option
 .TP
 LPJPREP
 defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
@@ -285,7 +300,7 @@ will do the job. If no core file is generated set the user limit for core files:
 
 \fBulimit\fP -c unlimited
 
-Some of these errors are only raised if the -DSAFE flag has been set in \fIMakefile.inc\fP. The flags set at compile time can be obtained by invoking \fBlpjml -v\fP. After the core file has been created a backtrace of the failed program can be obtained by calling
+Some of these errors are only raised if the -DSAFE flag has been set in \fIMakefile.inc\fP. The flags set at compile time can be obtained by invoking \fBlpjml\fP -v. After the core file has been created a backtrace of the failed program can be obtained by calling
 
 \fBbacktrace\fP
 
@@ -302,4 +317,4 @@ For authors and contributors see AUTHORS file
 .SH SEE ALSO
 lpjsubmit(1), lpjcheck(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), clm(5)
 .TP
-Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
+Contact: https://github.com/PIK-LPJmL/LPJmL

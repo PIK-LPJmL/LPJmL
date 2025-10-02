@@ -19,12 +19,13 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    Real light,  /**< light, i.e. shortwave-downward radiation (W m-2) */
                    int day,     /**< day of the year */
                    Bool isdaily, /**< daily temperature data (TRUE/FALSE) */
+                   Real daylength, /**< day length (h) */
                    const Config *config /**< LPJmL configuration */
                   )
 {
+  const Pfttreepar *treepar;
   Pfttree *tree;
   /* get parameters */
-
   Phen_param tminpar = getpftpar(pft, tmin);
   Phen_param tmaxpar = getpftpar(pft, tmax);
   Phen_param lightpar = getpftpar(pft, light);
@@ -46,21 +47,39 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   /* water availability response function */
   pft->phen_gsi.wscal += ( 1 / (1 + exp(-wscalpar.sl * (pft->wscal*100 - wscalpar.base))) - pft->phen_gsi.wscal) * wscalpar.tau;
   pft->phen_gsi.wscal=max(epsilon,pft->phen_gsi.wscal);
-
+  if(istree(pft))
+  {
+    treepar=pft->par->data;
+    tree=pft->data;
+  }
   /* phenology */
-  pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
+  if(istree(pft) && treepar->phen_to_one)
+  {
+    pft->phen=1.0;
+  }
+  else if(!istree(pft) || !tree->isphen)
+  {
+    pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
+  }
 
   turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
-
-  if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
-      (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
+  if(istree(pft) && treepar->rainyseason)
   {
-    pft->aphen = 0.0;
-    if(pft->par->type==TREE)
+    if(day==pft->stand->cell->climbuf.startday_rainyseason)
     {
-      tree=pft->data;
+      pft->aphen=0.0;
       tree->isphen=FALSE;
     }
   }
-  pft->aphen+= pft->phen;
+  else
+  {
+    if((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
+        (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
+    {
+      pft->aphen=0.0;
+      if(istree(pft))
+        tree->isphen=FALSE;
+    }
+  }
+  pft->aphen+=pft->phen;
 } /* of 'phenology_gsi' */

@@ -112,9 +112,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(verbosity)
           fprintf(stderr,"ERROR262: Filename of processed JSON file '%s' is identical to configuration filename, no file written.\n",
                   config->json_filename);
+        free(config->json_filename);
         if(config->pedantic)
           return TRUE;
-        free(config->json_filename);
         config->json_filename=NULL;
       }
     }
@@ -162,6 +162,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   config->isnetcdf4=FALSE;
 #ifdef USE_NETCDF
   fscanbool2(file,&config->nofill,"nofill");
+  config->isnetcdf4=FALSE;
   if(fscanbool(file,&config->isnetcdf4,"netcdf4",!config->pedantic,verbosity))
   {
     free(default_suffix);
@@ -209,10 +210,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   }
   config->absyear=FALSE;
-  if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
+  if(!config->with_days)
   {
-    free(default_suffix);
-    return TRUE;
+    if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
+    {
+      free(default_suffix);
+      return TRUE;
+    }
   }
 #endif
   config->flush_output=FALSE;
@@ -234,7 +238,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   if(iskeydefined(file,"grid_type"))
   {
-    if(fscankeywords(file,(int *)&config->grid_type,"grid_type",typenames,5,FALSE,verbosity))
+    if(fscankeywords(file,(int *)&config->grid_type,"grid_type",typenames,N_TYPES,FALSE,verbosity))
     {
       free(default_suffix);
       return TRUE;
@@ -319,12 +323,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(verbosity)
         fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
                 config->outnames[flag].name);
+      freefilename(&config->outputvars[count].filename);
       if(config->pedantic)
       {
         free(default_suffix);
         return TRUE;
       }
-      freefilename(&config->outputvars[count].filename);
     }
     else if(outputsize(flag,npft,ncft,config)==0)
     {
@@ -332,30 +336,35 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
                 config->outnames[flag].name);
       freefilename(&config->outputvars[count].filename);
+      if(config->pedantic)
+      {
+        free(default_suffix);
+        return TRUE;
+      }
     }
     else if(config->outputvars[count].filename.fmt==CLM2)
     {
       if(verbosity)
         fprintf(stderr,"ERROR223: File format \"clm2\" is not supported for output file '%s', will be ignored.\n",
                 config->outputvars[count].filename.name);
+      freefilename(&config->outputvars[count].filename);
       if(config->pedantic)
       {
         free(default_suffix);
         return TRUE;
       }
-      freefilename(&config->outputvars[count].filename);
     }
     else if(config->outputvars[count].filename.fmt==META)
     {
       if(verbosity)
         fprintf(stderr,"ERROR223: File format \"meta\" is not supported for output file '%s', will be ignored.\n",
                 config->outputvars[count].filename.name);
+      freefilename(&config->outputvars[count].filename);
       if(config->pedantic)
       {
         free(default_suffix);
         return TRUE;
       }
-      freefilename(&config->outputvars[count].filename);
     }
     else
     {
@@ -470,5 +479,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   free(default_suffix);
   config->n_out=count;
+  if(checkuniqoutput(npft,ncft,config))
+    return TRUE;
   return FALSE;
 } /* of 'fscanoutput' */
