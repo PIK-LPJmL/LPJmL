@@ -168,7 +168,7 @@ extern void separate_harvests(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real);
-
+extern void getb_crop(Pft *,Real);
 
 /* Definitions of macros */
 

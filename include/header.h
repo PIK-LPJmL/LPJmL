@@ -19,7 +19,6 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 32
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.10.0                                \n**/
+/**     LPJ parameter file for LPJmL version 5.10.1                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -59,6 +59,7 @@
     "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
     "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
     "temp_response" : 56.02,   /* Parameter in temperature response function */
+    "tscal_b" : -0.017,        /* exponential scaling factor for b */
     "percthres" : 1.0,
     "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */

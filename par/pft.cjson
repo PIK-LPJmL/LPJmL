@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.10.0                           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.10.1                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -79,8 +79,6 @@
 #define TEMP_BNF_MAX 45.0
 #define SWC_BNF_LOW 0.0
 #define SWC_BNF_HIGH 0.5
-#define PHI_BNF_1 0.0
-#define PHI_BNF_2 2.0
 #define MAXBNFCOST 0.25
 #define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
 #define MAXBNFCOSTTE 0.0014
@@ -95,6 +93,8 @@
       "name" : "tropical broadleaved evergreen tree",
       "type" : "tree",
       "cultivation_type" : "none", /* cultivation_type */
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
       "beta_root" : 0.952,    /* beta_root original 0.962*/
@@ -203,7 +203,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
@@ -214,6 +213,8 @@
     {
       "name" : "tropical broadleaved raingreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -325,17 +326,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*---------------------------------------------------------------------------------------------*/
   /* 3. pft */
     {
       "name": "temperate needleleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -445,17 +447,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
   },
   /*--------------------------------------------------------------------------*/
   /* 4. pft */
     {
       "name" : "temperate broadleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -565,17 +568,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 5. pft */
     {
       "name" : "temperate broadleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -687,17 +691,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 6. pft */
     {
       "name" : "boreal needleleaved evergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -807,17 +812,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 7. pft */
     {
       "name" : "boreal broadleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -929,7 +935,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
@@ -940,6 +945,8 @@
     {
       "name" : "boreal needleleaved summergreen tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1051,7 +1058,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
@@ -1153,11 +1159,10 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 10. pft */
@@ -1255,11 +1260,10 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 11. pft */
@@ -1357,17 +1361,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
     {
       "name" : "bioenergy tropical tree",
       "type" : "tree",
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "biomass",/* cultivation_type */
       "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1478,7 +1483,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
@@ -1489,6 +1493,8 @@
     {
       "name" : "bioenergy temperate tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "biomass",/* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1601,11 +1607,10 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 3. bft ONLY FOR BIOENERGY*/
@@ -1703,17 +1708,18 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 1. wft */
     {
       "name" : "woodplantation temperate tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1824,7 +1830,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
@@ -1838,6 +1843,8 @@
     {
       "name" : "woodplantation tropical tree",
       "type" : "tree",
+      "phen_to_one" : true, /* phenology set to 1 */
+      "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1948,7 +1955,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTTR,
       "bnf_cost" : BNF_COST,
@@ -1962,6 +1968,8 @@
     {
       "name" : "woodplantation boreal tree",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "wp",/* cultivation_type */
       "nfixing" : true,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2072,7 +2080,6 @@
       "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
       "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOSTBO,
       "bnf_cost" : BNF_COST,
@@ -2086,6 +2093,8 @@
     {
       "name" : "oil palm",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2206,6 +2215,8 @@
     {
       "name" : "tea",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -2326,6 +2337,8 @@
     {
       "name" : "cotton",
       "type" : "tree",
+      "phen_to_one" : false,
+      "rainyseason" : false,      /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "annual tree",/* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -3041,10 +3054,9 @@
       "temp_bnf_lim" : {"low" : 1, "high" : 40},  /* Ma et al., 2022 faba bean*/
       "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
       "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
-      "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST, 
+      "bnf_cost" : BNF_COST,
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
@@ -3528,11 +3540,10 @@
       "temp_bnf_lim" : {"low" : 5, "high" : 44},  /* Ma et al., 2022 soy bean*/
       "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
       "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
-      "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 10. cft */
