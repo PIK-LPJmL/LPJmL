@@ -50,7 +50,7 @@ of `major.minor.patch` with
 - Missing `-print_noread` option added in `INSTALL`.
 - `setupannual_grid.c` corrected to compile with `-DIMAGE -DCOUPLED` flag.
 - Error message for different datatypes corrected in `lpcat.c`.
-- Variables initialized to zero in `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
+- Variables initialized to zero and NULL in `phenology_gsi.c`, `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
 - Man page for `json2restart` corrected.
 - Missing option `-nooutput` added to man page of `lpjfiles`.
 - Help text for `-h` option of `printclm` corrected.
