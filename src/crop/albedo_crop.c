@@ -21,7 +21,7 @@
 void albedo_crop(Pft *pft,         /**< pointer to PFT variables */
                  Real snowheight,  /**< snowheight (m) */
                  Real snowfraction /**< fractional coverage of snow at the ground */
-                )           
+                )
 {
   Pftcrop *crop;
   Real albedo_green_leaves, albedo_brown_litter, soil_albedo, albedo_soil;
@@ -55,7 +55,7 @@ void albedo_crop(Pft *pft,         /**< pointer to PFT variables */
   /* albedo of PFT with green foliage */
   albedo_green_leaves = R_tr * getpftpar(pft, albedo_leaf);
   /* snow-covered green leaves */
-  albedo_green_leaves=albedo_green_leaves*(1-frs)+R_tr*frs*c_albsnow; 
+  albedo_green_leaves=albedo_green_leaves*(1-frs)+R_tr*frs*c_albsnow;
 
   /* albedo of PFT without green foliage (litter background albedo) */
   albedo_brown_litter = pft->stand->soil.litter.agtop_cover * (1 - R_tr) * getpftpar(pft, albedo_litter);
@@ -67,10 +67,10 @@ void albedo_crop(Pft *pft,         /**< pointer to PFT variables */
   /* snow-covered soil */
   albedo_soil=albedo_soil*(1-frs)+(1-pft->stand->soil.litter.agtop_cover)*(1-R_tr)*pft->stand->soil.snowfraction*c_albsnow;
 
-  /* albedo of PFT (green + brown) */  
+  /* albedo of PFT (green + brown) */
   pft->albedo = albedo_green_leaves + albedo_brown_litter + albedo_soil;
 
   pft->snowcover=frs;
-   
+
   pft->fapar = max(epsilon, R_tr * (1-frs)*(1-getpftpar(pft, albedo_leaf)));
 } /* of 'albedo_crop' */
