@@ -45,12 +45,12 @@ void albedo_crop(Pft *pft,         /**< pointer to PFT variables */
   else
     R_tr=(1-exp(-pft->par->lightextcoeff*actual_lai(pft)));
 
-  #ifdef COUPLING_WITH_FMS
-    VolWatercontent = max(0,soil->w[0]*soil->whc[0]);
-    soil_albedo = c_albedo_wet_soil + c_albedo_bare_soil*exp(-decay_alb_moist*VolWatercontent);/*gives the moisture dependence of the bare soil*/
-  #else
-    soil_albedo=c_albsoil;
-  #endif
+#ifdef COUPLING_WITH_FMS
+  VolWatercontent = max(0,soil->w[0]*soil->whc[0]);
+  soil_albedo = c_albedo_wet_soil + c_albedo_bare_soil*exp(-decay_alb_moist*VolWatercontent);/*gives the moisture dependence of the bare soil*/
+#else
+  soil_albedo=c_albsoil;
+#endif
 
   /* albedo of PFT with green foliage */
   albedo_green_leaves = R_tr * getpftpar(pft, albedo_leaf);
