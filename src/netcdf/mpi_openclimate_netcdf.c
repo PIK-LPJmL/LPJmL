@@ -33,7 +33,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
 #ifdef USE_NETCDF
   int rc;
 #ifdef USE_MPI
-  int i,len;
+  int i,len,len2;
 #endif
   if(isroot(*config))
     rc=openclimate_netcdf(file,map,attrs,n_attr,filename->name,filename,units,config);
@@ -111,23 +111,23 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
       for(i=0;i<len;i++)
       {
         if(isroot(*config))
-          len=strlen((*attrs)[i].name)+1;
-        MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+          len2=strlen((*attrs)[i].name)+1;
+        MPI_Bcast(&len2,1,MPI_INT,0,config->comm);
         if(!isroot(*config))
         {
-          (*attrs)[i].name=malloc(len);
+          (*attrs)[i].name=malloc(len2);
           check((*attrs)[i].name);
         }
-        MPI_Bcast((*attrs)[i].name,len,MPI_CHAR,0,config->comm);
+        MPI_Bcast((*attrs)[i].name,len2,MPI_CHAR,0,config->comm);
         if(isroot(*config))
-          len=strlen((*attrs)[i].value)+1;
-        MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+          len2=strlen((*attrs)[i].value)+1;
+        MPI_Bcast(&len2,1,MPI_INT,0,config->comm);
         if(!isroot(*config))
         {
-          (*attrs)[i].value=malloc(len);
+          (*attrs)[i].value=malloc(len2);
           check((*attrs)[i].value);
         }
-        MPI_Bcast((*attrs)[i].value,len,MPI_CHAR,0,config->comm);
+        MPI_Bcast((*attrs)[i].value,len2,MPI_CHAR,0,config->comm);
       }
     }
   }
