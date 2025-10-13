@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 Bool opendata(Climatefile *file,        /**< pointer to file */
+              Map **map,                /**< pointer to map or NULL */
               const Filename *filename, /**< filename */
               const char *name,         /**< name of data */
               const char *unit,         /**< unit or NULL */
@@ -63,7 +64,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   }
   if(file->fmt==CDF)
   {
-    if(opendata_netcdf(file,filename,unit,config))
+    if(opendata_netcdf(file,map,filename,unit,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
@@ -72,7 +73,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    if(openclmdata(file,filename,name,unit,datatype,scalar,nbands,config))
+    if(openclmdata(file,map,filename,name,unit,datatype,scalar,nbands,config))
       return TRUE;
   }
   if(ischeck && file->var_len!=nbands)

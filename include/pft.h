@@ -299,6 +299,7 @@ extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
 extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
 extern void getb(Pft *,Real);
+extern Limit *getlimitarrayfromjson(const char *,int *,const char *,Verbosity);
 
 /* needed for IMAGE, but can also be used otherwise */
 

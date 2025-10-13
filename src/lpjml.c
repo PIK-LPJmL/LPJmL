@@ -245,7 +245,7 @@ int main(int argc,char **argv)
     snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
     failonerror(&config,rc,OPEN_COUPLER_ERR,s);
   }
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
+  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   if(config.check_climate)

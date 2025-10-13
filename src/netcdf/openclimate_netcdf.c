@@ -18,20 +18,19 @@
 
 #ifdef USE_NETCDF
 #include <netcdf.h>
-#define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); free_netcdf(file->ncid); return TRUE;}
+#define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,name,nc_strerror(rc)); free_netcdf(file->ncid); return TRUE;}
 #endif
 
-Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
-                        const char *filename, /**< filename */
-                        const char *time_name,/**< time name or NULL */
-                        const char *var,      /**< variable name or NULL */
-                        const char *var_units,/**< unit of variable or NULL */
-                        const char *units,    /**< units or NULL */
-                        const Config *config  /**< LPJ configuration */
-                       )                      /** \return TRUE on error */
+Bool openclimate_netcdf(Climatefile *file,        /**< climate data file */
+                        Map **map,                /**< pointer to map or NULL */
+                        const char *name,         /**< filename */
+                        const Filename *filename, /**< filename properties */
+                        const char *units,        /**< units or NULL */
+                        const Config *config      /**< LPJ configuration */
+                       )                          /** \return TRUE on error */
 {
 #ifdef USE_NETCDF
-  char *s,*c,*unit,*name;
+  char *s,*c,*unit,*s2;
   int rc,var_id,time_id,ndims,*dimids;
   int *time;
   int m=0,d=0,time_diff;
@@ -40,23 +39,23 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   char var_name[NC_MAX_NAME];
   Bool isopen,isdim,isfullyear;
   file->isopen=FALSE;
-  if(filename==NULL || file==NULL)
+  if(name==NULL || file==NULL)
     return TRUE;
-  rc=open_netcdf(filename,&file->ncid,&isopen);
+  rc=open_netcdf(name,&file->ncid,&isopen);
   if(rc)
   {
     fprintf(stderr,"ERROR409: Cannot open '%s': %s.\n",
-            filename,nc_strerror(rc));
+            name,nc_strerror(rc));
     return TRUE;
   }
-  if(time_name==NULL)
+  if(filename->time==NULL)
   {
     rc=nc_inq_varid(file->ncid,"time",&var_id);
     if(rc)
       rc=nc_inq_varid(file->ncid,"TIME",&var_id);
   }
   else
-    rc=nc_inq_varid(file->ncid,time_name,&var_id);
+    rc=nc_inq_varid(file->ncid,filename->time,&var_id);
   if(rc)  /* time axis not found */
     file->time_step=MISSING_TIME;
   else
@@ -66,7 +65,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     if(ndims!=1)
     {
       fprintf(stderr,"ERROR408: Invalid number %d of dimensions for time in '%s', must be 1.\n",
-              ndims,filename);
+              ndims,name);
       free_netcdf(file->ncid);
       return TRUE;
     }
@@ -98,7 +97,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"ERROR417: Cannot read time in '%s': %s.\n",
-                  filename,nc_strerror(rc));
+                  name,nc_strerror(rc));
           free(time);
           free_netcdf(file->ncid);
           free(s);
@@ -126,7 +125,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"ERROR417: Cannot read time in '%s': %s.\n",
-                  filename,nc_strerror(rc));
+                  name,nc_strerror(rc));
           free(date);
           free_netcdf(file->ncid);
           free(s);
@@ -137,20 +136,20 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       }
       else
       {
-        name=malloc(len+1);
-        if(name==NULL)
+        s2=malloc(len+1);
+        if(s2==NULL)
         {
           printallocerr("name");
           free(s);
           free_netcdf(file->ncid);
           return TRUE;
         }
-        if(sscanf(s,"%s since %d",name,&file->firstyear)!=2)
+        if(sscanf(s,"%s since %d",s2,&file->firstyear)!=2)
         {
           fprintf(stderr,"ERROR416: No start year in units '%s' in '%s'.\n",
-                  s,filename);
+                  s,name);
           free(s);
-          free(name);
+          free(s2);
           free_netcdf(file->ncid);
           return TRUE;
         }
@@ -159,7 +158,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
             || m != 1 || d != 1)
         {
           fprintf(stderr,"WARNING407: Relative time axis in '%s' appears not to start at Jan 1st, dates might be parsed wrong.\n",
-                  filename);
+                  name);
         }
 
         time=newvec(int,time_len);
@@ -167,7 +166,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         {
           printallocerr("time");
           free_netcdf(file->ncid);
-          free(name);
+          free(s2);
           free(s);
           return TRUE;
         }
@@ -175,14 +174,14 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"ERROR417: Cannot read time in '%s': %s.\n",
-                  filename,nc_strerror(rc));
+                  name,nc_strerror(rc));
           free(time);
-          free(name);
+          free(s2);
           free_netcdf(file->ncid);
           free(s);
           return TRUE;
         }
-        if(!strcmp(name,"years"))
+        if(!strcmp(s2,"years"))
         {
           file->time_step=YEAR;
           file->firstyear+=time[0];
@@ -191,7 +190,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           else
             file->delta_year=1;
         }
-        else if(!strcmp(name,"days"))
+        else if(!strcmp(s2,"days"))
         {
           if(time_len==1)
           {
@@ -218,7 +217,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           }
           file->firstyear+=time[0]/NDAYYEAR;
         }
-        else if(strstr(name,"months")!=NULL)
+        else if(strstr(s2,"months")!=NULL)
         {
           if(time_len==1)
           {
@@ -237,7 +236,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           }
           file->firstyear+=time[0]/NMONTH;
         }
-        else if(!strcmp(name,"hours"))
+        else if(!strcmp(s2,"hours"))
         {
           file->delta_year=1;
           if(time_len==1)
@@ -251,8 +250,8 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
             if(time_diff<24)
             {
               fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed in '%s'.\n",
-                      time_diff,filename);
-              free(name);
+                      time_diff,name);
+              free(s2);
               free(time);
               free_netcdf(file->ncid);
               free(s);
@@ -265,14 +264,14 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         else
         {
           fprintf(stderr,"ERROR432: Invalid time unit '%s' in '%s'.\n",
-                  name,filename);
-          free(name);
+                  s2,name);
+          free(s2);
           free(time);
           free_netcdf(file->ncid);
           free(s);
           return TRUE;
         }
-        free(name);
+        free(s2);
         free(time);
         if(!nc_inq_attlen(file->ncid, var_id,"calendar",&len))
         {
@@ -310,7 +309,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       {
         free(s);
         fprintf(stderr,"ERROR418: Cannot read time format in '%s': %s.\n",
-                filename,nc_strerror(rc));
+                name,nc_strerror(rc));
         free_netcdf(file->ncid);
         return TRUE;
       }
@@ -327,7 +326,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       {
         free(s);
         free(unit);
-        fprintf(stderr,"ERROR419: Cannot detect first year in '%s'.\n",filename);
+        fprintf(stderr,"ERROR419: Cannot detect first year in '%s'.\n",name);
         free_netcdf(file->ncid);
         return TRUE;
       }
@@ -341,7 +340,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       else
       {
         free(unit);
-        fprintf(stderr,"ERROR420: Cannot detect unit in '%s'.\n",filename);
+        fprintf(stderr,"ERROR420: Cannot detect unit in '%s'.\n",name);
         free_netcdf(file->ncid);
         return TRUE;
       }
@@ -353,7 +352,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     case DAY:
       if(time_len<NDAYYEAR)
       {
-        fprintf(stderr,"ERROR438: Number of days=%zu in '%s' less than %d.\n",time_len,filename,NDAYYEAR);
+        fprintf(stderr,"ERROR438: Number of days=%zu in '%s' less than %d.\n",time_len,name,NDAYYEAR);
         free_netcdf(file->ncid);
         return TRUE;
       }
@@ -361,12 +360,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       {
         file->nyear=getnyearfromdays(&isfullyear,file->firstyear,time_len);
         if(!isfullyear)
-          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,name,NDAYYEAR);
       }
       else
       {
         if(time_len % NDAYYEAR)
-          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,filename,NDAYYEAR);
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,name,NDAYYEAR);
         file->nyear=time_len/NDAYYEAR;
       }
       file->n=config->ngridcell*NDAYYEAR;
@@ -374,12 +373,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     case MONTH:
       if(time_len<NMONTH)
       {
-        fprintf(stderr,"ERROR438: Number of months=%zu in '%s' less than %d.\n",time_len,filename,NMONTH);
+        fprintf(stderr,"ERROR438: Number of months=%zu in '%s' less than %d.\n",time_len,name,NMONTH);
         free_netcdf(file->ncid);
         return TRUE;
       }
       else if(time_len % NMONTH)
-        fprintf(stderr,"ERROR439: Number of months=%zu in '%s' is not multiple of %d.\n",time_len,filename,NMONTH);
+        fprintf(stderr,"ERROR439: Number of months=%zu in '%s' is not multiple of %d.\n",time_len,name,NMONTH);
       file->nyear=time_len/NMONTH;
       file->n=config->ngridcell*NMONTH;
       break;
@@ -397,12 +396,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       fputs("ERROR436: Invalid time step second.\n",stderr);
       return TRUE;
   }
-  if(getvar_netcdf(file,filename,var,var_units,units,config))
+  if(getvar_netcdf(file,name,filename->var,filename->unit,units,config))
   {
     free_netcdf(file->ncid);
     return TRUE;
   }
-  if(getlatlon_netcdf(file,filename,config))
+  if(getlatlon_netcdf(file,name,config))
   {
     free_netcdf(file->ncid);
     return TRUE;
@@ -414,7 +413,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     {
       nc_inq_varname(file->ncid,file->varid,var_name);
       fprintf(stderr,"ERROR408: Invalid number of dimensions %d for variable '%s' in '%s', must be 2 or 3.\n",
-              ndims,var_name,filename);
+              ndims,var_name,name);
       free_netcdf(file->ncid);
       return TRUE;
     }
@@ -426,7 +425,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     {
       nc_inq_varname(file->ncid,file->varid,var_name);
       fprintf(stderr,"ERROR408: Invalid number of dimensions %d for variable '%s' in '%s', must be 3 or 4.\n",
-              ndims,var_name,filename);
+              ndims,var_name,name);
       free_netcdf(file->ncid);
       return TRUE;
     }
@@ -447,6 +446,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   }
   else
     file->var_len=1;
+  if(map!=NULL)
+  {
+    *map=readmap_netcdf(file->ncid,(filename->map==NULL) ? MAP_NAME : filename->map);
+    if(*map==NULL && filename->map!=NULL)
+      fprintf(stderr,"WARNING409: Missing or invalid map '%s' in '%s'.\n",filename->map,name);
+  }
   file->isopen=TRUE;
   return FALSE;
 #else

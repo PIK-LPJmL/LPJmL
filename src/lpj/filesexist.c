@@ -159,7 +159,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
+    file=openinputfile(&header,NULL,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -192,7 +192,7 @@ static int checkcountryfile(const Config *config,const Filename *filename)
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    file=openinputfile(&header,NULL,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -217,7 +217,7 @@ static int checklanduse(const Config *config)
     return 1;
   }
  /* open landuse input data */
-  if(opendata_seq(&landuse,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata_seq(&landuse,NULL,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     return 1;
   }
@@ -241,11 +241,40 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
   /* open input data */
   if(filename->fmt==SOCK)
     return 0;
-  if(opendata_seq(&input,filename,name,unit,datatype,1,nbands,TRUE,config))
+  if(opendata_seq(&input,NULL,filename,name,unit,datatype,1,nbands,TRUE,config))
     return 1;
   closeclimatefile(&input,TRUE);
   return 0;
 } /* of 'checkdatafile' */
+
+static int checklandusefile(Config *config,const Filename *filename,const char *name,Bool cftonly,int **cftmap,int *cftmapsize,const char *unit,int npft,int ncft)
+{
+  FILE *file;
+  Header header;
+  String headername;
+  int version;
+  Bool swap;
+  Climatefile input;
+  size_t offset;
+  Map *map=NULL;
+  if(filename->fmt==CDF)
+  {
+    if(openfile_netcdf(&input,&map,filename,unit,config))
+      return 1;
+    closeclimate_netcdf(&input,TRUE);
+  }
+  else
+  {
+    file=openinputfile(&header,&map,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    if(file==NULL)
+      return 1;
+    fclose(file);
+  }
+  getmap(map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
+  if(*cftmap==NULL)
+    *cftmap=defaultcftmap(cftmapsize,name,cftonly,npft,ncft,config);
+  return 0;
+} /* of 'checklandusefile' */
 
 static int checkclmfile(const Config *config,const char *data_name,const Filename *filename,const char *unit,Type datatype,Bool check)
 {
@@ -284,7 +313,7 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
       for(year=first;year<=last;year++)
       {
         name=getsprintf(s,year);
-        if(openclimate_netcdf(&input,name,filename->time,filename->var,filename->unit,unit,config))
+        if(openclimate_netcdf(&input,NULL,name,filename,unit,config))
         {
           count++;
         }
@@ -297,7 +326,7 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
     }
     else
     {
-      if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
+      if(openclimate_netcdf(&input,NULL,filename->name,filename,unit,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
       if(check)
@@ -322,7 +351,7 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
+    file=openinputfile(&header,NULL,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -410,180 +439,258 @@ static int checkcoordfileclm(Config *config,const Filename *filename)
 
 static int checkcoordfile(Config *config,const Filename *filename)
 {
+  Map *map=NULL;
+  int *soilmap=NULL;
   Coord_netcdf coord_netcdf;
-  coord_netcdf=opencoord_netcdf(filename->name,filename->var,&config->netcdf,TRUE);
+  coord_netcdf=opencoord_netcdf(filename->name,&map,filename->map,filename->var,&config->netcdf,TRUE);
   if(coord_netcdf==NULL)
     return 1;
+  if(map!=NULL)
+  {
+    soilmap=getsoilmap(map,config);
+    if(soilmap!=NULL)
+    {
+      if(config->soilmap!=NULL)
+        cmpsoilmap(soilmap,getmapsize(map),config);
+      free(config->soilmap);
+      config->soilmap=soilmap;
+      config->soilmap_size=getmapsize(map);
+    }
+    freemap(map);
+  }
+  if(config->soilmap==NULL)
+  {
+    config->soilmap=defaultsoilmap(&config->soilmap_size,config);
+    if(config->soilmap==NULL)
+      return 0;
+  }
   getresolution_netcdf(coord_netcdf,&config->resolution);
   closecoord_netcdf(coord_netcdf);
   return 0;
 } /* of 'checkcoordfile' */
 
-Bool filesexist(Config config, /**< LPJmL configuration */
-                Bool isout     /**< write output on stdout (TRUE/FALSE) */
-               )               /** \return TRUE on error */
+Bool filesexist(Config *config, /**< LPJmL configuration */
+                Bool isout      /**< write output on stdout (TRUE/FALSE) */
+               )                /** \return TRUE on error */
 {
-  int i,bad,badout;
+  Limit *basetemp;
+  int i,bad,badout,basetemp_size;
   long long size;
   char *path,*oldpath;
   bad=0;
-  if(config.soil_filename.fmt!=CDF)
+  if(config->soil_filename.fmt!=CDF)
   {
-    bad+=checkcoordfileclm(&config,&config.coord_filename);
-    if(checksoilfile(&config,&config.soil_filename))
+    bad+=checkcoordfileclm(config,&config->coord_filename);
+    if(checksoilfile(config,&config->soil_filename))
       bad++;
     else
-      bad+=checksoilcode(&config);
+      bad+=checksoilcode(config);
   }
   else
-    bad+=checkcoordfile(&config,&config.soil_filename);
-  if(config.landfrac_from_file)
-    bad+=checkinputdata(&config,&config.landfrac_filename,"landfrac","1",LPJ_SHORT,0);
-  if(config.with_lakes)
-    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT,0);
-  if(config.river_routing)
+    bad+=checkcoordfile(config,&config->soil_filename);
+  if(config->landfrac_from_file)
+    bad+=checkinputdata(config,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0);
+  if(config->with_lakes)
+    bad+=checkinputdata(config,&config->lakes_filename,"lakes","1",LPJ_SHORT,0);
+  if(config->river_routing)
   {
-    if(config.extflow)
-      bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,LPJ_FLOAT,0);
-    bad+=checkinputfile(&config,&config.drainage_filename,NULL,LPJ_INT,(config.drainage_filename.fmt==CDF) ? 0 : 2);
-    if(config.withlanduse!=NO_LANDUSE)
-      bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
+    if(config->extflow)
+      bad+=checkclmfile(config,"extflow",&config->extflow_filename,NULL,LPJ_FLOAT,0);
+    bad+=checkinputfile(config,&config->drainage_filename,NULL,LPJ_INT,(config->drainage_filename.fmt==CDF) ? 0 : 2);
+    if(config->withlanduse!=NO_LANDUSE)
+      bad+=checkinputdata(config,&config->neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
   }
-  if(config.ispopulation)
-    bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
-  if(!config.unlim_nitrogen && !config.no_ndeposition)
+  if(config->ispopulation)
+    bad+=checkdatafile(config,&config->popdens_filename,"popdens","km-2",LPJ_SHORT,1);
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
-    bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
+    bad+=checkclmfile(config,"NO3 deposition",&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
+    bad+=checkclmfile(config,"NH4 deposition",&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
   }
-  bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT,0);
-  if(config.grassharvest_filename.name!=NULL)
-    bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
-  bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",LPJ_SHORT,TRUE);
-  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+  bad+=checkinputdata(config,&config->soilph_filename,"soilPH",NULL,LPJ_SHORT,0);
+  if(config->grassharvest_filename.name!=NULL)
+    bad+=checkinputdata(config,&config->grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
+  bad+=checkclmfile(config,"wind speed",&config->wind_filename,"m/s",LPJ_SHORT,TRUE);
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,LPJ_SHORT,TRUE);
-    if(config.prescribe_burntarea)
-      bad+=checkclmfile(&config,"burnt area",&config.burntarea_filename,"hectare",LPJ_SHORT,TRUE);
-    bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
-    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,TRUE);
+    if(config->fdi==WVPD_INDEX)
+      bad+=checkclmfile(config,"humidity",&config->humid_filename,NULL,LPJ_SHORT,TRUE);
+    if(config->prescribe_burntarea)
+      bad+=checkclmfile(config,"burnt area",&config->burntarea_filename,"hectare",LPJ_SHORT,TRUE);
+    bad+=checkdatafile(config,&config->lightning_filename,"lightning",NULL,LPJ_INT,12);
+    bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,TRUE);
   }
-  if(config.fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(&config,"tmin",&config.tmin_filename,"celsius",LPJ_SHORT,TRUE);
-    bad+=checkclmfile(&config,"tmax",&config.tmax_filename,"celsius",LPJ_SHORT,TRUE);
+    bad+=checkclmfile(config,"tmin",&config->tmin_filename,"celsius",LPJ_SHORT,TRUE);
+    bad+=checkclmfile(config,"tmax",&config->tmax_filename,"celsius",LPJ_SHORT,TRUE);
   }
-  if(config.fire==SPITFIRE)
+  if(config->fire==SPITFIRE)
   {
-    bad+=checkclmfile(&config,"tamp",&config.tamp_filename,NULL,LPJ_SHORT,TRUE);
+    bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE);
   }
-  if(config.wateruse)
-    bad+=checkdatafile(&config,&config.wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
-  bad+=checkclmfile(&config,"temp",&config.temp_filename,"celsius",LPJ_SHORT,TRUE);
-  bad+=checkclmfile(&config,"precipitation",&config.prec_filename,"kg/m2/day",LPJ_SHORT,TRUE);
+  if(config->wateruse)
+    bad+=checkdatafile(config,&config->wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
+  bad+=checkclmfile(config,"temp",&config->temp_filename,"celsius",LPJ_SHORT,TRUE);
+  bad+=checkclmfile(config,"precipitation",&config->prec_filename,"kg/m2/day",LPJ_SHORT,TRUE);
 #ifdef IMAGE
-  if (config.wateruse_wd_filename.name != NULL)
-    bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
+  if (config->wateruse_wd_filename.name != NULL)
+    bad += checkdatafile(config, &config->wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
 #endif
-  if(config.with_radiation)
+  if(config->with_radiation)
   {
-    if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
-    bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",LPJ_SHORT,TRUE);
+    if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
+      bad+=checkclmfile(config,"lwnet",&config->lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
+    bad+=checkclmfile(config,"swdown",&config->swdown_filename,"W/m2",LPJ_SHORT,TRUE);
   }
   else
-    bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",LPJ_SHORT,TRUE);
-  bad+=checkfile(&config,"co2",&config.co2_filename);
-  if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",LPJ_SHORT,FALSE);
+    bad+=checkclmfile(config,"cloudiness",&config->cloud_filename,"%",LPJ_SHORT,TRUE);
+  bad+=checkfile(config,"co2",&config->co2_filename);
+  if(config->wet_filename.name!=NULL)
+    bad+=checkclmfile(config,"wet days",&config->wet_filename,"day",LPJ_SHORT,FALSE);
 #ifdef IMAGE
-  if(config.sim_id==LPJML_IMAGE)
+  if(config->sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,"temp var",&config.temp_var_filename,NULL,LPJ_SHORT,FALSE);
-    bad+=checkclmfile(&config,"prec var",&config.prec_var_filename,NULL,LPJ_SHORT,FALSE);
-    bad+=checkclmfile(&config,"prodpool",&config.prodpool_init_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(config,"temp var",&config->temp_var_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(config,"prec var",&config->prec_var_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(config,"prodpool",&config->prodpool_init_filename,NULL,LPJ_SHORT,FALSE);
   }
 #endif
-  if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
+  if(ischeckpointrestart(config) && getfilesize(config->checkpoint_restart_filename)!=-1)
   {
-    config.ischeckpoint=TRUE;
-    if(checkrestartfile(&config,config.checkpoint_restart_filename))
+    config->ischeckpoint=TRUE;
+    if(checkrestartfile(config,config->checkpoint_restart_filename))
       bad++;
     else
       printf("Starting from checkpoint file '%s' in year %d.\n",
-             config.checkpoint_restart_filename,config.checkpointyear);
+             config->checkpoint_restart_filename,config->checkpointyear);
   }
-  else if(config.restart_filename!=NULL)
+  else if(config->restart_filename!=NULL)
   {
-    config.ischeckpoint=FALSE;
-    bad+=checkrestartfile(&config,config.restart_filename);
+    config->ischeckpoint=FALSE;
+    bad+=checkrestartfile(config,config->restart_filename);
   }
-  if(config.prescribe_landcover!=NO_LANDCOVER)
-    bad+=checkinputfile(&config,&config.landcover_filename,"1",LPJ_SHORT,config.npft[GRASS]+config.npft[TREE]-config.nbiomass);
-  if(config.withlanduse!=NO_LANDUSE)
+  if(config->prescribe_landcover!=NO_LANDCOVER)
+    bad+=checkinputfile(config,&config->landcover_filename,"1",LPJ_SHORT,config->npft[GRASS]+config->npft[TREE]-config->nbiomass);
+  if(config->withlanduse!=NO_LANDUSE)
   {
-    bad+=checklanduse(&config);
-    if(config.sdate_option>=PRESCRIBED_SDATE)
-      bad+=checkdatafile(&config,&config.sdate_filename,"sowing",NULL,LPJ_SHORT,2*config.cftmap_size);
-    if(config.iscotton)
+    if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,
+                          &config->landusemap,&config->landusemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+      bad++;
+    else
+      bad+=checklanduse(config);
+    if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      bad+=checkinputdata(&config,&config.sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT,0);
-      bad+=checkinputdata(&config,&config.harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT,0);
-      bad+=checkinputdata(&config,&config.sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT,0);
-      bad+=checkinputdata(&config,&config.harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT,0);
+      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,
+                          &config->sdatemap,&config->sdatemap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+        bad++;
+      else
+        bad+=checkdatafile(config,&config->sdate_filename,"sowing",NULL,LPJ_SHORT,2*config->sdatemap_size);
     }
-    if(config.crop_phu_option>=PRESCRIBED_CROP_PHU)
-      bad+=checkdatafile(&config,&config.crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config.cftmap_size);
-    bad+=checkcountryfile(&config,&config.countrycode_filename);
-    if(config.reservoir)
+    if(config->iscotton)
     {
-      bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT,0);
-      if(config.reservoir_filename.fmt==CDF)
+      bad+=checkinputdata(config,&config->sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(config,&config->harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(config,&config->sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(config,&config->harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT,0);
+    }
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    {
+      if(checklandusefile(config,&config->crop_phu_filename,"crop_phumap",TRUE,
+                          &config->crop_phumap,&config->crop_phumap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+        bad++;
+      else if(checkdatafile(config,&config->crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config->crop_phumap_size))
+        bad++;
+      if(config->crop_phu_filename.fmt==META || config->crop_phu_filename.fmt==CDF)
       {
-        bad+=checkinputdata(&config,&config.reservoir_filename,"year reservoir",NULL,LPJ_INT,0);
-        bad+=checkinputdata(&config,&config.capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,0);
-        bad+=checkinputdata(&config,&config.area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,0);
-        bad+=checkinputdata(&config,&config.inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,0);
-        bad+=checkinputdata(&config,&config.height_reservoir_filename,"height reservoir","m",LPJ_INT,0);
-        bad+=checkinputdata(&config,&config.purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,NPURPOSE);
+        basetemp=(config->crop_phu_filename.fmt==META) ?
+                   getlimitarrayfromjson(config->crop_phu_filename.name,&basetemp_size,"basetemp",TRUE) :
+                   getlimitarray_netcdf(config->crop_phu_filename.name,&basetemp_size,"basetemp",TRUE);
+        if(basetemp==NULL)
+        {
+          fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
+                  config->crop_phu_filename.name);
+        }
+        else
+        {
+          if(checkbasetemp(basetemp,basetemp_size,config->npft[GRASS]+config->npft[TREE],config))
+            bad++;
+          free(basetemp);
+        }
+      }
+    }
+    else
+    {
+      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile, no basetemp array found.\n",
+              config->crop_phu_filename.name);
+    }
+    bad+=checkcountryfile(config,&config->countrycode_filename);
+    if(config->reservoir)
+    {
+      bad+=checkinputdata(config,&config->elevation_filename,"elevation","m",LPJ_SHORT,0);
+      if(config->reservoir_filename.fmt==CDF)
+      {
+        bad+=checkinputdata(config,&config->reservoir_filename,"year reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(config,&config->capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(config,&config->area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(config,&config->inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(config,&config->height_reservoir_filename,"height reservoir","m",LPJ_INT,0);
+        bad+=checkinputdata(config,&config->purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,NPURPOSE);
       }
       else
-        bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
+        bad+=checkinputfile(config,&config->reservoir_filename,NULL,LPJ_FLOAT,10);
     }
-    if(config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
-      bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
-#ifdef IMAGE
-    if(config.aquifer_irrig)
+    if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      bad+=checkinputfile(&config,&config.aquifer_filename,NULL,LPJ_SHORT,0);
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,
+                          &config->fertilizermap,&config->fertilizermap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+        bad++;
+      else
+       bad+=checkdatafile(config,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config->fertilizermap_size);
+    }
+    if (config->manure_input&&!config->fix_fertilization)
+    {
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,
+                          &config->manuremap,&config->manuremap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+        bad++;
+      else
+       bad+=checkdatafile(config,&config->manure_nr_filename,"manure","g/m2",LPJ_SHORT,2*config->manuremap_size);
+    }
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
+      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,
+                          &config->residuemap,&config->residuemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+        bad++;
+      else
+        bad+=checkdatafile(config,&config->residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config->residuemap_size);
+    }
+#ifdef IMAGE
+    if(config->aquifer_irrig)
+    {
+      bad+=checkinputfile(config,&config->aquifer_filename,NULL,LPJ_SHORT,0);
     }
 #endif
-    if (config.manure_input&&!config.fix_fertilization)
-      bad+=checkdatafile(&config,&config.manure_nr_filename,"manure","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
-    if(config.tillage_type==READ_TILLAGE)
-      bad+=checkdatafile(&config,&config.with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
-    if(config.residue_treatment==READ_RESIDUE_DATA)
-      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config.fertilizermap_size);
-    if(config.prescribe_lsuha)
-      bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT,0);
+    if(config->tillage_type==READ_TILLAGE)
+      bad+=checkdatafile(config,&config->with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
+    if(config->prescribe_lsuha)
+      bad+=checkinputdata(config,&config->lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT,0);
   }
   badout=0;
   oldpath=strdup("");
-  if(config.nall!=-1 && config.n_out)
-    size=outputfilesize(&config);
+  if(config->nall!=-1 && config->n_out)
+    size=outputfilesize(config);
   else
     size=0;
-  for(i=0;i<config.n_out;i++)
+  for(i=0;i<config->n_out;i++)
   {
-    if(config.outputvars[i].filename.fmt!=SOCK)
+    if(config->outputvars[i].filename.fmt!=SOCK)
     {
-      path=getpath(config.outputvars[i].filename.name);
+      path=getpath(config->outputvars[i].filename.name);
       if(strcmp(path,oldpath))
       {
         if(checkdir(path))
           badout++;
-        else if(config.nall!=-1 && diskfree(path)<size)
+        else if(config->nall!=-1 && diskfree(path)<size)
           fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
         free(oldpath);
         oldpath=path;
@@ -593,13 +700,13 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
   }
   free(oldpath);
-  if(config.write_restart_filename!=NULL)
+  if(config->write_restart_filename!=NULL)
   {
-    path=getpath(config.write_restart_filename);
+    path=getpath(config->write_restart_filename);
     badout+=checkdir(path);
     free(path);
   }
-  if((config.n_out || config.write_restart_filename!=NULL) && badout==0)
+  if((config->n_out || config->write_restart_filename!=NULL) && badout==0)
   {
     if(isout)
       puts("All output directories exist.");

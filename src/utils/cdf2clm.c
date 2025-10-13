@@ -352,12 +352,12 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
+  char *units,*outname,*endptr,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
   char *map_name=NULL;
   char * config_filename=NULL;
   Map *map=NULL;
   float scale,*data=NULL;
-  Filename coord_filename;
+  Filename coord_filename,filename;
   Coord *coords;
   Header header;
   FILE *file;
@@ -376,9 +376,11 @@ int main(int argc,char **argv)
   Type grid_type;
   Type datatype;
   /* set default values */
+  filename.var=NULL;
+  filename.map=MAP_NAME;
+  filename.time=NULL;
+  filename.unit=NULL;
   units=NULL;
-  var=NULL;
-  time_name=NULL;
   scale=1;
   datatype=LPJ_SHORT;
   verbose=iszero=isjson=FALSE;
@@ -429,8 +431,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        var=strdup(argv[++iarg]);
-        check(var);
+        filename.var=strdup(argv[++iarg]);
+        check(filename.var);
       }
       else if(!strcmp(argv[iarg],"-time"))
       {
@@ -440,7 +442,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        time_name=argv[++iarg];
+        filename.time=argv[++iarg];
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[iarg],"-units"))
@@ -484,6 +486,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         id=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-map"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-map'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        filename.map=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-float"))
         datatype=LPJ_FLOAT;
@@ -587,8 +599,8 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  if(time_name==NULL)
-    time_name=config.netcdf.time.name;
+  if(filename.time==NULL)
+    filename.time=config.netcdf.time.name;
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
@@ -625,7 +637,7 @@ int main(int argc,char **argv)
   climate.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
-    if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
+    if(openclimate_netcdf(&climate,(map==NULL) ? NULL : &map,argv[j],&filename,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
@@ -702,8 +714,8 @@ int main(int argc,char **argv)
       }
       if(units==NULL)
         units=getattr_netcdf(climate.ncid,climate.varid,"units");
-      if(var==NULL)
-        var=getvarname_netcdf(&climate);
+      if(filename.var==NULL)
+        filename.var=getvarname_netcdf(&climate);
       long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
       standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
       history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
@@ -851,13 +863,13 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     free(arglist);
     free(out_json);
     fclose(file);
   }
   freeattrs(attrs,n_attr);
-  free(var);
+  free(filename.var);
   free(units);
   free(long_name);
   free(standard_name);

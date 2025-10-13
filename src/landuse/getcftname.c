@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**          o  p  e  n  f  i  l  e  _  n  e  t  c  d  f  .  c                     \n**/
+/**                  g  e  t  c  f  t  n  a  m  e  .  c                            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function opens data file in NetCDF format                                  \n**/
+/**     Function gets name of band for land use input                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,29 +15,27 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grassland.h"
 
-Bool openfile_netcdf(Climatefile *file,        /**< data file */
-                     Map **map,                /**< pointer to map or NULL */
-                     const Filename *filename, /**< filename */
-                     const char *units,        /**< units or NULL */
-                     const Config *config      /**< LPJ configuration */
-                    )                          /** \return TRUE on error */
+const char *getcftname(int index,           /**< index of band */
+                       int npft,            /**< number of natural PFTs */
+                       int ncft,            /**< number of crop PFTs */
+                       const Config *config /**< LPJmL configuration */
+                      )                     /** \return name of band or NULL */
 {
-  if(openclimate_netcdf(file,map,filename->name,filename,units,config))
-    return TRUE;
-  file->oneyear=FALSE;
-  if(file->time_step!=YEAR)
-  {
-    fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename->name);
-    closeclimate_netcdf(file,TRUE);
-    return TRUE;
-  }
-  else if(file->delta_year!=1)
-  {
-    fprintf(stderr,"ERROR435: Time step of %d yrs in file '%s' must be 1.\n",
-            file->delta_year,filename->name);
-    closeclimate_netcdf(file,TRUE);
-    return TRUE;
-  }
-  return FALSE;
-} /* of 'openfile_netcdf' */
+  if(index>=0 && index<ncft)
+    return config->pftpar[npft+index].name;
+  index-=ncft;
+  if(index<NGRASS)
+    return grassland_names[index];
+  index-=NGRASS;
+  if(index<NBIOMASSTYPE)
+    return biomass_names[index];
+  index-=NBIOMASSTYPE;
+  if(index<config->nwptype)
+    return woodplantation_names[index];
+  index-=config->nwptype;
+  if(index<config->nagtree)
+    return config->pftpar[npft-config->nagtree+index].name;
+  return NULL;
+} /* of 'getcftname' */

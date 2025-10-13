@@ -738,21 +738,39 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-    if(config->landusemap==NULL)
+    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    if(config->landusemap_size==-1)
       return TRUE;
     if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-      if(config->fertilizermap==NULL)
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->fertilizermap_size==-1)
         return TRUE;
     }
-    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    if(config->manure_input)
     {
-      config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-      if(config->cftmap==NULL)
+      config->manuremap=scancftmap(file,&config->manuremap_size,"manuremap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->manuremap_size==-1)
+        return TRUE;
+    }
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+    {
+      config->residuemap=scancftmap(file,&config->residuemap_size,"residuemap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->residuemap_size==-1)
+        return TRUE;
+    }
+    if(config->sdate_option>=PRESCRIBED_SDATE)
+    {
+      config->sdatemap=scancftmap(file,&config->sdatemap_size,"sdatemap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->sdatemap_size==-1)
+        return TRUE;
+    }
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    {
+      config->crop_phumap=scancftmap(file,&config->crop_phumap_size,"crop_phumap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->crop_phumap_size==-1)
         return TRUE;
     }
     scanclimatefilename(input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
@@ -1184,7 +1202,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
   {
     fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
-            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout);
     return TRUE;
   }
   return FALSE;

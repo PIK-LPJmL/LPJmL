@@ -110,16 +110,18 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Landuse initlanduse(const Config *);
+extern Landuse initlanduse(int,int,Config *);
 extern void freelanduse(Landuse,const Config *);
 extern Bool getintercrop(const Landuse);
 extern Landfrac *newlandfrac(int,int);
-extern void initlandfracitem(Landfrac *,int,int);
-extern void initlandfrac(Landfrac [2],int,int);
+extern void initlandfracitem(Landfrac *,Real,int,int);
+extern void initlandfrac(Landfrac [2],Real,int,int);
 extern void scalelandfrac(Landfrac [2],int,int,Real);
 extern void freelandfrac(Landfrac *);
 extern Bool fwritelandfrac(Bstruct ,const char *,const Landfrac [2],int,int);
 extern void fprintlandfrac(FILE *,const Landfrac *,int,int);
+extern Irrig_system *newirrigsystem(int,int);
+extern void initirrigsystem(Irrig_system *,IrrigationType,int,int);
 extern Bool freadlandfrac(Bstruct,const char *,Landfrac [2],int,int);
 extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
@@ -149,7 +151,8 @@ extern Bool fwrite_irrigation(Bstruct,const char *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *,const Pftpar *);
 extern Bool fread_irrigation(Bstruct,const char *,Irrigation *);
 extern Harvest harvest_stand(Output *,Stand *,Real,const Config *);
-extern int *scancftmap(LPJfile *,int *,const char *,Bool,int,int,const Config *);
+extern int *scancftmap(LPJfile *,int *,const char *,Bool,Bool,int,int,const Config *);
+extern int *defaultcftmap(int *,const char *,Bool,int,int,const Config *);
 extern int *fscanagtreemap(LPJfile *,const char *,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
@@ -164,6 +167,11 @@ extern void setotherstocrop(void);
 extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
                        const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
                        Bool,const Config *);
+extern void cmplandusemap(const char *,const int *,int,const char *,const int *,int,int,int,const Config *);
+extern const char *getcftname(int,int,int,const Config *);
+extern int *getcftmap(const Map *,const char *,Bool,int,int,const Config *);
+extern Bool getmap(Map *,const char *,const char *,Bool,int **,int *,int,int,Config *);
+extern Bool checkbasetemp(const Limit [],int,int,const Config *);
 
 /* Declaration of variables */
 

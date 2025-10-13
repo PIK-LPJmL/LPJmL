@@ -21,16 +21,20 @@
 #include <netcdf.h>
 #endif
 
-Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
+Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
+                            Map **map,                /**< pointer to map or NULL */
                             const Filename *filename, /**< filename */
-                            const char *units,    /**< units or NULL */
-                            const Config *config  /**< LPJ configuration */
-                           )                      /** \return TRUE on error */
+                            const char *units,        /**< units or NULL */
+                            const Config *config      /**< LPJ configuration */
+                           )                          /** \return TRUE on error */
 {
 #ifdef USE_NETCDF
   int rc;
+#ifdef USE_MPI
+  int i,len;
+#endif
   if(isroot(*config))
-    rc=openclimate_netcdf(file,filename->name,filename->time,filename->var,filename->unit,units,config);
+    rc=openclimate_netcdf(file,map,filename->name,filename,units,config);
 #ifdef USE_MPI
   /* broadcast return code */
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
@@ -59,6 +63,36 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
   MPI_Bcast(&file->offset,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->missing_value,sizeof(file->missing_value),MPI_BYTE,0,
             config->comm);
+  if(map!=NULL)
+  {
+    if(isroot(*config))
+      len=(*map==NULL) ? 0 : getmapsize(*map);
+    MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+    if(len==0)
+      *map=NULL;
+    else
+    {
+      if(!isroot(*config))
+        *map=newmap(FALSE,len);
+      for(i=0;i<getmapsize(*map);i++)
+      {
+        if(isroot(*config))
+          len=(getmapitem(*map,i)==NULL) ? 0 : strlen(getmapitem(*map,i))+1;
+        MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+        if(len==0)
+          getmapitem(*map,i)=NULL;
+        else
+        {
+          if(!isroot(*config))
+          {
+            getmapitem(*map,i)=malloc(len);
+            check(getmapitem(*map,i));
+          }
+          MPI_Bcast(getmapitem(*map,i),len,MPI_CHAR,0,config->comm);
+        }
+      }
+    }
+  }
 #endif
   return FALSE;
 #else

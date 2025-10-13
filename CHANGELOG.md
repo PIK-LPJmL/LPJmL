@@ -20,6 +20,26 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+ - Base temp value area read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
+ - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` data.
+ - Band names for mapping are read from JSON metafiles and NetCDF input files.
+
+### Changed
+
+- JSON metafile instead of CLM files used in `input.cjson` for land-use, fertilizer, manure, sowing data and crop PHU input in order to read CFT maps.
+- Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
+
+### Fixed
+
+- Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
+
+
 ## [5.10.1] - 2025-09-30
 
 ### Contributors

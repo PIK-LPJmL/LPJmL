@@ -242,8 +242,9 @@ static Bool initriver(Cell grid[],Config *config)
   }
   else
   {
+
     river.cdf=NULL;
-    if((drainage.file=openinputfile(&header,&drainage.swap,&config->drainage_filename,
+    if((drainage.file=openinputfile(&header,NULL,&drainage.swap,&config->drainage_filename,
                                     headername,NULL,LPJ_INT,&version,&offset,FALSE,config))==NULL)
       return TRUE;
     if(header.datatype!=LPJ_INT)

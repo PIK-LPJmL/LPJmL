@@ -138,11 +138,17 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     free(config->landusemap);
-     if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
+    if(config->fertilizer_input==FERTILIZER)
       free(config->fertilizermap);
+    if(config->manure_input)
+      free(config->manuremap);
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+      free(config->residuemap);
+    if(config->sdate_option>=PRESCRIBED_SDATE)
+      free(config->sdatemap);
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+      free(config->crop_phumap);
     free(config->mowingdays);
-    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-      free(config->cftmap);
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
@@ -170,9 +176,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->nh4deposition_filename);
   }
   freefilename(&config->soilph_filename);
-  if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input==FERTILIZER)
+  if(config->fertilizer_input==FERTILIZER)
     freefilename(&config->fertilizer_nr_filename);
-  if(config->withlanduse!=NO_LANDUSE&&config->manure_input)
+  if(config->manure_input)
     freefilename(&config->manure_nr_filename);
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(&config->landcover_filename);

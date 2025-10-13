@@ -139,7 +139,7 @@ int main(int argc,char **argv)
       printf(" MByte\n");
     }
     if(check)
-      rc=(filesexist(config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
+      rc=(filesexist(&config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
     else
       rc=EXIT_SUCCESS;
   }
