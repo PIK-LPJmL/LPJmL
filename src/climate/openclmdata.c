@@ -18,6 +18,8 @@
 
 Bool openclmdata(Climatefile *file,        /**< pointer to file */
                  Map **map,                /**< pointer to map or NULL */
+                 Attr **attrs,             /**< pointer to array of attributes or NULL */
+                 int *n_attr,              /**< size of array attribute */
                  const Filename *filename, /**< filename */
                  const char *name,         /**< name of data */
                  const char *unit,         /**< unit of data or NULL */
@@ -31,7 +33,7 @@ Bool openclmdata(Climatefile *file,        /**< pointer to file */
   String headername;
   int version;
   size_t offset,filesize;
-  if((file->file=openinputfile(&header,map,&file->swap,
+  if((file->file=openinputfile(&header,map,attrs,n_attr,&file->swap,
                                filename,headername,unit,datatype,
                                &version,&offset,TRUE,config))==NULL)
   {

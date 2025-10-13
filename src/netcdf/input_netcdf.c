@@ -303,7 +303,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         nc_get_att_text(input->ncid,input->varid,"units",fromstr);
         fromstr[len]='\0';
       }
-      if(!strcmp(fromstr,"-"))
+      if(!strcmp(fromstr,"-") || !strcmp(fromstr,units))
       {
         input->slope=1;
         input->intercept=0;

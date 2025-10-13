@@ -122,7 +122,7 @@ extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
 extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
 extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,Real,
-                        const Config *);
+                        Config *);
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
@@ -133,15 +133,16 @@ extern Bool readco2(Co2data *,const Filename *,Config *);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
-extern Bool openclmdata(Climatefile *,Map **,const Filename *,const char *,const char *,
+extern Bool openclmdata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                      Type,Real,int,const Config *config);
-extern Bool opendata(Climatefile *,Map **,const Filename *,const char *,const char *,
+extern Bool opendata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                      Type,Type,Real,int,Bool,const Config *config);
-extern Bool opendata_seq(Climatefile *,Map **,const Filename *,const char *,const char *,
+extern Bool opendata_seq(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                          Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,int,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
 extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
+extern Bool checkclimatetitle(const Attr *,int,const char *,Config *);
 
 #endif

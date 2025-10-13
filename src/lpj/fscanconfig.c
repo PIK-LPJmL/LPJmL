@@ -226,6 +226,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
   config->coupler_in=0;
   config->socket=NULL;
+  config->climate=NULL;
   if (verbose>=VERB) puts("// I. type section");
   config->coupled_model=NULL;
   if(iskeydefined(file,"coupled_model"))

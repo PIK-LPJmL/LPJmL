@@ -28,7 +28,7 @@ OBJS    = create_netcdf.$O close_netcdf.$O write_float_netcdf.$O\
           openfile_netcdf.$O flush_netcdf.$O initsetting_netcdf.$O\
           checkcoord.$O getattr_netcdf.$O getvarname_netcdf.$O\
           parse_config_netcdf.$O readmap_netcdf.$O setlatlon.$O settimeaxis.$O\
-          getlimitarray_netcdf.$O
+          getlimitarray_netcdf.$O getglobalattrs_netcdf.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

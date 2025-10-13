@@ -23,6 +23,8 @@
 
 Bool openclimate_netcdf(Climatefile *file,        /**< climate data file */
                         Map **map,                /**< pointer to map or NULL */
+                        Attr **attrs,             /**< pointer to array of attributes or NULL */
+                        int *n_attr,              /**< size of array attribute */
                         const char *name,         /**< filename */
                         const Filename *filename, /**< filename properties */
                         const char *units,        /**< units or NULL */
@@ -452,6 +454,7 @@ Bool openclimate_netcdf(Climatefile *file,        /**< climate data file */
     if(*map==NULL && filename->map!=NULL)
       fprintf(stderr,"WARNING409: Missing or invalid map '%s' in '%s'.\n",filename->map,name);
   }
+  getglobalattrs_netcdf(file->ncid,attrs,n_attr);
   file->isopen=TRUE;
   return FALSE;
 #else

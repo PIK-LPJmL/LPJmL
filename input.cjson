@@ -34,13 +34,13 @@
   "tamp" : { "fmt" : "cdf", "var" : "tamp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"}, /* diurnal temp. range */
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
 #else /*  Default from GSWP3 W5E5 */
-  "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "lwdown" :       { "id" : 43, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
-  "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "temp" :         { "id" : 1, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm.json"},
+  "prec" :         { "id" : 2, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm.json"},
+  "lwnet" :        { "id" : 4, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2019.clm.json"},
+  "lwdown" :       { "id" : 43, "fmt" : "meta",  "name" : "DUMMYLOCATION"},
+  "swdown" :       { "id" : 3, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm.json"},
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
-  "wind":          { "id" : 15, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "wind":          { "id" : 15, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm.json"},
   "tamp":          { "id" : 11, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
   "tmax":          { "id" : 10, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm"},
   "tmin":          { "id" : 9, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm"},
@@ -77,7 +77,7 @@
   //"landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   //"fertilizer_nr" : { "id" : 18, "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
-  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_gswp3_2000-2000.clm"},
+  "grassland_lsuha" : { "id" : 24, "fmt" : "meta",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_gswp3_2000-2000.clm.json"},
   "sowing_ag_tree_rf" :   { "id" : 32, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "harvest_ag_tree_rf" :  { "id" : 33, "fmt" : "cdf", "var" : "harvest day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "sowing_ag_tree_ir" :   { "id" : 34, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_ir_growing_season_dates_v1.25.nc4"},

@@ -29,11 +29,15 @@ of `major.minor.patch` with
  - Base temp value area read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
  - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` data.
  - Band names for mapping are read from JSON metafiles and NetCDF input files.
+ - Globale attribute `"title"` is read from climate input files and checked for matching titles.
+ - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
 
 ### Changed
 
-- JSON metafile instead of CLM files used in `input.cjson` for land-use, fertilizer, manure, sowing data and crop PHU input in order to read CFT maps.
+- JSON metafiles instead of CLM files used in `input.cjson` for land-use, fertilizer, manure, sowing data and crop PHU input in order to read CFT maps.
+- JSON metafiles are read for climate input to get title.
 - Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
+- The global attributes in JSON metafiles are printed on separate lines.
 
 ### Fixed
 

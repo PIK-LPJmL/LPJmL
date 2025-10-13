@@ -68,7 +68,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   }
   else
   {
-    if((file=openinputfile(&header,NULL,&swap,&config->reservoir_filename,
+    if((file=openinputfile(&header,NULL,NULL,NULL,&swap,&config->reservoir_filename,
                            headername,NULL,LPJ_FLOAT,
                            &version,&offset,TRUE,config))==NULL)
       return TRUE;

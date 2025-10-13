@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->climate);
   freeconfig_netcdf(&config->netcdf);
   free(config->cmd);
   free(config->json_filename);
@@ -169,6 +170,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->residue_data_filename);
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       freefilename(&config->crop_phu_filename);
+    if(config->fertilizer_input==FERTILIZER)
+      freefilename(&config->fertilizer_nr_filename);
+    if(config->manure_input)
+      freefilename(&config->manure_nr_filename);
   }
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
@@ -176,10 +181,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->nh4deposition_filename);
   }
   freefilename(&config->soilph_filename);
-  if(config->fertilizer_input==FERTILIZER)
-    freefilename(&config->fertilizer_nr_filename);
-  if(config->manure_input)
-    freefilename(&config->manure_nr_filename);
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(&config->landcover_filename);
 

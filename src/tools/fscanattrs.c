@@ -59,6 +59,15 @@ Bool fscanattrs(LPJfile *file,    /**< pointer to a LPJ file */
   return FALSE;
 } /* of 'fscanattrs' */
 
+char *getattr(const Attr *attrs,int n,const char *name)
+{
+  int i;
+  for(i=0;i<n;i++)
+    if(!strcmp(attrs[i].name,name))
+      return strdup(attrs[i].value);
+  return NULL;
+} /* of 'getattr' */
+
 void freeattrs(Attr *attrs, /**< array of attributes */
                int n        /**< size of attribute array */
               )

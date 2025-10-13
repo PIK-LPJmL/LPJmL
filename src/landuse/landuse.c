@@ -78,6 +78,9 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   Limit *basetemp;
   int basetemp_size;
   Map *map=NULL;
+  Attr *attrs=NULL;
+  char *climate;
+  int n_attr;
   landuse=new(struct landuse);
   if(landuse==NULL)
   {
@@ -87,7 +90,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&map,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata(&landuse->landuse,&map,NULL,NULL,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     freelanduse(landuse,config);
     return NULL;
@@ -116,7 +119,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->sdate_option>=PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&map,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->sdatemap_size,FALSE,config))
+    if(opendata(&landuse->sdate,&map,NULL,NULL,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->sdatemap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -145,10 +148,40 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&map,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->crop_phumap_size,FALSE,config))
+    if(opendata(&landuse->crop_phu,&map,&attrs,&n_attr,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->crop_phumap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
+    }
+    if(attrs!=NULL)
+    {
+      climate=getattr(attrs,n_attr,"climate");
+      if(climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in crop PHU file.\n");
+      }
+      else if(config->climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in climate input.\n");
+      }
+      else if(strcmp(config->climate,climate))
+      {
+        fprintf(stderr,"ERROR269: Climate source %s in crop PHU file differs from %s in climate input.\n",
+                climate,config->climate);
+        free(climate);
+        freeattrs(attrs,n_attr);
+        freelanduse(landuse,config);
+        return NULL;
+      }
+      free(climate);
+      freeattrs(attrs,n_attr);
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"WARNING044: No climate source defined in crop PHU file.\n");
     }
     if(getmap(map,config->crop_phu_filename.name,"crop_phumap",TRUE,
               &config->crop_phumap,&config->crop_phumap_size,npft,ncft,config))
@@ -200,7 +233,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&map,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
+    if(opendata(&landuse->fertilizer_nr,&map,NULL,NULL,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -229,7 +262,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&map,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
+    if(opendata(&landuse->manure_nr,&map,NULL,NULL,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -257,7 +290,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
 
   if(config->tillage_type==READ_TILLAGE)
   {
-    if(opendata(&landuse->with_tillage,NULL,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->with_tillage,NULL,NULL,NULL,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -269,7 +302,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* open residue data */
-    if(opendata(&landuse->residue_on_field,&map,&config->residue_data_filename,"residue extraction","1",LPJ_FLOAT,LPJ_SHORT,1.0,config->residuemap_size,FALSE,config))
+    if(opendata(&landuse->residue_on_field,&map,NULL,NULL,&config->residue_data_filename,"residue extraction","1",LPJ_FLOAT,LPJ_SHORT,1.0,config->residuemap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -297,13 +330,43 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,NULL,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
+    if(opendata(&landuse->grassland_lsuha,NULL,&attrs,&n_attr,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
+    if(attrs!=NULL)
+    {
+      climate=getattr(attrs,n_attr,"climate");
+      if(climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in livestock density file.\n");
+      }
+      else if(config->climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in climate input.\n");
+      }
+      else if(strcmp(config->climate,climate))
+      {
+        fprintf(stderr,"ERROR269: Climate source %s in livestock density file differs from %s in climate input.\n",
+                climate,config->climate);
+        free(climate);
+        freeattrs(attrs,n_attr);
+        freelanduse(landuse,config);
+        return NULL;
+      }
+      free(climate);
+      freeattrs(attrs,n_attr);
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"WARNING044: No climate source defined in livestock density file.\n");
+    }
     if(config->lsuha_filename.fmt!=SOCK)
-    checkyear("livestock density",&landuse->grassland_lsuha,config);
+      checkyear("livestock density",&landuse->grassland_lsuha,config);
   }
 
   landuse->intercrop=config->intercrop;

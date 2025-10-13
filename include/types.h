@@ -162,6 +162,7 @@ extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
 extern Bool fscandouble(LPJfile *,double *,const char *,Bool,Verbosity);
 extern Bool fscanattrs(LPJfile *,Attr **,int *,const char *,Verbosity);
+extern char *getattr(const Attr *,int,const char *);
 extern void fprintattrs(FILE *,const Attr *,int);
 extern void freeattrs(Attr *,int);
 extern void fprinttime(FILE *,int);

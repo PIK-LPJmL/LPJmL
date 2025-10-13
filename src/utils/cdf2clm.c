@@ -487,16 +487,6 @@ int main(int argc,char **argv)
         }
         id=argv[++iarg];
       }
-      else if(!strcmp(argv[iarg],"-map"))
-      {
-        if(argc==iarg+1)
-        {
-          fprintf(stderr,"Missing argument after option '-map'.\n"
-                 USAGE,argv[0]);
-          return EXIT_FAILURE;
-        }
-        filename.map=argv[++iarg];
-      }
       else if(!strcmp(argv[iarg],"-float"))
         datatype=LPJ_FLOAT;
       else if(!strcmp(argv[iarg],"-int"))
@@ -637,7 +627,7 @@ int main(int argc,char **argv)
   climate.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
-    if(openclimate_netcdf(&climate,(map==NULL) ? NULL : &map,argv[j],&filename,units,&config))
+    if(openclimate_netcdf(&climate,NULL,NULL,NULL,argv[j],&filename,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;

@@ -23,6 +23,8 @@
 
 Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
                             Map **map,                /**< pointer to map or NULL */
+                            Attr **attrs,             /**< pointer to array of attributes or NULL */
+                            int *n_attr,              /**< size of array attribute */
                             const Filename *filename, /**< filename */
                             const char *units,        /**< units or NULL */
                             const Config *config      /**< LPJ configuration */
@@ -34,7 +36,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
   int i,len;
 #endif
   if(isroot(*config))
-    rc=openclimate_netcdf(file,map,filename->name,filename,units,config);
+    rc=openclimate_netcdf(file,map,attrs,n_attr,filename->name,filename,units,config);
 #ifdef USE_MPI
   /* broadcast return code */
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
@@ -63,6 +65,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
   MPI_Bcast(&file->offset,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->missing_value,sizeof(file->missing_value),MPI_BYTE,0,
             config->comm);
+  /* distribute map to all tasks */
   if(map!=NULL)
   {
     if(isroot(*config))
@@ -90,6 +93,41 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
           }
           MPI_Bcast(getmapitem(*map,i),len,MPI_CHAR,0,config->comm);
         }
+      }
+    }
+  }
+  /* distribute global attributes to all tasks */
+  if(attrs!=NULL)
+  {
+    if(isroot(*config))
+      len=(*attrs==NULL) ? 0 : *n_attr;
+    MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+    if(len==0)
+      *attrs=NULL;
+    else
+    {
+      if(!isroot(*config))
+        *attrs=newvec(Attr,len);
+      for(i=0;i<len;i++)
+      {
+        if(isroot(*config))
+          len=strlen((*attrs)[i].name)+1;
+        MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+        if(!isroot(*config))
+        {
+          (*attrs)[i].name=malloc(len);
+          check((*attrs)[i].name);
+        }
+        MPI_Bcast((*attrs)[i].name,len,MPI_CHAR,0,config->comm);
+        if(isroot(*config))
+          len=strlen((*attrs)[i].value)+1;
+        MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+        if(!isroot(*config))
+        {
+          (*attrs)[i].value=malloc(len);
+          check((*attrs)[i].value);
+        }
+        MPI_Bcast((*attrs)[i].value,len,MPI_CHAR,0,config->comm);
       }
     }
   }

@@ -18,12 +18,14 @@
 
 Bool opendata_netcdf(Climatefile *file,        /**< data file */
                      Map **map,                /**< pointer to map or NULL */
+                     Attr **attrs,             /**< pointer to array of attributes or NULL */
+                     int *n_attr,              /**< size of array attribute */
                      const Filename *filename, /**< filename */
                      const char *units,        /**< units or NULL */
                      const Config *config      /**< LPJ configuration */
                     )                          /** \return TRUE on error */
 {
-  if(mpi_openclimate_netcdf(file,map,filename,units,config))
+  if(mpi_openclimate_netcdf(file,map,attrs,n_attr,filename,units,config))
     return TRUE;
   file->oneyear=FALSE;
   if(file->time_step!=YEAR)
