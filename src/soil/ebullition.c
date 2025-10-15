@@ -33,7 +33,7 @@ static void printch4(const Real CH4[LASTLAYER])
 
 Real ebullition(Stand *stand,   /**< pointer to stand */
                 Real T          /**< airtemp */
-              )
+               )
 {
   Real C_thres, Q_ebull[BOTTOMLAYER], soil_moist[BOTTOMLAYER], V, epsilon_CH4[BOTTOMLAYER]; //, epsilon_CH4_u;
   Real Q_ebull2;

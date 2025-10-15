@@ -185,7 +185,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
     difffrac_wetland=stand->frac-difffrac_wetland;
     cell->hydrotopes.wetland_area_runmean= runmean_add(cell->hydrotopes.wetland_area_runmean, difffrac_wetland, (float)HYD_AV_TIME);
     cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
-
   }
   if(s==NOT_FOUND && difffrac>0.01)
   {
@@ -193,7 +192,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
     Irrigation *data;
     Pftcrop *crop;
     Pft *pft;
-
     int p;
     foreachstand(stand,s,cell->standlist)
     {
@@ -209,8 +207,8 @@ void deforest(Cell *cell,          /**< pointer to cell */
         }
         else
           fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s.\n",
-             stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,standstocks(stand).carbon,
-             soilmethane(&stand->soil)*WC/WCH4,pft->par->name);
+                  stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,standstocks(stand).carbon,
+                  soilmethane(&stand->soil)*WC/WCH4,pft->par->name);
 
       }
     }
@@ -724,7 +722,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case PASTURE:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -748,7 +746,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-                  config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
                 n_est[config->pftpar[p].type]++;
@@ -763,7 +761,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case BIOMASS_TREE_PLANTATION:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-              config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS)
+               config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -792,7 +790,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -804,7 +802,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case WOOD_PLANTATION:
           for (p = 0;p < npft;p++)
             if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-              config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
+                config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
             {
               addpft(mixstand, config->pftpar + p, year, 0,config);
               n_est[config->pftpar[p].type]++;
@@ -812,8 +810,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type->freestand(mixstand);
           mixstand->type = &woodplantation_stand;
           mixstand->type->newstand(mixstand);
-        break;
-          default:
+          break;
+        default:
             fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,TRUE,
                  "WRONG CULTIVATION TYPE in landexpansion()");
             break;
@@ -1459,7 +1457,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft,config);
           stand->frac-=movefrac;
           if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,stand->soil.iswetland,year,config))
-             delstand(cell->standlist,pos);
+            delstand(cell->standlist,pos);
         }
       }
     }
@@ -1566,8 +1564,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);       /*grassland will be expanded*/
 #ifdef DEBUG4
-    fprintf(stderr,"1landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
-        difffrac,grassfrac,s);
+      fprintf(stderr,"1landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
+              difffrac,grassfrac,s);
 #endif
     }
     else if(grassfrac>epsilon)                                                                       /*no GRASSLAND changes=-grassfrac */
@@ -1575,15 +1573,16 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       difffrac= -grassfrac;
       landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
 #ifdef DEBUG4
-    fprintf(stderr,"2landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
-        difffrac,grassfrac,s);
+      fprintf(stderr,"2landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
+              difffrac,grassfrac,s);
 #endif
     }
     check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 
 #ifdef DEBUG4
     foreachstand(stand,s,cell->standlist)
-       if(year>1989) fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
+      if(year>1989)
+        fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
 #endif
 
     if(!config->others_to_crop)
@@ -1618,7 +1617,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     }
 #ifdef DEBUG4
     foreachstand(stand,s,cell->standlist)
-       if(year>1989) fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
+      if(year>1989)
+        fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
 #endif
     check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
    /* Biomass plantations */
@@ -1735,7 +1735,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         sum_wl+=stand->frac;
       else
         sum[data->irrigation]+=stand->frac;
-
     }
   }
   cell->ml.cropfrac_rf=sum[0];
@@ -1744,24 +1743,24 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 
 
 #if defined IMAGE && defined COUPLED
-    /* if timber harvest not satisfied by agricultural expansion */
-    if(config->luc_timber && cell->ml.image_data->timber_frac>epsilon)
+  /* if timber harvest not satisfied by agricultural expansion */
+  if(config->luc_timber && cell->ml.image_data->timber_frac>epsilon)
+  {
+    s=findlandusetype(cell->standlist,NATURAL);
+    if(s!=NOT_FOUND)
     {
-      s=findlandusetype(cell->standlist,NATURAL);
-      if(s!=NOT_FOUND)
-      {
-        stand=getstand(cell->standlist,s);
-        timberharvest=(stand->frac<=cell->ml.image_data->timber_frac) ? stand->frac : cell->ml.image_data->timber_frac;
+      stand=getstand(cell->standlist,s);
+      timberharvest=(stand->frac<=cell->ml.image_data->timber_frac) ? stand->frac : cell->ml.image_data->timber_frac;
 
-        if(timberharvest>epsilon)
-        {
-          /* deforestation without conversion to agricultural land */
-          deforest_for_timber(cell,timberharvest,npft,config->luc_timber,ncft,minnatfrac_luc,year,config);
-        }
-        cell->ml.image_data->timber_frac=0.0;
+      if(timberharvest>epsilon)
+      {
+        /* deforestation without conversion to agricultural land */
+        deforest_for_timber(cell,timberharvest,npft,config->luc_timber,ncft,minnatfrac_luc,year,config);
       }
       cell->ml.image_data->timber_frac=0.0;
     }
+    cell->ml.image_data->timber_frac=0.0;
+  }
   /* check that sum of fractions is 1.0 */
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 

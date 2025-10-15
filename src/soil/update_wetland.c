@@ -96,8 +96,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   if(year==1846)
   {
     foreachstand(stand,s,cell->standlist)
-      fprintf(stderr,"%s: year= %d standfrac: %g standtype: %d iswetland: %d \n",
-               __FUNCTION__,year,stand->frac, stand->type->landusetype,stand->soil.iswetland);
+      fprintf(stderr,"%s: year= %d standfrac: %g standtype: %s iswetland: %d \n",
+               __FUNCTION__,year,stand->frac, stand->type->name,stand->soil.iswetland);
   }
 #endif
 
@@ -353,7 +353,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 #endif
         }
 
-
         if(natstand->frac <= 0.)
         {
           //       remove stand
@@ -443,7 +442,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                   pos++;
                 }
               }
-           }
+            }
             else
             {
               if (wetpft->par->peatland)
@@ -484,10 +483,9 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                     pos++;
                   }
                 }
-
               }
             }
-          }
+          } /* of foreachpft(wetpft, p, &wetstand->pftlist) */
           //mixsoil(natstand, wetstand,year,config);
 
           for (p = 0; p<ntotpft; p++)
@@ -583,7 +581,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         }
         foreachstand(stand, s, cell->standlist)
         {
-          if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=SETASIDE_WETLAND)
+          if(getlandusetype(stand)!=WETLAND && getlandusetype(stand)!=SETASIDE_WETLAND)
           {
             if(natstand!=NULL)
             {
@@ -599,13 +597,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               stand->Hag_Beta=min(1,(0.06*log(tan(stand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
             }
           }
-        }
-
+        } /* of foreachstand() */
       }
     }
   } /* of' if cell->hydrotopes.skip_cell*/
 
- #ifdef ADJUST_CSHIFT
+#ifdef ADJUST_CSHIFT
   foreachstand(stand, s, cell->standlist)
   {
     if ((stand->soil.count / NDAYYEAR) >= 100 && stand->soil.c_shift[0][0].fast>soildepth[0] / layerbound[BOTTOMLAYER - 1])
@@ -633,8 +630,10 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         {
           if (stand->soil.decomp_litter_mean.carbon>100)
           {
-            if (ctotal.fast.carbon>5000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR)) / kmean_pft.fast;
-            if (ctotal.slow.carbon>1000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR)) / kmean_pft.slow;
+            if (ctotal.fast.carbon>5000)
+             stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR)) / kmean_pft.fast;
+            if (ctotal.slow.carbon>1000)
+              stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow = (stand->soil.socfraction[l][stand->soil.litter.item[p].pft->id]*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR)) / kmean_pft.slow;
           }
           cshift.fast += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast;
           cshift.slow += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow;
@@ -646,15 +645,14 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         }
       } /* of for(p=0;p<stand->soil.litter.n;p++) */
       forrootsoillayer(l)
-      stand->soil.k_mean[l].slow = stand->soil.k_mean[l].fast = 0.0;
+        stand->soil.k_mean[l].slow = stand->soil.k_mean[l].fast = 0.0;
       stand->soil.count = 0;
       stand->soil.decomp_litter_mean.carbon = 0.0;
     }
-  }
+  } /* of foreachstand() */
 #endif
 
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
-
 
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen=0;

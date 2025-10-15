@@ -36,7 +36,7 @@ void enth2freezefrac(Real freeze_frac[],         /**< vector with a fraction for
     /* Compensate for numerical precision errors during summation */
     if (ff_layer > 1-epsilon)
     {
-        ff_layer = 1;
+      ff_layer = 1;
     }
     freeze_frac[layer]=ff_layer;
   }

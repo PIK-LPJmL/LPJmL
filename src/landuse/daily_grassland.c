@@ -122,7 +122,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   foreachstand(checkstand,s,stand->cell->standlist)
   {
-     if(checkstand->type->landusetype!=KILL)
+     if(getlandusetype(checkstand)!=KILL)
      {
        start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
        start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
@@ -173,17 +173,17 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (stand->type->landusetype==GRASSLAND  || stand->type->landusetype==OTHERS)
+  if (getlandusetype(stand)==GRASSLAND  || getlandusetype(stand)==OTHERS)
   {
     if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[getlandusetype(stand)==GRASSLAND];
         stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
         stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
-        if(stand->type->landusetype==OTHERS)
+        if(getlandusetype(stand)==OTHERS)
           getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
         getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
       } /* end fday==day */
@@ -192,13 +192,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     {
       if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
       {
-        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[getlandusetype(stand)==GRASSLAND];
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
         stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
         stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += manure*stand->frac;
-        if(stand->type->landusetype==OTHERS)
+        if(getlandusetype(stand)==OTHERS)
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
         getoutput(output,NAPPLIED_MG,config)+=manure*stand->frac;
       } /* end fday==day */

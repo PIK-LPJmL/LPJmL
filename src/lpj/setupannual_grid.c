@@ -161,10 +161,10 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     {
       init_annual(grid+cell,ncft,config);
       if (config->with_glaciers)
-      {   
+      {
         grid[cell].icefrac = geticefrac(input->icefrac, cell);
         grid[cell].is_glaciated=grid[cell].icefrac>=1-epsilon;
-      }   
+      }
       if (grid[cell].is_glaciated)
         check_glaciated(grid + cell,config);
       else

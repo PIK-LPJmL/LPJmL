@@ -50,7 +50,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   else
     data_irrig=NULL;
 
-  if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND)
+  if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
     min_evap=0.1;
 
   soil=&stand->soil;
