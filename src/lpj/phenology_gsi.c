@@ -23,6 +23,8 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    const Config *config /**< LPJmL configuration */
                   )
 {
+  const Pfttreepar *treepar;
+  Pfttree *tree;
   /* get parameters */
   Phen_param tminpar = getpftpar(pft, tmin);
   Phen_param tmaxpar = getpftpar(pft, tmax);
@@ -45,32 +47,28 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   /* water availability response function */
   pft->phen_gsi.wscal += ( 1 / (1 + exp(-wscalpar.sl * (pft->wscal*100 - wscalpar.base))) - pft->phen_gsi.wscal) * wscalpar.tau;
   pft->phen_gsi.wscal=max(epsilon,pft->phen_gsi.wscal);
-
+  if(istree(pft))
+  {
+    treepar=pft->par->data;
+    tree=pft->data;
+  }
   /* phenology */
-  if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") ||
-     !strcmp(pft->par->name,"tropical broadleaved evergreen tree floodtolerant") ||
-     !strcmp(pft->par->name,"bioenergy tropical tree") ||
-     !strcmp(pft->par->name,"woodplantation tropical tree"))
+  if(istree(pft) && treepar->phen_to_one)
   {
     pft->phen=1.0;
   }
-  else if(pft->par->type!=TREE || !((Pfttree *)pft->data)->isphen)
+  else if(!istree(pft) || !tree->isphen)
   {
     pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
   }
 
   turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
-
-  if(!strcmp(pft->par->name,"tropical broadleaved evergreen tree") || 
-      !strcmp(pft->par->name,"tropical broadleaved evergreen tree floodtolerant") ||
-     !strcmp(pft->par->name,"tropical broadleaved raingreen tree") || 
-     !strcmp(pft->par->name,"bioenergy tropical tree") ||
-     !strcmp(pft->par->name,"woodplantation tropical tree"))
+  if(istree(pft) && treepar->rainyseason)
   {
     if(day==pft->stand->cell->climbuf.startday_rainyseason)
     {
       pft->aphen=0.0;
-      ((Pfttree *)pft->data)->isphen=FALSE;
+      tree->isphen=FALSE;
     }
   }
   else
@@ -79,8 +77,8 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
         (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
     {
       pft->aphen=0.0;
-      if(pft->par->type==TREE)
-        ((Pfttree *)pft->data)->isphen=FALSE;
+      if(istree(pft))
+        tree->isphen=FALSE;
     }
   }
   pft->aphen+=pft->phen;

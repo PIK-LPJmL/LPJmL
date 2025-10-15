@@ -29,14 +29,15 @@ void fprintpft(FILE *file,    /**< pointer to text file */
           pft->phen_gsi.light,pft->phen_gsi.wscal);
   fprintf(file,"fpc:\t\t%g\n",pft->fpc);
   fprintf(file,"nind:\t\t%g (1/m2)\n",pft->nind);
-  fprintf(file,"wscal_mean:\t\t%g\n",pft->wscal_mean);
+  fprintf(file,"wscal_mean:\t%g\n",pft->wscal_mean);
   fprintf(file,"vscal:\t\t%g\n",pft->vscal);
   fprintf(file,"aphen:\t\t%g\n",pft->aphen);
-    fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
-            pft->bm_inc.nitrogen);
-    fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
-    fprintf(file,"Establish:\t %g (gC/m2) %g (gN/m2)\n",
-            pft->establish.carbon,pft->establish.nitrogen);
+  fprintf(file,"phen:\t\t%g\n",pft->phen);
+  fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
+          pft->bm_inc.nitrogen);
+  fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
+  fprintf(file,"Establish:\t %g (gC/m2) %g (gN/m2)\n",
+          pft->establish.carbon,pft->establish.nitrogen);
   fprintf(file,"gdd:\t\t%g\n",pft->gdd);
   fprintf(file, "inundation stress:\t%g\n", pft->inun_count/pft->par->inun_dur);
   fprintf(file, "inundation duration:\t%d\n", pft->inun_count);

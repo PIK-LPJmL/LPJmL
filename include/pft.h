@@ -220,6 +220,7 @@ typedef struct Pft
     Real (*ndemand)(const struct Pft *,Real *,Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real);
     void (*copy)(struct Pft *, const struct Pft *);
+    void (*getb)(struct Pft *,Real);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
@@ -302,13 +303,13 @@ extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
 extern void copypft(Pft *, const Pft *);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool,Real,const Config *);
-extern Real nitrogen_stress(Pft *,Real,Real [LASTLAYER],Real,int,int,const Config *);
+extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
 extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
-
+extern void getb(Pft *,Real);
 
 /* needed for IMAGE, but can also be used otherwise */
 

@@ -422,7 +422,15 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftlimit(verb,item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
       fscanpftlimit(verb,item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
       fscanpftlimit(verb,item,&pft->swc_bnf,pft->name,"swc_bnf");
-      fscanpftrealarray(verb,item,pft->phi_bnf,2,pft->name,"phi_bnf");
+      if(pft->swc_bnf.high<=pft->swc_bnf.low)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR235: High limit for sw_bnf=%g less or equal low limit=%g for PFT '%s'.\n",
+                  pft->swc_bnf.high,pft->swc_bnf.low,pft->name);
+        return TRUE;
+      }
+      pft->phi_bnf[0]=-pft->swc_bnf.low/(pft->swc_bnf.high-pft->swc_bnf.low);
+      pft->phi_bnf[1]=1.0/(pft->swc_bnf.high-pft->swc_bnf.low);
       fscanpftreal(verb,item,&pft->nfixpot,pft->name,"nfixpot");
       fscanpftreal(verb,item,&pft->maxbnfcost,pft->name,"maxbnfcost");
       fscanpftreal(verb,item,&pft->bnf_cost,pft->name,"bnf_cost");
@@ -450,7 +458,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
     npft++;
-  }
+  } /* of for(n=0;n<count;n++) */
   if(config->withlanduse && config->rice_pft==NOT_FOUND)
   {
     if(verb)
