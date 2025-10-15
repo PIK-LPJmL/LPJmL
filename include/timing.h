@@ -15,6 +15,8 @@
 #ifndef TIMING_H
 #define TIMING_H
 
+/* Definition of datatypes */
+
 typedef enum
 {
   DAILY_LITTERSOM_FCN,
@@ -26,8 +28,6 @@ typedef enum
   INITINPUT_FCN,
   INITOUTPUT_FCN,
   IRRIG_AMOUNT_RESERVOIR_FCN,
-  ITERATE_FCN,
-  ITERATEYEAR_FCN,
   MPI_BARRIER_FCN,
   MPI_INIT_FCN,
   NEWGRID_FCN,
@@ -45,8 +45,12 @@ typedef enum
   N_FCN
 } Timing_id;
 
+/* Declaration of variables */
+
 extern double timing[N_FCN];
 extern char *timing_fcn[N_FCN];
+
+/* Definition of macros */
 
 #define timing_start(t) t=mrun()
 #define timing_stop(id,t) timing[id]+=mrun()-t
