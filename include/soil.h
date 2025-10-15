@@ -105,11 +105,11 @@
 #define WH2O 18.0            /*18g/mol*/
 #define WCO2 44.0            /*44g/mol*/
 #define WN 14.0              /*14g/mol*/
-#define O2star 10.0           /*g/m3*/
+#define O2star 2.0           /*g/m3*/
 #define BO2 0.031            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.026           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
-#define Vmax_CH4 0.356       /*Michaelis-Menten coefficient (gCH4/m3/day) ; is given mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h *24 to day * WHC4*/
-#define km_CH4 0.032       /*mikroM Michaelis-Menten coefficient (gCH4/m3);  in mikroM  convert  to 10−3 mol/m3 * WHC4 */
+#define Vmax_CH4 1.92         /*Michaelis-Menten coefficient (gCH4/m3/day) ; is given mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h *24 to day * WHC4*/
+#define km_CH4 0.064          /*mikroM Michaelis-Menten coefficient (gCH4/m3);  in mikroM  convert  to 10−3 mol/m3 * WHC4 */
 #define tau_CH4 12.5         /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
@@ -122,7 +122,7 @@
 //#define CH4s 0.00000179      /* atmospheric CH4 content (mol/mol)*/
 #define snowdens_first 150
 #define snowdens_end 500
-#define oxid_frac 0.95          /*remainig O2 during oxidation processes, Reduced Compounds is left assumed to be together 5% */
+#define oxid_frac 0.95          /*O2 that is required for other reduction processes, Reduced Compounds left assumed to be together 5% */
 
 /* Declaration of variables */
 
@@ -347,7 +347,7 @@ extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
 extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *,const Real *,const Real *, const Real *,Real *,Real *,Real , Real *,Real *,int);
-extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
+extern Stocks daily_littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
@@ -426,7 +426,7 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
           soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
         }\
         })
-#define getepsilon_O2(V,soil_moist,wsat,bO2) max(0.001, V + (soil_moist)*(wsat)*bO2)
-#define getepsilon_CH4(V,soil_moist,wsat,bCH4) max(0.001, V + (soil_moist)*(wsat)*bCH4)
+#define getepsilon_O2(V,soil_moist,wsat,bO2) max(0.01, V + (soil_moist)*(wsat)*bO2)
+#define getepsilon_CH4(V,soil_moist,wsat,bCH4) max(0.01, V + (soil_moist)*(wsat)*bCH4)
 
 #endif /* SOIL_H */

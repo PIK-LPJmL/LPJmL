@@ -364,8 +364,8 @@ ID                               Fmt                        filename
     { "id" : "ch4_litter",       "file" : { "timestep" : "monthly", "name" : "output/ch4_litter"}},
     { "id" : "ch4_sink",         "file" : { "timestep" : "monthly", "name" : "output/ch4_sink"}},
     { "id" : "ch4_rice_em",      "file" : { "timestep" : "monthly", "name" : "output/ch4_rice_em"}},
-    { "id" : "ch4_agr",     "file" : { "timestep" : "monthly", "name" : "output/ch4_agr"}},
-    { "id" : "ch4_grassland",     "file" : { "timestep" : "monthly", "name" : "output/ch4_grassland"}},
+    { "id" : "ch4_agr",          "file" : { "timestep" : "monthly", "name" : "output/ch4_agr"}},
+    { "id" : "ch4_grassland",    "file" : { "timestep" : "monthly", "name" : "output/ch4_grassland"}},
     { "id" : "meansoilo2",       "file" : { "timestep" : "annual", "name" : "output/meansoilo2"}},
     { "id" : "gw_storage",       "file" : { "timestep" : "annual", "name" : "output/gw_store"}},
     { "id" : "gw_outflux",       "file" : { "timestep" : "monthly", "name" : "output/gw_outflux"}},
@@ -462,7 +462,7 @@ ID                               Fmt                        filename
 
 #ifdef FROM_RESTART
 
-  "nspinup" : 0,   /* spinup years */
+  "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF

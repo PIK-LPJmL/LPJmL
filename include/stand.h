@@ -90,7 +90,7 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real,Real,Real *,int,int,int,const Config *);
 
 extern Real infil_perc(Stand *,Real,Real,Real,Real *,int,int,const Config *);
-extern Real plant_gas_transport(Stand*, Real, Real,const Config *);
+extern Real plant_gas_transport(Stand*, Real, Real,const Config *,Real, Real);
 extern Real ebullition(Stand*, Real);
 extern Real albedo_stand(const Stand *);                            
 extern Landcover initlandcover(int,const Config *);

@@ -17,10 +17,12 @@
 #include "lpj.h"
 
 #define Q10 1.8
-#define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
+#define INTERCEPT 0.04021601
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
 #define MOIST  0.71890122
+#define np -0.5              /* parameter given in Riera et al. 1999*/
+#define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 
 typedef struct
 {
@@ -61,6 +63,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
                        Real *lrunoff,                     /**< [out] runoff (mm/day) */
                        Real *MT_lwater,                   /**< [out] water from oxidized methane (mm/day) */
                        Real *CH4_sink,                    /**< [out] negative CH4 emissions (gC/m2/day) */
+                       Real *rice_em,
                        int npft,                          /**< [in] number of natural PFTs */
                        int ncft,                          /**< [in] number of crop PFTs */
                        const Config *config               /**< [in] LPJmL configuration */
@@ -71,6 +74,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Soil savesoil;
   Data data;
   int timesteps=6;
+  int faststep=6;
   int i,l,dt,p;
   Stocks hetres;
   Stocks hetres1;
@@ -83,9 +87,11 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
   Real Q10_oxid[LASTLAYER],fac_wfps[LASTLAYER],fac_temp[LASTLAYER];
   Real moist,w_agtop;
   Real response_agtop_leaves,*response_agsub_wood,*response_agtop_wood;
+  Real CH4_air, ScCH4, k_600, kCH4;
+  Real O2_air, ScO2, kO2;
 
   soil->count++;
-
+  *rice_em=0;
   response_agtop_wood=newvec(Real,ncft+npft);
   check(response_agtop_wood);
   response_agsub_wood=newvec(Real,ncft+npft);
@@ -116,6 +122,25 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     data.bCH4[l]=0.0523*exp(-0.0236*soil->temp[l]);
   }
 
+  CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
+  O2_air=p_s/R_gas/degCtoK(airtemp)*O2s*WO2;         /*g/m3 oxygen concentration*/
+
+  /* Calculate Schmidt number and gas transfer velocity */
+  /*--------------------------------------------------------*/
+  if (airtemp >= 50)
+    ScCH4 = 20;
+  else
+    ScCH4 = 0.00055667*airtemp*airtemp*airtemp*airtemp - 0.06747*airtemp*airtemp*airtemp + 3.2403*airtemp*airtemp - 84.575*airtemp + 1420.5;               //1898 - 110.1 * airtemp + 2.834 * airtemp*airtemp - 0.02791 * airtemp*airtemp*airtemp;
+  k_600 = 2.07 + 0.215*pow(wind_speed,1.7);
+  kCH4 = k_600*pow((ScCH4 / 600), np);   //piston velocity
+  if (airtemp >= 40)
+    ScO2 = 8;
+  else
+    ScO2 = 0.00086842*airtemp*airtemp*airtemp*airtemp - 0.10115*airtemp*airtemp*airtemp + 4.8055*airtemp*airtemp - 124.34*airtemp + 1745.1;                //1800.6-120.1*airtemp+3.7818*airtemp*airtemp-0.047608 * airtemp*airtemp*airtemp;
+  kO2 = k_600*pow((ScO2/600),np);
+  kCH4 = kCH4/100*24;
+  kO2 = kO2/100*24;
+
 
   *CH4_sink=*CH4_source=*lrunoff=*MT_lwater=0;
 
@@ -129,7 +154,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
 //  {
 //    hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
 //         Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps);
-//    hetres.carbon+=hetres1.carbon;
+//    *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,config,kCH4/timesteps,kO2/timesteps)*stand->frac;
 //    hetres.nitrogen+=hetres1.nitrogen;
 //    *CH4_sink+=ch4_sink;
 //    *CH4_source+=methaneflux_litter;
@@ -148,14 +173,17 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
         Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps);
     fast_needed=istoolarge(soil,O2_save,CH4_save);
+    if(!fast_needed)
+      *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,config,kCH4/timesteps,kO2/timesteps)*stand->frac;   //fluxes in routine written to output
 
     if(fast_needed )
     {
       soil_status(soil, &savesoil, npft+ncft);
-      for (i=0;i<5;i++)
+      for (i=0;i<faststep;i++)
       {
         hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
-            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*5);
+            Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*faststep);
+        *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,config,kCH4/(timesteps*faststep),kO2/(timesteps*faststep))*stand->frac;   //fluxes in routine written to output
         hetres.carbon+=hetres1.carbon;
         hetres.nitrogen+=hetres1.nitrogen;
         *CH4_sink+=ch4_sink;
@@ -175,6 +203,8 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     }
     fast_needed = FALSE;
   }
+  //fprintf(stderr,"%s standfrac: %g methaneflux_litter: %g sink: %g  source: %g \n",stand->type->name,stand->frac,methaneflux_litter,*CH4_sink, *CH4_source);
+
   freelitter(&savesoil.litter);
   free(savesoil.decomp_litter_pft);
   free(response_agtop_wood);
