@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      l  i  t  t  e  r  s  o  m  .  c                           \n**/
+/**            l  i  t  t  e  r  s  o  m  _  n  o  m  e  t  h  a  n  e  .  c       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -34,10 +34,6 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define INTERCEPT 0.04021601
-#define MOIST_3 -5.00505434
-#define MOIST_2 4.26937932
-#define MOIST  0.71890122
 #define CN_ratio_fast 8
 #define CN_ratio_slow 12
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
@@ -409,4 +405,4 @@ Stocks littersom_nomethane(Stand *stand,                /**< pointer to stand da
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
   return flux;
-} /* of 'littersom' */
+} /* of 'littersom_nomethane' */
