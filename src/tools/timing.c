@@ -27,6 +27,7 @@ char *timing_fcn[N_FCN]=
   "fopenoutput",
   "fwriterestart",
   "fwriteoutput",
+  "gasdiffusion",
   "getclimate",
   "initinput",
   "initoutput",

@@ -43,6 +43,11 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   Real CH4_air;
   Real tmp_water;
   Real end, start, out,in;
+#ifdef USE_TIMING
+  double tstart;
+  timing_start(tstart);
+ #endif
+
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
   start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
@@ -168,4 +173,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
    *CH4_sink=start-end;
   else
    *CH4_out=start-end;
+#ifdef USE_TIMING
+  timing_stop(DAILY_LITTERSOM_FCN,tstart);
+#endif
 } /* of 'gasdiffusion' */
