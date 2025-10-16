@@ -45,12 +45,11 @@ Real ebullition(Stand *stand,   /**< pointer to stand */
   Real bCH4;
   bCH4=0.0523*exp(-0.0236*T);
 
+  soil=&stand->soil;
 #ifdef DEBUG
   printf("EBULL before:");
   printch4(soil->CH4);
 #endif
-
-  soil=&stand->soil;
 
   foreachpft(pft, p, &stand->pftlist)
     if(stand->type->landusetype!=AGRICULTURE)                //I'm not sure about tea and cotton
