@@ -172,7 +172,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->wpwp[l] = 0.284;
         soil->wfc[l] = 0.398;
         soil->whc[l] = soil->wfc[l]-soil->wpwp[l];
-        soil->whcs[l] = soil->wsat[l] * soildepth[l];
+        soil->whcs[l] = soil->whc[l] * soildepth[l];
         soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
         soil->wsats[l] = soil->wsat[l] * soildepth[l];
         soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;

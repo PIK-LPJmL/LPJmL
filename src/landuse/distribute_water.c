@@ -95,7 +95,10 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
         /* determine if irrigation today */
-        data->irrig_event=isirrigevent(stand);
+        if(isrice)
+          data->irrig_event=TRUE;
+        else
+          data->irrig_event=isirrigevent(stand);
 
         irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0)*frac_irrig_amount;
 

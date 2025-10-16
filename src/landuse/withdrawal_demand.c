@@ -27,7 +27,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#define neighbour_irrigation FALSE
+#define neighbour_irrigation TRUE
 
 void withdrawal_demand(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< LPJ configuration */

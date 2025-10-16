@@ -353,6 +353,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     cover_stand+=fpar(pft);
     /* calculate albedo and FAPAR of PFT */
     albedo_crop(pft, stand->soil.snowheight, stand->soil.snowfraction);
+    isrice=FALSE;
+    if(pft->par->id==config->rice_pft)
+      isrice=TRUE;
 
 /*
  *  Calculate net assimilation, i.e. gross primary production minus leaf

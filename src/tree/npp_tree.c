@@ -27,7 +27,7 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
 {
   Pfttree *tree;
   const Pfttreepar *par;
-  Real mresp,npp;
+  Real mresp,npp,rootresp;
   Real resp=0;
   Real nc_root,nc_sapwood;
   tree=pft->data;
@@ -45,6 +45,7 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
   //maximum respiration dependency to NC ratio not higher than measured leaf NC
   if(nc_sapwood>pft->par->ncleaf.high/par->ratio.sapwood) nc_sapwood=pft->par->ncleaf.high/par->ratio.sapwood;
   if(nc_root>pft->par->ncleaf.high/par->ratio.root) nc_root=pft->par->ncleaf.high/par->ratio.root;
+  rootresp=pft->nind*(tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen);
   mresp=pft->nind*(tree->ind.sapwood.carbon*pft->par->respcoeff*param.k*nc_sapwood*gtemp_air+
         tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen);
   npp=(assim<mresp) ? assim-mresp : (assim-mresp)*(1-param.r_growth);
@@ -52,9 +53,6 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
   resp=(assim<mresp) ? mresp : mresp*(1-param.r_growth);
   getoutput(&pft->stand->cell->output,RA,config)+=resp*pft->stand->frac;
   forrootsoillayer(l)
-  {
-    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*(tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC);
-    if(pft->stand->soil.O2[l]<0) pft->stand->soil.O2[l]=0.0;
-  }
+    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],rootresp*pft->par->rootdist[l]*WO2/WC);
   return npp;
 } /* of 'npp_tree' */

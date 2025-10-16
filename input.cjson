@@ -19,7 +19,7 @@
   "delta_prec" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_prec_0.5.clm"},
   "delta_lwnet" :  { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_lwnet_0.5.clm"},
   "delta_swdown" : { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_swdown_0.5.clm"},
-  "kbf" :          { "fmt" : "clm", "var" : "KBF", "name" :"input_VERSION2/kbf_mar.clm"},
+  "kbf" :          { "fmt" : "clm", "var" : "KBF", "name" :"input_VERSION2/kbf.clm"},
   "slope_mean" :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
   "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
   "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},

@@ -103,7 +103,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   water_before=soilwater(&stand->soil);
   n_before=soilstocks(soil);
   n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux+stand->cell->NO3_lateral;
-  //fprintf(stderr,"start ground_st_am:%g ground_st:%g dmass_gw:%g wa:%g\n",stand->cell->ground_st_am,stand->cell->ground_st,stand->cell->discharge.dmass_gw,soil->wa);
 #endif
 
 #ifdef SAFE
@@ -156,7 +155,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   q_perch_max=active_wa=runoff_out=depthsum=wtable_tmp=alpha=s1=vol_eq=NO3perc_ly=0;
   // The layer index of the first unsaturated layer, i.e., the layer right above the water table
   forrootsoillayer(l)
-  lrunoff[l]=pperc[l]=ndrain_perched_out[l]=nrsub_top[l]=0.0;
+   lrunoff[l]=pperc[l]=ndrain_perched_out[l]=nrsub_top[l]=0.0;
   lwt=findwtlayer(soil);
   icet=NSOILLAYER-1;
   foreachsoillayer(l)
@@ -219,9 +218,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         influx=max((soil->w[l]-1)*soil->whcs[l]+soil->ice_depth[l],0);
         soil->w[l]-=influx/soil->whcs[l];
         soil->w_fw[l]+=influx;
-        if(soil->w_fw[l]>(soil->wsats[l]-soil->whcs[l]))
+        if(soil->w_fw[l]>(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]-soil->ice_fw[l]))
         {
-          influx=soil->w_fw[l]-(soil->wsats[l]-soil->whcs[l]);
+          influx=soil->w_fw[l]-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]-soil->ice_fw[l]);
           soil->w_fw[l]-=influx;
         }
         else
@@ -678,7 +677,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         else
           S=soil->wsat[l]*(1.-pow((1.+(1/soil->psi_sat[l])),(-1./soil->b[l])));
         S=max(S,0.02);
-        qcharge_layer=min(qcharge_tot,(S*(soil->wtable - layerbound2)));  // try to raise water table to account for qcharge
+        qcharge_layer=min(qcharge_tot,(S*(soil->wtable - layerbound2)));  //raise water table
         qcharge_layer=max(qcharge_layer,0);
         fill=max(0,qcharge_tot1);
         soil->w[l]+=fill/soil->whcs[l];
@@ -764,12 +763,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //=================  subsurface drainage =======================================
   // water table above frost table
 
-  if(stand->type->landusetype==WETLAND || stand->type->landusetype==NATURAL)
-    maxdrain=20;
+  if(stand->type->landusetype==WETLAND || stand->type->landusetype==NATURAL || isrice)
+    maxdrain=50;
   else
-    maxdrain=100;                               // increasing due to managed drainage
+    maxdrain=100;                               // increasing due to managed drainage on agricultural land
 
-  q_perch_max = maxdrain * max(0.001,tan(stand->slope_mean*M_PI/180));                          //1e-5mm/s specify maximum drainage rate for partially frozen soil 0.864 mm/d
+  q_perch_max = maxdrain * max(0.001,tan(stand->slope_mean*M_PI/180));
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
@@ -782,7 +781,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       {
         Theta_ice=pow(10,(-OMEGA*(((icefrac[l]*soildepth[l])+(icefrac[l+1]*soildepth[l+1]))/(soildepth[l]+soildepth[l+1]))));
         k_perch+=(Theta_ice*soil->Ks[l]*24*soildepth[l]);                         // ks in mm/h converted to day
-        wtsub+=soildepth[l];                                                      // summation of soildepth for layers below water table (mm**2/s)
+        wtsub+=soildepth[l];                                                      // summation of soildepth for layers below water table
       }
       if (wtsub > 0)
         k_perch=k_perch/wtsub;                                                   // ks is adjusted in pedotransfer.c
@@ -816,7 +815,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     //==========  Topographic runoff at WTABLE ==================================
 
     if(stand->type->landusetype==WETLAND || stand->type->landusetype==NATURAL || isrice)
-      fff=2.5;       //m-1 decay factor originally 2.5 in CLM4.5
+      fff=2;       //m-1 decay factor originally 2.5 in CLM4.5
     else
       fff=0.5;       // assuming faster drainage on agricultural land
     icesum=0;
@@ -916,7 +915,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       }
     }
   }
-
   if(isrice)
     soil->wtable=-200;
   if (soil->wtable<maxWTP)
@@ -1106,7 +1104,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
   }
-  //THIS I KEEP AS IT IS, SINCE NO3 GETS LOST ON THIS STANDS
+
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
   if(stand->type->landusetype==GRASSLAND)
@@ -1136,7 +1134,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
 
 
-  qcharge_tot2=(drain_perched_out+rsub_top+runoff_out+lat_runoff_last);
+  qcharge_tot2=(drain_perched_out+runoff_out+lat_runoff_last);
 
   stand->cell->discharge.dmass_gw+=qcharge_tot2*stand->frac*stand->cell->coord.area;
   stand->cell->ground_st_am+=qcharge_tot2*stand->frac*0.05;
@@ -1145,8 +1143,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,SEEPAGE,config)+=(qcharge_tot2)*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=(runoff+runoff_neg)*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
-  //getoutput(&stand->cell->output,GW_OUTFLUX,config)+=(drain_perched_out+rsub_top+runoff_out)*stand->frac;
-#ifdef SAFE
+
+  #ifdef SAFE
   forrootsoillayer(l)
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
     {
@@ -1188,10 +1186,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   if((stand->type->landusetype!=WETLAND && soil->iswetland!=TRUE) && stand->cell->lateral_water<100 && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<(1-epsilon))
   {
-    if(runoff+runoff_neg+runoff_surface>0)
-      stand->cell->lateral_water+=(runoff_surface+runoff+runoff_neg)*stand->frac;                         // HERE RUNOFF FROM UPLAND IS COLLECTED FOR LOWLAND INPUT (src/lpj/update_daily.c)
+    if(runoff+runoff_neg+runoff_surface+rsub_top>0)
+      stand->cell->lateral_water+=(runoff_surface+runoff+runoff_neg+rsub_top)*stand->frac;                         // HERE RUNOFF FROM UPLAND IS COLLECTED FOR LOWLAND INPUT (src/lpj/update_daily.c)
     else
-      return runoff_surface+runoff+runoff_neg;
+      return runoff_surface+runoff+runoff_neg+rsub_top;
 
 
 #ifdef DEBUG
@@ -1219,5 +1217,5 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
 #endif
 
-    return runoff_surface+runoff+runoff_neg;
+    return runoff_surface+runoff+runoff_neg+rsub_top;
 } /* of 'infil_perc' */

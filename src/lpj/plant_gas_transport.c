@@ -18,10 +18,10 @@
 #include "grass.h"
 
 #define np -0.5              /* parameter given in Riera et al. 1999*/
-#define tiller_weight  0.15  /* [gc] PARAMETER*/
-#define tiller_radius 0.05   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 (maximum) tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m)
+#define tiller_weight  0.22  /* [gc] PARAMETER*/
+#define tiller_radius 0.03452637   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m) mean of the mean
 #define tiller_por 0.7
-#define water_min 0.1
+#define water_min 0.01
 #define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 //#define DEBUG
 
@@ -46,14 +46,16 @@ static void printO2(const Real O2[LASTLAYER])
 #endif
 
 Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
-                         Real airtemp,        /**< air temperature (deg C) */
-                         Real pch4,           /**< atmospheric CH4 content (ppm) */
-                         const Config *config /**< LPJmL configutation */
+                         Real CH4_air,        /**< air temperature (deg C) */
+                         Real O2_air,           /**< atmospheric CH4 content (ppm) */
+                         const Config *config, /**< LPJmL configutation */
+                         Real kCH4,
+                         Real kO2
                         )
 {
   Pft *pft;
-  Real CH4_air, ScCH4, k_600, kCH4;
-  Real O2_air, ScO2, kO2;
+//  Real CH4_air, ScCH4, k_600, kCH4;
+//  Real O2_air, ScO2, kO2;
   Real soil_water_vol;                /*in mm*/
   Real tillers, tiller_area, tiller_frac;
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
@@ -73,33 +75,31 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   start = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
 #endif
   CH4_plant_all=0;
-  CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
-  O2_air=p_s/R_gas/degCtoK(airtemp)*O2s*WO2;         /*g/m3 oxygen concentration*/
-
-  /* Calculate Schmidt number and gas transfer velocity in the*/
-  /* top soil layer.*/
-  /*--------------------------------------------------------*/
-  if (airtemp >= 50)
-    ScCH4 = 20;
-  else
-    ScCH4 = 1898 - 110.1 * airtemp + 2.834 * airtemp*airtemp - 0.02791 * airtemp*airtemp*airtemp;
-  k_600 = 2.07 + 0.215 * pow(wind_speed,1.7);
-  kCH4 = k_600*pow((ScCH4 / 600), np);   //piston velocity
-  if (airtemp >= 40)
-    ScO2 = 8;
-  else
-    ScO2 = 1800.6-120.1*airtemp+3.7818*airtemp*airtemp-0.047608 * airtemp*airtemp*airtemp;
-  kO2 = k_600*pow((ScO2/600),np);
-
-  /*convert cm h-1 to m d-1*/
-  kCH4 = kCH4/100*24;
-  kO2 = kO2/100*24;
+//  CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
+//  O2_air=p_s/R_gas/degCtoK(airtemp)*O2s*WO2;         /*g/m3 oxygen concentration*/
+//
+//  /* Calculate Schmidt number and gas transfer velocity in the*/
+//  /* top soil layer.*/
+//  /*--------------------------------------------------------*/
+//  if (airtemp >= 50)
+//    ScCH4 = 20;
+//  else
+//    ScCH4 = 1898 - 110.1 * airtemp + 2.834 * airtemp*airtemp - 0.02791 * airtemp*airtemp*airtemp;
+//  k_600 = 2.07 + 0.215*pow(wind_speed,1.7);
+//  kCH4 = k_600*pow((ScCH4 / 600), np);   //piston velocity
+//  if (airtemp >= 40)
+//    ScO2 = 8;
+//  else
+//    ScO2 = 1800.6-120.1*airtemp+3.7818*airtemp*airtemp-0.047608 * airtemp*airtemp*airtemp;
+//  kO2 = k_600*pow((ScO2/600),np);
+//
+//  /*convert cm h-1 to m d-1*/
+//  kCH4 = kCH4/100*24/timesteps;
+//  kO2 = kO2/100*24/timesteps;
   CH4_rice=CH4_plant=CH4_sink=0;
-  if(getlandusetype(stand)==SETASIDE_WETLAND)
-    isrice=TRUE;
   foreachpft(pft, p, &stand->pftlist)
   {
-    if(pft->par->id==config->rice_pft)
+    if(pft->par->id==config->rice_pft || getlandusetype(stand)==SETASIDE_WETLAND)
       isrice=TRUE;
     if (!istree(pft) || pft->par->peatland)
     {
@@ -107,13 +107,14 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
       for (l = 0; l<LASTLAYER; l++)
       {
         tiller_frac = tillers*pft->par->rootdist[l];
-        tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
+        tiller_area = max(0.001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
         soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];
         if (soil_water_vol>water_min && tiller_area>0)
         {
           Conc_new = 0;
           CH4 = stand->soil.CH4[l] /soil_water_vol /soildepth[l] * 1000;
-          Conc_new=CH4+(CH4_air-CH4)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          //Conc_new=CH4+(CH4_air-CH4)*exp(-kCH4/(soil_water_vol/tiller_area));             //this is the analytical solution for a daily time step
+          Conc_new=CH4+(CH4_air-CH4)*kCH4/(soil_water_vol/tiller_area);
           CH4_plant=(CH4-Conc_new)*soil_water_vol*soildepth[l]/1000;
           CH4_plant= min(stand->soil.CH4[l],CH4_plant);
           stand->soil.CH4[l]-=CH4_plant;
@@ -129,7 +130,8 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
           /*OXYGEN*/
           Conc_new = 0;
           O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
-          Conc_new=O2+(O2_air-O2)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          //Conc_new=O2+(O2_air-O2)*exp(-kO2/soil_water_vol/tiller_area)); //linearized for subdaily timesteps
+          Conc_new=O2+(O2_air-O2)*kO2/(soil_water_vol/tiller_area);
           O2_plant=(O2-Conc_new)*soil_water_vol*soildepth[l]/1000;
           O2_plant= min(stand->soil.O2[l],O2_plant);
           stand->soil.O2[l]-= O2_plant;
@@ -139,24 +141,19 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   }
   getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
   if(getlandusetype(stand)==WETLAND)
-    getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all;
+    getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all+CH4_sink;
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
-
-  if(CH4_rice>0)
-    stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
-  //if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
-  if(CH4_rice>0)
-    rice_em=CH4_rice;
+  rice_em=CH4_rice;
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND && getlandusetype(stand)!=GRASSLAND && !isrice)
   {
-    stand->cell->balance.aCH4_agr+=(CH4_plant_all+CH4_sink)*stand->frac;
-    getoutput(&stand->cell->output,CH4_AGR,config)+=(CH4_plant_all+CH4_sink)*stand->frac;
+    stand->cell->balance.aCH4_agr+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_AGR,config)+=CH4_plant_all*stand->frac;
   }
   if(getlandusetype(stand)==GRASSLAND)
   {
-    stand->cell->balance.aCH4_grassland+=(CH4_plant_all+CH4_sink)*stand->frac;
-    getoutput(&stand->cell->output,CH4_GRASSLAND,config)+=CH4_plant_all+CH4_sink;
+    stand->cell->balance.aCH4_grassland+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_GRASSLAND,config)+=CH4_plant_all;
   }
 
   getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;

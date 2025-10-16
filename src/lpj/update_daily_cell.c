@@ -40,7 +40,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   int s,p;
   Bool isrice=FALSE;
   Pft *pft;
-  Real melt=0,eeq,par,daylength,beta,gw_outflux,gw_out_total,eet_lake;
+  Real melt=0,eeq,par,daylength,beta,gw_outflux,gw_out_total;
   Real CH4_em=0;
   Real CH4_sink=0;
   Real melt_all,runoff,snowrunoff;
@@ -70,6 +70,8 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   runoff=snowrunoff=melt_all=0;
   Real popdensity=0;
   Irrigation *data;
+  Real eet_lake=0;
+  Real rice_emiss=0;
 #ifdef USE_TIMING
   double tstart;
   timing_start(tstart);
@@ -250,10 +252,10 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
       getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
-      rice_em+=plant_gas_transport(stand,climate->temp,ch4,config)*stand->frac;   //fluxes in routine written to output
+      //rice_em+=plant_gas_transport(stand,climate->temp,ch4,config)*stand->frac;   //fluxes in routine written to output
       ebul = ebullition(stand,climate->temp);
       getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-      if(isrice)
+      if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
         cell->balance.ricefrac+=stand->frac;
 
       getoutput(&cell->output,CH4_EMISSIONS,config)+=ebul*stand->frac;
@@ -304,7 +306,8 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
       cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
       cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
-      hetres=daily_littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate->temp,ch4,&runoff,&MT_water,&CH4_sink,npft,ncft,config);
+      hetres=daily_littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate->temp,ch4,&runoff,&MT_water,&CH4_sink,&rice_emiss,npft,ncft,config);
+      rice_em+=rice_emiss;
       getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
       cell->balance.aCH4_sink+=CH4_sink*stand->frac;
       getoutput(&cell->output,CH4_LITTER,config)+=CH4_em*stand->frac;
@@ -318,23 +321,23 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
       cell->balance.aCH4_em+=CH4_em*stand->frac;
       if(getlandusetype(stand)==WETLAND)
-        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
+        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em+CH4_sink;
       if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
       {
         if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
         {
           rice_em+=CH4_em*stand->frac;
-          cell->balance.aCH4_rice+=CH4_em*stand->frac;
+          cell->balance.aCH4_rice+=rice_emiss+CH4_em*stand->frac;
         }
         else if(getlandusetype(stand)==GRASSLAND)
         {
-          cell->balance.aCH4_grassland+=(CH4_em+CH4_sink)*stand->frac;
-          getoutput(&cell->output,CH4_GRASSLAND,config)+=CH4_em+CH4_sink;
+          cell->balance.aCH4_grassland+=CH4_em*stand->frac;
+          getoutput(&cell->output,CH4_GRASSLAND,config)+=CH4_em;
         }
         else
         {
-          cell->balance.aCH4_agr+=(CH4_em+CH4_sink)*stand->frac;
-          getoutput(&cell->output,CH4_AGR,config)+=(CH4_em+CH4_sink)*stand->frac;
+          cell->balance.aCH4_agr+=CH4_em*stand->frac;
+          getoutput(&cell->output,CH4_AGR,config)+=CH4_em*stand->frac;
         }
       }
       cell->balance.aMT_water+= MT_water*stand->frac;
@@ -555,10 +558,10 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
     if(cell->discharge.dmass_gw>epsilon && cell->hydrotopes.wetland_wtable_current<50000)
     {
-      gw_outflux = cell->ground_st*cell->kbf*0.7;
+      gw_outflux = cell->ground_st*cell->kbf;
       gw_out_total=gw_outflux;
       cell->ground_st -= gw_outflux;
-      gw_outflux=cell->ground_st_am*cell->kbf*0.7/100;     //*cell->kbf/100;
+      gw_outflux=cell->ground_st_am*cell->kbf/100;     //*cell->kbf/100;
       gw_out_total+=gw_outflux;
       cell->ground_st_am -= gw_outflux;
       cell->discharge.dmass_gw-=gw_out_total*cell->coord.area;

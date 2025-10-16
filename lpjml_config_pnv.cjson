@@ -263,7 +263,7 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-#ifdef FROM_RESTART
+//#ifdef FROM_RESTART
 
   "json_config_filename" : "output_pnv/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
@@ -414,9 +414,9 @@ ID                               Fmt                        filename
 
 /*------------------------------ ------------------------- ------------------------------- */
   ],
-#else
+/*#else
 
-  "json_config_filename" : "output_pnv/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+  "json_config_filename" : "output_pnv/lpjml_config_spinup.json", 
 
   "output" :
   [
@@ -448,7 +448,7 @@ ID                               Fmt                        filename
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output_pnv/globalflux_spinup.csv"}}
   ],
 #endif
-
+*/
 /*===================================================================*/
 /*  V. Run settings section                                          */
 /*===================================================================*/
@@ -482,9 +482,9 @@ ID                               Fmt                        filename
   "nspinup" : 4000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
+  "lastyear" : 2019, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -4598,
+  "outputyear" : 1901,
   "write_restart" : true, /* create restart file at year defined in "restart_year" */
   "write_restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1700 /* write restart at year */
