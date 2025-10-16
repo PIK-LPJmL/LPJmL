@@ -75,11 +75,13 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   if(gresp<0.0)
     gresp=0.0;
   npp=assim-soresp-presp-gresp;
-  forrootsoillayer(l)
-  {
-    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*roresp*pft->par->rootdist[l]*WO2/WC);
-    if(pft->stand->soil.O2[l]<0)  pft->stand->soil.O2[l]=0;
-  }
+  if(config->with_methane)
+    forrootsoillayer(l)
+    {
+      pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*roresp*pft->par->rootdist[l]*WO2/WC);
+      if(pft->stand->soil.O2[l]<0)  pft->stand->soil.O2[l]=0;
+    }
+
   if((pft->bm_inc.carbon+npp <=0.0001) ||
       (crop->lai-crop->lai_nppdeficit<=0 && !crop->senescence))
   {

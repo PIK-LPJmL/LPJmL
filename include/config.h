@@ -239,6 +239,8 @@ struct config
   int delta_year;
   Bool with_glaciers;    /**< read ice fraction (TRUE/FALSE) */
   int  with_dynamic_ch4;
+  Bool with_methane;   /**< methane and oxygen balance enabled */
+
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;

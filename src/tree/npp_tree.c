@@ -52,7 +52,8 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
   pft->bm_inc.carbon+=npp;
   resp=(assim<mresp) ? mresp : mresp*(1-param.r_growth);
   getoutput(&pft->stand->cell->output,RA,config)+=resp*pft->stand->frac;
-  forrootsoillayer(l)
-    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],rootresp*pft->par->rootdist[l]*WO2/WC);
+  if(config->with_methane)
+    forrootsoillayer(l)
+      pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],rootresp*pft->par->rootdist[l]*WO2/WC);
   return npp;
 } /* of 'npp_tree' */

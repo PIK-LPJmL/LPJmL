@@ -373,6 +373,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->with_glaciers)
       len=printsim(file,len,&count,"with glaciers");
   }
+  if(config->with_methane)
+      len=printsim(file,len,&count,"with methane");
+
 #ifdef COUPLING_WITH_FMS
   if(!config->nitrogen_coupled)
     len=printsim(file,len,&count,"water and nitrogen limitations uncoupled");

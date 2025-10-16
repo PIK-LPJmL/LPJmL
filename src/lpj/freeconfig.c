@@ -114,7 +114,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->delta_temp_filename);
     freefilename(&config->delta_prec_filename);
     if(config->with_glaciers)
-    freefilename(&config->icefrac_filename);
+      freefilename(&config->icefrac_filename);
   }
   freefilename(&config->co2_filename);
   if (config->with_dynamic_ch4==PRESCRIBED_CH4)

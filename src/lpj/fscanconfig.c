@@ -375,6 +375,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->percolation_heattransfer = TRUE;
   if(fscanbool(file,&config->percolation_heattransfer,"percolation_heattransfer",!config->pedantic,verbose))
     return TRUE;
+  config->with_methane = TRUE;
+  if(fscanbool(file,&config->with_methane,"with_methane",!config->pedantic,verbose))
+    return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;

@@ -252,36 +252,38 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
       getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
-      //rice_em+=plant_gas_transport(stand,climate->temp,ch4,config)*stand->frac;   //fluxes in routine written to output
-      ebul = ebullition(stand,climate->temp);
-      getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-      if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
-        cell->balance.ricefrac+=stand->frac;
-
-      getoutput(&cell->output,CH4_EMISSIONS,config)+=ebul*stand->frac;
-      cell->balance.aCH4_em+=ebul*stand->frac;
-      if(getlandusetype(stand)==WETLAND)
-        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
-
-      if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
+      if(config->with_methane)
       {
+        ebul = ebullition(stand,climate->temp);
+        getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
+
         if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
+          cell->balance.ricefrac+=stand->frac;
+
+        getoutput(&cell->output,CH4_EMISSIONS,config)+=ebul*stand->frac;
+        cell->balance.aCH4_em+=ebul*stand->frac;
+        if(getlandusetype(stand)==WETLAND)
+          getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
+
+        if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
         {
-          rice_em+=ebul*stand->frac;
-          cell->balance.aCH4_rice+=ebul*stand->frac;
-        }
-        else if(getlandusetype(stand)==GRASSLAND)
-        {
-          cell->balance.aCH4_grassland+=ebul*stand->frac;
-          getoutput(&cell->output,CH4_GRASSLAND,config)+=ebul;
-        }
-        else
-        {
-          cell->balance.aCH4_agr+=ebul*stand->frac;
-          getoutput(&cell->output,CH4_AGR,config)+=ebul*stand->frac;
+          if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
+          {
+            rice_em+=ebul*stand->frac;
+            cell->balance.aCH4_rice+=ebul*stand->frac;
+          }
+          else if(getlandusetype(stand)==GRASSLAND)
+          {
+            cell->balance.aCH4_grassland+=ebul*stand->frac;
+            getoutput(&cell->output,CH4_GRASSLAND,config)+=ebul;
+          }
+          else
+          {
+            cell->balance.aCH4_agr+=ebul*stand->frac;
+            getoutput(&cell->output,CH4_AGR,config)+=ebul*stand->frac;
+          }
         }
       }
-
       /* update soil and litter properties to account for all changes since last call of littersom */
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(stand,NULL,NULL,stand->frac);
@@ -307,41 +309,46 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
       cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
       hetres=daily_littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate->temp,ch4,&runoff,&MT_water,&CH4_sink,&rice_emiss,npft,ncft,config);
-      rice_em+=rice_emiss;
-      getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
-      cell->balance.aCH4_sink+=CH4_sink*stand->frac;
-      getoutput(&cell->output,CH4_LITTER,config)+=CH4_em*stand->frac;
-      cell->discharge.drunoff += runoff*stand->frac;
       if(getlandusetype(stand)==NATURAL  || getlandusetype(stand)==WETLAND)
         cell->balance.nat_fluxes-=hetres.carbon*stand->frac;
       cell->balance.arh+=hetres.carbon*stand->frac;
       getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
       getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
       cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
-      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
-      cell->balance.aCH4_em+=CH4_em*stand->frac;
-      if(getlandusetype(stand)==WETLAND)
-        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em+CH4_sink;
-      if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
+      cell->discharge.drunoff += runoff*stand->frac;
+
+      if(config->with_methane)
       {
-        if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
+        rice_em+=rice_emiss;
+        getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
+        cell->balance.aCH4_sink+=CH4_sink*stand->frac;
+        getoutput(&cell->output,CH4_LITTER,config)+=CH4_em*stand->frac;
+
+        getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
+        cell->balance.aCH4_em+=CH4_em*stand->frac;
+        if(getlandusetype(stand)==WETLAND)
+          getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em+CH4_sink;
+        if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND)
         {
-          rice_em+=CH4_em*stand->frac;
-          cell->balance.aCH4_rice+=rice_emiss+CH4_em*stand->frac;
+          if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
+          {
+            rice_em+=CH4_em*stand->frac;
+            cell->balance.aCH4_rice+=rice_emiss+CH4_em*stand->frac;
+          }
+          else if(getlandusetype(stand)==GRASSLAND)
+          {
+            cell->balance.aCH4_grassland+=CH4_em*stand->frac;
+            getoutput(&cell->output,CH4_GRASSLAND,config)+=CH4_em;
+          }
+          else
+          {
+            cell->balance.aCH4_agr+=CH4_em*stand->frac;
+            getoutput(&cell->output,CH4_AGR,config)+=CH4_em*stand->frac;
+          }
         }
-        else if(getlandusetype(stand)==GRASSLAND)
-        {
-          cell->balance.aCH4_grassland+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_GRASSLAND,config)+=CH4_em;
-        }
-        else
-        {
-          cell->balance.aCH4_agr+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_AGR,config)+=CH4_em*stand->frac;
-        }
+        cell->balance.aMT_water+= MT_water*stand->frac;
+        getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
       }
-      cell->balance.aMT_water+= MT_water*stand->frac;
-      getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
 
       if(getlandusetype(stand)==NATURAL || getlandusetype(stand)==WETLAND)
         for(l=0;l<stand->soil.litter.n;l++)
@@ -561,7 +568,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       gw_outflux = cell->ground_st*cell->kbf;
       gw_out_total=gw_outflux;
       cell->ground_st -= gw_outflux;
-      gw_outflux=cell->ground_st_am*cell->kbf/100;     //*cell->kbf/100;
+      gw_outflux=cell->ground_st_am*cell->kbf/100;
       gw_out_total+=gw_outflux;
       cell->ground_st_am -= gw_outflux;
       cell->discharge.dmass_gw-=gw_out_total*cell->coord.area;

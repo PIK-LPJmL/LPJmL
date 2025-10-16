@@ -47,12 +47,13 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   npp=assim-mresp-gresp;
   pft->bm_inc.carbon+=npp;
   getoutput(&pft->stand->cell->output,RA,config)+=(mresp+gresp)*pft->stand->frac;
-  forrootsoillayer(l)
-  {
-    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*(grass->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC);
-    if(pft->stand->soil.O2[l]<0)
-      pft->stand->soil.O2[l]=0;  //TODO HOW TO PUNISH WHEN NOT ENOUGH O2 FOR respiration and what is with flood tolerant grasses
-   }
+  if(config->with_methane)
+    forrootsoillayer(l)
+    {
+      pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*(grass->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC);
+      if(pft->stand->soil.O2[l]<0)
+        pft->stand->soil.O2[l]=0;  //TODO HOW TO PUNISH WHEN NOT ENOUGH O2 FOR respiration and what is with flood tolerant grasses
+    }
 
   return npp;
 } /* of 'npp_grass' */
