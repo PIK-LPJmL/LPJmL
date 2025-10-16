@@ -518,6 +518,9 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
         getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
 #ifdef DEBUG
+        V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+        soilmoist = getsoilmoist(&stand->soil,l);
+        epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
         if (p_s / R_gas / (climate->temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
         {
           fprintf(stdout, "Cell lat %.2f lon %.2f CH4[%d]:%.8f\n", cell->coord.lat, cell->coord.lon, l, stand->soil.CH4[l]);

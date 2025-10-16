@@ -25,26 +25,6 @@
 #define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 //#define DEBUG
 
-#ifdef DEBUG
-
-static void printch4(const Real CH4[LASTLAYER])
-{
-  int i;
-  for (i = 0; i<LASTLAYER; i++)
-    printf(" %g", CH4[i] / soildepth[i] * 1000);
-  printf("\n");
-}
-
-static void printO2(const Real O2[LASTLAYER])
-{
-  int i;
-  for (i = 0; i<LASTLAYER; i++)
-    printf(" %g", O2[i] / soildepth[i] * 1000);
-  printf("\n");
-}
-
-#endif
-
 Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
                          Real CH4_air,        /**< air temperature (deg C) */
                          Real O2_air,           /**< atmospheric CH4 content (ppm) */
