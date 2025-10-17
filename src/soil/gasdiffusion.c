@@ -174,6 +174,6 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   else
    *CH4_out=start-end;
 #ifdef USE_TIMING
-  timing_stop(DAILY_LITTERSOM_FCN,tstart);
+  timing_stop(GASDIFFUSION_FCN,tstart);
 #endif
 } /* of 'gasdiffusion' */
