@@ -231,6 +231,11 @@
     #include "par/outputvars.cjson"
   ,
 
+  /* Definition of missing values and axis names in NetCDF files */
+  "netcdf_config" :
+    #include "par/netcdf.cjson"
+  ,
+
   /* output data settings */
   "outpath" : null,           /* Default path to output files or null */
   "output_metafile" : true,   /* json metafile created (true/false) */
@@ -242,12 +247,9 @@
   "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
   "with_days" : true,         /* use days as units for output in NetCDF files */
   "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
-  "global_netcdf" : false,     /* use global grid for NetCDF files (true/false) */
+  "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
   "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */
   "compress" : 0,             /* compression level (1-9, 0= no compression) */
-  "missing_value" : -1e32,    /* missing value in NetCDF files */
-  "pft_index" : "npft",       /* name of index variable for PFT output */
-  "layer_index" : "layer",    /* name of index variable for soil layer output */
   "compress_cmd" : "gzip -f", /* command for compression of output files */
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */
