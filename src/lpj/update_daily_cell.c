@@ -80,15 +80,15 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   {
 #ifdef CHECK_BALANCE
     Real groundwater= cell->ground_st+cell->ground_st_am;
-    //Real end=0;
-    //Stocks start={0,0};
-    //Stocks start1={0,0};
+    Real end=0;
+    Stocks start={0,0};
+    Stocks start1={0,0};
     Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+groundwater;
     Real water_after=0;
     Real balanceW=0;
     Real wfluxes_old=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
     Real excess_old=cell->balance.excess_water+cell->lateral_water;
-    //Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
+    Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
     Stocks fluxes_in,fluxes_out;
     fluxes_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
     fluxes_out.carbon=cell->balance.arh+cell->balance.fire.carbon+cell->balance.neg_fluxes.carbon+cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon; //outfluxes
@@ -101,12 +101,11 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       if(stand->type->landusetype!=KILL)
       {
         water_before+=soilwater(&stand->soil)*stand->frac;
-        //start1.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-        //start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
+        start1.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+        start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
       }
       else
-        fprintf(stderr, "landuse==KILL ind update_daily_cell(), stand.C=%.3f, standfrac=%.3f\n",
-                standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4,stand->frac);
+        fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
       if(getlandusetype(stand)==GRASSLAND || getlandusetype(stand)==OTHERS ||
          getlandusetype(stand)==AGRICULTURE || getlandusetype(stand)==AGRICULTURE_GRASS || getlandusetype(stand)==AGRICULTURE_TREE ||
          getlandusetype(stand)==BIOMASS_TREE || getlandusetype(stand)==BIOMASS_GRASS || getlandusetype(stand)==WOODPLANTATION)
@@ -116,20 +115,21 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore+=data->irrig_stor;
       }
     }
-    //start1.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
-        //cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
-    //start1.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+cell->NO3_lateral+
-        //cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+    start1.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+    start1.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+cell->NO3_lateral+
+        cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
     if(cell->ml.dam)
     {
       water_before+=cell->ml.resdata->dmass/cell->coord.area;
       for(i=0;i<NIRRIGDAYS;i++)
         water_before+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
-      //start1.carbon+=cell->ml.resdata->pool.carbon;
-      //start1.nitrogen+=cell->ml.resdata->pool.nitrogen;
+      start1.carbon+=cell->ml.resdata->pool.carbon;
+      start1.nitrogen+=cell->ml.resdata->pool.nitrogen;
     }
-    //start=start1;
+    start=start1;
 #endif
+
     if(config->ispopulation)
       popdensity=getpopdens(input->popdens,cell_id);
     cell->output.dcflux=0;
@@ -549,7 +549,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
       if(stand->soil.iswetland)
       {
-       getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
+        getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
       }
     } /* of foreachstand */
     if(cell->balance.ricefrac>0.0001)
@@ -694,13 +694,13 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       if(getlandusetype(stand)!=KILL)
       {
         water_after+=soilwater(&stand->soil)*stand->frac;
-        //end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
+        end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
       }
       else
         fprintf(stderr, "landuse==KILL ind update_daily_cell(), stand.C=%.3f, standfrac=%.3f\n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
     }
-    //end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
-    //     cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+    end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+         cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
     if(cell->ml.dam)
     {
       water_after+=cell->ml.resdata->dmass/cell->coord.area;/*+cell->resdata->dfout_irrigation/cell->coord.area; */
