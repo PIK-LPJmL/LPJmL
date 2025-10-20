@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              u  p  d  a  t  e  _  m  o  n  t  h  l  y  .  c                    \n**/
+/**         u  p  d  a  t  e  _  m  o  n  t  h  l  y  _  g  r  i  d  .  c          \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -31,6 +31,17 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
   Stand *stand;
   Real mtemp,mprec;
   int p,s,cell;
+#ifdef CHECK_BALANCE
+  Stocks start = {0,0};
+  Stocks end = {0,0};
+  Stocks st;
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    start.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=st.nitrogen*stand->frac;
+  }
+#endif
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -54,6 +65,22 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
         grid[cell].ml.image_data->mpetim[month] += grid[cell].output.mpet;
       }
 #endif
+      grid[cell].hydrotopes.wetland_wtable_monthly*=ndaymonth1[month];
+      grid[cell].hydrotopes.wtable_monthly*=ndaymonth1[month];
+      if(month==0)
+      {
+        grid[cell].hydrotopes.wtable_min=grid[cell].hydrotopes.wtable_monthly;
+        grid[cell].hydrotopes.wtable_max=grid[cell].hydrotopes.wtable_monthly;
+        grid[cell].hydrotopes.wetland_wtable_max=grid[cell].hydrotopes.wetland_wtable_monthly;
+      }
+      else
+      {
+        grid[cell].hydrotopes.wtable_min=min(grid[cell].hydrotopes.wtable_min,grid[cell].hydrotopes.wtable_monthly);
+        grid[cell].hydrotopes.wtable_max=max(grid[cell].hydrotopes.wtable_max,grid[cell].hydrotopes.wtable_monthly);
+        grid[cell].hydrotopes.wetland_wtable_max=max(grid[cell].hydrotopes.wetland_wtable_max,grid[cell].hydrotopes.wetland_wtable_monthly);
+      }
+      grid[cell].hydrotopes.wetland_wtable_mean+=grid[cell].hydrotopes.wetland_wtable_monthly;
+      grid[cell].hydrotopes.wtable_mean+=grid[cell].hydrotopes.wtable_monthly;
       /* for water balance check */
       grid[cell].balance.awater_flux+=((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area);
     } /* if(!grid[cell].skip) */
@@ -73,4 +100,18 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
         exit(WRITE_OUTPUT_ERR);
     }
   }
-} /* of 'monthly_update_grid' */
+#ifdef CHECK_BALANCE
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    end.nitrogen+=st.nitrogen*stand->frac;
+  }
+  if(fabs(start.carbon-end.carbon)>0.0001)
+      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: C_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
+  if(fabs(start.nitrogen-end.nitrogen)>0.001)
+      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: N_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
+#endif
+} /* of 'update_monthly_grid' */
