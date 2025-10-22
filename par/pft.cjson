@@ -215,7 +215,7 @@
       "name" : "tropical broadleaved evergreen tree floodtolerant",
       "type" : "tree",
       "peatland_pft" : true, /* if peatland pft */
-      "phen_to_one" : false,
+      "phen_to_one" : true,
       "rainyseason" : true,       /* aphen set to zero on rainyseason from climbuf */
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
@@ -1305,7 +1305,6 @@
       "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* cnleaf min max, based on TRY data */
       "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
-      "fnpp_nrecovery" : FNPP_RECOVERY, /* fraction of NPP available for N recovery */ 
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -1359,7 +1358,7 @@
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
       "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
-      {    
+      {
         "slope" : 0.13,     /* new phenology: slope of cold-temperature limiting function */
         "base" : 5.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
         "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
@@ -1374,7 +1373,7 @@
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
         "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.22          /* newnew phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {
@@ -1637,7 +1636,7 @@
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
   /* 13. pft */
@@ -1742,7 +1741,7 @@
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
       "maxbnfcost" : MAXBNFCOSTTE,
       "bnf_cost" : BNF_COST,
-      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */ 
+      "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
