@@ -78,13 +78,14 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
       fprintf(file,"%c(%g dm3/yr)",d,1/scale);
     if(config->with_methane)
     {
-      fprintf(file,"%c(%g gCH4/yr)%c(%g gCH4/yr)%c(%g gCH4/yr)",d,1/scale,d,1/scale,d,1/scale);
+      fprintf(file,"%c(%g gCH4/yr)%c(%g gCH4/yr)%c(%g gCH4/yr)%c(%g gCH4/yr)",d,1/scale,d,1/scale,d,1/scale,d,1/scale);
       if(config->withlanduse!=NO_LANDUSE)
         fprintf(file,"%c(%g gCH4/yr)%c(%g gCH4/yr)%c(%g gCH4/yr)",d,1/scale,d,1/scale,d,1/scale);
     }
-    fprintf(file,"%c(%g dm3/yr)%c(%g gCH4)%c(%g gC)%c(%g gC)%c(%g gC)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale);
+    fprintf(file,"%c(%g dm3/yr)",d,1/scale);
+    fprintf(file,"%c(%g gC)%c(%g gC)%c(%g gC)%c(%g gC)",d,1/scale,d,1/scale,d,1/scale,d,1/scale);
     if(config->with_methane)
-      fprintf(file,"%c(%g gC)",d,1/scale);
+      fprintf(file,"%c(%g gCH4)",d,1/scale);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%c(%g gC)",d,1/scale);
     fprintf(file,"%c(%g gN/yr)%c(%g gN/yr)%c(%g gN/yr)%c(%g gN/yr)%c(%g gN/yr)%c(%g gN/yr)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale);
