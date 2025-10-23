@@ -143,6 +143,7 @@ extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
 extern int getmintimestep(int);
 extern Bool fprintoutputjson(int,int,const Config *);
+extern Bool ismethane_output(int);
 #ifdef USE_MPI
 extern Bool mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);

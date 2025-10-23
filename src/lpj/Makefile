@@ -54,7 +54,7 @@ OBJS    = update_daily_cell.$O update_annual_cell.$O init_annual.$O\
           check_glaciated.$O fwriteoutput_ch4.$O\
           fscanerrorlimit.$O createconfig.$O freadstocks.$O fwritestocks.$O\
           updateannual_grid.$O updatedaily_grid.$O initmonthly_grid.$O\
-          setupannual_grid.$O
+          setupannual_grid.$O ismethane_output.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

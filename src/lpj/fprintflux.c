@@ -47,30 +47,51 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 4 : 12);
     fprintf(file,"  Water (%sm3)",(convert==1e-15)  ? "k" : "da");
     if(config->river_routing)
-      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 9 : 17);
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 10 : 18);
     else
-      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 4 : 12);
-    fprintf(file,"   CH4 fluxes (%cgCH4/yr)",(convert==1e-15)  ? 'T' : 'M');
-    frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 9);
-    fprintf(file,"         Carbon (%cgC)        ",(convert==1e-15)  ? 'P' : 'G');
-    fprintf(file,"   CH4 (%cgC) ",(convert==1e-15)  ? 'T' : 'G');
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 13);
+    if(config->with_methane)
+      fprintf(file," CH4 fluxes (%cgCH4/yr)",(convert==1e-15)  ? 'T' : 'M');
+    frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 14);
+    fprintf(file,"        Carbon (%cgC)        ",(convert==1e-15)  ? 'P' : 'G');
+    if(config->with_methane)
+      fprintf(file,"CH4 (%cgC) ",(convert==1e-15)  ? 'T' : 'G');
     fprintf(file,"  Nitrogen (%cgN)        Nitrogen fluxes (%cgN/yr)",(convert==1e-15)  ? 'P' : 'M',(convert==1e-15)  ? 'T' : 'M');
     fputs("\n       ",file);
     if(config->river_routing)
     {
       if(config->withlanduse)
-        fputs("------------------------------------------------------- ------------------------------------------ ---------------------------------------",file);
+      {
+        fputs("------------------------------------------------------- ------------------------------------------",file);
+        if(config->with_methane)
+          fputs(" ---------------------------------------",file);
+      }
       else
-        fputs("--------------------------------------- ---------------------------------- -----------------------",file);
+      {
+        fputs("--------------------------------------- ----------------------------------",file);
+        if(config->with_methane)
+          fputs(" -----------------------",file);
+      }
     }
     else
     {
       if(config->withlanduse)
-        fputs("------------------------------------------------------- ------------------------------- ---------------------------------------",file);
+      {
+        fputs("------------------------------------------------------- -------------------------------",file);
+        if(config->with_methane)
+          fputs(" ----------------------------------------",file);
+      }
       else
-        fputs("--------------------------------------- ----------------------- -----------------------",file);
+      {
+        fputs("--------------------------------------- -----------------------",file);
+        if(config->with_methane)
+          fputs(" -----------------------",file);
+      }
     }
-    fputs(" ----------------------------- --------- ----------------------- -------------------------------\n",file);
+    fputs(" -----------------------------",file);
+    if(config->with_methane)
+      fputs(" ---------",file);
+    fputs(" ----------------------- -------------------------------\n",file);
     if(year<config->firstyear)
       fputs("Spinup ",file);
     else
@@ -87,10 +108,15 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs("wd      ",file);
     if(config->river_routing)
       fputs("discharge  ",file);
-    fputs("CH4em   CH4sink CH4fire ",file);
-    if(config->withlanduse!=NO_LANDUSE)
-      fputs("CH4rice CH4grass ",file);
-    fputs("SoilC     slowSoilC VegC      SoilCH4   ",file);
+    if(config->with_methane)
+    {
+      fputs("CH4em   CH4sink CH4fire ",file);
+      if(config->withlanduse!=NO_LANDUSE)
+        fputs("CH4rice CH4grass ",file);
+    }
+    fputs("SoilC     slowSoilC VegC      ",file);
+    if(config->with_methane)
+      fputs("SoilCH4   ",file);
     fputs("SoilNO3 SoilNH4 SoilN   nuptake ndefici nlosses ninflux ",file);
     fputc('\n',file);
     fputs("------",file);
@@ -101,10 +127,14 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
-    fputs(" ------- ------- -------", file);
-    if(config->withlanduse!=NO_LANDUSE)
-      fputs(" ------- -------", file);
-    fputs(" --------- --------- --------- ---------", file);
+    if(config->with_methane)
+    {
+      fputs(" ------- ------- -------", file);
+      if(config->withlanduse!=NO_LANDUSE)
+        fputs(" ------- --------", file);
+      fputs(" ---------", file);
+    }
+    fputs(" --------- --------- ---------", file);
     fputs(" ------- ------- ------- ------- ------- ------- -------",file);
     fputc('\n',file);
   }
@@ -122,16 +152,19 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fprintf(file," %7.1f",flux.wd*convert*1000);
   if(config->river_routing)
     fprintf(file," %10.1f",flux.discharge*convert);
-  fprintf(file, " %7.1f", flux.CH4_emissions*convert*1000);
-  fprintf(file, " %7.1f", flux.CH4_sink*convert*1000);
-  fprintf(file, " %7.1f", flux.CH4_fire*convert*1000);
-  if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file, " %7.1f %7.1f", flux.CH4_rice*convert*1000,flux.CH4_grassland*convert*1000);
-
+  if(config->with_methane)
+  {
+    fprintf(file, " %7.1f", flux.CH4_emissions*convert*1000);
+    fprintf(file, " %7.1f", flux.CH4_sink*convert*1000);
+    fprintf(file, " %7.1f", flux.CH4_fire*convert*1000);
+    if(config->withlanduse!=NO_LANDUSE)
+      fprintf(file, " %7.1f %7.1f", flux.CH4_rice*convert*1000,flux.CH4_grassland*convert*1000);
+  }
   fprintf(file, " %9.1f", flux.soil.carbon*convert);
   fprintf(file, " %9.1f", flux.soil_slow.carbon*convert);
   fprintf(file, " %9.1f", flux.veg.carbon*convert);
-  fprintf(file, " %9.1f", flux.soil_CH4*convert*1000);
+  if(config->with_methane)
+    fprintf(file, " %9.1f", flux.soil_CH4*convert*1000);
   fprintf(file, " %7.2f", flux.soil_NO3*convert);
   fprintf(file, " %7.2f", flux.soil_NH4*convert);
   fprintf(file, " %7.1f", flux.soil.nitrogen*convert);
