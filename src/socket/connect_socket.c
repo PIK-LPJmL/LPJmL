@@ -46,9 +46,6 @@ Socket *connect_socket(const char *hostname, /**< name of host to connect */
   SOCKET my_socket;
   WSADATA data;
   version=MAKEWORD(1,1);
-#ifdef USE_TIMING
-  timing=0;
-#endif
   if(WSAStartup(version,&data))
   {
     fprintf(stderr,"ERROR301: Cannot start socket, rc=%d\n",WSAGetLastError());
@@ -56,9 +53,6 @@ Socket *connect_socket(const char *hostname, /**< name of host to connect */
   }
 #else
   int my_socket;
-#ifdef USE_TIMING
-  timing=0;
-#endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {

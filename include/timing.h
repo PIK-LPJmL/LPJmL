@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 r  e  a  d  _  s  o  c  k  e  t  .  c                          \n**/
+/**                     t  i  m  i  n  g  . h                                      \n**/
 /**                                                                                \n**/
-/**     Function reads bytes from socket                                           \n**/
+/**     Definition of performance timing datatype                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,33 +12,47 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#ifndef _WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-#include "types.h"
-#include "timing.h"
-#include "channel.h"
+#ifndef TIMING_H
+#define TIMING_H
 
-Bool read_socket(Socket *socket,void *data,int n)
+/* Definition of datatypes */
+
+typedef enum
 {
-  int i,j;
-#ifdef USE_TIMING
-  double tstart;
-  timing_start(tstart);
+  DRAIN_FCN,
+  FOPENOUTPUT_FCN,
+  FWRITERESTART_FCN,
+  FWRITEOUTPUT_FCN,
+  GETCLIMATE_FCN,
+  INITINPUT_FCN,
+  INITOUTPUT_FCN,
+  IRRIG_AMOUNT_RESERVOIR_FCN,
+  LITTERSOM_FCN,
+  MPI_BARRIER_FCN,
+  MPI_INIT_FCN,
+  NEWGRID_FCN,
+  PEDOTRANSFER_FCN,
+  READCONFIG_FCN,
+  READ_SOCKET_FCN,
+  SETUPANNUAL_GRID_FCN,
+  STORECLIMATE_FCN,
+  UPDATE_DAILY_CELL_FCN,
+  UPDATEDAILY_GRID_FCN,
+  WATER_STRESSED_FCN,
+  WATERUSE_FCN,
+  WITHDRAWAL_DEMAND_FCN,
+  WRITE_SOCKET_FCN,
+  N_FCN
+} Timing_id;
+
+/* Declaration of variables */
+
+extern double timing[N_FCN];
+extern char *timing_fcn[N_FCN];
+
+/* Definition of macros */
+
+#define timing_start(t) t=mrun()
+#define timing_stop(id,t) timing[id]+=mrun()-t
+
 #endif
-  i=n;
-  do
-  {
-    j=recv(socket->channel,(char *)data+n-i,i,0);
-    if(j<0)
-      return TRUE;
-    i-=j;
-  }while(i);
-#ifdef USE_TIMING
-  timing_stop(READ_SOCKET_FCN,tstart);
-#endif
-  return FALSE;
-} /* of 'read_socket' */
