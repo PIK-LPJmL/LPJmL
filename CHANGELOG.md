@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
@@ -34,6 +34,7 @@ of `major.minor.patch` with
 ### Changed
 
 - Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -with_timing`.
+- Timing function for socket I/O are replaced by two separate items `read_socket` and `write_socket`.
 
 
 ## [5.10.1] - 2025-09-30
