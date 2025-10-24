@@ -532,6 +532,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+#ifdef USE_TIMING
+  double t;
+  timing_start(t);
+#endif
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
   switch(timestep)
@@ -1952,4 +1956,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputarray(PFT_NUPTAKE2,1);
   }
   free(vec);
+#ifdef USE_TIMING
+  timing_stop(FWRITEOUTPUT_FCN,t);
+#endif
 } /* of 'fwriteoutput' */

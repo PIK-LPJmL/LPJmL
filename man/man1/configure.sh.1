@@ -3,7 +3,7 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]
+[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-with_timing] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created.
 If configure script exits with message "Unsupported operating system",
@@ -32,6 +32,9 @@ Set installation directory for LPJmL. Default is current working directory.
 .TP
 -debug
 Set debug flags and disable optimization of compiler.
+.TP
+-with_timing
+Enable timing functions for performance analysis.
 .TP
 -check
 Enable run-time checking of memory leaks and access out of bounds.
@@ -108,7 +111,7 @@ USE_UDUNITS
 Enable unit conversion in NetCDF files
 .TP
 USE_TIMING
-Enable timing for socket I/O
+Enable timing for LPJmL functions for performace analysis
 .TP
 WITH_FIRE_MOISTURE
 Enable moisture dependent fire emissions

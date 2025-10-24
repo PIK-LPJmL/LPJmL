@@ -39,6 +39,10 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #ifdef CHECK_BALANCE
   Real w_before,w_after;
 #endif
+#ifdef USE_TIMING
+  double tstart;
+  tstart=mrun();
+#endif
   soil=&stand->soil;
   soilpar = soil->par;
 #ifdef SAFE
@@ -215,6 +219,9 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
               stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */
+#ifdef USE_TIMING
+  timing[PEDOTRANSFER_FCN]+=mrun()-tstart;
+#endif
 } /* of 'pedotransfer' */
 
 /* Reference: Saxton and Rawls (2006): Soil Water Characteristic Estimates by Texture and Organic Matter for Hydrologic Solutions, Soil Sci. Soc. Am. J. 70:1569-1578 */
