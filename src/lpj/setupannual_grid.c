@@ -65,16 +65,18 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     }
     else
 #endif
-    /* read landuse pattern from file */
-    rc=getlanduse(input->landuse,grid,landuse_year,year,npft,ncft,config);
-    if(iserror(rc,config))
     {
-      if(isroot(*config))
+      /* read landuse pattern from file */
+      rc=getlanduse(input->landuse,grid,landuse_year,year,npft,ncft,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
+          fflush(stderr);
+        }
+        return TRUE; /* leave time loop */
       }
-      return TRUE; /* leave time loop */
     }
     if(config->reservoir)
       allocate_reservoir(grid,year,config);
@@ -188,7 +190,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
           getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
           getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
           foreachstand(stand,s,(grid+cell)->standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
         }
       }

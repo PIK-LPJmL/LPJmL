@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define CH4_min  4     /**< threshold value at which ebullition occur at totally vegetated soils in g*m-3*/
-#define k_e 1            /**< rate constant h-1 */
+#define k_e 1          /**< rate constant h-1 */
 
 #ifdef DEBUG
 
@@ -35,15 +35,13 @@ Real ebullition(Stand *stand,   /**< pointer to stand */
                 Real T          /**< airtemp */
                )
 {
-  Real C_thres, Q_ebull[BOTTOMLAYER], soil_moist[BOTTOMLAYER], V, epsilon_CH4[BOTTOMLAYER]; //, epsilon_CH4_u;
+  Real C_thres, Q_ebull[BOTTOMLAYER], soil_moist[BOTTOMLAYER]; //, epsilon_CH4_u;
   Real Q_ebull2;
   Real Q_ebull_day=0;
   Soil *soil;
   Pft *pft;
   int l, i,p;
   Real fpc_total_stand=0;
-  Real bCH4;
-  bCH4=0.0523*exp(-0.0236*T);
 
   soil=&stand->soil;
 #ifdef DEBUG
@@ -60,8 +58,6 @@ Real ebullition(Stand *stand,   /**< pointer to stand */
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist[l] = getsoilmoist(soil,l);
-    V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist[l],soil->wsat[l],bCH4);
   }
   C_thres = CH4_min*(2 - fpc_total_stand);
 

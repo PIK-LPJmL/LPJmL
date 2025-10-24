@@ -163,8 +163,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   {
     setasidestand=getstand(cell->standlist,s);
     foreachpft(pft,p,&setasidestand->pftlist)
-     if(pft->bm_inc.carbon>0) *alloc_today=FALSE;
-     cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
+      if(pft->bm_inc.carbon>0)
+        *alloc_today=FALSE;
+    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
   }
   else
   {

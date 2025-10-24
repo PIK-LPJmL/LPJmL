@@ -26,7 +26,6 @@
 #define LAMBDA_OPT 0.8  /* optimal Ci/Ca ratio */
 #define NHSG 4 /* number of hydrological soil groups */
 #define CCpDM 0.4763 /*leaf carbon content per dry mass  Kattge et al. 2011*/
-#define cmass 12.0    /* atomic mass of carbon */
 
 /* Definitions of datatypes */
 

@@ -97,21 +97,23 @@ int iterate(Outputfile *output, /**< Output file data */
   {
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)
+    {
       co2=receive_image_co2(config);
+      year_co2=year;
+    }
     else
 #endif
-
-    if(config->fix_co2 && year>config->fix_co2_year)
-      year_co2=config->fix_co2_year;
-    else
-      year_co2=year;
-    if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
-      break;
-
+    {
+      if(config->fix_co2 && year>config->fix_co2_year)
+        year_co2=config->fix_co2_year;
+      else
+        year_co2=year;
+      if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
+        break;
+    }
     if(config->isanomaly)
       year_co2+=config->time_shift; //CLIMBER's year zero= year 2000
-
-    if(config->with_dynamic_ch4==PRESCRIBED_CH4)
+    if(config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
     {
       if(getch4(input.climate,&ch4,year_co2,config)) /* get atmospheric CH4 concentration */
       {

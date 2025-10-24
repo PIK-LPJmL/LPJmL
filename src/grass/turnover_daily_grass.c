@@ -36,7 +36,7 @@ void turnover_daily_grass(Litter *litter,
   Real npp_for_recovery=0.0;
 #endif
 
-  if(pft->stand->type->landusetype==NATURAL  || pft->stand->type->landusetype==WETLAND)
+  if(isnatural(pft->stand))
   {
     grass=pft->data;
     grasspar=pft->par->data;

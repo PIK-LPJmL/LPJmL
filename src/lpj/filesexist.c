@@ -509,6 +509,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   else
     bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",LPJ_SHORT,TRUE);
   bad+=checkfile(&config,"co2",&config.co2_filename);
+  if(config.with_methane && config.with_dynamic_ch4==PRESCRIBED_CH4)
+    bad+=checkfile(&config,"co2",&config.ch4_filename);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",LPJ_SHORT,FALSE);
 #ifdef IMAGE

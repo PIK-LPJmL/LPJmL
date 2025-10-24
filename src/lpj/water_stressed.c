@@ -80,7 +80,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
-  //Irrigation *irrig;
   Real istress=0;
 #ifdef USE_TIMING
   double tstart;
@@ -99,7 +98,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     pft->inun_count=pft->par->inun_dur;
 
   if(pft->inun_count>pft->par->inun_dur)
-   istress = (1.0 / (1.0 + exp(-k * (pft->inun_count - pft->par->inun_dur))) - 0.5) * 2.0;
+    istress = (1.0 / (1.0 + exp(-k * (pft->inun_count - pft->par->inun_dur))) - 0.5) * 2.0;
 
   if(istress>1 || istress<0)
     fail(INVALID_INUNDSTRESS_ERR,TRUE,TRUE,"Inundation stress %g>1, isstress inun_count=%d, inun_dur=%d",
@@ -113,7 +112,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(config->permafrost)
   {
     /*adjust root layer*/
-   getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
+    getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
   }
   wr=0;
   for(l=0;l<LASTLAYER;l++)
@@ -127,7 +126,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     }
     else
       trf[l]=pft->stand->soil.w[l];
-    if(trf[l]<0.001) trf[l]=0;
+    if(trf[l]<0.001)
+      trf[l]=0;
     wr+=rootdist_n[l]*trf[l];
   }
 
@@ -139,8 +139,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
     if (pft->phen>0)
     {
-       gp_stand=gp_stand/pft->phen*fpar(pft);
-       gp_pft=gp_pft/pft->phen*fpar(pft);
+      gp_stand=gp_stand/pft->phen*fpar(pft);
+      gp_pft=gp_pft/pft->phen*fpar(pft);
     }
   }
   else

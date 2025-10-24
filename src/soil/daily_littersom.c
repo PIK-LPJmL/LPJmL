@@ -39,9 +39,9 @@ static Bool istoolarge(const Soil *soil,const Real O2[LASTLAYER],const Real CH4[
   return FALSE;
 } /* of 'istoolarge' */
 
-static Real f_wfps(const Soil *soil,      /* Soil data */
-                   int l                  /* soil layer */
-                  )                       /* return soil temperature (deg C) */
+Real f_wfps(const Soil *soil,      /* Soil data */
+            int l                  /* soil layer */
+           )                       /* return soil temperature (deg C) */
 {
   Real x;
   x=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->wpwps[l]+soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l];
@@ -160,7 +160,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
           Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps);
       fast_needed=istoolarge(soil,O2_save,CH4_save);
       if(!fast_needed)
-        *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,config,kCH4/timesteps,kO2/timesteps)*stand->frac;   //fluxes in routine written to output
+        *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,kCH4/timesteps,kO2/timesteps,config)*stand->frac;   //fluxes in routine written to output
 
       if(fast_needed )
       {
@@ -169,7 +169,7 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
         {
           hetres1=littersom(stand,gtemp_soil,cellfrac_agr,&methaneflux_litter,airtemp,pch4,&runoff,&MT_water,&ch4_sink,npft,ncft,config,
               Q10_oxid,fac_wfps,fac_temp,data.bCH4,data.bO2,response_agtop_leaves,response_agsub_wood,response_agtop_wood,timesteps*faststep);
-          *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,config,kCH4/(timesteps*faststep),kO2/(timesteps*faststep))*stand->frac;   //fluxes in routine written to output
+          *rice_em+=plant_gas_transport(stand,CH4_air,O2_air,kCH4/(timesteps*faststep),kO2/(timesteps*faststep),config)*stand->frac;   //fluxes in routine written to output
           hetres.carbon+=hetres1.carbon;
           hetres.nitrogen+=hetres1.nitrogen;
           *CH4_sink+=ch4_sink;

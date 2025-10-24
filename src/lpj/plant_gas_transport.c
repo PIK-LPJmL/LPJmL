@@ -27,10 +27,10 @@
 
 Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
                          Real CH4_air,        /**< air temperature (deg C) */
-                         Real O2_air,           /**< atmospheric CH4 content (ppm) */
-                         const Config *config, /**< LPJmL configutation */
+                         Real O2_air,         /**< atmospheric CH4 content (ppm) */
                          Real kCH4,
-                         Real kO2
+                         Real kO2,
+                         const Config *config /**< LPJmL configutation */
                         )
 {
   Pft *pft;

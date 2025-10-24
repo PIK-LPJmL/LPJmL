@@ -996,7 +996,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
-  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
+  if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
   {
     if (readclimatefilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
     {

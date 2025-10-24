@@ -40,7 +40,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   grasspar=getpftpar(pft,data);
   output=&pft->stand->cell->output;
 #ifdef CHECK_BALANCE
-  Real end,litter_alt,establish_alt,reprod1,vegsum_alt,bminc_alt,ecxess_carbon_alt;
+  Real end,litter_alt,establish_alt,reprod1=0,vegsum_alt,bminc_alt,ecxess_carbon_alt;
   Stocks start={0,0};
   Stocks stocks;
   stocks=litterstocks(litter);
@@ -66,7 +66,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
       reprod-=pft->establish.carbon;
       getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
-      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+      if(isnatural(pft->stand))
         pft->stand->cell->balance.nat_fluxes-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
@@ -74,7 +74,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     {
       getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
-      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+      if(isnatural(pft->stand))
         pft->stand->cell->balance.nat_fluxes-=reprod*pft->stand->frac;
 
       pft->establish.carbon-=reprod;
@@ -97,7 +97,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     else
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
-      if(pft->stand->type->landusetype!=NATURAL)
+      if(!isnatural(pft->stand))
         getoutput(output,FLUX_ESTABN_MG,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       pft->establish.nitrogen-=reprod;
@@ -108,7 +108,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   }
 
   /* turnover */
-  if (pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype == WETLAND)
+  if(isnatural(pft->stand))
   {
     gturn.root=grass->turn.root;
     gturn.leaf=grass->turn.leaf;

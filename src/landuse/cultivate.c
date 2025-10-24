@@ -37,11 +37,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stocks bm_inc;
   Pftcrop *crop;
   Real manure=0;
-  Real fertil;
+  Real fertil=0;
   Real landfrac;
-#ifdef CHECK_BALANCE
+#if defined CHECK_BALANCE || defined IMAGE
   int s;
   Stand *stand;
+#endif
+#ifdef CHECK_BALANCE
   Stocks start={0,0};
   Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   Real water_after=0;
@@ -54,8 +56,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 #endif
 
 #ifdef IMAGE
-  int nagr,s;
-  Stand *stand;
+  int nagr;
 #endif
   vern_date20=cell->ml.cropdates[cft].vern_date20;
   landfrac=(isother) ? cell->ml.landfrac[irrigation].grass[0] : cell->ml.landfrac[irrigation].crop[cft];

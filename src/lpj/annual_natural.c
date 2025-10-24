@@ -91,13 +91,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     light(stand,fpc_inc,config);
     free(fpc_inc);
   }
-  if(config->fire==FIRE && stand->type->landusetype!=WETLAND)
+  if(config->fire==FIRE && getlandusetype(stand)!=WETLAND)
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     getoutput(&stand->cell->output,FIREF,config)+=fire_frac;
     flux=firepft(stand,fire_frac,config);
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(getlandusetype(stand)==NATURAL)
       stand->cell->balance.nat_fluxes-=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
@@ -120,13 +120,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
     getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
     getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(isnatural(stand))
       stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(isnatural(stand))
       stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
 #endif
   }
@@ -167,7 +167,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* if land cover is prescribed: reduce FPC and Nind of PFT if observed value is exceeded */
-    if(stand->prescribe_landcover == LANDCOVERFPC && (stand->type->landusetype==NATURAL ||stand->type->landusetype==WETLAND))
+    if(stand->prescribe_landcover == LANDCOVERFPC && isnatural(stand))
     {
       fpc_obs = stand->cell->landcover[pft->par->id];
       /* correct prescribed observed FPC value by fraction of natural vegetation stand to reach prescribed value */

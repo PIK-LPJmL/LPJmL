@@ -99,19 +99,12 @@
 #define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
 #define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
 
-#define WC  12.0             /*12g/mol*/
-#define WO2 32.0             /*32g/mol*/
-#define WCH4 16.0            /*16g/mol*/
-#define WH2O 18.0            /*18g/mol*/
-#define WCO2 44.0            /*44g/mol*/
-#define WN 14.0              /*14g/mol*/
 #define O2star 2.0           /*g/m3*/
 #define BO2 0.031            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.026           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
 #define Vmax_CH4 1.92         /*Michaelis-Menten coefficient (gCH4/m3/day) ; is given mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h *24 to day * WHC4*/
 #define km_CH4 0.064          /*mikroM Michaelis-Menten coefficient (gCH4/m3);  in mikroM  convert  to 10−3 mol/m3 * WHC4 */
 #define tau_CH4 12.5         /* life time of methane (yr) */
-#define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
 #define D_O2_air 1.82e-5     /* free air oxygen diffusivity (m2s-1) Massman etal 1998*/
 #define D_O2_water 1.6e-9    /* O2 diffusivity in water (m2s-1) Khvorostynov etal. 2008*/
@@ -124,11 +117,13 @@
 #define snowdens_end 500
 #define oxid_frac 0.95          /*O2 that is required for other reduction processes, Reduced Compounds left assumed to be together 5% */
 #define Q10 1.8
+#define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define INTERCEPT 0.04021601
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
 #define MOIST  0.71890122
-
+#define K10_YEDOMA 0.025/NDAYYEAR
+#define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 
 /* Declaration of variables */
 
@@ -406,7 +401,7 @@ extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);
 extern void cmpsoilmap(const int*,int,const Config *);
-
+extern Real f_wfps(const Soil *,int);
 
 /* Definition of macros */
 

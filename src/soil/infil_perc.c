@@ -1076,7 +1076,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         getoutput(&stand->cell->output,LEACHING,config)+=(NO3surf + NO3lat)*stand->frac;
       }
       //THIS I KEEP AS IT IS, SINCE NO3 GETS LOST ON THIS STANDS
-     if(isagriculture(stand->type->landusetype))
+     if(isagriculture(stand))
         getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf+NO3lat)*stand->frac;
       if(stand->type->landusetype==GRASSLAND)
         getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=(NO3surf+NO3lat)*stand->frac;
@@ -1105,7 +1105,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
   }
 
-  if(isagriculture(stand->type->landusetype))
+  if(isagriculture(stand))
     getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
   if(stand->type->landusetype==GRASSLAND)
     getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=NO3perc_ly*stand->frac;

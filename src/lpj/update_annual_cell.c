@@ -113,9 +113,9 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
       s--; /* adjust stand index */
       continue;
     }
-    if(stand->type->landusetype == NATURAL)
+    if(getlandusetype(stand) == NATURAL)
       natfrac+=stand->frac;
-    if(stand->type->landusetype == WETLAND)
+    if(getlandusetype(stand) == WETLAND)
       wetlandfrac+=stand->frac;
   } /* of foreachstand */
 #ifdef CHECK_BALANCE
@@ -178,7 +178,7 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
 #endif
   foreachstand(stand,s,cell->standlist)
   {
-    if(stand->soil.iswetland==TRUE || stand->type->landusetype==WETLAND)
+    if(stand->soil.iswetland==TRUE || getlandusetype(stand)==WETLAND)
       getoutput(&cell->output,WETFRAC,config)+=stand->frac;
     litter_neg=checklitter(&stand->soil.litter);
     getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;

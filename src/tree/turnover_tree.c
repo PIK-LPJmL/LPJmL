@@ -64,7 +64,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
       reprod-=pft->establish.carbon;
       getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
-      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+      if(isnatural(pft->stand))
         pft->stand->cell->balance.nat_fluxes-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
@@ -72,7 +72,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
-      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+      if(isnatural(pft->stand))
         pft->stand->cell->balance.nat_fluxes-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;
@@ -87,7 +87,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.nitrogen;
       getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
-      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+      if(!isnatural(pft->stand) && pft->stand->type->landusetype!=WOODPLANTATION)
         getoutput(output,FLUX_ESTABN_MG,config)-=pft->establish.nitrogen*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
       pft->establish.nitrogen=0;
@@ -95,7 +95,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     else
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
-      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+      if(!isnatural(pft->stand) && pft->stand->type->landusetype!=WOODPLANTATION)
         getoutput(output,FLUX_ESTABN_MG,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       pft->establish.nitrogen-=reprod;

@@ -419,7 +419,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
 {
   int s,p,n_est;
   Pft *pft;
-  Stocks flux_estab,stocks;
+  Stocks flux_estab,stocks={0,0};
   Irrigation *data;
   String line;
 

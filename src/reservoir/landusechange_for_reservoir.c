@@ -98,33 +98,32 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   Stocks stocks;
   String line;
 #ifndef IMAGE
-    Real carbon;
-    Real totw_before,totw_after,balanceW;
-    Stocks tot_before={0,0},tot_after={0,0},balance={0,0},stocks2={0,0}; /* to check the water and c balance in the cells */
-    totw_before=cell->balance.awater_flux+cell->balance.excess_water;
-    foreachstand(stand,s,cell->standlist)
-      totw_before+=soilwater(&stand->soil)*stand->frac;
-    totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
-    totw_before+=cell->ml.resdata->dmass/cell->coord.area;
-    totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-    /* carbon */
-    foreachstand(stand,s,cell->standlist)
-    {
-      stocks2=standstocks(stand);
-      tot_before.carbon+=(stocks2.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-      tot_before.nitrogen+=stocks2.nitrogen*stand->frac;
-    }
-    carbon=tot_before.carbon;
-    tot_before.carbon+=cell->ml.resdata->pool.carbon;
-    tot_before.nitrogen+=cell->ml.resdata->pool.nitrogen;
-    tot_before.carbon+=cell->balance.timber_harvest.carbon;
-    tot_before.nitrogen+=cell->balance.timber_harvest.nitrogen;
-    tot_before.carbon+=cell->balance.deforest_emissions.carbon;
-    tot_before.nitrogen+=cell->balance.deforest_emissions.nitrogen;
-    tot_before.carbon-=cell->balance.flux_estab.carbon;
-    tot_before.nitrogen-=cell->balance.flux_estab.nitrogen;
+  Real carbon;
+  Real totw_before,totw_after,balanceW;
+  Stocks tot_before={0,0},tot_after={0,0},balance={0,0},stocks2={0,0}; /* to check the water and c balance in the cells */
+  totw_before=cell->balance.awater_flux+cell->balance.excess_water;
+  foreachstand(stand,s,cell->standlist)
+    totw_before+=soilwater(&stand->soil)*stand->frac;
+  totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
+  totw_before+=cell->ml.resdata->dmass/cell->coord.area;
+  totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
+  /* carbon */
+  foreachstand(stand,s,cell->standlist)
+  {
+    stocks2=standstocks(stand);
+    tot_before.carbon+=(stocks2.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    tot_before.nitrogen+=stocks2.nitrogen*stand->frac;
+  }
+  carbon=tot_before.carbon;
+  tot_before.carbon+=cell->ml.resdata->pool.carbon;
+  tot_before.nitrogen+=cell->ml.resdata->pool.nitrogen;
+  tot_before.carbon+=cell->balance.timber_harvest.carbon;
+  tot_before.nitrogen+=cell->balance.timber_harvest.nitrogen;
+  tot_before.carbon+=cell->balance.deforest_emissions.carbon;
+  tot_before.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+  tot_before.carbon-=cell->balance.flux_estab.carbon;
+  tot_before.nitrogen-=cell->balance.flux_estab.nitrogen;
 #endif
-
 
   s=s2=NOT_FOUND;
   /* first check if there is any SETASIDE in the cell */
@@ -155,7 +154,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           cutpfts(setasidestand_ir,config);
           mixsetaside(setasidestand,setasidestand_ir,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,s2);                                                        // this changes the order of the standlist
-          carbon=0;
         }
         else
         {
@@ -189,7 +187,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
             cutpfts(setasidestand_ir,config);
             mixsetaside(setasidestand,setasidestand_ir,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,s2);
-            carbon=0;
           }
           else{
            pos=addstand(&natural_stand,cell)-1;
@@ -207,18 +204,18 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         s2=NOT_FOUND;
         s2=findlandusetype(cell->standlist,SETASIDE_RF);
         if(s2==NOT_FOUND)
-         s2=findlandusetype(cell->standlist,SETASIDE_IR);
+          s2=findlandusetype(cell->standlist,SETASIDE_IR);
         if(s2==NOT_FOUND)
-         s2=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+          s2=findlandusetype(cell->standlist,SETASIDE_WETLAND);
         setasidestand=getstand(cell->standlist,s2);
         factor=min(1,(difffrac-setasidestand->frac)/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl-setasidestand->frac));
         if(factor>1.0+epsilon)
           fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
-              factor,sprintcoord(line,&cell->coord));
+                  factor,sprintcoord(line,&cell->coord));
         foreachstand(stand,s,cell->standlist)
         if(stand->type->landusetype!=NATURAL  && stand->type->landusetype!=WETLAND &&
-            stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_IR &&
-            stand->type->landusetype!=SETASIDE_WETLAND && stand->type->landusetype!=KILL)
+           stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_IR &&
+           stand->type->landusetype!=SETASIDE_WETLAND && stand->type->landusetype!=KILL)
         {
           if((difffrac-setasidestand->frac+epsilon)>stand->frac)
           {
@@ -237,7 +234,6 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
             stand->frac-=cutstand->frac;
             mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,pos);
-            carbon=0;
          }
         }
       }
@@ -306,54 +302,54 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   }
 
 #ifndef IMAGE
-    totw_after=cell->balance.awater_flux+cell->balance.excess_water;
-    foreachstand(stand,s,cell->standlist)
-      totw_after+=soilwater(&stand->soil)*stand->frac;
-    totw_after+=(cell->discharge.dmass_lake)/cell->coord.area;
-    totw_after+=cell->ml.resdata->dmass/cell->coord.area;
-    totw_after+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-    stocks2.carbon=stocks2.nitrogen=0;
-    /* carbon */
-    foreachstand(stand,s,cell->standlist)
-    {
-      stocks2=standstocks(stand);
-      tot_after.carbon+=(stocks2.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-      tot_after.nitrogen+=stocks2.nitrogen*stand->frac;
-    }
-    carbon=tot_after.carbon;
-    tot_after.carbon+=cell->ml.resdata->pool.carbon;
-    tot_after.nitrogen+=cell->ml.resdata->pool.nitrogen;
-    tot_after.carbon+=cell->balance.timber_harvest.carbon;
-    tot_after.nitrogen+=cell->balance.timber_harvest.nitrogen;
-    tot_after.carbon+=cell->balance.deforest_emissions.carbon;
-    tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
-    tot_after.carbon-=cell->balance.flux_estab.carbon;
-    tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
-    /* check if the same */
-    balance.carbon=tot_before.carbon-tot_after.carbon;
-    balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
-    balanceW=totw_before-totw_after;
-    if(fabs(balanceW)>0.01)
-    {
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
-           "water balance error in cell (%g,%g) in from_setaside_for_reservoir, balanceW=%g dmass=%g  year: %d",
-           cell->coord.lat,cell->coord.lon,balanceW, cell->ml.resdata->dmass/cell->coord.area,year);
-      fflush(stderr);
-    }
-    if(fabs(balance.nitrogen)>0.001)
-    {
-      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
-           "nitrogen balance error in cell (%g,%g) infrom_setaside_for_reservoir, balanceN=%g year: %d",
-           cell->coord.lat,cell->coord.lon,balance.nitrogen,year);
-      fflush(stderr);
-    }
-    if(fabs(balance.carbon)>0.001)
-    {
-      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
-           "carbon balance error in cell (%g,%g) stands: %d in from_setaside_for_reservoir balanceC=%g total.carbon: %g resdata->pool.carbon: %g timber: %g deforest: %g carbon: %g year: %d ",
-           cell->coord.lat,cell->coord.lon,cell->standlist->n,balance.carbon,tot_after.carbon,cell->ml.resdata->pool.carbon,cell->balance.timber_harvest.carbon,cell->balance.deforest_emissions.carbon,carbon,year);
-      fflush(stderr);
-    }
+  totw_after=cell->balance.awater_flux+cell->balance.excess_water;
+  foreachstand(stand,s,cell->standlist)
+    totw_after+=soilwater(&stand->soil)*stand->frac;
+  totw_after+=(cell->discharge.dmass_lake)/cell->coord.area;
+  totw_after+=cell->ml.resdata->dmass/cell->coord.area;
+  totw_after+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
+  stocks2.carbon=stocks2.nitrogen=0;
+  /* carbon */
+  foreachstand(stand,s,cell->standlist)
+  {
+    stocks2=standstocks(stand);
+    tot_after.carbon+=(stocks2.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    tot_after.nitrogen+=stocks2.nitrogen*stand->frac;
+  }
+  carbon=tot_after.carbon;
+  tot_after.carbon+=cell->ml.resdata->pool.carbon;
+  tot_after.nitrogen+=cell->ml.resdata->pool.nitrogen;
+  tot_after.carbon+=cell->balance.timber_harvest.carbon;
+  tot_after.nitrogen+=cell->balance.timber_harvest.nitrogen;
+  tot_after.carbon+=cell->balance.deforest_emissions.carbon;
+  tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+  tot_after.carbon-=cell->balance.flux_estab.carbon;
+  tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
+  /* check if the same */
+  balance.carbon=tot_before.carbon-tot_after.carbon;
+  balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
+  balanceW=totw_before-totw_after;
+  if(fabs(balanceW)>0.01)
+  {
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+         "water balance error in cell (%g,%g) in from_setaside_for_reservoir, balanceW=%g dmass=%g  year: %d",
+         cell->coord.lat,cell->coord.lon,balanceW, cell->ml.resdata->dmass/cell->coord.area,year);
+    fflush(stderr);
+  }
+  if(fabs(balance.nitrogen)>0.001)
+  {
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+         "nitrogen balance error in cell (%g,%g) infrom_setaside_for_reservoir, balanceN=%g year: %d",
+         cell->coord.lat,cell->coord.lon,balance.nitrogen,year);
+    fflush(stderr);
+  }
+  if(fabs(balance.carbon)>0.001)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+         "carbon balance error in cell (%g,%g) stands: %d in from_setaside_for_reservoir balanceC=%g total.carbon: %g resdata->pool.carbon: %g timber: %g deforest: %g carbon: %g year: %d ",
+         cell->coord.lat,cell->coord.lon,cell->standlist->n,balance.carbon,tot_after.carbon,cell->ml.resdata->pool.carbon,cell->balance.timber_harvest.carbon,cell->balance.deforest_emissions.carbon,carbon,year);
+    fflush(stderr);
+  }
 #endif
   return difffrac;
 } /* of 'from setaside for reservoir' */

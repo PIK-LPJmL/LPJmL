@@ -70,6 +70,31 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
 #endif
       if(config->equilsoil)
       {
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 &&
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 &&
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+          equilveg(grid+cell,npft+ncft);
+
+        if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
+          equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
+
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 &&
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+        {
+          equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+          equilveg(grid+cell,npft+ncft);
+        }
+
+        if(param.equisoil_fadeout>0)
+        {
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
+            equilveg(grid+cell,npft+ncft);
+
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
+            equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+        }
+#if 0
         if(isequilyear(year,config,param.equisoil_years))
           equilveg(grid+cell,npft+ncft);
 
@@ -87,7 +112,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
           if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
             equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
         }
-
+#endif
       }
       if(config->withlanduse)
       {
@@ -96,7 +121,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
         getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)+=nmin_soil_agr;
         getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)+=nveg_soil_agr;
         foreachstand(stand,s,(grid+cell)->standlist)
-          if(stand->type->landusetype==GRASSLAND)
+          if(getlandusetype(stand)==GRASSLAND)
             getoutput(&grid[cell].output,DELTAC_MGRASS,config)+=standstocks(stand).carbon*stand->frac;
       }
     } /* if(!grid[cell].skip) */
@@ -125,7 +150,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
           if(isroot(*config))
             printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
           exit(WRITE_OUTPUT_ERR);
-        }
+      }
     }
     /* write out annual output */
     if(fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config))
@@ -149,7 +174,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
     if(output->files[GLOBALFLUX].issocket)
       send_flux_coupler(&flux,config->outnames[GLOBALFLUX].scale,year,config);
     fflush(stdout); /* force output to console */
-    if (config->with_dynamic_ch4==DYNAMIC_CH4)
+    if (config->with_methane && config->with_dynamic_ch4==DYNAMIC_CH4)
     {
       *ch4 += flux.CH4_emissions + flux.CH4_fire - 1 / tau_CH4* *ch4;
       *pch4 = *ch4*1e-15 / 2.123;
@@ -159,7 +184,7 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
 #endif
   }
 #ifdef USE_MPI
-    if (config->with_dynamic_ch4==DYNAMIC_CH4)
+    if (config->with_methane && config->with_dynamic_ch4==DYNAMIC_CH4)
       MPI_Bcast(pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
 #endif
   if(iswriterestart(config) && year==config->restartyear)

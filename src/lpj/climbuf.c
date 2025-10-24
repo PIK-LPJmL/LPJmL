@@ -143,7 +143,7 @@ Real getgdd(const Climbuf *climbuf, Real basetemp)
       gpdays+=ndaymonth[m];
     }
   if(gpdays>0)
-      gdd/=gpdays;
+    gdd/=gpdays;
   return gdd;
 } /* of 'getgdd' */
 

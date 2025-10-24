@@ -40,8 +40,10 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
 #if defined(IMAGE) && defined(COUPLED)
   Stocks harvestroots;
   Stocks harvestleaves;
+  Pfttreepar *treepar;
 //TakeAway fractions for 4 tree components (stems[0], branches[1], leaves[2], roots[3])
   Real takeAway[4]={1.0,1.0,0.0,0.0};
+  int i;
   if(timber_frac>epsilon)
   {
     for (i=0;i<NIMAGETREEPARTS;i++)
@@ -57,6 +59,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   output=&pft->stand->cell->output;
   /* transfer wood to product pools, assume 2/3 of sapwood to be above-ground */
 #if defined(IMAGE) && defined(COUPLED)
+  treepar=pft->par->data;
   harvest.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
                  ftimber*(*nind)*standfrac*((0.84*takeAway[0])+(0.16*takeAway[1])); // [gC/m2(cell)]
   harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*

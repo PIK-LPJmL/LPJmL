@@ -16,7 +16,7 @@ include ../Makefile.inc
 
 GIT_HASH= $(shell git rev-parse HEAD)
 
-OBJ    = lpjml.$O  
+OBJ    = lpjml.$O
 
 SRC    = lpjml.c
 
@@ -50,7 +50,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LI
 
 EXE     = $(BINDIR)/lpjml$E
 
-bin: 
+bin:
 	$(MAKE) libs
 	$(MAKE) $(EXE)
 
@@ -102,10 +102,10 @@ clean:
 
 $(OBJ): $(HDRS)
 
-.c.$O: 
+.c.$O:
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 
 $(EXE): $(LPJLIBS) $(OBJ) getbuild.c
 	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -DGIT_REPO=\"$(GIT_REPO)\" -c getbuild.c
-	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 
+	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O

@@ -206,12 +206,12 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #endif
 
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(isnatural(stand))
     {
       stand->cell->npp_nat+=npp*stand->frac;
     }
 #endif
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(isnatural(stand))
       stand->cell->balance.nat_fluxes+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
@@ -228,7 +228,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     getoutput(output,WSCAL,config)      += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
 
-    if(pft->stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    if(isnatural(stand))
     {
       if(config->pft_output_scaled)
         getoutputindex(output,PFT_NPP,pft->par->id,config)+=npp*stand->frac;
@@ -261,7 +261,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+  if(isnatural(stand))
     foreachpft(pft, p, &stand->pftlist)
     {
       getoutputindex(output,NV_LAI,getpftpar(pft,id),config)+=actual_lai(pft);
@@ -276,11 +276,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+  if(isnatural(stand))
     stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
   //output->dcflux-=flux_estab.carbon*stand->frac;
   dcflux+=flux_estab.carbon;
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+  if(isnatural(stand))
     stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
 #endif
 
@@ -318,7 +318,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   end=0;
 
   foreachstand(checkstand,s,stand->cell->standlist)
-      end+=standstocks(checkstand).nitrogen*checkstand->frac;
+    end+=standstocks(checkstand).nitrogen*checkstand->frac;
   end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
       stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
   if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
@@ -327,11 +327,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
         "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
         __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
         fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
-    foreachstand(checkstand,s,checkstand->cell->standlist)
-    fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-        checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
-        crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
-        stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
+    foreachstand(checkstand,s,stand->cell->standlist)
+      fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+              checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
+              crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
+              stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
   }
 
 #endif

@@ -107,8 +107,8 @@ typedef struct
 #define agtree(ncft,nwpt) (ncft+4+nwpt)
 #define getnnat(npft,config) (npft-config->nbiomass-config->nagtree-config->nwft)
 #define getnirrig(ncft,config) (ncft+NGRASS+NBIOMASSTYPE+config->nagtree+config->nwptype)
-#define isagriculture(type) (type==AGRICULTURE || type==OTHERS || type==SETASIDE_RF || type==SETASIDE_IR || type==AGRICULTURE_TREE || type==AGRICULTURE_GRASS || type==SETASIDE_WETLAND)
 #define getlandusetype(stand) (stand)->type->landusetype
+#define isagriculture(stand) (getlandusetype(stand)==AGRICULTURE || getlandusetype(stand)==OTHERS || getlandusetype(stand)==SETASIDE_RF || getlandusetype(stand)==SETASIDE_IR || getlandusetype(stand)==AGRICULTURE_TREE || getlandusetype(stand)==AGRICULTURE_GRASS ||getlandusetype(stand) ==SETASIDE_WETLAND)
 
 /* Declaration of functions */
 

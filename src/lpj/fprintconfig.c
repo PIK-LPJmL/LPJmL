@@ -345,17 +345,20 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"external flow");
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
-  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
-    len=printsim(file,len,&count,"prescribed CH4");
-  else if (config->with_dynamic_ch4==FIXED_CH4)
+  if(config->with_methane)
   {
-    len=fputstring(file,len,", ",78);
-    count++;
-    snprintf(s,STRING_LEN,"fixed CH4 to %g ppb",param.pch4);
-    len=fputstring(file,len,s,78);
+    if (config->with_dynamic_ch4==PRESCRIBED_CH4)
+      len=printsim(file,len,&count,"prescribed CH4");
+    else if (config->with_dynamic_ch4==FIXED_CH4)
+    {
+      len=fputstring(file,len,", ",78);
+      count++;
+      snprintf(s,STRING_LEN,"fixed CH4 to %g ppb",param.pch4);
+      len=fputstring(file,len,s,78);
+    }
+    else
+      len=printsim(file,len,&count,"dynamic CH4");
   }
-  else
-    len=printsim(file,len,&count,"dynamic CH4");
   len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
@@ -624,7 +627,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   printinputfile(file,"soilpH",&config->soilph_filename,width,config);
   printinputfile(file,"co2",&config->co2_filename,width,config);
-  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
+  if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
     printinputfile(file,"ch4",&config->ch4_filename,width,config);
   printinputfile(file,"windspeed",&config->wind_filename,width,config);
   if(config->fire==SPITFIRE_TMAX)
