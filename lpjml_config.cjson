@@ -493,7 +493,7 @@ ID                               Fmt                        filename
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -4598,
+  "outputyear" :  -2099,
   "write_restart" : true, /* create restart file at year defined in "restart_year" */
   "write_restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1700 /* write restart at year */
