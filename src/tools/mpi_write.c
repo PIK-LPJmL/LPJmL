@@ -46,7 +46,14 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
       fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
     free(vec);
   }
+#ifdef USE_TIMING
+  double tstart;
+  timing_start(tstart);
+#endif
   MPI_Barrier(comm);
+#ifdef USE_TIMING
+  timing_stop(MPI_BARRIER_FCN,tstart);
+#endif
   return rc;
 } /* of 'mpi_write' */
 #endif

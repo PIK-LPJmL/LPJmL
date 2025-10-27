@@ -28,10 +28,6 @@
 #include "types.h"
 #include "channel.h"
 
-#ifdef USE_TIMING
-double timing; /**< stores time spent in socket I/O (sec) */
-#endif
-
 Socket *opentdt_socket(int port, /* port of TCP/IP connection */
                        int wait  /* maximum time for connection (sec)
                                     if zero unlimited */
@@ -51,9 +47,6 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   SOCKET my_socket;
-#ifdef USE_TIMING
-  timing=0;
-#endif
   version=MAKEWORD(1,1);
   if(WSAStartup(version,&data))
   {
@@ -64,9 +57,6 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   int my_socket;
 #if defined IMAGE && defined COUPLED
   socklen_t len;
-#endif
-#ifdef USE_TIMING
-  timing=0;
 #endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))

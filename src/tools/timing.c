@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 r  e  a  d  _  s  o  c  k  e  t  .  c                          \n**/
+/**                      t  i  m  i  n  g  .  c                                    \n**/
 /**                                                                                \n**/
-/**     Function reads bytes from socket                                           \n**/
+/**     Declaration of global variable timing and timing_fcn                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,33 +12,39 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#ifndef _WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
-#include "types.h"
-#include "timing.h"
-#include "channel.h"
+#include "lpj.h"
 
-Bool read_socket(Socket *socket,void *data,int n)
+#ifdef USE_TIMING
+
+/* Global variable for timing */
+
+double timing[N_FCN]={};
+
+char *timing_fcn[N_FCN]=
 {
-  int i,j;
-#ifdef USE_TIMING
-  double tstart;
-  timing_start(tstart);
-#endif
-  i=n;
-  do
-  {
-    j=recv(socket->channel,(char *)data+n-i,i,0);
-    if(j<0)
-      return TRUE;
-    i-=j;
-  }while(i);
-#ifdef USE_TIMING
-  timing_stop(READ_SOCKET_FCN,tstart);
-#endif
-  return FALSE;
-} /* of 'read_socket' */
+  "drain",
+  "fopenoutput",
+  "fwriterestart",
+  "fwriteoutput",
+  "getclimate",
+  "initinput",
+  "initoutput",
+  "irrig_amount_reservoir",
+  "littersom",
+  "MPI_Barrier",
+  "MPI_Init",
+  "newgrid",
+  "pedotransfer",
+  "readconfig",
+  "read_socket",
+  "setupannual_grid",
+  "storeclimate",
+  "update_daily_cell",
+  "updatedaily_grid",
+  "water_stressed",
+  "wateruse",
+  "withdrawal_demand",
+  "write_socket",
+};
+
+#endif /* of USE_TIMING */
