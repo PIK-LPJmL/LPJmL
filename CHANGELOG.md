@@ -20,10 +20,12 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.10.2] - 2025-10-24
+
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+- author: David Hötten (davidho@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 
 ### Added
 
@@ -34,6 +36,13 @@ of `major.minor.patch` with
 ### Changed
 
 - Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -with_timing`.
+- Timing function for socket I/O are replaced by two separate items `read_socket` and `write_socket`.
+
+### Fixed
+
+- `pft->fapar` computation for maize in `albedo_crop.c`
+- `albedo_green_leaves` computation for crops in `albedo_crop.c`
+- `pft->albedo`, which is now a sum of `albedo_green_leaves`, `albedo_brown_litter`, and `albedo_soil`
 
 
 ## [5.10.1] - 2025-09-30
