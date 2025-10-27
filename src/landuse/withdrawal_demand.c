@@ -36,6 +36,9 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   Real *in,*out;
   Irrigation *data;
   Stand *stand;
+#ifdef USE_TIMING
+  double t;
+#endif
 
   in=(Real *)pnet_input(config->irrig_neighbour);
   out=(Real *)pnet_output(config->irrig_neighbour);
@@ -101,6 +104,14 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   for(i=0;i<pnet_outlen(config->irrig_neighbour);i++)
     out[i]=grid[pnet_outindex(config->irrig_neighbour,i)-config->startgrid+config->firstgrid].discharge.wd_deficit;
 
+#ifdef USE_TIMING
+#ifdef USE_MPI
+  timing_start(t);
+  MPI_Barrier(config->comm);
+  timing_stop(MPI_BARRIER_FCN,t);
+#endif
+  timing_start(t);
+#endif
   pnet_exchg(config->irrig_neighbour);
 
   for(cell=0;cell<config->ngridcell;cell++)
@@ -114,5 +125,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
     }
     grid[cell].discharge.wd_demand+=grid[cell].discharge.wd_neighbour;
   }
-
+#ifdef USE_TIMING
+  timing_stop(WITHDRAWAL_DEMAND_FCN,t);
+#endif
 } /* of 'withdrawal_demand' */

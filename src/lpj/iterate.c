@@ -46,6 +46,9 @@ int iterate(Outputfile *output, /**< Output file data */
             Config *config      /**< LPJ configuration data */
            )                    /** \return last year+1 on success */
 {
+#ifdef USE_TIMING
+  double t;
+#endif
   Real co2;
   int year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
   Bool rc;
@@ -59,7 +62,13 @@ int iterate(Outputfile *output, /**< Output file data */
   {
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
+#ifdef USE_TIMING
+    timing_start(t);
+#endif
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
+#ifdef USE_TIMING
+    timing_stop(STORECLIMATE_FCN,t);
+#endif
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed, re-run with \"store_climate\" : false setting");
 
     data_save=input.climate->data;
@@ -110,7 +119,15 @@ int iterate(Outputfile *output, /**< Output file data */
       if(config->storeclimate)
         moveclimate(input.climate,&store,spinup_year);
       else
+      {
+#ifdef USE_TIMING
+        timing_start(t);
+#endif
         getclimate(input.climate,grid,firstspinupyear+spinup_year,config);
+#ifdef USE_TIMING
+        timing_stop(GETCLIMATE_FCN,t);
+#endif
+      }
     }
     else
     {
@@ -148,7 +165,13 @@ int iterate(Outputfile *output, /**< Output file data */
             climate_year=config->fix_climate_interval[0]+(year-config->fix_climate_year) % (config->fix_climate_interval[1]-config->fix_climate_interval[0]+1);
         }
 
+#ifdef USE_TIMING
+        timing_start(t);
+#endif
         rc=getclimate(input.climate,grid,climate_year,config);
+#ifdef USE_TIMING
+        timing_stop(GETCLIMATE_FCN,t);
+#endif
         if(iserror(rc,config))
         {
           if(isroot(*config))
@@ -192,7 +215,8 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       break; /* leave time loop */
     }
-    if(iterateyear(output,grid,input,co2,npft,ncft,year,config))
+    rc=iterateyear(output,grid,input,co2,npft,ncft,year,config);
+    if(rc)
       break;
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)
