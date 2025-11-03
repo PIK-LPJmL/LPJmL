@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 6.0.1
+|_____|_|   \___/|_| |_| |_|_____| Version 6.0.0
 
 
-Installation of LPJmL C Version 6.0.1
+Installation of LPJmL C Version 6.0.0
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-6.0.1.tar.gz|tar -xf -
+gzip -cd lpjml-6.0.0.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
