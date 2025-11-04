@@ -24,6 +24,7 @@
 //#define CRU_MONTHLY /* Set macro for climate input selection. If no makro is provided the default (GSWP3-W5E5) is used.*/
 //#define NETCDF_INPUT /* use NetCDF files as input */
 //#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
+//#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -67,7 +68,11 @@
   "permafrost" : true,      /* enable permafrost */
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
+#ifdef NO_METHANE
+  "with_methane" : false,    /* simulation without methane and oxygen dynamics */
+#else
   "with_methane" : true,    /* simulation with methane and oxygen dynamics */
+#endif
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
@@ -363,6 +368,7 @@ ID                               Fmt                        filename
     { "id" : "agb",              "file" : { "name" : "output/agb"}},
     { "id" : "agb_tree",         "file" : { "name" : "output/agb_tree"}},
     { "id" : "soilc_slow",       "file" : { "name" : "output/soilc_slow"}},
+#ifndef NO_METHANE
     { "id" : "ch4_ebullition",   "file" : { "timestep" : "monthly", "name" : "output/ch4_ebullition"}},
     { "id" : "ch4_plant_gas",    "file" : { "timestep" : "monthly", "name" : "output/ch4_plant_gas"}},
     { "id" : "ch4_emissions",    "file" : { "timestep" : "monthly", "name" : "output/ch4_emissions"}},
@@ -375,9 +381,10 @@ ID                               Fmt                        filename
     { "id" : "ch4_agr",          "file" : { "timestep" : "monthly", "name" : "output/ch4_agr"}},
     { "id" : "ch4_grassland",    "file" : { "timestep" : "monthly", "name" : "output/ch4_grassland"}},
     { "id" : "meansoilo2",       "file" : { "timestep" : "annual", "name" : "output/meansoilo2"}},
+    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output/meansoilch4"}},
+#endif
     { "id" : "gw_storage",       "file" : { "timestep" : "annual", "name" : "output/gw_store"}},
     { "id" : "gw_outflux",       "file" : { "timestep" : "monthly", "name" : "output/gw_outflux"}},
-    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output/meansoilch4"}},
     { "id" : "napplied_mg",      "file" : { "name" : "output/napplied_mg"}},
     { "id" : "bnf_mg",           "file" : { "name" : "output/bnf_mg"}},
     { "id" : "flux_estabn_mg",   "file" : { "name" : "output/flux_estabn_mg"}},
@@ -429,6 +436,7 @@ ID                               Fmt                        filename
 
   "output" :
   [
+#ifndef NO_METHANE
     { "id" : "methanogenesis",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/methanogenesis_spinup.nc"}},
     { "id" : "ch4_litter",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_litter_spinup.nc"}},
     { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_emissions_spinup.nc"}},
@@ -438,6 +446,7 @@ ID                               Fmt                        filename
     { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup.nc"}},
     { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/meansoilo2_spinup.nc"}},
     { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/meansoilch4_spinup.nc"}},
+#endif
     { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_spinup.nc"}},
     { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow_spinup.nc"}},
     { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_layer_spinup.nc"}},
