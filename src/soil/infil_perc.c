@@ -118,16 +118,17 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
 #endif
   isrice=ispftinstand(&stand->pftlist,config->rice_pft);
+  soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS  ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+  {
     data_irrig=stand->data;
+    if(config->rw_manage && data_irrig->irrigation)
+      soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate affects only non irrigated fields*/
+  }
   else
     data_irrig=NULL;
 
-  soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==OTHERS  ||
-      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
-    soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate affects only non irrigated fields*/
   for(l=0;l<NTILLLAYER;l++)
     infil_layer[l]=0.0;
 
