@@ -107,6 +107,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       cutstand->frac=min(difffrac,stand->frac-minnatfrac);
       reclaim_land(stand,cutstand,cell,year>=param.luc_burn_startyear ? FALSE: config->luc_timber,npft+ncft,config);
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
+      tillage(&cutstand->soil, param.residue_frac);
       updatelitterproperties(cutstand,cutstand->frac);
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(cutstand,NULL,NULL,cutstand->frac);
