@@ -123,7 +123,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS  ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
   {
     data_irrig=stand->data;
-    if(config->rw_manage && data_irrig->irrigation)
+    if(config->rw_manage && !data_irrig->irrigation)
       soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate affects only non irrigated fields*/
   }
   else
