@@ -70,7 +70,7 @@
 #define HAG_BETA_ERR 50
 #define INVALID_INUNDSTRESS_ERR 51
 #define WRITE_OUTPUT_ERR 52
-#define NEGATIV_SOIL_CARBON 53
+#define NEGATIVE_SOIL_CARBON_ERR 53
 
 /* Definition of macros */
 

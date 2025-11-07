@@ -422,7 +422,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #endif
         if(soil->pool[l].fast.carbon<-epsilon || soil->pool[l].slow.carbon<-epsilon)
         {
-          fail(NEGATIV_SOIL_CARBON,TRUE,TRUE,"1 negative soil carbon: Lat: %g Lon: %g fast.carbon: %g slow.carbon: %g",stand->cell->coord.lat,stand->cell->coord.lon,soil->pool[l].fast.carbon,soil->pool[l].slow.carbon);
+          fail(NEGATIVE_SOIL_CARBON_ERR,TRUE,TRUE,"Negative soil carbon in (%s), fast.carbon: %g slow.carbon: %g",
+               sprintcoord(line,&stand->cell->coord),soil->pool[l].fast.carbon,soil->pool[l].slow.carbon);
         }
 #ifdef YEDOMA
         if (soil->YEDOMA>0.0 && response[LASTLAYER-1]>0.0)
@@ -664,8 +665,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"2 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
         if(soil->pool[l].fast.carbon<-epsilon || soil->pool[l].slow.carbon<-epsilon)
         {
-          fail(NEGATIV_SOIL_CARBON,TRUE,TRUE,"negative soil carbon: Lat: %g Lon: %g fast.carbon[%d]: %g slow.carbon: %g decom_sum.carbon: %g decay_litter: %g",
-              stand->cell->coord.lat,stand->cell->coord.lon,l,soil->pool[l].fast.carbon,soil->pool[l].slow.carbon,decom_sum.carbon,decay_litter);
+          fail(NEGATIVE_SOIL_CARBON_ERR,TRUE,TRUE,"Negative soil carbon in cell (s), fast.carbon[%d]: %g slow.carbon: %g decom_sum.carbon: %g decay_litter: %g",
+               sprintcoord(line,&stand->cell->coord),l,soil->pool[l].fast.carbon,soil->pool[l].slow.carbon,decom_sum.carbon,decay_litter);
         }
 #endif
 
