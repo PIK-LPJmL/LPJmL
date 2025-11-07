@@ -57,7 +57,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/config.h $(INC)/intlist.h $(INC)/queue.h $(INC)/pnet.h\
           $(INC)/discharge.h $(INC)/channel.h $(INC)/reservoir.h $(INC)/soil.h\
           $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/hydrotope.h\
-          $(INC)/coupler.h $(INC)/couplerpar.h $(INC)/bstruct.h
+          $(INC)/coupler.h $(INC)/couplerpar.h $(INC)/bstruct.h $(INC)/wetland.h
 
 LIBDIR  = ../../lib
 BIN     = ../../bin
