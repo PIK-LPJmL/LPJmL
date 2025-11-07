@@ -47,7 +47,6 @@ struct stand
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   Real Hag_Beta;              /* Haggard et al. 2005, effects of slope on runoff 2005*/
   Real slope_mean;
-  int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */
