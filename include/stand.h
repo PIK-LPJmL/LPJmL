@@ -49,6 +49,9 @@ struct stand
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   Real afire_frac;            /**< fraction of grid cell burnt this year */
   Queue fires;                /**< queue for multi-day fires */
+  Real Hag_Beta;              /* Haggard et al. 2005, effects of slope on runoff 2005*/
+  Real slope_mean;
+  //int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */
@@ -75,7 +78,7 @@ extern void freestandlist(Standlist);
 extern Real standfracsum(const Standlist);
 extern void mixsoil(Stand *,const Stand *,int,int,const Config *);
 extern Bool check_lu(const Standlist ,Real,int,Landusetype,Bool);
-extern Bool check_stand_fracs(const Cell *,Bool);
+extern Bool check_stand_fracs2(const Cell *,Real,int,Bool,const char *,int);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);
 extern int findlandusetype(const Standlist,Landusetype);
@@ -91,8 +94,9 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real *,Real *,Real *,Real,Real,
                            Real,Real,Real,Real *,int,int,int,const Config *);
 
-extern Real infil_perc_irr(Stand *,Real,Real,Real *,int,int,const Config *);
-extern Real infil_perc_rain(Stand *,Real,Real,Real *,int,int,const Config *);
+extern Real infil_perc(Stand *,Real,Real,Real,Real *,int,int,const Config *);
+extern Real plant_gas_transport(Stand*, Real, Real,Real,Real,const Config *);
+extern Real ebullition(Stand*, Real);
 extern Real albedo_stand(const Stand *);
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);
@@ -103,6 +107,8 @@ extern void freelandcover(Landcover,Bool);
 
 #define getstand(list,index) ((Stand *)getlistitem(list,index))
 #define foreachstand(stand,i,list) for(i=0;i<getlistlen(list) && (stand=getstand(list,i));i++)
+#define check_stand_fracs(cell,lakefrac,ncft,isfail) check_stand_fracs2(cell,lakefrac,ncft,isfail,__FUNCTION__,__LINE__)
+#define isnatural(stand) (getlandusetype(stand)==NATURAL || getlandusetype(stand)==WETLAND)
 
 /*
  * The following macros allow to call the stand-specific functions like virtual

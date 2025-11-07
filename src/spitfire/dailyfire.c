@@ -228,11 +228,14 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     getoutput(&stand->cell->output,DFMC,config)+=fuel.M[0];
 
   }
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    stand->cell->balance.nat_fluxes-=total_fire.carbon;
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->cell->balance.fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->soil.NO3[0]+=total_fire.nitrogen*param.q_ash;
   output->dcflux+=total_fire.carbon;
+  stand->cell->balance.aCH4_fire+=emission.ch4*stand->frac;
   getoutput(output,FIREEMISSION_CO2,config)+=emission.co2*stand->frac;
   getoutput(output,FIREEMISSION_CO,config)+=emission.co*stand->frac;
   getoutput(output,FIREEMISSION_CH4,config)+=emission.ch4*stand->frac;

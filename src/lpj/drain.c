@@ -74,7 +74,7 @@ void drain(Cell grid[],         /**< Cell array */
                                                        grid[cell].ml.resdata->reservoir.capacity);
       }
       else
-        grid[cell].discharge.dmass_lake+=grid[cell].discharge.drunoff*grid[cell].coord.area;
+        grid[cell].discharge.dmass_lake+=grid[cell].discharge.drunoff*grid[cell].coord.area;   //WHY BOTH mfin AND dmass_lake
     }
 
     /* release from reservoirs*/

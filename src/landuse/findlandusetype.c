@@ -21,7 +21,7 @@ int findlandusetype(const Standlist standlist, /**< stand list */
   int s;
   const Stand *stand;
   foreachstand(stand,s,standlist)
-    if(stand->type->landusetype==landusetype)
+    if(getlandusetype(stand)==landusetype)
       return s;
   return NOT_FOUND;
 } /* of 'findlandusetype' */

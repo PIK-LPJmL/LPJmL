@@ -199,17 +199,12 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     bstruct_finish(file);
     return NULL;
   }
-  if(config->river_routing && !config->river_routing_restart)
+  if(config->river_routing_restart!=config->river_routing)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR181: River-routing enabled while disabled in %s file '%s'.\n",
-              type,filename);
-    bstruct_finish(file);
-    return NULL;
+      fprintf(stderr,"WARNING040: River-routing setting %s is different from %s in %s file '%s'.\n",
+              bool2str(config->river_routing),bool2str(config->river_routing_restart),type,filename);
   }
-  else if(isroot(*config) && !config->river_routing && config->river_routing_restart)
-    fprintf(stderr,"WARNING039: River-routing disabled while enabled in %s file '%s'.\n",
-            type,filename);
   if(isroot(*config) && config->sdate_option_restart==NO_FIXED_SDATE && config->sdate_option>NO_FIXED_SDATE && config->firstyear-config->nspinup>config->sdate_fixyear)
     fprintf(stderr,"ERROR245: Sowing dates are missing in restart file, sowing date fixed in year %d, but simulation starts in %d.\n",
             config->sdate_fixyear,config->firstyear-config->nspinup);

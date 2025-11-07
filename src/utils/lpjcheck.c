@@ -24,10 +24,11 @@
 #include "agriculture.h"
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
+#include "wetland.h"
 #include "urban.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 16 /* number of stand types / land use types as defined in landuse.h*/
 
 #define USAGE "\nUsage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]] [-pedantic]\n"\
@@ -53,8 +54,10 @@ int main(int argc,char **argv)
   String line,line2;
   FILE *file;
   standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
   standtype[SETASIDE_RF]=&setaside_rf_stand;
   standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
   standtype[AGRICULTURE]=&agriculture_stand;
   standtype[MANAGEDFOREST]=&managedforest_stand;
   standtype[GRASSLAND]=&grassland_stand;
@@ -138,7 +141,7 @@ int main(int argc,char **argv)
 
   if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,LPJ_USAGE))
   {
-    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
+    fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   }
   else
   {

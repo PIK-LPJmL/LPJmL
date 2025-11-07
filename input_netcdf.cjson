@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  c  j  s  o  n                    \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.10.2                                                                 \n**/
+/** Version 6.0.0                                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,6 +16,11 @@
 {
   "soil" : { "fmt" : "cdf", "var" : "soilcode", "name" : "/p/projects/biodiversity/cru_netcdf/soil_30arcmin_13_types.nc"},
   "drainage" : { "fmt" : "cdf", "var" : "index", "name" : "/p/projects/biodiversity/cru_netcdf/drainage.nc"},
+  "kbf" :          { "fmt" : "cdf", "var" : "KBF", "name" :"input_VERSION2/kbf.nc"},
+  "slope_mean" :   { "fmt" : "cdf", "var" : "slope_mean", "name" : "input_VERSION2/GloSlope-30as_mean.nc"},
+  "slope_min"  :   { "fmt" : "cdf", "var" : "slope_min", "name" : "input_VERSION2/GloSlope-30as_min.nc"},
+  "slope_max"  :   { "fmt" : "cdf", "var" : "slope_max", "name" : "input_VERSION2/GloSlope-30as_max.nc"},
+  "hydrotopes" :   { "fmt" : "cdf", "var" : "hydrotopes", "name" : "input_VERSION2/hydro2_shuffle_new.nc"},
   "neighb_irrig" : { "fmt" : "cdf", "var" : "index", "name" : "/p/projects/biodiversity/cru_netcdf/neighb_irrig.nc"},
   "elevation" : { "fmt" : "cdf", "var" : "elevation", "name" : "/p/projects/biodiversity/cru_netcdf/elevation.nc"},
   "lakes" : { "fmt" : "cdf", "var" : "lakefrac", "name" : "/p/projects/biodiversity/cru_netcdf/glwd_lakes_and_rivers.nc"},

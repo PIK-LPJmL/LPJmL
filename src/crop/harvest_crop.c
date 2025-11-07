@@ -49,6 +49,7 @@ void harvest_crop(Output *output,      /**< Output data */
     res_onfield = config->residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
   else
     res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
+
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].agtop.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
   update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,

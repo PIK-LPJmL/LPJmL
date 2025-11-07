@@ -15,8 +15,8 @@
 
 include ../../Makefile.inc
 
-OBJS    = update_daily_cell.$O update_annual.$O init_annual.$O\
-          update_monthly_grid.$O newgrid.$O iterate.$O outputindex.$O\
+OBJS    = update_daily_cell.$O update_annual_cell.$O init_annual.$O\
+          update_monthly_grid.$O newgrid.$O iterate.$O  outputindex.$O\
           iterateyear.$O initoutput.$O fopenoutput.$O getb.$O\
           fcloseoutput.$O fprintincludes.$O flux_sum.$O\
           freeoutput.$O freegrid.$O freecell.$O fscanoutput.$O\
@@ -34,7 +34,7 @@ OBJS    = update_daily_cell.$O update_annual.$O init_annual.$O\
           fprintconfig.$O freepftpar.$O drain.$O initdrain.$O\
           openconfig.$O freeconfig.$O readconfig.$O initconfig.$O\
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
-          fscanlimit.$O filesexist.$O freeoutputvar.$O fprintpftnames.$O\
+          fscanlimit.$O filesexist.$O freeoutputvar.$O icefrac.$O fprintpftnames.$O\
           fprintflux.$O fwriteoutput.$O freadoutputdata.$O fwriteoutputdata.$O\
           outputfilesize.$O nowdf.$O printlicense.$O isannual.$O\
           initmpiconfig.$O fscanparam.$O fprintparam.$O\
@@ -50,9 +50,11 @@ OBJS    = update_daily_cell.$O update_annual.$O init_annual.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\
+          wetland.$O copypft.$O plant_gas_transport.$O\
+          check_glaciated.$O fwriteoutput_ch4.$O\
           fscanerrorlimit.$O createconfig.$O freadstocks.$O fwritestocks.$O\
           updateannual_grid.$O updatedaily_grid.$O initmonthly_grid.$O\
-          setupannual_grid.$O
+          setupannual_grid.$O ismethane_output.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -69,6 +71,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/param.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
           $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
+          $(INC)/wetland.h $(INC)/hydrotope.h $(INC)/icefrac.h\
           $(INC)/coupler.h $(INC)/couplerpar.h $(INC)/bstruct.h $(INC)/timing.h
 
 

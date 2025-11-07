@@ -43,6 +43,11 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->outputdir);
   free(config->inputdir);
   free(config->restartdir);
+  freefilename(&config->kbf_filename);
+  freefilename(&config->slope_filename);
+  freefilename(&config->slope_min_filename);
+  freefilename(&config->slope_max_filename);
+  freefilename(&config->hydrotopes_filename);
   free(config->arglist);
   free(config->sim_name);
   free(config->json_suffix);
@@ -93,12 +98,27 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->with_radiation)
   {
     if(config->with_radiation!=RADIATION_SWONLY)
+    {
       freefilename(&config->lwnet_filename);
+      if(config->isanomaly)
+        freefilename(&config->delta_lwnet_filename);
+    }
     freefilename(&config->swdown_filename);
+    if(config->isanomaly)
+      freefilename(&config->delta_swdown_filename);
   }
   else
     freefilename(&config->cloud_filename);
+  if(config->isanomaly)
+  {
+    freefilename(&config->delta_temp_filename);
+    freefilename(&config->delta_prec_filename);
+    if(config->with_glaciers)
+      freefilename(&config->icefrac_filename);
+  }
   freefilename(&config->co2_filename);
+  if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
+    freefilename(&config->ch4_filename);
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)

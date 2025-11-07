@@ -77,6 +77,8 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->leaf_phenology=phenology_grass;
   pft->fwrite=fwrite_grass;
   pft->mix_veg=mix_veg_grass;
+  pft->mix_veg_stock=mix_veg_stock_grass;
+  pft->copy=copy_grass;
   pft->fire=fire_grass;
   pft->fprint=fprint_grass;
   pft->fread=fread_grass;
@@ -88,6 +90,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->lai=lai_grass;
   pft->init=init_grass;
   pft->free=free_grass;
+  pft->leafc=leafc_grass;
   pft->vegc_sum=vegc_sum_grass;
   pft->vegn_sum=vegn_sum_grass;
   pft->fprintpar=fprintpar_grass;

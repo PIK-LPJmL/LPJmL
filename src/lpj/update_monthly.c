@@ -1,0 +1,93 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**              u  p  d  a  t  e  _  m  o  n  t  h  l  y  .  c                    \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function performs necessary updates after iteration over one               \n**/
+/**     month                                                                      \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "lpj.h"
+
+void update_monthly(Cell *cell,  /**< Pointer to cell */
+                    Real mtemp,  /**< monthly average temperature (deg C) */
+                    Real mprec,  /**< monthly average precipitation (mm) */
+                    int month,   /**< month (0..11) */
+                    const Config *config /**< LPJmL configuration */
+                   )
+{
+  int p;
+  Pft *pft;
+  int s;
+  Stand *stand;
+#ifdef CHECK_BALANCE
+  Stocks start = {0,0};
+  Stocks end = {0,0};
+  Stocks st;
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    start.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=st.nitrogen*stand->frac;
+  }
+#endif
+  monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
+  if(cell->ml.dam) /* to store the monthly inflow and demand */
+    update_reservoir_monthly(cell,month,config);
+  foreachstand(stand,s,cell->standlist)
+  {
+    getlag(&stand->soil,month);
+    foreachpft(pft,p,&stand->pftlist)
+      turnover_monthly(&stand->soil.litter,pft,config);
+  } /* of foreachstand */
+#if defined IMAGE && defined COUPLED
+  if(cell->ml.image_data!=NULL)
+  {
+    //cell->ml.image_data->mirrwatdem[month]+=cell->output.irrig+cell->output.mconv_loss_evap+cell->output.mconv_loss_drain;
+    //cell->ml.image_data->mevapotr[month] += (cell->output.transp + cell->output.evap + cell->output.interc + cell->output.mevap_lake + cell->output.mevap_res + cell->output.mconv_loss_evap + cell->output.mconv_loss_drain);
+    cell->ml.image_data->mpetim[month] += cell->output.mpet;
+  }
+#endif
+  cell->hydrotopes.wetland_wtable_monthly*=ndaymonth1[month];
+  cell->hydrotopes.wtable_monthly*=ndaymonth1[month];
+  if(month==0)
+  {
+    cell->hydrotopes.wtable_min=cell->hydrotopes.wtable_monthly;
+    cell->hydrotopes.wtable_max=cell->hydrotopes.wtable_monthly;
+    cell->hydrotopes.wetland_wtable_max=cell->hydrotopes.wetland_wtable_monthly;
+  }
+  else
+  {
+    cell->hydrotopes.wtable_min=min(cell->hydrotopes.wtable_min,cell->hydrotopes.wtable_monthly);
+    cell->hydrotopes.wtable_max=max(cell->hydrotopes.wtable_max,cell->hydrotopes.wtable_monthly);
+    cell->hydrotopes.wetland_wtable_max=max(cell->hydrotopes.wetland_wtable_max,cell->hydrotopes.wetland_wtable_monthly);
+  }
+  cell->hydrotopes.wetland_wtable_mean+=cell->hydrotopes.wetland_wtable_monthly;
+  cell->hydrotopes.wtable_mean+=cell->hydrotopes.wtable_monthly;
+  /* for water balance check */
+  cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
+#ifdef CHECK_BALANCE
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    end.nitrogen+=st.nitrogen*stand->frac;
+  }
+  if(fabs(start.carbon-end.carbon)>0.0001)
+      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: C_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
+  if(fabs(start.nitrogen-end.nitrogen)>0.001)
+      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: N_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
+#endif
+
+
+} /* of 'monthly_update' */
