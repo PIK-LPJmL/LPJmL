@@ -188,15 +188,16 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
             mixsetaside(setasidestand,setasidestand_ir,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,s2);
           }
-          else{
-           pos=addstand(&natural_stand,cell)-1;
+          else
+          {
+            pos=addstand(&natural_stand,cell)-1;
             cutstand=getstand(cell->standlist,pos);
             cutstand->frac=difffrac-setasidestand->frac;
             reclaim_land(setasidestand_ir,cutstand,cell,config->luc_timber,npft+ncft,config);
             setasidestand_ir->frac-=difffrac-setasidestand->frac;
             mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
             delstand(cell->standlist,pos);
-         }
+          }
         }
       }
       if(difffrac>setasidestand->frac)
@@ -213,29 +214,29 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
                   factor,sprintcoord(line,&cell->coord));
         foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL  && stand->type->landusetype!=WETLAND &&
-           stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_IR &&
-           stand->type->landusetype!=SETASIDE_WETLAND && stand->type->landusetype!=KILL)
-        {
-          if((difffrac-setasidestand->frac+epsilon)>stand->frac)
+          if(stand->type->landusetype!=NATURAL  && stand->type->landusetype!=WETLAND &&
+             stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_IR &&
+             stand->type->landusetype!=SETASIDE_WETLAND && stand->type->landusetype!=KILL)
           {
-            /* remove all vegetation on irrigated setaside */
-            cutpfts(stand,config);
-            mixsetaside(setasidestand,stand,intercrop,year,npft+ncft,config);
-            delstand(cell->standlist,s);
-            s--;
+            if((difffrac-setasidestand->frac+epsilon)>stand->frac)
+            {
+              /* remove all vegetation on irrigated setaside */
+              cutpfts(stand,config);
+              mixsetaside(setasidestand,stand,intercrop,year,npft+ncft,config);
+              delstand(cell->standlist,s);
+              s--;
+            }
+            else
+            {
+              pos=addstand(&natural_stand,cell)-1;
+              cutstand=getstand(cell->standlist,pos);
+              cutstand->frac=difffrac-setasidestand->frac;
+              reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
+              stand->frac-=cutstand->frac;
+              mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
+              delstand(cell->standlist,pos);
+            }
           }
-          else
-          {
-            pos=addstand(&natural_stand,cell)-1;
-            cutstand=getstand(cell->standlist,pos);
-            cutstand->frac=difffrac-setasidestand->frac;
-            reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
-            stand->frac-=cutstand->frac;
-            mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
-            delstand(cell->standlist,pos);
-         }
-        }
       }
     }
   }
