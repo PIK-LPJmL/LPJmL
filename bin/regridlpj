@@ -119,6 +119,7 @@ fi
 if  regridclm $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/soil_30arcmin_13_types.bin $dir/soil_$name.clm
 then
   regridsoil $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
+  regridclm $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/kbf.clm $dir/kbf_$name.clm
   if [ "$cru" = "1" ]
   then
     regridclm $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm $dir/tmp_$name.clm
@@ -156,7 +157,7 @@ then
   regridclm $opt -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_mean.clm $dir/slope_mean_$name.clm
   regridclm $opt -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_min.clm $dir/slope_min_$name.clm
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_max.clm $dir/slope_max_$name.clm
-  regridclm $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/hydro2_shuffle.bin $dir/hydro_$name.clm
+  regridclm $opt -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/hydro2_shuffle_new.clm $dir/hydro_$name.clm
 
   if [ "$lu" = "1" ]
   then
@@ -195,7 +196,7 @@ EOF
   "slope_mean"       : { "fmt" : "clm", "name" : "$dir/slope_mean_$name.clm"},
   "slope_min"        : { "fmt" : "clm", "name" : "$dir/slope_min_$name.clm"},
   "slope_max"        : { "fmt" : "clm", "name" : "$dir/slope_max_$name.clm"},
-  "kbf"              : { "fmt" : "cdf", "var" : "KBF", "name" :"input_VERSION2/kbf_mar.nc"},
+  "kbf"              : { "fmt" : "clm", "name" : "$dir/kbf_$name.clm"},
   "hydrotopes"       : { "fmt" : "clm", "name" : "$dir/hydro_$name.clm"},
   "landuse"          : { "fmt" : "clm", "name" : "$dir/landuse_$name.clm"},
   "wateruse"         : { "fmt" : "clm", "name" : "$dir/wateruse_1900_2000_$name.clm"},
@@ -218,7 +219,7 @@ EOF
   "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
   "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
   "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
-  "ch4"              : { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1841-2022.dat"},
+  "ch4"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/CH4_concentration_1841-2022.dat"},
   "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
   "no3deposition"    : { "fmt" : "clm", "name" : "$dir/no3_deposition_$name.clm"},
   "nh4deposition"    : { "fmt" : "clm", "name" : "$dir/nh4_deposition_$name.clm"},
