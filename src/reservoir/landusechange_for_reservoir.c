@@ -235,8 +235,8 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
               stand->frac-=cutstand->frac;
               mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
               delstand(cell->standlist,pos);
-           }
-        }
+            }
+          }
       }
     }
   }
