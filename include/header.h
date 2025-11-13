@@ -159,7 +159,6 @@ extern void fprintjson(FILE *,const char *,const char *,const char *,const char 
 
 #define printheader(header) fprintheader(stdout,header)
 #define printmap(map) fprintmap(stdout,map)
-#define restartsize() (5*sizeof(int)+sizeof(Seed)) /* size of Restartheader without padding */
 #define getmapsize(map) getlistlen((map)->list)
 #define getmapitem(map,i) getlistitem((map)->list,i)
 
