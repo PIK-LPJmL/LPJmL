@@ -51,7 +51,7 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
       if(bstruct_writereal(file,"dmass_sum",grid[cell].discharge.dmass_sum))
         break;
 #ifdef COUPLING_WITH_FMS
-      if(bstruct_writereal(file,"laketemp",&grid[cell].laketemp))
+      if(bstruct_writereal(file,"laketemp",grid[cell].laketemp))
         break;
 #endif
       if(fwritequeue(file,"queue",grid[cell].discharge.queue))
