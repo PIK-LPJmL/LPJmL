@@ -52,6 +52,7 @@
   "lightning" : { "fmt" : "cdf", "var" : "lightning", "name" : "cru_netcdf/lightning.nc"},
   "human_ignition" : { "fmt" : "cdf", "var" : "human_ignition", "name" : "cru_netcdf/human_ignition.nc"},
   "popdens" : { "fmt" : "cdf", "var" : "popdens", "name" : "cru_netcdf/popdens_HYDE_1901_2010_bi.nc "},
+  "ch4" : { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1700-2022.dat"},
   "co2" : { "fmt" : "txt", "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
   "wateruse" : { "fmt" : "cdf", "var" : "wateruse", "name" : "input_VERSION2/wateruse_1900_2000.nc"} /* water consumption for industry, household and livestock */
 }
