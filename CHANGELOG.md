@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: David Hötten (davidho@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Added
 
@@ -56,6 +56,8 @@ of `major.minor.patch` with
 - Help text for `-h` option of `printclm` and `regridclm` corrected.
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
 - Double entry of `getlag.$O` removed in `src/soil/Makefile`.
+- Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
+- Function `fwritecell.c` fixed to compile with `-DCOUPLING_WITH_FMS` flag.
 
 
 ## [5.10.2] - 2025-10-24
