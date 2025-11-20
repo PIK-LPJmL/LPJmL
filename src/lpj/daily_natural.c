@@ -278,7 +278,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   if(isnatural(stand))
     stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
-  //output->dcflux-=flux_estab.carbon*stand->frac;
   dcflux+=flux_estab.carbon;
   if(isnatural(stand))
     stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;

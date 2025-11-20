@@ -59,9 +59,6 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
          fabs(frac_sum-1),frac_sum, lakefrac,sprintcoord(line,&cell->coord),cell->ml.reservoirfrac,routine,linenr);
 #else
     Real frac_sum2;
-    //int j;
-    //for(j=0;j<ncft;j++)
-      //fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
     fprintf(stderr,"grassfrac_rainfed: %g grassfrac_irr: %g\n",(cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1]),
         (cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]));
     fprintf(stderr,"ml.cropfrac_rf: %g ml.cropfrac_ir: %g  ml.cropfrac_wl: %g \n",
@@ -72,9 +69,6 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
       frac_sum2+=stand->frac;
       fprintf(stderr,"frac[%s]= %g standNR: %d iswetland: %d\n",stand->type->name,stand->frac,s,stand->soil.iswetland);
     }
-//    foreachstand(stand,s,cell->standlist)
-//     foreachpft(pft,p,&stand->pftlist)
-//            fprintf(stderr,"frac[%s]= %g standNR: %d PFT: %s \n",stand->type->name,stand->frac,s,pft->par->name);
     fail(STAND_FRAC_SUM_ERR,TRUE,FALSE,
         "Sum of stand fractions differs from 1 by %g, lakefrac: %g, fracsum: %g  fracsum2: %g reservoirfrac: %g cell (%s) from functtion %s() in line %d.\n",
          (frac_sum-1),cell->lakefrac,frac_sum,frac_sum2,cell->ml.reservoirfrac,sprintcoord(line,&cell->coord),routine,linenr);

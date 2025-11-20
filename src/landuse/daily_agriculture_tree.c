@@ -286,7 +286,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
           }
           break;
         case EVERGREEN:
-    //         if(pft->gdd>0 && pft->gdd<1/pft->par->ramp)
           if(pft->gdd>0)
           {
 
@@ -414,8 +413,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     else
       fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
     update_irrig(stand,agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft,ncft,config);
-    //if(setaside(stand->cell,stand,config->pftpar,TRUE,npft,data->irrigation,year))
-    // return TRUE;
   }
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config);

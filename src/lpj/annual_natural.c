@@ -22,6 +22,7 @@
 Bool annual_natural(Stand *stand,         /**< Pointer to stand */
                     int npft,             /**< number of natural pfts */
                     int UNUSED(ncft),     /**< number of crop PFTs */
+                    Real natfrac,         /**< natural and wetland fraction */
                     int year,             /**< year (AD) */
                     Bool isdaily,         /**< daily temperature data? */
                     Bool UNUSED(intercrop), /**< intercropping enabled (TRUE/FALSE) */
@@ -179,8 +180,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     }
     if (stand->type->landusetype == WETLAND)
       getoutputindex(&stand->cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
-    else if(stand->type->landusetype == NATURAL)
-      getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
+    if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
+      getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc*stand->frac/natfrac;
 #ifdef SAFE
     if(pft->fpc<0)
       fail(INVALID_FPC_ERR,TRUE,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);

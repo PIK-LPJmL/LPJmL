@@ -24,6 +24,7 @@
 Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
                          int npft,             /**< number of natural pfts */
                          int ncft,             /**< number of crop PFTs */
+                         Real UNUSED(natarea),
                          int year,             /**< year (AD) */
                          Bool isdaily,         /**< daily temperature data? */
                          Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
@@ -80,7 +81,6 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         treepar=pft->par->data;
 #if defined IMAGE && defined COUPLED
         /* reset stored bmtree yield in years of harvest before harvest, if multiple trees, they need to be harvested in parallel */
-         // als groeitijd >= rotatietijd EN groeitijd is een veelvoud van rotatietijd ( % is modulo in C) dan reset store_bmtree_yield
         if(biomass_tree->growing_time >= treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
           stand->cell->ml.image_data->store_bmtree_yield=0;
 #endif

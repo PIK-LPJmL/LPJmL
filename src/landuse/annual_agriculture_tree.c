@@ -26,6 +26,7 @@
 Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
                              int npft,             /**< number of natural pfts */
                              int ncft,             /**< number of crop PFTs */
+                             Real UNUSED(natarea),
                              int year,             /**< year (AD) */
                              Bool isdaily,         /**< daily temperature data? */
                              Bool intercrop,       /**< enable (intercropping) (TRUE/FALSE) */
@@ -81,13 +82,10 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
       pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
-      //printf("PFT=%s, fpc=%g\n",pft->par->name,pft->fpc);
       if(istree(pft))
       {
         treepar=pft->par->data;
 
-        //printf("PFT:%s height:%g lai %g fpc %g stemdiam %g leafC %g sapC %g heartC %g crownarea %g debt %g\n",pft->par->name, tree->height,
-        //       lai_tree(pft), pft->fpc, pow(tree->height/20,1.0/4), tree->ind.leaf.carbon, tree->ind.sapwood.carbon, tree->ind.heartwood.carbon, tree->crownarea, tree->ind.debt.carbon);
         /*Allocating cell specified k_est and sapling_C*/
         if(pft->stand->cell->ml.manage.k_est[pft->par->id]>0)
           k_est_thiscell=pft->stand->cell->ml.manage.k_est[pft->par->id];
@@ -120,8 +118,6 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         if(data->age>treepar->rotation)
         {
           yield=harvest_tree(pft);
-          //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
-          //printf("index=%d, yield=%g\n",index,yield);
           getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
           getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
           if(config->pft_output_scaled)

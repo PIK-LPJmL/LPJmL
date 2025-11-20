@@ -18,11 +18,11 @@
 #include "lpj.h"
 #include "grass.h"
 #include "grassland.h"
-//#define DEBUG2
 
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
                       int ncft,             /**< number of crop PFTs */
+                      Real natarea,
                       int year,             /**< simulation year (AD) */
                       Bool isdaily,         /**< daily temperature data? */
                       Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */

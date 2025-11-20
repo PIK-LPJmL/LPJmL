@@ -95,5 +95,4 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
     isdead=TRUE;
   }
   return isdead;
-  //fpc_tree(pft1);
 } /* of 'mix_veg_stock_tree' */

@@ -81,8 +81,6 @@ Real ebullition(Stand *stand,   /**< pointer to stand */
         soil->CH4[l] -= Q_ebull2;
         Q_ebull[l]+=Q_ebull2;
       }
-//      else                       //needs to be passed to the next layer
-//        break;
     }
     Q_ebull_day+=Q_ebull[0];
   }

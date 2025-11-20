@@ -129,7 +129,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
      }
      else
      {
-       //fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4),checkstand->frac);
        start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
        start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
      }
@@ -391,7 +390,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
           p--; /* adjust loop variable */
         }
         else
-          // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
           pft->bm_inc.carbon=0;
       }
       else
@@ -642,7 +640,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     else
     {
-      //fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4),checkstand->frac);
       end+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac ;
     }
   }

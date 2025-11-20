@@ -137,9 +137,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       getoutput(&grid[cell].output,WD_RES,config)+=grid[cell].discharge.act_irrig_amount_from_reservoir/grid[cell].coord.area;
     }
   }
-  //fprintf(stdout,"WATERUSE1: \n");
 
-  //if(config->groundwater_irrig) // after reservoirs.. irrigation water is extracted from groundwater reservoir
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -186,7 +184,6 @@ void wateruse(Cell *grid,          /**< LPJ grid */
           grid[cell].discharge.dmass_gw=0.0;
         }
       }     
-      //fprintf(stdout,"WATERUSE: \n");
       distribute_water(&grid[cell],npft,ncft,month,config);
     }
   }

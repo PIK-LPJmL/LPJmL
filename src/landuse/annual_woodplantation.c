@@ -23,6 +23,7 @@
 Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                            int npft,             /**< number of natural pfts */
                            int ncft,             /**< number of crop PFTs */
+                           Real natareat,
                            int year,             /**< year (AD) */
                            Bool isdaily,         /**< daily temperature data? */
                            Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */

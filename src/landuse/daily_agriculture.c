@@ -137,7 +137,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
 
-  if(!config->river_routing)
+  if(!config->river_routing && config->irrig_scenario!=NO_IRRIGATION)
     irrig_amount(stand,data,npft,ncft,month,config);
 
   nnat=getnnat(npft,config);
