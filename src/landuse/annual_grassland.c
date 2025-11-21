@@ -22,7 +22,7 @@
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
                       int ncft,             /**< number of crop PFTs */
-                      Real natarea,
+                      Real UNUSED(natfrac), /**< natural and wetland fraction */
                       int year,             /**< simulation year (AD) */
                       Bool isdaily,         /**< daily temperature data? */
                       Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */

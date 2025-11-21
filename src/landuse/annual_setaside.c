@@ -22,7 +22,7 @@
 Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
                      int npft,             /**< number of natural PFTs */
                      int UNUSED(ncft),     /**< number of crop PFTs */
-                     Real natareat,
+                     Real UNUSED(natfrac), /**< natural and wetland fraction */
                      int year,             /**< simulation year */
                      Bool isdaily,         /**< daily temperature data? */
                      Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */

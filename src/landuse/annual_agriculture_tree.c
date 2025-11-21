@@ -26,7 +26,7 @@
 Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
                              int npft,             /**< number of natural pfts */
                              int ncft,             /**< number of crop PFTs */
-                             Real UNUSED(natarea),
+                             Real UNUSED(natfrac), /**< natural and wetland fraction */
                              int year,             /**< year (AD) */
                              Bool isdaily,         /**< daily temperature data? */
                              Bool intercrop,       /**< enable (intercropping) (TRUE/FALSE) */
