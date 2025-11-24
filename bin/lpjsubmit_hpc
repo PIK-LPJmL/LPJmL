@@ -252,6 +252,11 @@ ntask=$1 # number of tasks
 shift 1
 args=$*  # runtime arguments for lpjml
 
+if [ "$couple" != "" ]
+then
+  args=" -couple \$(hostname) $args"
+fi
+
 # check, whether LPJ configuration is valid
 
 if $LPJROOT/bin/lpjcheck $quiet $nocheck $args ;
