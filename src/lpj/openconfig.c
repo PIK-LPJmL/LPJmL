@@ -299,7 +299,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
               free(options);
               return NULL;
             }
-          config->coupled_port_set=TRUE;
+            config->coupled_port_set=TRUE;
           }
         }
       }
