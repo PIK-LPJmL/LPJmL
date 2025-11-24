@@ -20,6 +20,19 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+## Changed
+
+- Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
+
+## Fixed
+
+- `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
+
+
 ## [5.10.2] - 2025-10-24
 
 ### Contributors
