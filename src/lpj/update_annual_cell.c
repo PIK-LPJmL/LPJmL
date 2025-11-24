@@ -33,7 +33,7 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
   Pftcroppar *croppar;
   Real mintemp[N];
   Stocks litter_neg;
-  Real natfrac,wetlandfrac;
+  Real natfrac,wetlandfrac,natwetfrac;
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
   Stocks start = {0,0};
@@ -99,14 +99,17 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
 #endif
    if((year<config->firstyear && config->sdate_option<PRESCRIBED_SDATE) || config->sdate_option==NO_FIXED_SDATE)
      update_cropdates(cell->ml.cropdates,ncft);
-
+  natwetfrac=0;
+  foreachstand(stand,s,cell->standlist)
+    if(isnatural(stand))
+      natwetfrac+=stand->frac;
   foreachstand(stand,s,cell->standlist)
   {
     stand->prescribe_landcover = config->prescribe_landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
     //getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
-    if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
+    if(annual_stand(stand,npft,ncft,natwetfrac,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
       delstand(cell->standlist,s);
@@ -144,7 +147,7 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
   if (fabs(start.nitrogen - end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr, "N_ERROR update annual: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen - end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
-  getoutputindex(&cell->output,FPC,0,config) += natfrac;
+  getoutputindex(&cell->output,FPC,0,config) += natfrac+wetlandfrac;
   getoutputindex(&cell->output,WPC,0,config) += wetlandfrac;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;

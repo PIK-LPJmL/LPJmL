@@ -204,9 +204,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       {
         marginal+=soil->w[l] * soil->whcs[l];
         soil->w[l]=0;
-//        fprintf(stderr,"NR1 in %s Cell (%s) layer: %d negative soil water after evap and transp w= %.6f w_fw= %.6f evap=  %.6f transp=  %.6f iswetland= %d\n",__FUNCTION__,
-//            sprintcoord(line,&stand->cell->coord),l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],soil->iswetland);
-//        fflush(stderr);
       }
     }
     /* reallocate water above field capacity to freewater; needed here since thawing permafrost can increase soil->w */
@@ -217,7 +214,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f at line %d in waterbalance().\n",
               l, soil->w[l], l, soil->w_fw[l], l,soil->ice_depth[l],l, soil->whcs[l],__LINE__);
 #endif
-      //marginal+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
       soil->w[l]-=soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1;
 #ifdef DEBUG
       fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f at line %d in waterbalance().\n",
@@ -284,13 +280,11 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       }
       if(stand->frac_g[l]< -0.01 || stand->frac_g[l]>1.01)
       {
-        //fprintf(stderr,"ERROR214: Cell (%s) frac_g error in waterbalance(), frac_g= %3.6f layer= %d w= %3.9f w_fw= %3.9f evap= %3.9f transp= %3.9f marginal= %3.9f standtype= %s\n",
-        //        sprintcoord(line,&stand->cell->coord),stand->frac_g[l],l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],marginal,stand->type->name);
+
         if(stand->frac_g[l]>1)
           stand->frac_g[l]=1;
         if(stand->frac_g[l]< -0.01)
           stand->frac_g[l]=0;
-        //fflush(stderr);
       }
     }
 

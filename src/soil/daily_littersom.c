@@ -96,8 +96,11 @@ Stocks daily_littersom(Stand *stand,                      /**< [inout] pointer t
     check(response_agtop_wood);
     response_agsub_wood=newvec(Real,ncft+npft);
     check(response_agsub_wood);
-    moist=(soil->w[0]*soil->whcs[0]+(soil->wpwps[0]*(1-soil->ice_pwp[0]))+soil->w_fw[0])
-      /(soil->wsats[0]-soil->ice_depth[0]-soil->ice_fw[0]-(soil->wpwps[0]*soil->ice_pwp[0]));
+    if((soil->wsats[0]-soil->ice_depth[0]-soil->ice_fw[0]-(soil->wpwps[0]*soil->ice_pwp[0]))==0)
+      moist=0;
+    else
+      moist=(soil->w[0]*soil->whcs[0]+(soil->wpwps[0]*(1-soil->ice_pwp[0]))+soil->w_fw[0])
+        /(soil->wsats[0]-soil->ice_depth[0]-soil->ice_fw[0]-(soil->wpwps[0]*soil->ice_pwp[0]));
 
     w_agtop=soil->litter.agtop_wcap>epsilon ? soil->litter.agtop_moist/soil->litter.agtop_wcap : moist;
 

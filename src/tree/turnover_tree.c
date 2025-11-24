@@ -108,7 +108,6 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     if(israingreen(pft))
     {
       /* TODO what to do about N here? */
-      //cmass_excess=tree->aphen_raingreen/(pft->par->longevity*NDAYYEAR)*pft->bm_inc-pft->bm_inc;
       if (cmass_excess>0.0)
       {
         if (cmass_excess>pft->bm_inc.carbon)

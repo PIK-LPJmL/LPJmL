@@ -18,8 +18,6 @@
 #define b_som   2.7   /**> ! Clapp Hornberger paramater for oragnic soil (Letts, 2000)*/
 #define DENOMINATOR 3.81671282562382 // log(1500) - log(33)
 
-#define DENOMINATOR 3.81671282562382 // log(1500) - log(33)
-
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
                   Real *absimm,

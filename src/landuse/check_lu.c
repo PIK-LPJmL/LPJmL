@@ -44,7 +44,6 @@ Bool check_lu(const Standlist standlist, /**< List of stands */
       {
         pft=getpft(&stand->pftlist,0);
         data=stand->data;
-      //foreachpft(pft,p,&stand->pftlist)
         if(pft->par->id==id && data->irrigation==irrigation)
           return FALSE;
       }

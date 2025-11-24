@@ -627,7 +627,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #ifdef CHECK_BALANCE
   Real qcharge=qcharge_tot;
 #endif
- //*******************************//
+
   if (soil->wtable>0)
     S=soil->wsat[lwt]*(1.-pow((1.+(soil->wtable/soil->psi_sat[lwt])),(-1./soil->b[lwt])));
   else
@@ -765,7 +765,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   // water table above frost table
 
   if(stand->type->landusetype==WETLAND || stand->type->landusetype==NATURAL || isrice)
-    maxdrain=50;
+    maxdrain=50;                                // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
   else
     maxdrain=100;                               // increasing due to managed drainage on agricultural land
 
@@ -785,7 +785,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         wtsub+=soildepth[l];                                                      // summation of soildepth for layers below water table
       }
       if (wtsub > 0)
-        k_perch=k_perch/wtsub;                                                   // ks is adjusted in pedotransfer.c
+        k_perch=k_perch/wtsub;                                                    // ks is adjusted in pedotransfer.c
       drain_perched = q_perch_max*k_perch*(frost_depth-soil->wtable);
       drain_perched_out=drain_perched;
       drain_perched*=-1;
@@ -813,7 +813,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   else //if not frozen
   {
-    //==========  Topographic runoff at WTABLE ==================================
+    //==========  Topographic runoff at WATER TABLE ==================================
 
     if(stand->type->landusetype==WETLAND || stand->type->landusetype==NATURAL || isrice)
       fff=2;       //m-1 decay factor originally 2.5 in CLM4.5
@@ -839,7 +839,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     if(lwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                   // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886) icesum should be always zero here, need to check
-    rsub_top_max=maxdrain*max(0.001,tan(stand->slope_mean*M_PI/180));                          // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
+    rsub_top_max=maxdrain*max(0.001,tan(stand->slope_mean*M_PI/180));
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*max(0,soil->wtable)/1000);
     rsub_top=min(rsub_top,active_wa);
 

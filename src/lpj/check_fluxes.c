@@ -178,7 +178,6 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
   balanceW=totw-cell->balance.totw-cell->balance.aprec-cell->balance.aMT_water+cell->balance.awater_flux+cell->balance.excess_water;
   if(year>startyear && fabs(balanceW)>param.error_limit.w_local)
-  //if(year>1511 && fabs(balanceW)>1.5)
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "Invalid water balance in year %d in cell %d (%s) of %.2f\n"
            "=====001: cell->totw: %.2f totw: %.2f lateral_water: %.2f\n"

@@ -25,7 +25,6 @@
 #include "woodplantation.h"
 #include "urban.h"
 #include "wetland.h"
-//#define CHECK_BALANCE
 
 typedef enum {PASTURE=1, OTHER_PASTURE, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION,URBANIZATION } Cultivation_type;
 
@@ -1447,8 +1446,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
-    start.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;//-stand->cell->balance.flux_estab.carbon;
-    start.nitrogen+=st.nitrogen*stand->frac;//-stand->cell->balance.flux_estab.nitrogen;
+    start.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=st.nitrogen*stand->frac;
     start_w += soilwater(&stand->soil)*stand->frac;
   }
   start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+

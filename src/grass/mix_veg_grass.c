@@ -19,7 +19,6 @@ void mix_veg_grass(Pft *pft,Real scaler)
 {
   Pftgrass *grass;
   grass=pft->data;
-  //pft->nind*=scaler;
 
   grass->ind.leaf.carbon*=scaler;
   grass->ind.leaf.nitrogen*=scaler;
@@ -83,5 +82,4 @@ Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Conf
     isdead=TRUE;
   }
   return isdead;
-  //fpc_grass(pft1);
 } /* of 'mix_veg_stock_grass' */

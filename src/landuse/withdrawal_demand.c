@@ -70,7 +70,6 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
         }
 
       /* wateruse for industry, household and livestock */
-    //  grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse;// dit moet waarschijnlijk weg
 #ifdef IMAGE
       grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse_wd;
 
