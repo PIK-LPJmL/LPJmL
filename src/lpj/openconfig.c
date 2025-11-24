@@ -281,23 +281,26 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
         else
         {
-           config->coupled_host=(*argv)[++i];
-           pos=strchr(config->coupled_host,':');
-           if(pos!=NULL)
-           {
-             *pos='\0';
-             config->coupled_port=strtol(pos+1,&endptr,10);
-             if(pos+1==endptr || config->coupled_port<1
-                              || config->coupled_port>USHRT_MAX)
-             {
-               if(isroot(*config))
-                 fprintf(stderr,
-                         "ERROR193: Invalid number %d for coupled port.\n",
-                         config->coupled_port);
-               free(options);
-               return NULL;
-             }
-           }
+          free(config->coupled_host);
+          config->coupled_host=strdup((*argv)[++i]);
+          config->coupled_host_set=TRUE;
+          pos=strchr(config->coupled_host,':');
+          if(pos!=NULL)
+          {
+            *pos='\0';
+            config->coupled_port=strtol(pos+1,&endptr,10);
+            if(pos+1==endptr || config->coupled_port<1
+                             || config->coupled_port>USHRT_MAX)
+            {
+              if(isroot(*config))
+                fprintf(stderr,
+                        "ERROR193: Invalid number %d for coupled port.\n",
+                        config->coupled_port);
+              free(options);
+              return NULL;
+            }
+          config->coupled_port_set=TRUE;
+          }
         }
       }
 #endif
