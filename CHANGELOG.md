@@ -31,7 +31,7 @@ of `major.minor.patch` with
   - calculation of a dynamic wetland area in `update_wetlands.c`
   - extends soil pools by the oxygen pool
   - ground water pool added
-  - caluculates subdaily littersom.c
+  - calculates subdaily `littersom.c`
     - oxic decomposition depending on oxygen content
     - diffusion of methane and oxygen
     - methane production and oxidation added
@@ -39,15 +39,24 @@ of `major.minor.patch` with
   - root respiration consumes oygen
   - new routines `ebullition` and `plant_gas_transport.c`
   - extensive restructuring of `landusechange.c`
-  - new SETASIDE_WETLAND added, converted from wetlands to grow rice
+  - new `SETASIDE_WETLAND`  added, converted from wetlands to grow rice
   - rice always irrigated and assuming a levelled water table
   - introducing new, inundation insensitive, PFTs: `tropical broadleaved evergreen tree floodtolerant`, `C3 graminoid flood tolerant`, `Sphagnum moss`
   - new PFT parameters `ist_m`. `idt_d`, and `alpha_e` for inundation tolerance and ebullition suppression
   - new soil parameters `psi_sat`, `b`. `efold`. `ctimax`
   - configuration flag `with_methane` added to run LPJmL6 with or without methane and oxygen dynamics (original daily version of littersom is called)
   - reading new inputs `slope_mean`, `slope_max`, `slope_min`,`kbf value`,`CH4 (atmospheric CH4 concentration`, `hydrotops (CTI values)`,`climate delta values (optional)`,`icefrac (optional)`
-  - optional reading in of climate anomalies for CLIMBER applications
-  - output writing of multiyear means possible
+  - boolean flag `"natNBP_only"` defined to calculate NBP from natural vegetaton only
+  - optional input for ice cover can be set by `"with_glaciers" : true`
+  - optional reading in of climate anomalies for CLIMBER applications, enabled by setting `"anomaly" : true`. The following inputs are read:
+```java
+"icefrac" :      { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_ice_0.5.clm"}, /* if with_glaciers = true */
+"delta_year" : 100, /* time step in anomalies (yrs) */
+"delta_temp" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_temp_0.5.clm"},
+"delta_prec" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_prec_0.5.clm"},
+"delta_lwnet" :  { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_lwnet_0.5.clm"},
+"delta_swdown" : { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_swdown_0.5.clm"},
+```
   
 ### Changed
 
