@@ -26,7 +26,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- extensive development for calculating methane and wetland dynamics, including:
+- extensive development for calculating methane and wetland dynamics (Schaphoff et al. in prep.), including:
   - calculation of the water table in `infil_perc.c` (merged `infil_perc_rain.c` and `infil_perc_irr.c`)
   - calculation of a dynamic wetland area in `update_wetlands.c`
   - extends soil pools by the oxygen pool
@@ -45,7 +45,7 @@ of `major.minor.patch` with
   - new PFT parameters `ist_m`. `idt_d`, and `alpha_e` for inundation tolerance and ebullition suppression
   - new soil parameters `psi_sat`, `b`. `efold`. `ctimax`
   - configuration flag `with_methane` added to run LPJmL6 with or without methane and oxygen dynamics (original daily version of littersom is called)
-  - reading new inputs `slope_mean`, `slope_max`, `slope_min`,`kbf value`,`CH4 (atmospheric CH4 concentration`, `hydrotops (CTI values)`,`climate delta values (optional)`,`icefrac (optional)`
+  - reading new inputs `slope_mean`, `slope_max`, `slope_min`,`kbf value`,`CH4 (atmospheric CH4 concentration)`, `hydrotops (CTI values)`,`climate delta values (optional)`,`icefrac (optional)`
   - optional reading in of climate anomalies for CLIMBER applications
   - output writing of multiyear means possible
   
