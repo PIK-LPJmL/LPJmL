@@ -436,33 +436,6 @@ ID                               Fmt                        filename
 
   "output" :
   [
-#ifndef NO_METHANE
-    { "id" : "methanogenesis",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/methanogenesis_spinup.nc"}},
-    { "id" : "ch4_litter",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_litter_spinup.nc"}},
-    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_emissions_spinup.nc"}},
-    { "id" : "ch4_oxidation",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_oxidation_spinup.nc"}},
-    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_sink_spinup.nc"}},
-    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition_spinup.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup.nc"}},
-    { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/meansoilo2_spinup.nc"}},
-    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/meansoilch4_spinup.nc"}},
-#endif
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_spinup.nc"}},
-    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow_spinup.nc"}},
-    { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_layer_spinup.nc"}},
-    { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/litc_spinup.nc"}},
-    { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/vegc_spinup.nc"}},
-    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup.nc"}},
-    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wpc_spinup.nc"}},
-    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mwater_spinup.nc"}},
-    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/npp_spinup.nc"}},
-    { "id" : "pft_npp",          "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/pft_npp_spinup.nc"}},
-    { "id" : "gw_storage",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/gw_store_spinup.nc"}},
-    { "id" : "gw_outflux",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/gw_outflux_spinup.nc"}},
-    { "id" : "wetfrac",          "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wetfrac_spinup.nc"}},
-    { "id" : "seepage",          "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mseepage_spinup.nc"}},
-    { "id" : "runoff_surf",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mrunoff_surf_spinup.nc"}},
-    { "id" : "runoff_lat",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mrunoff_lat_spinup.nc"}},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
