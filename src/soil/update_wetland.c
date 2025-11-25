@@ -508,6 +508,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           else
           {
             slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
+            slope/= (exp(-lambda * cell->slope_min)- exp(-lambda * slope_max));                                                             //normalising the mean slope for a specific range
           }
           if(cell->slope<slope)
             slope=cell->slope;
