@@ -27,6 +27,19 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
     stand->soil.w_fw[0]+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap);
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
+#ifdef SAFE
+  String line;
+  int l;
+  foreachsoillayer(l)
+  if (stand->soil.w[l]< -epsilon || stand->soil.w_fw[l]< -epsilon )
+  {   fprintf(stderr,"\n\ndenitrification Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater((&(stand->soil)),l),allice((&(stand->soil)),l),stand->soil.wsats[l],stand->soil.litter.agtop_moist);
+      fflush(stderr);
+      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s  \n\n",
+          l,stand->soil.w[l],stand->soil.w_fw[l],stand->type->name);
+  }
+#endif
+
 } /* of 'updatelitterproperties' */
 
 Real calc_litter_dm_sum(const Soil *soil)

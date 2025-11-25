@@ -20,7 +20,7 @@ void turnover_monthly_grass(Litter *litter,Pft *pft,const Config *config)
   Pftgrass *grass;
   Pftgrasspar *grasspar;
   Output *output;
-  if(pft->stand->type->landusetype==NATURAL)
+  if(isnatural(pft->stand))
   {
     grasspar=pft->par->data;
     grass=pft->data;

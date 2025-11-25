@@ -109,11 +109,11 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
         soil->NH4[l]-=NH4_up[l]*n_uptake/nupsum;
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NO3=%g<0 in layer %d, NO3_up=%g, nuptake=%g, nupsum=%g",
-               sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,NO3_up[l],n_uptake,nupsum);
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NO3=%g<0 in layer %d, NO3_up=%g, nuptake=%g, nupsum=%g",
+                sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,NO3_up[l],n_uptake,nupsum);
         if (soil->NH4[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Cell (%s) NH4=%g<0 in layer %d, NH4_up=%g, nuptake=%g, nupsum=%g",
-               sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,NH4_up[l],n_uptake,nupsum);
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NH4=%g<0 in layer %d, NH4_up=%g, nuptake=%g, nupsum=%g",
+                sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,NH4_up[l],n_uptake,nupsum);
 #endif
       }
     }
@@ -159,7 +159,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
        n_fixed=npp_contr_biol_n_fixation(pft, soil, n_deficit, config);
        pft->bm_inc.nitrogen+=n_fixed;
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
-       if(pft->stand->type->landusetype!=NATURAL)
+       if(!isnatural(pft->stand))
          getoutput(&pft->stand->cell->output,BNF_MG,config)+=n_fixed*pft->stand->frac;
        pft->stand->cell->balance.influx.nitrogen+=n_fixed*pft->stand->frac;
     }

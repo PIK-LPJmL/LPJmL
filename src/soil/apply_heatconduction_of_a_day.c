@@ -38,8 +38,8 @@
 STATIC void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
 STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const Real *, int);
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
-STATIC void thomas_algorithm(const double *, const double *, const double *,const double *, double *);
 STATIC void timestep_implicit(Real *, const Real *, const Real *, const Real *, const Real);
+#define MAXTIMESTEP 1000
 
 /******** main function *********/
 void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< flag to indicate if the temperatures all have the same signs */
@@ -95,7 +95,7 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
   }
   else
   {
-    fail(INVALID_TEMP_SIGN_ERR,FALSE,"uniform_temp_sign=%d is not one of the three possible values",uniform_temp_sign);
+    fail(INVALID_TEMP_SIGN_ERR,TRUE,FALSE,"uniform_temp_sign=%d is not one of the three possible values",uniform_temp_sign);
   }
 } /* of 'apply_heatconduction_of_a_day' */
 
@@ -160,9 +160,17 @@ STATIC void use_enth_scheme(Real * enth,
     if (dt_inv < dt_inv_temporary)
       dt_inv = dt_inv_temporary;
   }
+  if(dt_inv>MAXTIMESTEP)
+  {
+    for (j=0; j<NHEATGRIDP; ++j)
+      {
+       fprintf(stderr,"problems in use_enth_scheme dt_inv:%g inv_c_unfro=%g inv_c_fro=%g lam_unfro_dBh=%g lam_fro_dBh=%g \n",dt_inv,inv_c_unfro[j],inv_c_fro[j],lam_unfro_dBh[j],lam_fro_dBh[j]);
+      }
+    dt_inv=MAXTIMESTEP;
+  }
 #ifdef SAFE
   if(isnan(dt_inv))
-    fail(INVALID_TIMESTEP_ERR, TRUE, "Invalid time step in %s", __FUNCTION__);
+    fail(INVALID_TIMESTEP_ERR, TRUE,FALSE, "Invalid time step in %s", __FUNCTION__);
 #endif
   timesteps = (int)(day2sec(dt_inv)) + 1; /* get number timesteps that ensures small enough timestep */
   dt = day2sec(1.0 / timesteps); /* final timestep */
@@ -262,7 +270,7 @@ STATIC void timestep_implicit(Real * temp,
   rhs[0] -= 2 * temp[0] * sub[0];
 
   /* --- solve tridiagonal system with the thomas algorithm --- */
-  thomas_algorithm(sub, maind, sup, rhs, &temp[1]);
+  thomas_algorithm(sub, maind, sup, rhs, &temp[1], NHEATGRIDP);
 } /* of 'timestep_implicit' */
 
 /* This function arranges the matrix for the implicit timestep.
@@ -301,32 +309,3 @@ STATIC void arrange_matrix(Real * a,          /* sub diagonal elements  */
   b[NHEATGRIDP-1] = 1 - a[NHEATGRIDP-1];
   c[NHEATGRIDP-1] = 0;
 } /* of 'arrange_matrix' */
-
-/* This function performs the standard thomas algorithm to solve a
-   tridiagonal matrix system. */
-STATIC void thomas_algorithm(const double *a, /* sub diagonal elements */
-                             const double *b, /* main diagonal elements */
-                             const double *c, /* super diagonal elements */
-                             const double *d, /* right hand side */
-                             double *x        /* solution */
-                            )
-{
-  double c_prime[NHEATGRIDP-1];
-  double d_prime[NHEATGRIDP];
-  int i;
-
-  /* modify coefficients by progressing in forward direction */
-  /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
-  c_prime[0] = c[0] / b[0];
-  for (i=1; i<NHEATGRIDP-1; i++)
-    c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i-1]);
-
-  d_prime[0] = d[0] / b[0];
-  for (i=1; i<NHEATGRIDP; i++)
-    d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i-1]);
-
-  /* back substitution */
-  x[NHEATGRIDP-1] = d_prime[NHEATGRIDP-1];
-  for (i = NHEATGRIDP-2; i>=0; i--)
-    x[i] = d_prime[i] - c_prime[i] * x[i+1];
-} /* of 'thomas_algorithm' */

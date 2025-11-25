@@ -19,6 +19,7 @@
 #define kk100 0.01
 #define readint(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
 #define readreal(file,name,val) if(bstruct_readreal(file,name,val)) return TRUE
+#define readint(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
 #define readrealarray(file,name,val,size) if(bstruct_readrealarray(file,name,val,size)) return TRUE
 
 Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
@@ -142,7 +143,7 @@ Real getgdd(const Climbuf *climbuf, Real basetemp)
       gpdays+=ndaymonth[m];
     }
   if(gpdays>0)
-      gdd/=gpdays;
+    gdd/=gpdays;
   return gdd;
 } /* of 'getgdd' */
 

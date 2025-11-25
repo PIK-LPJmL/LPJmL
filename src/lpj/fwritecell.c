@@ -40,10 +40,8 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
       break;
     if(config->river_routing)
     {
-#ifdef IMAGE
       if(bstruct_writereal(file,"dmass_gw",grid[cell].discharge.dmass_gw))
         break;
-#endif
       if(bstruct_writereal(file,"dfout",grid[cell].discharge.dfout))
         break;
       if(bstruct_writereal(file,"dmass_river",grid[cell].discharge.dmass_river))
@@ -65,6 +63,10 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
     }
     if(!grid[cell].skip)
     {
+      if (bstruct_writereal(file,"lateral_water",grid[cell].lateral_water))
+        break;
+      if (bstruct_writereal(file,"NO3_lateral",grid[cell].NO3_lateral))
+        break;
       if(fwritestocksarray(file,"estab_storage_tree",grid[cell].balance.estab_storage_tree,2))
         break;
       if(fwritestocksarray(file,"estab_storage_grass",grid[cell].balance.estab_storage_grass,2))
@@ -79,7 +81,13 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
         break;
       if(fwritestandlist(file,"standlist",grid[cell].standlist,npft+ncft))
         break;
+      if (bstruct_writereal(file,"ground_st",grid[cell].ground_st))
+        break;
+      if (bstruct_writereal(file,"ground_st_am",grid[cell].ground_st_am))
+        break;
       if(bstruct_writereal(file,"cropfrac_rf",grid[cell].ml.cropfrac_rf))
+        break;
+      if(bstruct_writereal(file,"cropfrac_wl",grid[cell].ml.cropfrac_wl))
         break;
       if(bstruct_writereal(file,"cropfrac_ir",grid[cell].ml.cropfrac_ir))
         break;
@@ -100,6 +108,8 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
       if(bstruct_writeintarray(file,"sowing_month",grid[cell].ml.sowing_month,2*ncft))
         break;
       if(bstruct_writeintarray(file,"gs",grid[cell].ml.gs,2*ncft))
+        break;
+      if (fwritehydrotope(file,"hydrotope",&grid[cell].hydrotopes))
         break;
       if(grid[cell].ml.landfrac!=NULL)
       {

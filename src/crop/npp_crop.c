@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "crop.h"
+#include "soil.h"
 
 /*
 - called in npp_crop()
@@ -39,8 +40,10 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   Pftcrop *crop;
   const Pftcroppar *par;
   Real npp;
-  Real rosoresp,presp,gresp;
+  Real soresp,presp,gresp;
+  int l;
   Cropratio nc_ratio;
+  Real roresp=0;
   crop=pft->data;
   par=pft->par->data;
   if(!config->crop_resp_fix && crop->ind.root.carbon>epsilon)
@@ -56,14 +59,29 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   else
     nc_ratio.pool=par->nc_ratio.pool;
 
-  rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil
-           +crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
+  //maximum respiration dependency to NC ratio not higher than measured leaf NC
+  if(nc_ratio.root>pft->par->ncleaf.high/par->ratio.root) nc_ratio.root=pft->par->ncleaf.high/par->ratio.root;
+  if(nc_ratio.so>pft->par->ncleaf.high/par->ratio.so) nc_ratio.so=pft->par->ncleaf.high/par->nc_ratio.so;
+  if(nc_ratio.pool>pft->par->ncleaf.high/par->ratio.pool) nc_ratio.pool=pft->par->ncleaf.high/par->nc_ratio.pool;
+
+  roresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
+  soresp=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
+
   presp=crop->ind.pool.carbon*pft->par->respcoeff*param.k*nc_ratio.pool*gtemp_air;
+
+
   /* pools can't be negative any more as LAI growth and SO allocation is limited by NPP now */
-  gresp=(assim-rosoresp-presp)*param.r_growth;
+  gresp=(assim-roresp-soresp-presp)*param.r_growth;
   if(gresp<0.0)
     gresp=0.0;
-  npp=assim-rosoresp-presp-gresp;
+  npp=assim-soresp-presp-gresp;
+  if(config->with_methane)
+    forrootsoillayer(l)
+    {
+      pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*roresp*pft->par->rootdist[l]*WO2/WC);
+      if(pft->stand->soil.O2[l]<0)  pft->stand->soil.O2[l]=0;
+    }
+
   if((pft->bm_inc.carbon+npp <=0.0001) ||
       (crop->lai-crop->lai_nppdeficit<=0 && !crop->senescence))
   {
@@ -73,6 +91,8 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   }
   else
     allocation_daily_crop(pft,npp,wdf,config);
+  getoutput(&pft->stand->cell->output,RA,config)+=(soresp+roresp+presp+gresp)*pft->stand->frac;
+
   return npp;
 } /* of 'npp_crop' */
 

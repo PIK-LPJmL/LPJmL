@@ -150,6 +150,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     {
       bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
       tree->ind.root.carbon+=bm_inc_ind.carbon;
+      pft->bm_inc.carbon=0;
     }
     return TRUE;
   }
@@ -293,7 +294,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   if(tree->ind.leaf.carbon>0 && bm_inc_ind.nitrogen>0)
   {
     nitrogen_allocation_tree(&a,&b,&c,tree->ind.leaf,tree->ind.root,tree->ind.sapwood,
-                             treepar->ratio.root,treepar->ratio.sapwood,bm_inc_ind.nitrogen);
+        treepar->ratio.root,treepar->ratio.sapwood,bm_inc_ind.nitrogen);
     /* check if there is too much nitrogen, fill up leaves, roots sapwood to max allowed */
     if((tree->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/tree->ind.leaf.carbon>pft->par->ncleaf.high)
     {
@@ -336,7 +337,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
         tree->ind.leaf.carbon=cleaf;
       }
-      if(tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
+      if(tree->ind.root.carbon>0 && tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
       {
         croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
         tree->excess_carbon+=(tree->ind.root.carbon-croot);
@@ -351,6 +352,12 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     }
   }
   pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
+  if(tree->ind.leaf.carbon<epsilon && tree->ind.root.carbon>epsilon)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
+  {
+    tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
+    tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
+  }
+  pft->bm_inc.carbon=0;
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

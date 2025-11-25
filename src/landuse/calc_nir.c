@@ -14,24 +14,25 @@
 
 #include "lpj.h"
 
-void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
-              Irrigation *data, /**< irrigation data */
-              Real gp_stand,    /**< potential canopy conductivity */
-              Real wet[],       /**< wet array for PFT list */
-              Real eeq,          /**< equilibrium evapotranspiration (mm) */
-              Bool others_to_crop
+void calc_nir(Stand *stand,        /**< pointer to non-natural stand */
+              Irrigation *data,    /**< irrigation data */
+              Real gp_stand,       /**< potential canopy conductivity */
+              Real wet[],          /**< wet array for PFT list */
+              Real eeq,            /**< equilibrium evapotranspiration (mm) */
+              const Config *config /**< LPJmL configuration */
              )
 {
   Pft *pft;
   int p,l;
   Real supply,demand,wr,satlevel;
   Real soildepth_irrig,nir,dist;
+  nir=dist=0;
 
   foreachpft(pft,p,&stand->pftlist)
   {
     wr=getwr(&stand->soil,pft->par->rootdist);
 
-    if(stand->type->landusetype==AGRICULTURE || (stand->type->landusetype==OTHERS && others_to_crop))
+    if(getlandusetype(stand)==AGRICULTURE || (getlandusetype(stand)==OTHERS && config->others_to_crop))
     {
       supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
       demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/(gp_stand/pft->phen*fpar(pft))) : 0;
@@ -40,9 +41,24 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
     {
       supply=pft->par->emax*wr*pft->phen;
       demand=(gp_stand>0) ? eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
-   }
-
-    if(supply<demand && pft->phen>0.0)
+    }
+    if(pft->par->id==config->rice_pft)
+    {
+      demand=satwater(&stand->soil)-rootwater(&stand->soil);
+      soildepth_irrig=layerbound[BOTTOMLAYER-1];  // the whole water bucket needs to be filled
+      nir=demand;
+      dist=0;
+      l=0;
+      do
+      {
+        if (stand->soil.freeze_depth[l]< soildepth[l])
+        {
+          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*param.sat_level[0]*1.2-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+        }
+         l++;
+       }while((soildepth_irrig-=soildepth[l-1])>0);
+    }
+    else if(supply<demand && pft->phen>0.0)
     {
       /* level free water to be requested based on irrigation system */
       satlevel=param.sat_level[data->irrig_system];
@@ -65,15 +81,22 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
       if(data->irrig_system==SPRINK)
         dist+=interception(&wet[p],pft,eeq,nir+dist); /* proxy for interception of next day, based on current wet */
 
-#ifdef DEBUG
+#ifdef DEBUG2
       printf("demand:%f supply::%f irrig:%f\n",demand,supply,nir+dist);
 #endif
-      /* avoid large irrigation amounts for dist if nir is zero */
-      if(nir<1) dist=0;
-      if(nir>data->net_irrig_amount) /* for pft loop */
-        data->net_irrig_amount=nir;
-      if(dist>data->dist_irrig_amount)
-        data->dist_irrig_amount=dist;
     }
+    /* avoid large irrigation amounts for dist if nir is zero */
+    if(nir<1)
+      dist=0;
+    if(nir>data->net_irrig_amount) /* for pft loop */
+      data->net_irrig_amount=nir;
+    if(dist>data->dist_irrig_amount)
+      data->dist_irrig_amount=dist;
+
+#ifdef DEBUG2
+    if(pft->par->id==config->rice_pft)
+      fprintf(stdout,"nir: %g dist: %g supply: %g demand: %g net_irrig_amount: %g dist_irrig_amount: %g\n",nir,dist,supply,demand,data->net_irrig_amount,data->dist_irrig_amount);
+#endif
   } /* of foreachpft() */
+
 } /* of 'calc_nir' */

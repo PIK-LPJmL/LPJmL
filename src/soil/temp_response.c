@@ -25,10 +25,22 @@
 
 #include "lpj.h"
 
-#define e0 308.56   /* parameter in Arrhenius temp response function */
+#define e0 308.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)*/
+#define Q10 1.8
+//#define USE_Q10
 
-Real temp_response(Real temp /**< air or soil temperature (deg C) */
+Real temp_response(Real temp, /**< air or soil temperature (deg C) */
+                   Real temp_mean
                   )          /** \return respiration temperature response */
 {
-  return (temp>=-40.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
+
+  Real gtemp;
+#ifdef USE_Q10
+  if (temp>30) temp = 30;
+  gtemp = (temp >= -30.0) ? pow(Q10, (temp - temp_mean) / 10) : 0.0;
+#else
+  if (temp>40) temp = 40;
+  gtemp= (temp>=-15.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
+#endif
+  return gtemp;
 } /* of 'temp_response' */

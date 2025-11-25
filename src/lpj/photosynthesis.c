@@ -25,7 +25,6 @@
 #define q10kc 2.1     /* q10 for temperature-sensitive parameter kc */
 #define q10tau 0.57   /* q10 for temperature-sensitive parameter tau */
 #define tau25 2600.0  /* value of tau at 25 deg C */
-#define cmass 12.0    /* atomic mass of carbon */
 #define cq 4.6e-6     /* conversion factor for solar radiation at 550 nm */
                       /* from J/m2 to E/m2 (E mol quanta) */
 #define lambdamc4 0.4 /* optimal ratio of intercellular to ambient CO2 */
@@ -86,7 +85,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
       /* Calculation of V_max (Rubisco activity) in gC/d/m2*/
 
       if(comp_vm)
-        *vm=(1.0/b)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
+        *vm=(1.0/b)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*WC*cq;
 
       pi=lambda*co2;
 
@@ -104,7 +103,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
       if(comp_vm)
-        *vm=(1.0/b)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
+        *vm=(1.0/b)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*WC*cq;
 
       /*
        *       Parameter accounting for effect of reduced intercellular CO2
@@ -124,7 +123,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
      *     Calculation of PAR-limited photosynthesis rate, JE, molC/m2/h
      *     Eqn 3, Haxeltine & Prentice 1996
      */
-    je=c1*apar*cmass*cq/daylength;
+    je=c1*apar*WC*cq/daylength;
 
     /*
      * Calculation of rubisco-activity-limited photosynthesis rate JC, molC/m2/h
@@ -155,6 +154,6 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
     /*    Convert adt from gC/m2/day to mm/m2/day using
      *    ideal gas equation
      */
-    return (adt<=0) ? 0 : adt/cmass*8.314*degCtoK(temp)/p*1000.0;
+    return (adt<=0) ? 0 : adt/WC*8.314*degCtoK(temp)/p*1000.0;
   }
 } /* of 'photosynthesis' */

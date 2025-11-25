@@ -39,6 +39,8 @@ void fprintpft(FILE *file,    /**< pointer to text file */
   fprintf(file,"Establish:\t %g (gC/m2) %g (gN/m2)\n",
           pft->establish.carbon,pft->establish.nitrogen);
   fprintf(file,"gdd:\t\t%g\n",pft->gdd);
+  fprintf(file, "inundation stress:\t%g\n", pft->inun_count/pft->par->inun_dur);
+  fprintf(file, "inundation duration:\t%d\n", pft->inun_count);
   /* Print type specific variables */
   pft->par->fprint(file,pft);
 } /* of 'fprintpft' */

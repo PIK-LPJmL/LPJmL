@@ -147,21 +147,20 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 
   irrig_apply -= intercep_stand_blue;
   rainmelt -= (intercep_stand - intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* soil inflow: infiltration and percolation */
   if (irrig_apply>epsilon)
   {
-    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
-    runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
-    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  if((climate->prec+melt+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc_rain(stand,rainmelt,vol_water_enth,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft, p, &stand->pftlist)
   {
@@ -186,7 +185,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
      getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
      getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
-   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery);
+   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery,config);
    pft->npp_bnf=pft->npp_nrecovery=0.0;
    getoutput(output,NPP,config)+=npp*stand->frac;
    getoutput(output,FAPAR,config)+= pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -215,7 +214,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   if (data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand, &data->irrigation,gp_stand, wet, eeq,config->others_to_crop);
+    calc_nir(stand, &data->irrigation,gp_stand, wet, eeq,config);
   transp=0;
   forrootsoillayer(l)
   {
@@ -225,8 +224,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config) += intercep_stand*stand->frac; /* Note: including blue fraction*/
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   getoutput(output,INTERC_B,config) += intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
 
   getoutput(output,EVAP,config) += evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;

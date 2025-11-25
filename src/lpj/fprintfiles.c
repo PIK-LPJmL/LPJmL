@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define checklist(n) if((n)==0) fail(ALLOC_MEMORY_ERR,FALSE,"Cannot allocate memory in %s()",__FUNCTION__)
+#define checklist(n) if((n)==0) fail(ALLOC_MEMORY_ERR,TRUE,FALSE,"Cannot allocate memory in %s()",__FUNCTION__)
 
 
 static int cmpstringp(const void *p1, const void *p2)
@@ -125,6 +125,10 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->soil_filename.fmt!=CDF)
     addfilename(table,&config->coord_filename,FALSE);
   addfilename(table,&config->soil_filename,FALSE);
+  addfilename(table,&config->kbf_filename,FALSE);
+  addfilename(table,&config->slope_filename,FALSE);
+  addfilename(table,&config->slope_min_filename,FALSE);
+  addfilename(table,&config->slope_max_filename,FALSE);
   if(config->landfrac_from_file)
     addfilename(table,&config->landfrac_filename,FALSE);
   addfilename(table,&config->temp_filename,TRUE);
@@ -141,11 +145,19 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     if(config->with_radiation!=RADIATION_SWONLY)
       addfilename(table,&config->lwnet_filename,TRUE);
+    if(config->isanomaly)
+    {
+      addfilename(table,&config->delta_lwnet_filename,TRUE);
+      addfilename(table,&config->delta_swdown_filename,TRUE);
+    }
     addfilename(table,&config->swdown_filename,TRUE);
   }
   else
     addfilename(table,&config->cloud_filename,TRUE);
+  addfilename(table,&config->hydrotopes_filename,FALSE);
   addfilename(table,&config->co2_filename,FALSE);
+  if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
+    addfilename(table,&config->ch4_filename,FALSE);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     addfilename(table,&config->no3deposition_filename,TRUE);

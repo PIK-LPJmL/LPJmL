@@ -42,6 +42,7 @@ Real soilconduct(const Soil *soil, /**< pointer to soil data */
     /* saturation */
     sat=(soil->w[layer]*soil->whcs[layer]+soil->ice_depth[layer]+soil->wpwps[layer]
          +soil->w_fw[layer]+soil->ice_fw[layer])/soil->wsats[layer];
+    sat=min(1,sat);
     /*Kersten number*/
     ke=(soil->freeze_depth[layer]>epsilon || sat < 0.1) ? sat : log10(sat)+1;
     conduct = (k_sat-soil->k_dry[layer])*ke+soil->k_dry[layer];

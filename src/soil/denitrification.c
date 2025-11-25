@@ -16,6 +16,7 @@
 #include "lpj.h"
 #include "crop.h"
 #include "agriculture.h"
+#define min_denit 0.0326    //original 0.0326 not at very high T
 
 void denitrification(Stand *stand,        /**< pointer to stand */
                      int npft,            /**< number of natural PFTs */
@@ -48,12 +49,12 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     if(Corg<0)
       Corg=0;
     if(soil->temp[l]>epsilon)
-      FT = 0.0326+0.00351*pow(soil->temp[l],1.652)-pow((soil->temp[l]/41.748),7.19);
+      FT = min_denit+0.00351*pow(soil->temp[l],1.652)-pow((soil->temp[l]/41.748),7.19);
       /* Equation C5 from Smith et al 2014 but only for positive temp */
     else if (soil->temp[l] > 45.9) /* otherwise FT is negative */
       FT=0.0;
     else
-      FT=0.0326;
+      FT=min_denit;
 #ifdef DEBUG_N
     printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->wpwps[l],soil->w[l]*soil->whcs[l],soil->ice_depth[l],
            soil->w_fw[l],soil->ice_fw[l],soil->wsats[l]);
@@ -66,9 +67,10 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     N2O_denit = 0.0;
     if(soil->temp[l]<=45.9)
     {
-      FW = min(1.0,6.664096e-10*exp(21.12912*denit_t)); /* newly fitted parameters on curve with threshold */
+      FW = min(1.0,6.664096e-10*exp(20.92912*denit_t)); /* newly fitted parameters on curve with threshold orig 21.12912*/
       TCDF = 1-exp(-CDN*FT*Corg);
-      N_denit = FW*TCDF*soil->NO3[l];
+      if(TCDF>0)
+        N_denit = FW*TCDF*soil->NO3[l];
     }
 #ifdef SAFE
     if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]+epsilon*10))
@@ -78,13 +80,8 @@ void denitrification(Stand *stand,        /**< pointer to stand */
       N_denit=soil->NO3[l];
     }
 #endif
-    if(N_denit>soil->NO3[l])
-      N_denit=soil->NO3[l];
+    N_denit=min(N_denit,soil->NO3[l]);
     soil->NO3[l]-=N_denit;
-#ifdef SAFE
-    if(soil->NO3[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d",soil->NO3[l],l);
-#endif
     /* Calculation of N2O from denitrification after Bessou 2010 */
     N2O_denit = 0.11 * N_denit;
     N_denit -= N2O_denit;
@@ -92,7 +89,7 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     getoutput(&stand->cell->output,N2O_DENIT,config)+=N2O_denit*stand->frac;
     getoutput(&stand->cell->output,N2_EMIS,config)+=N_denit*stand->frac;
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
-    if(isagriculture(stand->type->landusetype))
+    if(isagriculture(stand))
     {
       getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
       getoutput(&stand->cell->output,N2_AGR,config)+=N_denit*stand->frac;

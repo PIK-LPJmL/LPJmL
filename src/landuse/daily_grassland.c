@@ -17,6 +17,7 @@
 #include "lpj.h"
 #include "grass.h"
 #include "grassland.h"
+#include "agriculture.h"
 
 static Bool isMowingDay(int aDay,const int *mowingdays,int size)
 {
@@ -42,7 +43,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
                      Real melt,                   /**< melting water (mm/day) */
                      int npft,                    /**< number of natural PFTs */
                      int ncft,                    /**< number of crop PFTs   */
-                     int UNUSED(year),            /**< simulation year (AD) */
+                     int year,                    /**< simulation year (AD) */
                      Bool UNUSED(intercrop),      /**< enabled intercropping */
                      Real UNUSED(agrfrac),        /**< [in] total agriculture fraction (0..1) */
                      const Config *config         /**< LPJ config */
@@ -82,6 +83,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real manure;
   int n_pft,index,nnat;
   Real *fpc_inc;
+  Real lateral_in=0;
 #ifdef PERMUTE
   int *pvec;
 #endif
@@ -91,10 +93,56 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   nnat=getnnat(npft,config);
 
   data=stand->data;
+  if(data->irrigation.irrig_system==NOIRRIG)
+    data->irrigation.irrigation=FALSE;
+  else
+    data->irrigation.irrigation=TRUE;
   stand->growing_days++;
   output=&stand->cell->output;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=0.0;
   runoff=return_flow_b=0.0;
+#ifdef CHECK_BALANCE
+  Stand *checkstand;
+  Real wfluxes_old=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
+  Real water_before=0;
+  Real water_after,wstore_new,balancew;
+  water_before+=soilwater(&stand->soil);
+  Real CH4_fluxes=0;
+  Stocks start={0,0};
+  Stocks fluxes_in,fluxes_out;
+  Real end=0;
+  Real dcflux=0;
+  int s;
+  fluxes_in.carbon=stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon; //influxes
+  fluxes_out.carbon=stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon+stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon; //outfluxes
+  fluxes_in.nitrogen=stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen; //influxes
+  fluxes_out.nitrogen=stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen; //outfluxes
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  foreachstand(checkstand,s,stand->cell->standlist)
+  {
+     if(getlandusetype(checkstand)!=KILL)
+     {
+       start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+       start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
+     }
+     else
+     {
+       start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+       start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
+     }
+  }
+  start.carbon+=stand->cell->ml.product.fast.carbon+stand->cell->ml.product.slow.carbon+
+      stand->cell->balance.estab_storage_grass[0].carbon+stand->cell->balance.estab_storage_tree[0].carbon+stand->cell->balance.estab_storage_grass[1].carbon+stand->cell->balance.estab_storage_tree[1].carbon;
+  start.nitrogen+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+      stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
+  if(stand->cell->ml.dam)
+  {
+    start.carbon+=stand->cell->ml.resdata->pool.carbon;
+    start.nitrogen+=stand->cell->ml.resdata->pool.nitrogen;
+  }
+#endif
   if(getnpft(&stand->pftlist)>0)
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
@@ -124,17 +172,17 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (stand->type->landusetype==GRASSLAND  || stand->type->landusetype==OTHERS)
+  if (getlandusetype(stand)==GRASSLAND  || getlandusetype(stand)==OTHERS)
   {
     if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[getlandusetype(stand)==GRASSLAND];
         stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
         stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
-        if(stand->type->landusetype==OTHERS)
+        if(getlandusetype(stand)==OTHERS)
           getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
         getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
       } /* end fday==day */
@@ -143,13 +191,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     {
       if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
       {
-        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[getlandusetype(stand)==GRASSLAND];
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
         stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
         stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += manure*stand->frac;
-        if(stand->type->landusetype==OTHERS)
+        if(getlandusetype(stand)==OTHERS)
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
         getoutput(output,NAPPLIED_MG,config)+=manure*stand->frac;
       } /* end fday==day */
@@ -163,7 +211,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   index=data->irrigation.irrigation*getnirrig(ncft,config)+(stand->type->landusetype==GRASSLAND ? rmgrass(ncft) : rothers(ncft));
 
-  if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
+  if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon && (stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS))
   {
     irrig_apply=max(data->irrigation.irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrigation.irrig_stor+=data->irrigation.irrig_amount-irrig_apply;
@@ -213,8 +261,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
-  rainmelt-=(intercep_stand-intercep_stand_blue);
+  if(irrig_apply<0)
+    intercep_stand_blue+=irrig_apply;
+  irrig_apply=max(0,irrig_apply);
+  rainmelt-=intercep_stand;
 
   /* rain-water harvesting*/
   if(!data->irrigation.irrigation && config->rw_manage && rainmelt<5)
@@ -223,17 +275,27 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
-    runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
-    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  if((climate->prec+melt+rw_apply+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+rw_apply+irrig_apply)/(climate->prec+irrig_apply+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
+
+  if(stand->cell->lateral_water>0 && stand->soil.iswetland==TRUE && stand->frac>0.001)
+  {
+    if(stand->cell->lateral_water/stand->frac>300)
+      lateral_in=300;
+    else
+      lateral_in=stand->cell->lateral_water/stand->frac;
+
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
+    stand->cell->lateral_water-=lateral_in*stand->frac;
+  }
+  else
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
 
   isphen = FALSE;
 #ifdef PERMUTE
@@ -270,7 +332,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         getoutputindex(output,PFT_GCGP,nnat+index,config)+=gcgp;
       }
     }
-    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery);
+    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery,config);
     pft->npp_bnf=pft->npp_nrecovery=0.0;
     getoutput(output,NPP,config)+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
@@ -328,40 +390,38 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
           p--; /* adjust loop variable */
         }
         else
-         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
-         pft->bm_inc.carbon=0;
-       }
-       else
-       {
-         grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-         stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-         update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
-         getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
-         grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-         grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
-         stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-         pft->bm_inc.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
-         getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
-         grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+          pft->bm_inc.carbon=0;
+      }
+      else
+      {
+        grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+        update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
+        getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
+        grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+        grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+        pft->bm_inc.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
+        getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
+        grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
 
-         grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
-         stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
-         getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
-         grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
-         grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
-         stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-         pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
-         getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
-         grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+        grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+        getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
+        grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+        grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+        pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
+        getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
+        grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
 
-         grass->growing_days++;
-         fpc_inc[p]=0;
-       }
+        grass->growing_days++;
+        fpc_inc[p]=0;
+      }
     }
     light(stand,fpc_inc,config);
     free(fpc_inc);
   }
-
   /* daily harvest check*/
   isphen=FALSE;
   hfrac=0.0;
@@ -373,12 +433,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     cleaf_max+=grass->max_leaf;
   }
 
-  if (stand->type->landusetype != SETASIDE_RF && stand->type->landusetype != SETASIDE_IR)
+  if (stand->type->landusetype != SETASIDE_RF && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_WETLAND)
   {
     switch(stand->type->landusetype==GRASSLAND ? stand->cell->ml.grass_scenario : config->grazing_others)
     {
       case GS_DEFAULT: // default
-        if(cleaf>cleaf_max && stand->growing_days>=20)
+        if(cleaf>cleaf_max && stand->growing_days>=30)
         {
           isphen=TRUE;
           hfrac=1-param.hfrac2/(param.hfrac2+cleaf);
@@ -493,16 +553,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)
@@ -550,6 +610,73 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
 
   }
+
+#ifdef CHECK_BALANCE
+  transp=0;
+  water_after=0;
+  wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
+  water_after+=soilwater(&stand->soil);
+  Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  forrootsoillayer(l)
+    transp+=aet_stand[l];
+  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply+intercep_stand_blue)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
+  if(fabs(balancew)>0.001 && stand->frac>0.00001)
+  {
+
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g wstore: %g wstore_new: %g wstore_old: %g \n",
+        __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrigation.irrig_stor,stand->frac,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
+  }
+////////CARBON//////////////
+  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
+      +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
+  fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)-fluxes_in.carbon;
+  end=0;
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  foreachstand(checkstand,s,stand->cell->standlist)
+  {
+    if(checkstand->type->landusetype!=KILL)
+    {
+      end+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac ;
+    }
+    else
+    {
+      end+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac ;
+    }
+  }
+  end+=stand->cell->ml.product.fast.carbon+stand->cell->ml.product.slow.carbon+
+      stand->cell->balance.estab_storage_grass[0].carbon+stand->cell->balance.estab_storage_tree[0].carbon+stand->cell->balance.estab_storage_grass[1].carbon+stand->cell->balance.estab_storage_tree[1].carbon;
+
+  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>epsilon)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
+        "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g\n",
+        __FUNCTION__,day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
+        stand->cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, stand->cell->balance.neg_fluxes.carbon,stand->cell->output.bm_inc,stand->cell->balance.arh,stand->cell->balance.aCH4_sink*WC/WCH4,
+        stand->cell->balance.aCH4_em*WC/WCH4,dcflux);
+  }
+  ////////////// NITROGEN ///////////
+  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
+  fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
+  end=0;
+  foreachstand(checkstand,s,stand->cell->standlist)
+    //if(checkstand->type->landusetype!=KILL)
+    end+=standstocks(checkstand).nitrogen*checkstand->frac;
+  end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+       stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
+  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  {
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
+        "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
+        __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
+        fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
+    foreachstand(checkstand,s,stand->cell->standlist)
+      fprintf(stderr,"daily_grassland: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+              checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
+              crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
+              stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
+  }
+ #endif
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

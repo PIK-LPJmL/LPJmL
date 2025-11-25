@@ -71,6 +71,7 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "climbuf.h"
 #include "soil.h"
 #include "pftpar.h"
+#include "hydrotope.h"
 #include "output.h"
 #include "date.h"
 #include "pft.h"
@@ -84,9 +85,10 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "coupler.h"
 #include "cropdates.h"
 #include "reservoir.h"
-#include "landuse.h"
 #include "errmsg.h"
 #include "pftlist.h"
+#include "landuse.h"
+#include "icefrac.h"
 #include "spitfire.h"
 #include "units.h"
 #include "stand.h"
@@ -152,6 +154,11 @@ extern void receivehash(Hash,int,MPI_Comm);
 
 /* Definition of macros */
 
+#ifdef NO_FAIL_BALANCE
+#define FAIL_ON_BALANCE FALSE
+#else
+#define FAIL_ON_BALANCE TRUE
+#endif
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
 #define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
 #define printtiming(total,config) fprinttiming(stdout,total,config)

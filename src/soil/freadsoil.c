@@ -19,6 +19,7 @@
 #define readrealarray(file,name,var,size) if(bstruct_readrealarray(file,name,var,size)) return TRUE
 #define readreal(file,name,var) if(bstruct_readreal(file,name,var)) return TRUE
 #define readint(file,name,var) if(bstruct_readint(file,name,var)) return TRUE
+#define readbool(file,name,var) if(bstruct_readbool(file,name,var)) return TRUE
 
 Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
 {
@@ -94,10 +95,33 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   }
   if(bstruct_readendarray(file,"c_shift"))
     return TRUE;
+  if(bstruct_readbeginarray(file,"socfraction",&size))
+    return TRUE;
+  if(size!=LASTLAYER)
+  {
+    fprintf(stderr,"ERROR227: Size of socfraction=%d is not %d.\n",
+            size,LASTLAYER);
+    return TRUE;
+  }
+  forrootsoillayer(l)
+  {
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    if(soil->socfraction[l]==NULL)
+    {
+      printallocerr("socfraction");
+      return TRUE;
+    }
+    if(bstruct_readrealarray(file,NULL,soil->socfraction[l],ntotpft))
+      return TRUE;
+  }
+  if(bstruct_readendarray(file,"socfraction"))
+    return TRUE;
   if(freadlitter(file,"litter",&soil->litter,pftpar,ntotpft))
     return TRUE;
   readrealarray(file,"NO3",soil->NO3,LASTLAYER);
   readrealarray(file,"NH4",soil->NH4,LASTLAYER);
+  readrealarray(file,"CH4",soil->CH4,LASTLAYER);
+  readrealarray(file,"O2",soil->O2,LASTLAYER);
   readrealarray(file,"wsat",soil->wsat, NSOILLAYER);
   readrealarray(file,"wpwp",soil->wpwp, NSOILLAYER);
   readrealarray(file,"wfc",soil->wfc, NSOILLAYER);
@@ -109,6 +133,8 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   readrealarray(file,"bulkdens",soil->bulkdens, NSOILLAYER);
   readrealarray(file,"k_dry",soil->k_dry, NSOILLAYER);
   readrealarray(file,"Ks",soil->Ks, NSOILLAYER);
+  readrealarray(file,"b",soil->b, NSOILLAYER);
+  readrealarray(file,"psi_sat",soil->psi_sat, NSOILLAYER);
   readrealarray(file,"df_tillage",soil->df_tillage, NTILLLAYER);
   readrealarray(file,"w",soil->w,NSOILLAYER);
   readreal(file,"w_evap",&soil->w_evap);
@@ -117,6 +143,7 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   readreal(file,"snowheight",&soil->snowheight);
   readreal(file,"snowfraction",&soil->snowfraction);
   readrealarray(file,"temp",soil->temp,NSOILLAYER+1);
+  readrealarray(file,"amean_temp",soil->amean_temp,NSOILLAYER+1);
   readrealarray(file,"enth",soil->enth,NHEATGRIDP);
   readrealarray(file,"wi_abs_enth_adj",soil->wi_abs_enth_adj,NSOILLAYER);
   readrealarray(file,"soil_abs_enth_adj",soil->sol_abs_enth_adj,NSOILLAYER);
@@ -151,8 +178,14 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   readint(file,"count",&soil->count);
   readreal(file,"meanw1",&soil->meanw1);
 #ifdef MICRO_HEATING
-  soil->litter.decomC=0;
+  foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
   soil->YEDOMA=0;
+//  soil->snowheight=soil->snowfraction=0;
+  readreal(file,"wtable",&soil->wtable);
+  readreal(file,"wa",&soil->wa);
+  readbool(file,"iswetland",&soil->iswetland);
+  readreal(file,"snowdens",&soil->snowdens);
+  readreal(file,"fastfrac",&soil->fastfrac);
   return bstruct_readendstruct(file,name);
 } /* of 'freadsoil' */

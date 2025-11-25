@@ -36,6 +36,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                      )
 {
   int s,nirrig;
+  Bool isrice;
   Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable;
   Stand *stand;
@@ -66,34 +67,38 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
    /* actual irrigation requirement */
   if(config->irrig_scenario==LIM_IRRIGATION)
   {
-    frac_irrig_amount=cell->discharge.gir>0 ? cell->discharge.withdrawal/cell->discharge.gir : 0.0;
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
   }
   else
   {
     /* potential irrigation requirement */
-    frac_irrig_amount=cell->discharge.gir>0 ? 1.0 : 0.0;
-    frac_unsustainable=cell->discharge.gir>0 ? 1 - cell->discharge.withdrawal/cell->discharge.gir : 0.0;
+    /* potential irrigation requirement */
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet)/cell->discharge.gir : 0.0;  // should be 1 in case of positive gir (BUT SHOULD BE ALWAYS POSITIVE)
+    frac_unsustainable=cell->discharge.gir>0 ? (cell->discharge.irrig_unmet/cell->discharge.gir) : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
-    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir;
+    // coord area added to change to mm
+    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
     getoutput(&cell->output,WD_UNSUST,config)+=frac_unsustainable*cell->discharge.gir;
+    getoutput(&cell->output,WD_AQ,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
   }
 #endif
 
-  cell->discharge.withdrawal=0.0;
-#ifdef IMAGE
-  cell->discharge.withdrawal_gw=0.0;
-#endif
+  cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     {
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
+      isrice=ispftinstand(&stand->pftlist,config->rice_pft);
 
-      if(data->irrigation)
+      if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
         /* determine if irrigation today */
-        data->irrig_event=isirrigevent(stand);
+        if(isrice)
+          data->irrig_event=TRUE;
+        else
+          data->irrig_event=isirrigevent(stand);
 
         irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0)*frac_irrig_amount;
 

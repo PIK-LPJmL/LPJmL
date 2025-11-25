@@ -19,6 +19,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "agriculture.h"
 
 Bool check_lu(const Standlist standlist, /**< List of stands */
               Real landfrac,             /**< land fraction for crop */
@@ -28,7 +29,7 @@ Bool check_lu(const Standlist standlist, /**< List of stands */
              )                           /** \return TRUE if crop stand can
                                               be established */
 {
-  const Stand *stand;
+  Stand *stand;
   const Pft *pft;
   Irrigation *data;
   int s;
@@ -36,14 +37,17 @@ Bool check_lu(const Standlist standlist, /**< List of stands */
   if(landfrac>0)
   {
     foreachstand(stand,s,standlist)
-      if(stand->type->landusetype==landusetype)
+    {
+     if(stand->pftlist.n==0)
+      stand->type=&kill_stand;
+     else if(stand->type->landusetype==landusetype)
       {
         pft=getpft(&stand->pftlist,0);
         data=stand->data;
-        //foreachpft(pft,p,&stand->pftlist)
         if(pft->par->id==id && data->irrigation==irrigation)
           return FALSE;
       }
+    }
     return TRUE;
   }
   else 

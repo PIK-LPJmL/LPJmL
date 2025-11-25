@@ -31,6 +31,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
   Real surplus;
   Real *in,*out;
   Real wd_neighbour;
+  Real wd_gw=0;
 #ifdef USE_TIMING
   double t;
   timing_start(t);
@@ -134,15 +135,9 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       grid[cell].balance.total_irrig_from_reservoir+=grid[cell].discharge.act_irrig_amount_from_reservoir;
       grid[cell].discharge.withdrawal+=grid[cell].discharge.act_irrig_amount_from_reservoir;
       getoutput(&grid[cell].output,WD_RES,config)+=grid[cell].discharge.act_irrig_amount_from_reservoir/grid[cell].coord.area;
-
-#ifndef IMAGE
-      distribute_water(&grid[cell],npft,ncft,month,config);
-#endif
     }
   }
 
-#ifdef IMAGE
-  //if(config->groundwater_irrig) // after reservoirs.. irrigation water is extracted from groundwater reservoir
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -152,27 +147,46 @@ void wateruse(Cell *grid,          /**< LPJ grid */
                                        (grid[cell].discharge.gir-grid[cell].discharge.withdrawal) : 0.0;
       if(config->groundwater_irrig)
       {
-        if(grid[cell].discharge.irrig_unmet<grid[cell].discharge.dmass_gw)
+#ifdef DEBUG2
+        fprintf(stdout,"withdrawal_gw:%g dmass_gw: %g ground_st:%g gw_withdrawal:%g irrig_unmet:%g \n",
+            grid[cell].discharge.withdrawal_gw,grid[cell].discharge.dmass_gw,grid[cell].ground_st,grid[cell].balance.gw_withdrawal,grid[cell].discharge.irrig_unmet);
+#endif
+
+        if(grid[cell].discharge.irrig_unmet<grid[cell].discharge.dmass_gw)                              //grid[cell].discharge.dmass_gw)
         {
           grid[cell].discharge.withdrawal_gw+=grid[cell].discharge.irrig_unmet;
           grid[cell].discharge.dmass_gw-=grid[cell].discharge.irrig_unmet;
+          grid[cell].ground_st-=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
+          if(grid[cell].ground_st<0)
+          {
+            grid[cell].ground_st_am+=grid[cell].ground_st;
+            grid[cell].ground_st=0;
+          }
           grid[cell].balance.awater_flux+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
+          grid[cell].balance.gw_withdrawal+=grid[cell].discharge.irrig_unmet;                            //water pool changes
           getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
           grid[cell].discharge.irrig_unmet=0; // no unmet demand
         }
         else
         {
-          grid[cell].discharge.withdrawal_gw+=grid[cell].discharge.dmass_gw;
-          grid[cell].balance.awater_flux+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
+          wd_gw=grid[cell].discharge.dmass_gw;
+          grid[cell].discharge.withdrawal_gw+=wd_gw;
+          grid[cell].ground_st-=wd_gw/grid[cell].coord.area;
+          if(grid[cell].ground_st<0)
+          {
+            grid[cell].ground_st_am+=grid[cell].ground_st;
+            grid[cell].ground_st=0;
+          }
+          grid[cell].balance.awater_flux+=wd_gw/grid[cell].coord.area;
+          grid[cell].balance.gw_withdrawal+=wd_gw;                            //water pool changes
           getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
-          grid[cell].discharge.irrig_unmet-=grid[cell].discharge.dmass_gw; //rest of unmet demand
+          grid[cell].discharge.irrig_unmet-=wd_gw; //rest of unmet demand
           grid[cell].discharge.dmass_gw=0.0;
         }
       }     
       distribute_water(&grid[cell],npft,ncft,month,config);
     }
   }
-#endif
 #ifdef USE_TIMING
   timing_stop(WATERUSE_FCN,t);
 #endif

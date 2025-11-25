@@ -36,7 +36,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
     if(config->extflow)
     {
       if(getextflow(extflow,grid,day-1,year))
-        fail(INVALID_EXTFLOW_ERR,FALSE,"Cannot read external flow data");
+        fail(INVALID_EXTFLOW_ERR,FALSE,FALSE,"Cannot read external flow data");
     }
     drain(grid,month,config);
 
@@ -46,7 +46,12 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
 
   if(config->withdailyoutput && day<NDAYYEAR && year>=config->outputyear)
     /* postpone last timestep until after annual processes */
-    fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
+  if(fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config))
+  {
+    if(isroot(*config))
+      printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+    exit(WRITE_OUTPUT_ERR);
+  }
 #ifdef USE_TIMING
   timing_stop(UPDATEDAILY_GRID_FCN,tstart);
 #endif

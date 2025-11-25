@@ -249,6 +249,7 @@ int main(int argc,char **argv)
   units=NULL;
   var=NULL;
   map_name=NULL;
+  map=0;
   outname="out.bin"; /* default file name for output */
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */

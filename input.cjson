@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                       i  n  p  u  t  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.10.2                  \n**/
+/** Configuration file for input dataset for LPJ C Version 6.0.0                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,6 +13,18 @@
 /**************************************************************************************/
 
 {
+  "delta_year" : 100, /* time step in anomalies (yrs) */
+  "icefrac" :      { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_ice_0.5.clm"},
+  "delta_temp" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_temp_0.5.clm"},
+  "delta_prec" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_prec_0.5.clm"},
+  "delta_lwnet" :  { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_lwnet_0.5.clm"},
+  "delta_swdown" : { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_swdown_0.5.clm"},
+  "kbf" :          { "fmt" : "clm", "var" : "KBF", "name" :"input_VERSION2/kbf.clm"},
+  "slope_mean" :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
+  "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
+  "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
+  "ch4" :          { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1700-2022.dat"},
+  "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle_new.clm"},
 #ifdef CRU_MONTHLY
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
   "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},

@@ -30,6 +30,11 @@ Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",new_agriculture,
                              fread_agriculture,fprint_agriculture,
                              daily_grassland,annual_setaside,NULL};
 
+Standtype setaside_wetland_stand={SETASIDE_WETLAND,"setaside_wetland_stand",new_agriculture,
+                             free_agriculture,fwrite_agriculture,
+                             fread_agriculture,fprint_agriculture,
+                             daily_grassland,annual_setaside,NULL};
+
 Standtype managedforest_stand={MANAGEDFOREST,"managed forest",NULL,NULL,NULL,
                                NULL,NULL,NULL,NULL,NULL};
 

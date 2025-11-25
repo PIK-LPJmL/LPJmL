@@ -16,6 +16,31 @@
 
 #include "lpj.h"
 
+static void freeclimatedata2(Climate *climate)
+{
+  int i;
+  free(climate->co2.data);
+  free(climate->ch4.data);
+  for (i = 0; i<4; i++)
+  {
+    free(climate->data[i].tmax);
+    free(climate->data[i].tmin);
+    free(climate->data[i].prec);
+    free(climate->data[i].temp);
+    free(climate->data[i].sun);
+    free(climate->data[i].lwnet);
+    free(climate->data[i].swdown);
+    free(climate->data[i].wet);
+    free(climate->data[i].wind);
+    free(climate->data[i].humid);
+    free(climate->data[i].burntarea);
+    free(climate->data[i].tamp);
+    free(climate->data[i].no3deposition);
+    free(climate->data[i].nh4deposition);
+    free(climate->data[i].lightning);
+  }
+} /* of 'freeclimatedata2' */
+
 void freeclimatedata(Climatedata *data /**< pointer to climate data */
                     )                  /** \return void */
 {
@@ -56,12 +81,16 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_burntarea,isroot);
     closeclimatefile(&climate->file_no3deposition,isroot);
     closeclimatefile(&climate->file_nh4deposition,isroot);
+    closeclimatefile(&climate->file_delta_temp,isroot);
+    closeclimatefile(&climate->file_delta_prec,isroot);
+    closeclimatefile(&climate->file_delta_swdown,isroot);
+    closeclimatefile(&climate->file_delta_lwnet,isroot);
+    closeclimatefile(&climate->file_delta_swdown,isroot);
 #if defined IMAGE && defined COUPLED
     closeclimatefile(&climate->file_temp_var,isroot);
     closeclimatefile(&climate->file_prec_var,isroot);
 #endif
-    free(climate->co2.data);
-    freeclimatedata(&climate->data);
+    freeclimatedata2(climate);
     free(climate);
   }
 } /* of 'freeclimate' */

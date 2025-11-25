@@ -103,10 +103,16 @@ int main(int argc,char **argv)
    
   for(ip=0;ip<npix;ip++)
   {
-    fread(&rbuf,sizeof(short),1,gfp);
+    if(fread(&rbuf,sizeof(short),1,gfp)!=1){
+      fprintf(stderr,"Error reading gridfile.\n");
+      exit(1);
+    }
     lon=rbuf/100.;
     printf("lon %.2f",lon);
-    fread(&rbuf,sizeof(short),1,gfp);
+    if(fread(&rbuf,sizeof(short),1,gfp)!=1){
+      fprintf(stderr,"Error reading gridfile.\n");
+      exit(1);
+    }
     lat=rbuf/100.;
     printf("lat %.2f\n",lat);
 
@@ -138,7 +144,10 @@ int main(int argc,char **argv)
       if(ip!=-1)
           {  /* data present */
         fseek(ifp,ip*bytel[type]+i*bytel[type]*npix+(sy-1)*bytel[type]*nrec*npix,SEEK_SET);
-            fread(data,bytel[type],1,ifp);
+            if(fread(data,bytel[type],1,ifp)!=1){
+              fprintf(stderr,"Error reading %s.\n",argv[1]);
+              exit(1);
+            }
             fwrite(data,bytel[type],1,ofp);
       }
       else

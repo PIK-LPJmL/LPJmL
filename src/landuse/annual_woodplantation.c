@@ -23,6 +23,7 @@
 Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                            int npft,             /**< number of natural pfts */
                            int ncft,             /**< number of crop PFTs */
+                           Real UNUSED(natfrac), /**< natural and wetland fraction */
                            int year,             /**< year (AD) */
                            Bool isdaily,         /**< daily temperature data? */
                            Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
@@ -75,7 +76,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     foreachpft(pft,p,&stand->pftlist)
     {
       present[pft->par->id]=TRUE;
-#ifdef DEBUG2
+#ifdef DEBUG3
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
@@ -107,8 +108,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
       }
 
     } /* of foreachpft */
-#ifdef DEBUG2
-    printf("Number of updated pft: %d\n",stand->pftlist.n);
+#ifdef DEBUG3
+    printf("6 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
     light(stand,fpc_inc,config);
@@ -222,7 +223,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
   for(p=0;p<npft;p++)
   {
-    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf) &&
+    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND) &&
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==WP) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
@@ -247,7 +248,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist){
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       if (istree(pft))
       {
@@ -316,7 +317,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->age=biomass_tree->growing_time=0;
     stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
     stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,ncft,biomass_tree->irrigation.irrigation,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,ncft,biomass_tree->irrigation.irrigation,stand->soil.iswetland,year,config))
       return TRUE;
   }
   else

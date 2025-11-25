@@ -25,6 +25,8 @@ void initmonthly_grid(Cell grid[],         /**< cell array */
   for(cell=0;cell<config->ngridcell;cell++)
   {
     grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
+    grid[cell].hydrotopes.wetland_wtable_monthly=0;
+    grid[cell].hydrotopes.wtable_monthly=0;
     grid[cell].output.mpet=0;
     if(grid[cell].ml.dam)
       grid[cell].ml.resdata->mprec_res=0;

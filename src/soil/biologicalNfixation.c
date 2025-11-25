@@ -20,7 +20,7 @@ Real biologicalnfixation(const Stand *stand, /**< pointer to stand */
                         int npft,           /**< number of natural PFTs */
                         int ncft,           /**< number of crop PFTs */
                         const Config *config  /**< LPJmL configuration */
-                        )                   /** \return N fixation rate (gN/m2/d) */                
+                       )                   /** \return N fixation rate (gN/m2/d) */
 {
   const Pft *pft;
   const Pftgrass *grass;
@@ -32,7 +32,8 @@ Real biologicalnfixation(const Stand *stand, /**< pointer to stand */
   Real bnf = 0;
   Real pft_bnf = 0;
 
-  foreachpft(pft,p,&stand->pftlist) {
+  foreachpft(pft,p,&stand->pftlist)
+  {
     switch(pft->par->type)
     {
       case TREE:

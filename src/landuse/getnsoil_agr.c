@@ -27,7 +27,7 @@ void getnsoil_agr(Real *norg_soil_agr, /**< [out] soil organic N in agriculture 
   int s,p,l;
   *norg_soil_agr=*nmin_soil_agr=*nveg_soil_agr=0;
   foreachstand(stand,s,cell->standlist)
-    if(isagriculture(stand->type->landusetype))
+    if(isagriculture(stand))
     {
       *norg_soil_agr+=litterstocks(&stand->soil.litter).nitrogen*stand->frac;
       forrootsoillayer(l)

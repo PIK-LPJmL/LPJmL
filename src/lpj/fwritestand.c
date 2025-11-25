@@ -30,6 +30,8 @@ Bool fwritestand(Bstruct file,       /**< pointer to restart file */
   /* write PFT list to file */
   if(fwritepftlist(file,"pftlist",&stand->pftlist)!=getnpft(&stand->pftlist))
     return TRUE;
+  bstruct_writereal(file,"Hag_Beta",stand->Hag_Beta);
+  bstruct_writereal(file,"slope_mean",stand->slope_mean);
   bstruct_writereal(file,"frac",stand->frac);
   /* write stand-specific data */
   if(stand->type->fwrite(file,stand))

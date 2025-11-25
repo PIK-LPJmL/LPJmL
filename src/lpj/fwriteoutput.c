@@ -40,7 +40,8 @@ static void flush_output(Outputfile *output,int index)
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
         vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]]*scale);\
-    writedata(output,index,vec,year,date,ndata,config);\
+    if(writedata(output,index,vec,year,date,ndata,config))\
+      return TRUE;\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
   }
@@ -54,7 +55,8 @@ static void flush_output(Outputfile *output,int index)
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
-      writepft(output,index,vec,year,date,ndata,i,config);\
+      if(writepft(output,index,vec,year,date,ndata,i,config))\
+        return TRUE;\
     }\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
@@ -71,7 +73,8 @@ static void flush_output(Outputfile *output,int index)
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
-      writeshortpft(output,index,svec,year,date,ndata,i,config);\
+      if(writeshortpft(output,index,svec,year,date,ndata,i,config))\
+        return TRUE;\
     }\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
@@ -135,11 +138,11 @@ static Real getscale(int date,int ndata,int timestep,Time time)
   return scale;
 } /* of 'getscale' */
 
-static void writedata(Outputfile *output,int index,float data[],int year,int date,int ndata,
+static Bool writedata(Outputfile *output,int index,float data[],int year,int date,int ndata,
                       const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
@@ -148,12 +151,12 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -165,11 +168,13 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                         offset,
-                         output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
+                            offset,
+                            output->counts,output->offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
@@ -182,7 +187,10 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -199,34 +207,37 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_float_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->count);
+        rc=write_float_netcdf(&output->files[index].fp.cdf,data,
+                              offset,
+                              config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writefloat_socket(config->socket,data,config->count);
+    rc=writefloat_socket(config->socket,data,config->count);
   }
 #endif
+  return rc;
 } /* of 'writedata' */
 
-static void writeshortdata(Outputfile *output,int index,short data[],int year,int date,int ndata,
+static Bool writeshortdata(Outputfile *output,int index,short data[],int year,int date,int ndata,
                            const Config *config)
 {
-  int offset;
+  int rc=FALSE,offset;
 #ifdef USE_MPI
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -238,16 +249,18 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
-                         offset,
-                         output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
+                            offset,
+                            output->counts,output->offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+    rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+                        output->counts,output->offsets,config->rank,config->comm);
   }
 #else
   int i;
@@ -255,7 +268,11 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        fwrite(data,sizeof(short),config->count,output->files[index].fp.file);
+        if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
+        {
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -272,24 +289,27 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_short_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->count);
+        rc=write_short_netcdf(&output->files[index].fp.cdf,data,
+                              offset,
+                              config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writeshort_socket(config->socket,data,config->count);
+    rc=writeshort_socket(config->socket,data,config->count);
   }
 #endif
+  return rc;
 } /* of 'writeshortdata' */
 
-static void writealldata(Outputfile *output,int index,float data[],int year,int date,int ndata,
+static Bool writealldata(Outputfile *output,int index,float data[],int year,int date,int ndata,
                          const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
 #ifdef USE_MPI
   int *counts,*offsets;
 #endif
@@ -306,12 +326,12 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                  offsets,config->rank,config->comm);
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+                     offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                      offsets,config->rank,config->csv_delimit,config->comm);
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+                         offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -323,16 +343,18 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
-                         offset,
-                         counts,offsets,config->rank,config->comm);
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
+                            offset,
+                            counts,offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
-                     offsets,config->rank,config->comm);
+    rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
+                        offsets,config->rank,config->comm);
   }
   free(counts);
   free(offsets);
@@ -341,7 +363,11 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        fwrite(data,sizeof(float),config->ngridcell,output->files[index].fp.file);
+        if(fwrite(data,sizeof(float),config->ngridcell,output->files[index].fp.file)!=config->ngridcell)
+        {
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->ngridcell-1;i++)
@@ -358,24 +384,27 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        write_float_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->ngridcell);
+        rc=write_float_netcdf(&output->files[index].fp.cdf,data,
+                              offset,
+                              config->ngridcell);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writefloat_socket(config->socket,data,config->ngridcell);
+    rc=writefloat_socket(config->socket,data,config->ngridcell);
   }
 #endif
+  return rc;
 } /* of 'writealldata' */
 
-static void writepft(Outputfile *output,int index,float *data,int year,
+static Bool writepft(Outputfile *output,int index,float *data,int year,
                      int date,int ndata,int layer,const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
@@ -384,12 +413,12 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -401,16 +430,18 @@ static void writepft(Outputfile *output,int index,float *data,int year,
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
-                             config->total,offset,layer,
-                             output->counts,output->offsets,config->rank,
-                             config->comm);
+        rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
+                                config->total,offset,layer,
+                                output->counts,output->offsets,config->rank,
+                                config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
-    mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+    rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
+                        output->counts,output->offsets,config->rank,config->comm);
   }
 #else
   if(output->files[index].isopen)
@@ -418,7 +449,10 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -435,19 +469,22 @@ static void writepft(Outputfile *output,int index,float *data,int year,
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_pft_float_netcdf(&output->files[index].fp.cdf,data,
-                               offset,layer,config->count);
+        rc=write_pft_float_netcdf(&output->files[index].fp.cdf,data,
+                                  offset,layer,config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    writefloat_socket(config->socket,data,config->count);
+    rc=writefloat_socket(config->socket,data,config->count);
 #endif
+  return rc;
 } /* of 'writepft' */
 
-static void writeshortpft(Outputfile *output,int index,short *data,int year,
+static Bool writeshortpft(Outputfile *output,int index,short *data,int year,
                           int date,int ndata,int layer,const Config *config)
 {
-  int i,offset;
+  int i,offset,rc=FALSE;
   for(i=0;i<config->count;i++)
     data[i]=(short)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
@@ -455,12 +492,12 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+        rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -472,22 +509,27 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
-                             config->total,offset,layer,
-                             output->counts,output->offsets,config->rank,
-                             config->comm);
+        rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
+                                config->total,offset,layer,
+                                output->counts,output->offsets,config->rank,
+                                config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+    rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+                        output->counts,output->offsets,config->rank,config->comm);
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -504,16 +546,19 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        write_pft_short_netcdf(&output->files[index].fp.cdf,data,
-                               offset,layer,config->count);
+        rc=write_pft_short_netcdf(&output->files[index].fp.cdf,data,
+                                  offset,layer,config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    writeshort_socket(config->socket,data,config->count);
+    rc=writeshort_socket(config->socket,data,config->count);
 #endif
+  return rc;
 } /* of 'writeshortpft' */
 
-void fwriteoutput(Outputfile *output,  /**< output file array */
+Bool fwriteoutput(Outputfile *output,  /**< output file array */
                   Cell grid[],         /**< grid cell array */
                   int year,            /**< simulation year (AD) */
                   int date,            /**< day or month */
@@ -521,7 +566,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   int npft,            /**< number of natural PFTs */
                   int ncft,            /**< number of crop PFTs */
                   const Config *config /**< LPJ configuration */
-                 )
+                 )                     /** \return TRUE on error */
 {
   int i,count,s,p,cell,l,ndata,nirrig,nnat;
   Real ndate1,sumfrac;
@@ -532,6 +577,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+  Real depth=0;
+
 #ifdef USE_TIMING
   double t;
   timing_start(t);
@@ -569,6 +616,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   check(vec);
   writeoutputvar(LAND_AREA,1);
   writeoutputarray(FPC,1);
+  writeoutputarray(WPC,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);
   writeoutputvar(TWS,ndate1);
@@ -577,6 +625,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SUN,ndate1);
   writeoutputvar(NPP_AGR,1);
   writeoutputvar(RH,1);
+  writeoutputvar(RA,1);
   writeoutputvar(RH_AGR,1);
   writeoutputvar(EVAP,1);
   writeoutputvar(INTERC,1);
@@ -727,6 +776,31 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILC,1);
   }
+  if(isopen(output,SOILC_1m))
+  {
+    if(iswrite2(SOILC_1m,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_1m].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            for(p=0;p<stand->soil.litter.n;p++)
+              getoutput(&grid[cell].output,SOILC_1m,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+            forrootsoillayer(l)
+            {
+              depth+=soildepth[l];
+              if(depth>=1000)
+                break;
+              else
+               getoutput(&grid[cell].output,SOILC_1m,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+            }
+          }
+        }
+    }
+    writeoutputvar(SOILC_1m,1);
+  }
+
   if(isopen(output,SOILN))
   {
     if(iswrite2(SOILN,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILN].timestep>0))
@@ -762,6 +836,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILC_SLOW,1);
   }
+
   if(isopen(output,SOILN_SLOW))
   {
     if(iswrite2(SOILN_SLOW,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILN_SLOW].timestep>0))
@@ -834,6 +909,50 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(LITN,1);
   }
+/*
+  if(isopen(output,SOILC_AGR))
+  {
+    if(iswrite2(SOILC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                stand->type->landusetype == AGRICULTURE|| stand->type->landusetype == SETASIDE_WETLAND)
+            {
+              for (p = 0; p<stand->soil.litter.n; p++)
+                grid[cell].output.soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+              forrootsoillayer(l)
+                grid[cell].output.soilc_agr+=(stand->soil.pool[l].slow.carbon + stand->soil.pool[l].fast.carbon)*stand->frac;
+            }
+          }
+        }
+    }
+    writeoutputvar(SOILC_AGR,soilc_agr);
+  }
+*/
+/*
+  if(isopen(output,LITC_AGR))
+  {
+    if(iswrite2(LITC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
+            {
+              grid[cell].output.litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;            }
+            }
+        }
+    }
+    writeoutputvar(LITC_AGR,litc_agr);
+  }
+*/
   if(isopen(output,SOILNO3))
   {
     if(iswrite2(SOILNO3,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILNO3].timestep>0))
@@ -899,7 +1018,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
               foreachpft(pft,p,&stand->pftlist)
                 getoutput(&grid[cell].output,MG_VEGC,config)+=(vegc_sum(pft)*stand->frac);
         }
@@ -915,7 +1034,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype!=NATURAL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MG_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -935,7 +1054,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL)
+            if(getlandusetype(stand)!=NATURAL && getlandusetype(stand)!=WETLAND &&  getlandusetype(stand)!=KILL)
               getoutput(&grid[cell].output,MG_LITC,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
@@ -950,7 +1069,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(stand))
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,SOILC_AGR,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -970,7 +1089,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(stand))
               getoutput(&grid[cell].output,LITC_AGR,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
@@ -1096,6 +1215,36 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N_VOLATILIZATION,1);
   writeoutputvar(N_IMMO,1);
   writeoutputvar(RES_STORAGE,ndate1);
+  writeoutputvar(GW_OUTFLUX,1);
+  if(isopen(output,GW_STORAGE))
+  {
+    if(iswrite2(GW_STORAGE,timestep,year,config) || (timestep==ANNUAL && config->outnames[GW_STORAGE].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          getoutput(&grid[cell].output,GW_STORAGE,config) += (grid[cell].ground_st + grid[cell].ground_st_am);
+        }
+    }
+    writeoutputvar(GW_STORAGE,1);
+  }
+  writeoutputvar(CH4_EMISSIONS,1);
+  writeoutputvar(CH4_EMISSIONS_WET,WC/WCH4);   //needs to be converted for ILAMB comparison
+  writeoutputvar(CH4_OXIDATION,1);
+  writeoutputvar(CH4_LITTER,1);
+  writeoutputvar(METHANOGENESIS,1);
+  writeoutputvar(CH4_AGR,1);
+  writeoutputvar(CH4_GRASSLAND,1);
+  writeoutputvar(CH4_RICE_EM,1);
+  writeoutputvar(CH4_EBULLITION,1);
+  writeoutputvar(CH4_SINK,1);
+  writeoutputvar(CH4_PLANT_GAS,1);
+  writeoutputvar(WTAB,ndate1);
+  writeoutputvar(MT_WATER,1);
+  writeoutputvar(MWATER,ndate1);
+  writeoutputvar(WETFRAC,1);
+  writeoutputvar(MEANSOILO2,ndate1);
+  writeoutputvar(MEANSOILCH4,ndate1);
   writeoutputvar(RES_DEMAND,1);
   writeoutputvar(TARGET_RELEASE,1);
   writeoutputvar(RES_CAP,1);
@@ -1172,7 +1321,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_NLIMIT,pft->par->id,config)+=pft->nlimit*ndate1;
           }
@@ -1191,7 +1340,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGC,pft->par->id,config)+=vegc_sum(pft);
           }
@@ -1210,7 +1359,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
           }
@@ -1277,12 +1426,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(stand))
               sumfrac+=stand->frac;
 
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(isagriculture(stand->type->landusetype))
+            if(isagriculture(stand))
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutputindex(&grid[cell].output,SOILC_AGR_LAYER,0,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
@@ -1388,9 +1537,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
               foreachpft(pft,p,&stand->pftlist)
-                getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=pft->par->lai(pft);
+                getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=lai(pft);
           }
         }
       }
@@ -1408,7 +1557,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1439,7 +1588,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1470,7 +1619,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1501,7 +1650,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(isnatural(stand))
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1532,7 +1681,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1597,7 +1746,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1662,7 +1811,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1727,7 +1876,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            switch(stand->type->landusetype)
+            switch(getlandusetype(stand))
             {
               case WOODPLANTATION:
                 data=stand->data;
@@ -1791,11 +1940,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MGRASS_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
@@ -1816,11 +1965,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MGRASS_SOILN,config)+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/sumfrac;
@@ -1841,11 +1990,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               getoutput(&grid[cell].output,MGRASS_LITC,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac/sumfrac;
           }
         }
@@ -1861,11 +2010,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype==GRASSLAND)
+            if(getlandusetype(stand)==GRASSLAND)
               getoutput(&grid[cell].output,MGRASS_LITN,config)+=(litter_agtop_sum_n(&stand->soil.litter)+litter_agsub_sum_n(&stand->soil.litter))*stand->frac/sumfrac;
           }
         }
@@ -1909,11 +2058,16 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip && grid[cell].lakefrac+grid[cell].ml.reservoirfrac<1)
         {
-          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
-                    grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
-                    grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
-                    grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
-        }
+          if(config->natNBP_only)
+          {
+            getoutput(&grid[cell].output,NBP,config)+=grid[cell].balance.nat_fluxes;
+          }
+          else
+            getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
+                      grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
+                      grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
+                      grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
+       }
     }
     writeoutputvar(NBP,1);
   }
@@ -1959,4 +2113,5 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
 #ifdef USE_TIMING
   timing_stop(FWRITEOUTPUT_FCN,t);
 #endif
+  return FALSE;
 } /* of 'fwriteoutput' */

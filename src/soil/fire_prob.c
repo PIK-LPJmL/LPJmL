@@ -26,7 +26,7 @@ Real fire_prob(const Litter *litter, /**< pointer to litter */
   fire_frac=fire_index*exp(sm/(0.45*sm*sm*sm+2.83*sm*sm+2.96*sm+1.04));
 #ifdef SAFE
   if (fire_frac>1.0)
-    fail(INVALID_FIRE_PROB_ERR,TRUE,"fire: probability of fire=%g >1.0",
+    fail(INVALID_FIRE_PROB_ERR,TRUE,TRUE,"fire: probability of fire=%g >1.0",
          fire_frac);
 #endif
   return (fire_frac<0.001 ||(litter_agtop_sum(litter)<minfuel)) ?

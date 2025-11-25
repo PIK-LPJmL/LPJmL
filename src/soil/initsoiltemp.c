@@ -21,38 +21,35 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                   const Config *config /**< LPJmL configuration */
                  )                     /** \return TRUE on error */
 {
-  char *name;
-  int year,s,l,day,dayofmonth;
+  int year,s,l,day,dayofmonth, startyear, index;
   int month;
   int cell;
   Real whcs_all=0.0;
   Real temp,pet,prec,balance,dl,rad,delta,acos_dl;
+  Real soilmoist, epsilon_gas, V;
   Stand* stand;
   Real nsoilmeanyears;
-  nsoilmeanyears = min(30,climate->file_temp.nyear);
-  for (year=climate->file_temp.firstyear; year < climate->file_temp.firstyear+nsoilmeanyears; ++year)
+  nsoilmeanyears=min(30,climate->file_temp.nyear);
+  if (config->isanomaly)
   {
-    if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
-    {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->temp_filename);
-        fprintf(stderr,"ERROR131: Cannot read temperature of year %d from '%s'.\n",
-                year,name);
-        free(name);
-      }
+    startyear=climate->file_temp.firstyear;
+    index=(config->delta_year>1) ? 3 : 1;
+  }
+  else
+  {
+    index=0;
+    startyear = (config->sim_id == LPJ || config->sim_id == LPJML) ? config->firstyear : 1901;
+  }
+  for (year = startyear; year < startyear + nsoilmeanyears; ++year)
+  {
+
+    if (getclimate(climate, grid, index, year, config))
       return TRUE;
-    }
-    if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
+    if (config->isanomaly)
     {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->prec_filename);
-        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d from '%s'.\n",
-                year,name);
-        free(name);
-      }
-      return TRUE;
+      if (getclimate(climate, grid, 0, config->firstyear, config))
+        return TRUE;
+      addanomaly_climate(climate, index);
     }
     day=0;
     foreachmonth(month)
@@ -72,7 +69,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           {
             temp=0;
             foreachdayofmonth(dayofmonth,month)
-              temp+=climate->data.temp[cell*NDAYYEAR+day+dayofmonth];
+              temp+=climate->data[0].temp[cell*NDAYYEAR+day+dayofmonth];
             temp*=ndaymonth1[month];
           }
           else
@@ -81,19 +78,21 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           {
             prec=0;
             foreachdayofmonth(dayofmonth,month)
-              prec+=climate->data.prec[cell*NDAYYEAR+day+dayofmonth];
+              prec+=climate->data[0].prec[cell*NDAYYEAR+day+dayofmonth];
           }
           else
             prec=(getcellprec(climate,cell))[month];
           pet=((temp>0) ? 924*dl*0.611*exp(17.3*temp/(temp+237.3))/(temp+273.2):0);
 
           balance=prec-pet;
+          if(prec<50)
+           balance=0;
           if(balance< epsilon)
             balance=0.0;
 #ifdef COUPLING_WITH_FMS
           grid[cell].laketemp+=temp/NMONTH/nsoilmeanyears;
 #endif
-          foreachstand(stand,s,grid[cell].standlist)
+          foreachstand(stand,s,((grid+cell)->standlist))
           {
             whcs_all=0.0;
             foreachsoillayer(l)
@@ -101,8 +100,12 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             foreachsoillayer(l)
             {
               stand->soil.temp[l]+=temp/NMONTH/nsoilmeanyears;
+              stand->soil.amean_temp[l] += temp / NMONTH / nsoilmeanyears;
+              if (stand->soil.amean_temp[l]<-40) stand->soil.amean_temp[l] = -40;
               stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.whcs[l]*stand->soil.whcs[l]/whcs_all;
             }
+            stand->soil.temp[SNOWLAYER] = stand->soil.temp[0];
+            stand->soil.amean_temp[SNOWLAYER] = stand->soil.temp[0];
           }
         }
       day+=ndaymonth[month];
@@ -121,6 +124,15 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.w[l]=0;
             stand->soil.freeze_depth[l]=soildepth[l];
             stand->soil.ice_pwp[l]=1;
+          }
+          if (l<BOTTOMLAYER)
+          {
+            V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+            soilmoist = getsoilmoist(&stand->soil,l);
+            epsilon_gas = max(0.00004, V + soilmoist*stand->soil.wsat[l]*BO2);
+            stand->soil.O2[l] = 266 * soildepth[l] * epsilon_gas / 1000;                                  /*266 g/m3 converted to g/m2 per layer*/
+            epsilon_gas = max(0.00004, V + soilmoist*stand->soil.wsat[l]*BCH4);
+            stand->soil.CH4[l] = p_s / R_gas / (10 + 273.15)*param.pch4*1e-9*WCH4*soildepth[l] * epsilon_gas / 1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
           }
         }
   /* initialse the enthalpy vectors based on temperature */
