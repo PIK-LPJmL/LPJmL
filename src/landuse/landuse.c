@@ -478,6 +478,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 Cell grid[],         /**< LPJ cell array */
                 int year,            /**< year (AD) */
                 int actual_year,     /**< year (AD) but not the static in case of CONST_LANDUSE */
+                int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFTs */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error */
@@ -599,6 +600,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
       if(sum > 1)
       {
+
         if(sum*grid[cell].landfrac>1+epsilon)
         {
           fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f even before scaling with landfrac\n",
@@ -658,6 +660,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
               {
                 grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
                 grid[cell].ml.irrig_system->crop[config->landusemap[j]]=p;
+                grid[cell].ml.irrig_system->crop[config->rice_pft-npft]=SURF;                               //TODO this should be a flag
               }
               else if(config->landusemap[j]<ncft+NGRASS)
               {
@@ -805,7 +808,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
 
     /* force tinyfrac for all crops only on pixels with valid soil */
-    if (config->withlanduse==ALL_CROPS && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
+    if (config->withlanduse==ALL_CROPS  && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
       for(j=0; j<ncft; j++)
       {
@@ -862,8 +865,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* set landuse to zero if no valid soil */
     if ((grid[cell].skip || soiltype==ROCK || soiltype==ICE || soiltype < 0) && sum>0)
     {
-      //fprintf(stderr,"WARNING!! setting LU (sum:%g) to zero, because of invalid soil type %d (%g/%g) in cell %d at year %d\n",
-      //        sum,soiltype,grid[cell].coord.lon,grid[cell].coord.lat, cell+config->startgrid,yearl);
       initlandfrac(grid[cell].ml.landfrac,0,ncft,config->nagtree);
     }
     /* recommpute sum after scaling fraction */

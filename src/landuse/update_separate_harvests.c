@@ -30,7 +30,7 @@ void update_separate_harvests(Output *output,      /**< pointer to output */
   crop=pft->data;
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
-  index=(pft->stand->type->landusetype==OTHERS) ? rothers(ncft) : pft->par->id-npft;
+  index=(getlandusetype(pft->stand)==OTHERS) ? rothers(ncft) : pft->par->id-npft;
   if(crop->sh!=NULL)
   {
     if(output->syear[pft->par->id-npft+irrigation*ncft]>epsilon)
@@ -138,7 +138,7 @@ void update_separate_harvests(Output *output,      /**< pointer to output */
       (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
     getoutputindex(output,CFT_ABOVEGBMN,index+irrigation*(ncft+NGRASS),config)=
       (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
-    if(pft->stand->type->landusetype==AGRICULTURE)
+    if(getlandusetype(pft->stand)==AGRICULTURE)
     {
       getoutputindex(output,HDATE,pft->par->id-npft+irrigation*ncft,config)=day;
       getoutputindex(output,HUSUM,pft->par->id-npft+irrigation*ncft,config)=crop->husum;

@@ -129,7 +129,10 @@ int main(int argc,char **argv)
   {
     for(j=0;j<NCOLS;j++)
     {
-      fread(&rbuf,sizeof(short),1,mfp);
+      if(fread(&rbuf,sizeof(short),1,mfp)!=1){
+        fprintf(stderr,"Error reading %s.\n",argv[3]);
+        return EXIT_FAILURE;
+      }
       if(swap)
         rbuf=swapshort(rbuf);
       river[i][j]=rbuf;
@@ -169,7 +172,10 @@ int main(int argc,char **argv)
     if(swap_grid)
           rbuf=swapshort(rbuf);
     lon[cell]=rbuf;
-    fread(&rbuf,sizeof(short),1,ifp);
+    if(fread(&rbuf,sizeof(short),1,ifp)!=1){
+      fprintf(stderr,"Error reading grid.\n");
+      return EXIT_FAILURE;
+    }
     if(swap_grid)
           rbuf=swapshort(rbuf);
     lat[cell]=rbuf;

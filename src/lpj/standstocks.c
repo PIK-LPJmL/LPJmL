@@ -15,6 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grass.h"
 
 Stocks standstocks(const Stand *stand /**< pointer to stand */
                   )                   /** \return stocks sum (gC/m2,gN/m2) */
@@ -25,10 +26,16 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
   tot=soilstocks(&stand->soil); /* get stocks in soil */
   foreachpft(pft,p,&stand->pftlist)
   {
-    tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
+    if(stand->type->landusetype!=AGRICULTURE)
+      tot.carbon+=vegc_sum(pft)+pft->bm_inc.carbon; /* sum up carbon in PFTs */
+    else
+      tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
+
     tot.nitrogen+=vegn_sum(pft)+pft->bm_inc.nitrogen; /* sum up nitrogen in PFTs */
     if(pft->par->cultivation_type==ANNUAL_CROP)
       tot.nitrogen-=pft->bm_inc.nitrogen;
+    if(stand->type->landusetype==OTHERS && pft->par->type==CROP)
+      tot.carbon-=pft->bm_inc.carbon;
   }
   return tot;
 } /* of 'standstocks' */

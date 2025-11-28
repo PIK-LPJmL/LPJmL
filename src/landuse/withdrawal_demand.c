@@ -27,6 +27,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#define neighbour_irrigation TRUE
 
 void withdrawal_demand(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< LPJ configuration */
@@ -36,6 +37,10 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
   Real *in,*out;
   Irrigation *data;
   Stand *stand;
+  Bool isrice;
+#ifdef USE_TIMING
+  double t;
+#endif
 
   in=(Real *)pnet_input(config->irrig_neighbour);
   out=(Real *)pnet_output(config->irrig_neighbour);
@@ -47,24 +52,24 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.gir=0.0;
       /* wateruse for irrigation */
       foreachstand(stand,s,grid[cell].standlist)
-        if(stand->type->landusetype==AGRICULTURE ||
-           stand->type->landusetype==GRASSLAND ||
-           stand->type->landusetype==OTHERS ||
-           stand->type->landusetype==BIOMASS_GRASS ||
-           stand->type->landusetype==BIOMASS_TREE ||
-           stand->type->landusetype==AGRICULTURE_GRASS ||
-           stand->type->landusetype==AGRICULTURE_TREE ||
-           stand->type->landusetype==WOODPLANTATION)
+        if(getlandusetype(stand)==AGRICULTURE ||
+           getlandusetype(stand)==GRASSLAND ||
+           getlandusetype(stand)==OTHERS ||
+           getlandusetype(stand)==BIOMASS_GRASS ||
+           getlandusetype(stand)==BIOMASS_TREE ||
+           getlandusetype(stand)==AGRICULTURE_GRASS ||
+           getlandusetype(stand)==AGRICULTURE_TREE ||
+           getlandusetype(stand)==WOODPLANTATION)
         {
+          isrice=ispftinstand(&stand->pftlist,config->rice_pft);
           data=stand->data;
-          if(data->irrigation)
+          if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
           {
             grid[cell].discharge.gir+=max((data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor)/data->ec,0)*stand->frac*grid[cell].coord.area; /* interception losses is fraction (GIR-interception) / GIR from day before */
           }
         }
 
       /* wateruse for industry, household and livestock */
-    //  grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse;// dit moet waarschijnlijk weg
 #ifdef IMAGE
       grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse_wd;
 
@@ -96,11 +101,20 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.wd_deficit=grid[cell].discharge.wd_demand=0;
 
 
-
+  if(neighbour_irrigation)
+  {
   /* fill output buffer with water withdrawal deficits */
   for(i=0;i<pnet_outlen(config->irrig_neighbour);i++)
     out[i]=grid[pnet_outindex(config->irrig_neighbour,i)-config->startgrid+config->firstgrid].discharge.wd_deficit;
 
+#ifdef USE_TIMING
+#ifdef USE_MPI
+  timing_start(t);
+  MPI_Barrier(config->comm);
+  timing_stop(MPI_BARRIER_FCN,t);
+#endif
+  timing_start(t);
+#endif
   pnet_exchg(config->irrig_neighbour);
 
   for(cell=0;cell<config->ngridcell;cell++)
@@ -114,5 +128,8 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
     }
     grid[cell].discharge.wd_demand+=grid[cell].discharge.wd_neighbour;
   }
-
+#ifdef USE_TIMING
+  timing_stop(WITHDRAWAL_DEMAND_FCN,t);
+#endif
+  }
 } /* of 'withdrawal_demand' */

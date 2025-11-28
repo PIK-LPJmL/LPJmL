@@ -263,12 +263,14 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       output->files[config->outputvars[i].id].id=config->outputvars[i].filename.id;
       if(isroot(*config))
       {
-        if(config->outputvars[i].id==GLOBALFLUX)
+        if(config->outputvars[i].id==GLOBALFLUX || config->outputvars[i].id==PCO2 || config->outputvars[i].id==PCH4)
           ncell=0;
         else
           ncell=(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total;
         if(config->outputvars[i].id==GLOBALFLUX)
           size=sizeof(Flux)/sizeof(Real);
+        else if(config->outputvars[i].id==PCO2 || config->outputvars[i].id==PCH4)
+          size=1;
         else if(config->outputvars[i].id==GRID)
           size=2;
         else

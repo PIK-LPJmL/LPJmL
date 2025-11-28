@@ -28,7 +28,7 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
 
   grass=pft->data;
   grasspar=pft->par->data;
-  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*cmass*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon);
+  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*WC*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.carbon);
   if(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf/pft->nind==0)
     nc_ratio=pft->par->ncleaf.low;
   else

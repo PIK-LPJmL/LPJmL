@@ -27,7 +27,7 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
   Real ndemand_tot;
   crop=pft->data;
   croppar=pft->par->data;
-  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*cmass*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind;
+  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*WC*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*crop->ind.leaf.carbon*pft->nind;
   if(crop->ind.leaf.carbon>0)
     nc_ratio=*ndemand_leaf/crop->ind.leaf.carbon;
   else

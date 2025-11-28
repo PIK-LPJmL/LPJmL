@@ -170,21 +170,20 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   }
   irrig_apply -= intercep_stand_blue;
   rainmelt -= (intercep_stand - intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* soil inflow: infiltration and percolation */
   if (irrig_apply > epsilon)
   {
-    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
-    runoff += infil_perc_irr(stand, irrig_apply, vol_water_enth ,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  if(climate->prec+melt>0) /* enthalpy of soil infiltration */
-    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  if((climate->prec+melt+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff += infil_perc_rain(stand, rainmelt, vol_water_enth ,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,(rainmelt+irrig_apply), vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   /* Version with daily allocation and grass management */
   /* #ifdef NEW_GRASS */
@@ -193,7 +192,6 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   foreachpft(pft, p, &stand->pftlist)
   {
-    // pft->phen = 1.0; /* phenology is calculated from biomass */
     if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,daylength,config);
     else
@@ -223,7 +221,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
          getoutputindex(output,PFT_GCGP,nnat + index,config) += gcgp;
       }
     }
-    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd - pft->npp_bnf - pft->npp_nrecovery);
+    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd - pft->npp_bnf- pft->npp_nrecovery,config);
     pft->npp_bnf=pft->npp_nrecovery=0.0;;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
@@ -308,7 +306,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   }
 
   if (data->irrigation && stand->pftlist.n > 0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand, wet, eeq,config->others_to_crop);
+    calc_nir(stand,data,gp_stand, wet, eeq,config);
   transp=0;
   forrootsoillayer(l)
   {

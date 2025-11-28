@@ -208,21 +208,20 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-      vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
-      runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
       /* count irrigation events*/
       getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
-    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  if((climate->prec+melt+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc_rain(stand,rainmelt,vol_water_enth,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,(rainmelt+irrig_apply), vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -246,7 +245,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
       getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf - pft->npp_nrecovery);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf-pft->npp_nrecovery,config);
+    pft->npp_bnf=0.0;
     pft->npp_bnf=pft->npp_nrecovery=0.0;
 #ifdef DEBUG2
     printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation.irrigation,npp,tree->fruit.carbon,pft->phen);
@@ -286,7 +286,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
           }
           break;
         case EVERGREEN:
-    //         if(pft->gdd>0 && pft->gdd<1/pft->par->ramp)
           if(pft->gdd>0)
           {
 
@@ -414,11 +413,9 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     else
       fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
     update_irrig(stand,agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft,ncft,config);
-    //if(setaside(stand->cell,stand,config->pftpar,TRUE,npft,data->irrigation,year))
-    // return TRUE;
   }
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config);
   free(wet);
 
   return runoff;

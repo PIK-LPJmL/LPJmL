@@ -53,6 +53,9 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 /*  Defined header files for LPJ */
 
 #include "conf.h"
+#ifdef USE_TIMING
+#include "timing.h"
+#endif
 #include "list.h"
 #include "types.h"
 #include "hash.h"
@@ -68,6 +71,7 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "climbuf.h"
 #include "soil.h"
 #include "pftpar.h"
+#include "hydrotope.h"
 #include "output.h"
 #include "date.h"
 #include "pft.h"
@@ -81,9 +85,10 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "coupler.h"
 #include "cropdates.h"
 #include "reservoir.h"
-#include "landuse.h"
 #include "errmsg.h"
 #include "pftlist.h"
+#include "landuse.h"
+#include "icefrac.h"
 #include "spitfire.h"
 #include "units.h"
 #include "stand.h"
@@ -138,6 +143,7 @@ extern void help(const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
 extern void failonerror(const Config *,int,int,const char *);
+extern void fprinttiming(FILE *,double,const Config *);
 #ifdef USE_MPI
 extern Bool iserror(int,const Config *);
 extern void sendhash(const Hash,int,MPI_Comm);
@@ -148,7 +154,13 @@ extern void receivehash(Hash,int,MPI_Comm);
 
 /* Definition of macros */
 
+#ifdef NO_FAIL_BALANCE
+#define FAIL_ON_BALANCE FALSE
+#else
+#define FAIL_ON_BALANCE TRUE
+#endif
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
 #define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
+#define printtiming(total,config) fprinttiming(stdout,total,config)
 
 #endif

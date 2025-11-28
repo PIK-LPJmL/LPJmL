@@ -41,7 +41,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
           getversion.$O getsprintf.$O freadtopheader.$O hash.$O sendhash.$O\
           fwritetopheader.$O getlimitarrayfromjson.$O fscanvarintarray.$O\
-          getintarrayfromjson.$O
+          getintarrayfromjson.$O timing.$O fprinttiming.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -54,8 +54,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h $(INC)/units.h $(INC)/bstruct.h\
           $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/coupler.h\
-          $(INC)/hash.h
-
+          $(INC)/hash.h $(INC)/timing.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

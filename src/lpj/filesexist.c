@@ -389,9 +389,9 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
         return 1;
       }
-      if(!config->fix_climate && header.firstyear+header.nyear-1<config->lastyear)
+      if(!config->fix_climate && header.firstyear+(header.nyear-1)*config->delta_year<config->lastyear)
       {
-        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+(header.nyear-1)*config->delta_year,filename->name,config->lastyear);
         return 1;
       }
       else if(config->fix_climate && header.firstyear+header.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))
@@ -520,6 +520,10 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkinputdata(config,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0);
   if(config->with_lakes)
     bad+=checkinputdata(config,&config->lakes_filename,"lakes","1",LPJ_SHORT,0);
+  bad+=checkinputdata(config, &config->kbf_filename,"kbf",NULL,LPJ_FLOAT,0);
+  bad+=checkinputdata(config, &config->slope_filename,"slope_mean",NULL,LPJ_FLOAT,0);
+  bad+=checkinputdata(config, &config->slope_min_filename,"slope_min",NULL,LPJ_FLOAT,0);
+  bad+=checkinputdata(config, &config->slope_max_filename,"slope_max",NULL,LPJ_FLOAT,0);
   if(config->river_routing)
   {
     if(config->extflow)
@@ -539,6 +543,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   if(config->grassharvest_filename.name!=NULL)
     bad+=checkinputdata(config,&config->grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
   bad+=checkclmfile(config,"wind speed",&config->wind_filename,"m/s",LPJ_SHORT,TRUE,TRUE);
+  bad+=checkinputdata(config,&config->hydrotopes_filename,"hydrotopes",NULL,LPJ_SHORT,CTI_DATA_LENGTH);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
@@ -561,6 +566,15 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkdatafile(config,&config->wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1,FALSE);
   bad+=checkclmfile(config,"temp",&config->temp_filename,"celsius",LPJ_SHORT,TRUE,TRUE);
   bad+=checkclmfile(config,"precipitation",&config->prec_filename,"kg/m2/day",LPJ_SHORT,TRUE,TRUE);
+  if(config->isanomaly)
+  {
+    bad+=checkclmfile(config,"temp anomaly",&config->delta_temp_filename,"celsius",LPJ_SHORT,FALSE,FALSE);
+    bad+=checkclmfile(config,"precipitation anomaly",&config->delta_prec_filename,"kg/m2/day",LPJ_SHORT,FALSE,TRUE);
+    bad+=checkclmfile(config,"lwnet anomaly",&config->delta_lwnet_filename,"W/m2",LPJ_SHORT,FALSE,TRUE);
+    bad+=checkclmfile(config,"swdown anomaly",&config->delta_swdown_filename,"W/m2",LPJ_SHORT,FALSE,TRUE);
+    if(config->with_glaciers)
+      bad+=checkclmfile(config,"icefrac",&config->icefrac_filename,NULL,LPJ_SHORT,FALSE,TRUE);
+  }
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
     bad += checkdatafile(config, &config->wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1,FALSE);
@@ -576,6 +590,8 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   bad+=checkfile(config,"co2",&config->co2_filename);
   if(config->wet_filename.name!=NULL)
     bad+=checkclmfile(config,"wet days",&config->wet_filename,"day",LPJ_SHORT,TRUE,FALSE);
+  if(config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
+    bad+=checkfile(config,"ch4",&config->ch4_filename);
 #ifdef IMAGE
   if(config->sim_id==LPJML_IMAGE)
   {

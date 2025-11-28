@@ -19,7 +19,6 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
@@ -46,6 +45,71 @@ of `major.minor.patch` with
 
 - Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
 - Typos in help text in `regridclm.c` corrected.
+
+
+## [6.0.0] - 2025-11-25
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), David Hötten (cmueller@pik-potsdam.de)
+
+### Added
+
+- extensive development for calculating methane and wetland dynamics (Schaphoff et al. in prep.), including:
+  - calculation of the water table in `infil_perc.c` (merged `infil_perc_rain.c` and `infil_perc_irr.c`)
+  - calculation of a dynamic wetland area in `update_wetlands.c`
+  - extends soil pools by the oxygen pool
+  - ground water pool added
+  - calculates subdaily `littersom.c`
+    - oxic decomposition depending on oxygen content
+    - diffusion of methane and oxygen
+    - methane production and oxidation added
+    - nitrification depending on oxygen content
+  - root respiration consumes oygen
+  - new routines `ebullition` and `plant_gas_transport.c`
+  - extensive restructuring of `landusechange.c`
+  - new `SETASIDE_WETLAND`  added, converted from wetlands to grow rice
+  - rice always irrigated and assuming a levelled water table
+  - introducing new, inundation insensitive, PFTs: `tropical broadleaved evergreen tree floodtolerant`, `C3 graminoid flood tolerant`, `Sphagnum moss`
+  - new PFT parameters `ist_m`. `idt_d`, and `alpha_e` for inundation tolerance and ebullition suppression
+  - new soil parameters `psi_sat`, `b`. `efold`. `ctimax`
+  - configuration flag `with_methane` added to run LPJmL6 with or without methane and oxygen dynamics (original daily version of littersom is called)
+  - reading new inputs `slope_mean`, `slope_max`, `slope_min`,`kbf value`,`CH4 (atmospheric CH4 concentration)`, `hydrotopes (CTI values)`,`climate delta values (optional)`,`icefrac (optional)`
+  - boolean flag `"natNBP_only"` defined to calculate NBP from natural vegetaton only
+  - optional input for ice cover can be read by setting `"with_glaciers" : true`
+  - optional reading in of climate anomalies for CLIMBER applications, enabled by setting `"anomaly" : true`.
+
+
+### Changed
+
+- `CN_GC4_MX` set to 42.71
+- `K_LATOSA` set to 4e3 for all trees
+- adjusted `beta_root`, `resist`, `ligthextcoeff`, `gmin` parameters
+- adjusted phenology parameters `wscal base`, `tmax base`
+
+
+## [5.10.2] - 2025-10-24
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Option `-with_timing` added to `configure.sh` to enable timing, corresponding man page updated.
+- Flag `-DUSE_TIMING` enables now timing for several LPJmL functions for performance analysis.
+- Macros `timing_start()` and `timing_stop()` defined to allow timing of specific functions.
+
+### Changed
+
+- Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -with_timing`.
+- Timing function for socket I/O are replaced by two separate items `read_socket` and `write_socket`.
+
+### Fixed
+
+- `pft->fapar` computation for maize in `albedo_crop.c`
+- `albedo_green_leaves` computation for crops in `albedo_crop.c`
+- `pft->albedo`, which is now a sum of `albedo_green_leaves`, `albedo_brown_litter`, and `albedo_soil`
 
 
 ## [5.10.1] - 2025-09-30
@@ -347,6 +411,8 @@ of `major.minor.patch` with
 
 
 ## [5.9.21] - 2025-03-13
+
+## [5.9.21] - 2025-01-31
 
 ### Contributors
 

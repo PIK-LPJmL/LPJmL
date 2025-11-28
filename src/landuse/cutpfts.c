@@ -23,6 +23,8 @@ void cutpfts(Stand *stand, /**< Pointer to stand */
   int p;
   Pft *pft;
   foreachpft(pft,p,&stand->pftlist)
+  {
     litter_update(&stand->soil.litter,pft,pft->nind,config);
+  }
   freepftlist(&stand->pftlist);
 } /* of 'cutpfts' */

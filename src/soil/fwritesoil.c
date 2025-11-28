@@ -50,10 +50,16 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
     fwritepoolpararray(file,NULL,soil->c_shift[l],ntotpft);
   }
   bstruct_writeendarray(file);
+  bstruct_writebeginarray(file,"socfraction",LASTLAYER);
+  forrootsoillayer(l)
+    bstruct_writerealarray(file,NULL,soil->socfraction[l],ntotpft);
+  bstruct_writeendarray(file);
   if(fwritelitter(file,"litter",&soil->litter))
     return TRUE;
   bstruct_writerealarray(file,"NO3",soil->NO3,LASTLAYER);
   bstruct_writerealarray(file,"NH4",soil->NH4,LASTLAYER);
+  bstruct_writerealarray(file,"CH4",soil->CH4,LASTLAYER);
+  bstruct_writerealarray(file,"O2",soil->O2,LASTLAYER);
   bstruct_writerealarray(file,"wsat",soil->wsat, NSOILLAYER);
   bstruct_writerealarray(file,"wpwp",soil->wpwp, NSOILLAYER);
   bstruct_writerealarray(file,"wfc",soil->wfc, NSOILLAYER);
@@ -65,6 +71,8 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
   bstruct_writerealarray(file,"bulkdens",soil->bulkdens, NSOILLAYER);
   bstruct_writerealarray(file,"k_dry",soil->k_dry, NSOILLAYER);
   bstruct_writerealarray(file,"Ks",soil->Ks, NSOILLAYER);
+  bstruct_writerealarray(file,"b",soil->b, NSOILLAYER);
+  bstruct_writerealarray(file,"psi_sat",soil->psi_sat, NSOILLAYER);
   bstruct_writerealarray(file,"df_tillage",soil->df_tillage, NTILLLAYER);
   bstruct_writerealarray(file,"w",soil->w,NSOILLAYER);
   bstruct_writereal(file,"w_evap",soil->w_evap);
@@ -73,6 +81,7 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
   bstruct_writereal(file,"snowheight",soil->snowheight);
   bstruct_writereal(file,"snowfraction",soil->snowfraction);
   bstruct_writerealarray(file,"temp",soil->temp,NSOILLAYER+1);
+  bstruct_writerealarray(file,"amean_temp",soil->amean_temp,NSOILLAYER+1);
   bstruct_writerealarray(file,"enth",soil->enth,NHEATGRIDP);
   bstruct_writerealarray(file,"wi_abs_enth_adj",soil->wi_abs_enth_adj,NSOILLAYER);
   bstruct_writerealarray(file,"soil_abs_enth_adj",soil->sol_abs_enth_adj,NSOILLAYER);
@@ -92,5 +101,10 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
   fwritestocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft);
   bstruct_writeint(file,"count",soil->count);
   bstruct_writereal(file,"meanw1",soil->meanw1);
+  bstruct_writereal(file,"wtable",soil->wtable);
+  bstruct_writereal(file,"wa",soil->wa);
+  bstruct_writebool(file,"iswetland",soil->iswetland);
+  bstruct_writereal(file,"snowdens",soil->snowdens);
+  bstruct_writereal(file,"fastfrac",soil->fastfrac);
   return bstruct_writeendstruct(file);
 } /* of 'fwritesoil' */

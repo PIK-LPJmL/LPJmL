@@ -198,7 +198,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  int ntypes,        /**< Number of PFT classes */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
- {
+{
   const char *name;
   LPJfile *input;
   Bool israndom;
@@ -216,6 +216,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *laimax_manage[]={"laimax_cft","laimax_const","laimax_par"};
   char *fdi[]={"nesterov","wvpd"};
   char *nitrogen[]={"lim","unlim"};
+  char *methane[]={"fixed","prescribed","dynamic"};
   char *tillage[]={"no","all","read"};
   char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   Bool def[N_IN];
@@ -345,16 +346,38 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   config->reservoir=FALSE;
+  config->groundwater_irrig = TRUE;
+  fscanbool(file,&config->groundwater_irrig,"groundwater_irrig", !config->pedantic,verbose);
+
 #ifdef IMAGE
-  config->groundwater_irrig = FALSE;
   config->aquifer_irrig = FALSE;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
+  if(fscankeywords(file,&config->with_dynamic_ch4,"methane",methane,3,FALSE,verbose))
+    return TRUE;
+  fscanbool2(file, &config->isanomaly, "anomaly");
+  config->with_glaciers=FALSE;
+  if(config->isanomaly)
+  {
+    fscanint2(file,&config->time_shift,"time_shift");
+    if(fscanbool(file,&config->with_glaciers,"with_glaciers",!config->pedantic,verbose))
+      return TRUE;
+  }
+  if(config->isanomaly && config->with_radiation!=RADIATION)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR208: Radiation setting '%s' not supported for anomalies, must be 'radiation'.\n",
+              radiation[config->with_radiation]);
+    return TRUE;
+  }
   config->percolation_heattransfer = TRUE;
   if(fscanbool(file,&config->percolation_heattransfer,"percolation_heattransfer",!config->pedantic,verbose))
+    return TRUE;
+  config->with_methane = TRUE;
+  if(fscanbool(file,&config->with_methane,"with_methane",!config->pedantic,verbose))
     return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
@@ -364,8 +387,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->no_ndeposition=FALSE;
   config->separate_harvests=FALSE;
   config->others_to_crop = FALSE;
+  config->fertilizer_input=NO_FERTILIZER;
   config->npp_controlled_bnf = FALSE;
   config->prescribe_lsuha=FALSE;
+  config->natNBP_only=FALSE;
   if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",!config->pedantic,verbose))
     return TRUE;
 #ifdef COUPLING_WITH_FMS
@@ -373,6 +398,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",!config->pedantic,verbose))
     return TRUE;
 #endif
+  if(fscanbool(file,&config->natNBP_only,"natNBP_only",!config->pedantic,verbose))
+    return TRUE;
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,!config->pedantic,verbose))
     return TRUE;
@@ -441,7 +468,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
     }
   }
-  config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
   if(config->sim_id!=LPJ)
   {
@@ -519,7 +545,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       {
         fscanbool2(file,&config->reservoir,"reservoir");
 #ifdef IMAGE
-        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", !config->pedantic,verbose);
+        fscanbool(file,&config->groundwater_irrig,"groundwater_irrig", !config->pedantic,verbose);
         fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",!config->pedantic,verbose);
 #endif
       }
@@ -592,6 +618,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
+    return TRUE;
+  }
+  if (fscanhydropar(file,&config->hydropar,verbose))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read hydrotope parameter.\n",stderr);
     return TRUE;
   }
   if(iskeydefined(file,"soilmap"))
@@ -730,6 +762,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   input=fscanstruct(file,"input",verbose);
   if(input==NULL)
     return TRUE;
+  if (config->isanomaly)
+  {
+    fscanint2(input, &config->delta_year, "delta_year");
+    if(config->delta_year<1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR239: delta_year=%d must be greater then 0.\n",
+                config->delta_year);
+      return TRUE;
+    }
+  }
+  else
+    config->delta_year = 1;
   for(i=0;i<N_IN;i++)
     def[i]=FALSE;
   scanclimatefilename(input,&config->soil_filename,FALSE,FALSE,"soil");
@@ -737,6 +782,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanfilename(input,&config->coord_filename,config->inputdir,"coord");
   }
+  scanclimatefilename(input, &config->kbf_filename,FALSE, FALSE, "kbf");
+  scanclimatefilename(input, &config->slope_filename, FALSE, FALSE, "slope_mean");
+  scanclimatefilename(input, &config->slope_min_filename,FALSE, FALSE, "slope_min");
+  scanclimatefilename(input, &config->slope_max_filename, FALSE, FALSE, "slope_max");
+
   if(config->withlanduse!=NO_LANDUSE)
   {
     config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
@@ -862,23 +912,42 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
   }
   scanclimatefilename(input,&config->temp_filename,TRUE,TRUE,"temp");
+  if (config->isanomaly)
+  {
+    scanclimatefilename(input, &config->delta_temp_filename,FALSE,TRUE,"delta_temp");
+    if(config->with_glaciers)
+    {
+      scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
+    }
+    scanclimatefilename(input, &config->delta_prec_filename,FALSE,TRUE, "delta_prec");
+  }
   scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      if (config->isanomaly)
+        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwnet");
+     scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+     if (config->isanomaly)
+       scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, "delta_swdown");
       break;
     case RADIATION_LWDOWN:
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
+      if (config->isanomaly)
+        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwdown");
       scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      if (config->isanomaly)
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, "delta_swdown");
       break;
     case CLOUDINESS:
       scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
       scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
-      break;
+      if (config->isanomaly)
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,TRUE, "delta_swdown");
+     break;
     default:
       if(verbose)
         fprintf(stderr,"ERROR213: Invalid setting %d for radiation.\n",config->with_radiation);
@@ -946,6 +1015,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
+  if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
+  {
+    if (readclimatefilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
+    {
+      if (verbose)
+        fputs("ERROR209: Cannot read filename for CH4 input.\n", stderr);
+      return TRUE;
+    }
+  }
+  scanclimatefilename(input,&config->hydrotopes_filename,FALSE,FALSE,"hydrotopes");
   if(israndom)
   {
     scanclimatefilename(input,&config->wet_filename,TRUE,TRUE,"wetdays");
@@ -1076,7 +1155,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanint2(file,&config->nspinup,"nspinup");
   config->isfirstspinupyear=FALSE;
   config->shuffle_spinup_climate=FALSE;
-  if(config->nspinup)
+  if(config->nspinup || config->isanomaly)
   {
     if(config->nspinup<0)
     {

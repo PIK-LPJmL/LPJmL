@@ -20,6 +20,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  const Filename *filename, /**< file name and format */
                  const char *units,        /**< units in NetCDF file or NULL */
                  Type datatype,            /**< data type in binary file */
+                 int delta_year,           /**< time step (yrs) */
                  Real scalar,              /**< scaling factor */
                  Config *config            /**< LPJ configuration */
                 )                          /** \return TRUE on error */
@@ -152,7 +153,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   if((file->file=openinputfile(&header,NULL,&attrs,&n_attr,&file->swap,
                                filename,
                                headername,units,datatype,
-                               &version,&offset,TRUE,config))==NULL)
+                               &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
   checkclimatetitle(attrs,n_attr,filename->name,config);
   freeattrs(attrs,n_attr);
@@ -171,16 +172,16 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     fclose(file->file);
     return TRUE;
   }
-  if(header.timestep!=1)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR127: Invalid time step %d in '%s', must be 1.\n",
-              header.timestep,filename->name);
-    fclose(file->file);
-    return TRUE;
-  }
   if(filename->fmt==META || (filename->fmt==CLM && version==4))
   {
+    if(header.timestep!=delta_year)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid time step %d in '%s', must be %d.\n",
+                header.timestep,filename->name,delta_year);
+      fclose(file->file);
+      return TRUE;
+    }
     if(header.nbands>1)
     {
       if(isroot(*config))

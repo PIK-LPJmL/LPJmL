@@ -32,18 +32,18 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   float *image_data;
 #ifdef IMAGE_CLIM_AVG
   for(i=0;i<climate->file_temp_var.n;i++)
-    climate->data.temp[i]=0; /* setting varibility to 0 */
+    climate->data[0].temp[i]=0; /* setting varibility to 0 */
 #else
-  if(readclimate(&climate->file_temp_var,climate->data.temp,0,climate->file_temp_var.scalar,grid,year,config))
+  if(readclimate(&climate->file_temp_var,climate->data[0].temp,0,climate->file_temp_var.scalar,grid,year,1,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR190: Cannot read temperature variability of year %d receive_image_climate().\n",
               year);
     return TRUE;
   }
-  if(climate->data.temp[0]<-70 || climate->data.temp[0]>70)
+  if(climate->data[0].temp[0]<-70 || climate->data[0].temp[0]>70)
   {
-    fprintf(stderr,"tempvar incorrect %g\n",climate->data.temp[0]);
+    fprintf(stderr,"tempvar incorrect %g\n",climate->data[0].temp[0]);
     fflush(stderr);
   }
 #endif
@@ -70,7 +70,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   /* adding IMAGE temperature to absolute temperature variability */
   for(i=0;i<climate->file_temp_var.n;i++)
   {
-    climate->data.temp[i]+=(Real)image_data[i];
+    climate->data[0].temp[i]+=(Real)image_data[i];
 #ifdef DEBUG_IMAGE
     if((i>=1*12&&i<2*12) || (i>=67032*12 && i<67033*12))
     {
@@ -84,18 +84,18 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   /* IMAGE precipitation consists of CRU variability (%) and IMAGE prec */
 #ifdef IMAGE_CLIM_AVG
   for(i=0;i<climate->file_prec_var.n;i++)
-    climate->data.prec[i]=1; /* setting relative varibility to 1 */
+    climate->data[0].prec[i]=1; /* setting relative varibility to 1 */
 #else
-  if(readclimate(&climate->file_prec_var,climate->data.prec,0,climate->file_prec_var.scalar,grid,year,config))
+  if(readclimate(&climate->file_prec_var,climate->data[0].prec,0,climate->file_prec_var.scalar,grid,year,1,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR189: Cannot read precipitation variability of year %d in receive_image_climate().\n",
               year);
     return TRUE;
   }
-  if(climate->data.prec[0]<0 || climate->data.prec[0]>1000)
+  if(climate->data[0].prec[0]<0 || climate->data[0].prec[0]>1000)
   {
-    fprintf(stderr,"ERROR174: precvar incorrect %g\n",climate->data.prec[0]);
+    fprintf(stderr,"ERROR174: precvar incorrect %g\n",climate->data[0].prec[0]);
     fflush(stderr);
   }
 #endif
@@ -116,7 +116,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   for(i=0;i<climate->file_prec_var.n;i++)
   {
     /* IMAGE precipitation data are supplied as mm/day monthly averages */
-    climate->data.prec[i]*=(Real)image_data[i]*ndaymonth[i % NMONTH];
+    climate->data[0].prec[i]*=(Real)image_data[i]*ndaymonth[i % NMONTH];
 #ifdef DEBUG_IMAGE
     if((i>=1*12&&i<2*12) || (i>=67032*12 && i<67033*12))
     {
@@ -144,7 +144,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   /* assigning IMAGE cloudiness */
   for(i=0;i<climate->file_cloud.n;i++)
   {
-    climate->data.sun[i]=100-(Real)image_data[i]*100.0;
+    climate->data[0].sun[i]=100-(Real)image_data[i]*100.0;
 #ifdef DEBUG_IMAGE
     if((i>=1*12&&i<2*12) || (i>=67032*12 && i<67033*12))
     {
@@ -174,7 +174,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   if(israndomprec(climate))
     for(i=0;i<climate->file_wet.n;i++)
     {
-      climate->data.wet[i]=(Real)image_data[i]*ndaymonth[i % NMONTH];
+      climate->data[0].wet[i]=(Real)image_data[i]*ndaymonth[i % NMONTH];
 #ifdef DEBUG_IMAGE
       if((i>=1*12&&i<2*12) || (i>=67032*12 && i<67033*12))
       {

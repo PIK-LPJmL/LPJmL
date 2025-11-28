@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "wetland.h"
 
 /**
  *  DESCRIPTION
@@ -25,12 +26,12 @@
 void equilsom(Cell *cell,           /**< pointer to cell */
               int ntotpft,          /**< total number of PFTs */
               const Pftpar pftpar[], /**< PFT parameter array */
-              Bool shift
+              Bool nremove
              )
 {
   int s;
   Stand *stand;
   
   foreachstand(stand,s,cell->standlist)
-    equilsoil(&stand->soil,ntotpft,pftpar,shift);
+    equilsoil(&stand->soil,ntotpft,pftpar,nremove,stand->type->landusetype == WETLAND);
 } /* of 'equilsom' */
