@@ -139,7 +139,7 @@ struct config
   int image_outport;      /**< port number for outgoing data */
 #endif
 #endif
-  char *climate;          /** climatology used */
+  char *climate;          /**< climatology used */
   int wait;               /**< time to wait for connection (sec) */
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
   Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */

@@ -48,7 +48,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           update_irrig.$O update_separate_harvests.$O fscanagtreemap.$O sowingcft.$O\
           fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O newirrigsystem.$O\
           initirrigsystem.$O getcftmap.$O getcftname.$O cmplandusemap.$O\
-          defaultcftmap.$O getmap.$O
+          defaultcftmap.$O getmap.$O checkhlimit.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

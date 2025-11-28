@@ -140,15 +140,30 @@ void freeconfig(Config *config /**< LPJmL configuration */
   {
     free(config->landusemap);
     if(config->fertilizer_input==FERTILIZER)
+    {
       free(config->fertilizermap);
+      freefilename(&config->fertilizer_nr_filename);
+    }
     if(config->manure_input)
+    {
       free(config->manuremap);
+      freefilename(&config->manure_nr_filename);
+    }
     if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
       free(config->residuemap);
+      freefilename(&config->residue_data_filename);
+    }
     if(config->sdate_option>=PRESCRIBED_SDATE)
+    {
       free(config->sdatemap);
+      freefilename(&config->sdate_filename);
+    }
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    {
       free(config->crop_phumap);
+      freefilename(&config->crop_phu_filename);
+    }
     free(config->mowingdays);
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
@@ -162,18 +177,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
     }
-    if(config->sdate_option>=PRESCRIBED_SDATE)
-      freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
-    if (config->residue_treatment == READ_RESIDUE_DATA)
-      freefilename(&config->residue_data_filename);
-    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-      freefilename(&config->crop_phu_filename);
-    if(config->fertilizer_input==FERTILIZER)
-      freefilename(&config->fertilizer_nr_filename);
-    if(config->manure_input)
-      freefilename(&config->manure_nr_filename);
   }
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {

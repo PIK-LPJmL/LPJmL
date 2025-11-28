@@ -102,6 +102,8 @@ Bool mpi_openclimate_netcdf(Climatefile *file,        /**< climate data file */
     if(isroot(*config))
       len=(*attrs==NULL) ? 0 : *n_attr;
     MPI_Bcast(&len,1,MPI_INT,0,config->comm);
+    if(n_attr!=NULL)
+      *n_attr=len;
     if(len==0)
       *attrs=NULL;
     else

@@ -172,6 +172,7 @@ extern const char *getcftname(int,int,int,const Config *);
 extern int *getcftmap(const Map *,const char *,Bool,int,int,const Config *);
 extern Bool getmap(Map *,const char *,const char *,Bool,int **,int *,int,int,Config *);
 extern Bool checkbasetemp(const Limit [],int,int,const Config *);
+extern Bool checkhlimit(const int [],int,int,const Config *);
 
 /* Declaration of variables */
 

@@ -76,7 +76,8 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
 {
   Landuse landuse;
   Limit *basetemp;
-  int basetemp_size;
+  int *hlimit;
+  int basetemp_size,hlimit_size;
   Map *map=NULL;
   Attr *attrs=NULL;
   char *climate;
@@ -168,8 +169,9 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       }
       else if(strcmp(config->climate,climate))
       {
-        fprintf(stderr,"ERROR269: Climate source %s in crop PHU file differs from %s in climate input.\n",
-                climate,config->climate);
+        if(isroot(*config))
+          fprintf(stderr,"ERROR269: Climate source %s in crop PHU file differs from %s in climate input.\n",
+                  climate,config->climate);
         free(climate);
         freeattrs(attrs,n_attr);
         freelanduse(landuse,config);
@@ -208,7 +210,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       if(basetemp==NULL)
       {
         if(isroot(*config))
-          fprintf(stderr,"WARNING041: No basetemp array found in Crop PHU file '%s'.\n",
+          fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
                   config->crop_phu_filename.name);
       }
       else
@@ -221,10 +223,29 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
         }
         free(basetemp);
       }
+      hlimit=(config->crop_phu_filename.fmt==META) ?
+                 getintarrayfromjson(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config)) :
+                 getintarray_netcdf(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config));
+      if(hlimit==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
+                  config->crop_phu_filename.name);
+      }
+      else
+      {
+        if(checkhlimit(hlimit,hlimit_size,npft,config))
+        {
+          free(hlimit);
+          freelanduse(landuse,config);
+          return NULL;
+        }
+        free(hlimit);
+      }
     }
     else if(isroot(*config))
     {
-      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile, no basetemp array found.\n",
+      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON or NetCDF file, no basetemp and hlimit array found.\n",
               config->crop_phu_filename.name);
     }
     checkyear("crop phu",&landuse->crop_phu,config);

@@ -173,13 +173,14 @@ extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern Map *readmap_netcdf(int,const char *);
 extern char *getattr_netcdf(int,int,const char *);
-extern void getglobalattrs_netcdf(int,Attr **,int *);
+extern Bool getglobalattrs_netcdf(int,Attr **,int *);
 extern char *getvarname_netcdf(const Climatefile *);
 extern void initsetting_netcdf(Netcdf_config *);
 extern Bool parse_config_netcdf(Netcdf_config *,const char *);
 extern Bool setlatlon(double **,double **,double **,double **,const Coord_array *);
 extern Bool settimeaxis(double **,double **,int,int,int,int,int,Bool,Bool,Bool,const char *);
 extern Limit *getlimitarray_netcdf(const char *,int *,const char *,Verbosity);
+extern int *getintarray_netcdf(const char *,int *,const char *,Verbosity);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

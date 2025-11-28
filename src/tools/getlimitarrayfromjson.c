@@ -14,7 +14,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <json-c/json.h>
 #include "lpj.h"
 
 Limit *getlimitarrayfromjson(const char *filename, /**< name of JSON file */

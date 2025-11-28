@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               c  h  e  c  k  b  a  s  e  t  e  m  p  .  c                      \n**/
+/**               c  h  e  c  k  h  l  i  m  i  t   .  c                           \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions compares base temp values from input file with valuse defined    \n**/
+/**     Functions compares hlimit values from input file with valuse defined       \n**/
 /**     in the PFT parameter file                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -17,11 +17,11 @@
 
 #include "lpj.h"
 
-Bool checkbasetemp(const Limit basetemp[], /**< array of base temp limits to check */
-                   int size,               /**< size of base temp array */
-                   int npft,               /**< number of natural PFTs */
-                   const Config *config    /**< LPjmL configuration */
-                  )                        /** \return TRUE on failed check */
+Bool checkhlimit(const int hlimit[],  /**< array of hlimit to check */
+                 int size,            /**< size of hlimit array */
+                 int npft,            /**< number of natural PFTs */
+                 const Config *config /**< LPjmL configuration */
+                )                     /** \return TRUE on failed check */
 {
   const Pftcroppar *croppar;
   int cft;
@@ -37,22 +37,14 @@ Bool checkbasetemp(const Limit basetemp[], /**< array of base temp limits to che
   for(cft=0;cft<size;cft++)
   {
     croppar=config->pftpar[npft+config->crop_phumap[cft]].data;
-    if(basetemp[cft].low!=croppar->basetemp.low)
+    if(hlimit[cft]!=croppar->hlimit)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR268: Low limit of basetemp=%g for '%s' in crop PHU file '%s' is not %g in PFT JSON file.\n",
-                basetemp[cft].low,config->pftpar[npft+config->crop_phumap[cft]].name,
-                config->crop_phu_filename.name,croppar->basetemp.low);
-      return TRUE;
-    }
-    if(basetemp[cft].high!=croppar->basetemp.high)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR268: High limit of basetemp=%g for '%s' in crop PHU file '%s' is not %g in PFT JSON file.\n",
-                basetemp[cft].high,config->pftpar[npft+config->crop_phumap[cft]].name,
-                config->crop_phu_filename.name,croppar->basetemp.high);
+        fprintf(stderr,"ERROR268: hlimit=%d for '%s' in crop PHU file '%s' is not %d in PFT JSON file.\n",
+                hlimit[cft],config->pftpar[npft+config->crop_phumap[cft]].name,
+                config->crop_phu_filename.name,croppar->hlimit);
       return TRUE;
     }
   }
   return FALSE;
-} /* of 'checkbasetemp' */
+} /* of 'checkhlimit' */

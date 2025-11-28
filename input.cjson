@@ -42,9 +42,9 @@
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
   "wind":          { "id" : 15, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm.json"},
   "tamp":          { "id" : 11, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
-  "tmax":          { "id" : 10, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "tmin":          { "id" : 9, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "humid":          { "id" : 14, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/huss_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "tmax":          { "id" : 10, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm.json"},
+  "tmin":          { "id" : 9, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm.json"},
+  "humid":          { "id" : 14, "fmt" : "meta",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/huss_gswp3-w5e5_obsclim_1901-2019.clm.json"},
 #endif
   "soil" :         { "id" : 41, "fmt" : "clm", "name" : "input_toolbox_30arcmin/soil_30arcmin_13_types.bin"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},

@@ -501,7 +501,8 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
                )                /** \return TRUE on error */
 {
   Limit *basetemp;
-  int i,bad,badout,basetemp_size;
+  int *hlimit;
+  int i,bad,badout,basetemp_size,hlimit_size;
   long long size;
   char *path,*oldpath;
   bad=0;
@@ -644,11 +645,25 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
             bad++;
           free(basetemp);
         }
+        hlimit=(config->crop_phu_filename.fmt==META) ?
+                   getintarrayfromjson(config->crop_phu_filename.name,&hlimit_size,"hlimit",TRUE) :
+                   getintarray_netcdf(config->crop_phu_filename.name,&hlimit_size,"hlimit",TRUE);
+        if(hlimit==NULL)
+        {
+          fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
+                  config->crop_phu_filename.name);
+        }
+        else
+        {
+          if(checkhlimit(hlimit,hlimit_size,config->npft[GRASS]+config->npft[TREE],config))
+            bad++;
+          free(hlimit);
+        }
       }
     }
     else
     {
-      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile, no basetemp array found.\n",
+      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile, no basetemp and hlimit array found.\n",
               config->crop_phu_filename.name);
     }
     bad+=checkcountryfile(config,&config->countrycode_filename);
