@@ -15,6 +15,7 @@
 #include "lpj.h"
 
 #define EPSILON 0.001  /* min precision of solution in bisection method */
+#define k 0.1          /* steepness parameter for inundation stress */
 
 typedef struct
 {
@@ -79,19 +80,39 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
+  Real istress=0;
 #ifdef USE_TIMING
   double tstart;
   timing_start(tstart);
 #endif
+  aet_frac = 1;
+  aet=0;
+  if (-pft->stand->soil.wtable >= pft->par->inun_thres)
+    pft->inun_count++;
+  else
+    pft->inun_count-=5;
+  if (pft->inun_count<0)
+    pft->inun_count = 0;
 
-  gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  if(pft->inun_count>pft->par->inun_dur)
+    pft->inun_count=pft->par->inun_dur;
+
+  if(pft->inun_count>pft->par->inun_dur)
+    istress = (1.0 / (1.0 + exp(-k * (pft->inun_count - pft->par->inun_dur))) - 0.5) * 2.0;
+
+  if(istress>1 || istress<0)
+    fail(INVALID_INUNDSTRESS_ERR,TRUE,TRUE,"Inundation stress %g>1, isstress inun_count=%d, inun_dur=%d",
+         pft->nind,istress,pft->inun_count,pft->par->inun_dur);
+
+  pft->inun_stress+=istress/NDAYYEAR;
+  wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
   forrootsoillayer(l)
     rootdist_n[l]=pft->par->rootdist[l];
   if(config->permafrost)
   {
     /*adjust root layer*/
-   getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
+    getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
   }
   wr=0;
   for(l=0;l<LASTLAYER;l++)
@@ -105,14 +126,23 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     }
     else
       trf[l]=pft->stand->soil.w[l];
+    if(trf[l]<0.001)
+      trf[l]=0;
     wr+=rootdist_n[l]*trf[l];
   }
 
   if(*wet>0.99)
     *wet=0.99;
 
-  if(pft->stand->type->landusetype==AGRICULTURE || (pft->stand->type->landusetype==OTHERS && config->others_to_crop))
+  if(getlandusetype(pft->stand)==AGRICULTURE || (getlandusetype(pft->stand)==OTHERS && config->others_to_crop))
+  {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
+    if (pft->phen>0)
+    {
+      gp_stand=gp_stand/pft->phen*fpar(pft);
+      gp_pft=gp_pft/pft->phen*fpar(pft);
+    }
+  }
   else
     supply=pft->par->emax*wr*pft->phen;
 
@@ -120,15 +150,14 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
 
-  if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
+  if (getlandusetype(pft->stand)!=SETASIDE_RF && getlandusetype(pft->stand)!=SETASIDE_IR)
   {
     getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
     getoutputindex(&pft->stand->cell->output,PFT_WATER_SUPPLY,index,config)+=(supply_pft<=demand_pft) ? supply_pft : demand_pft;
   }
 
   *wdf=wdf(pft,demand,supply);
-
-  if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0 && pft->phen>0)
+  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0 && pft->phen>0)
   {
     pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
@@ -235,7 +264,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
         adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                              temp,data.apar,daylength,FALSE);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
-                      pft->par->gmin*fpar(pft);
+                    pft->par->gmin*fpar(pft);
         demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
@@ -246,7 +275,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       pft->nlimit+=pft->vmax/vmax;
     }
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */
-    agd=max(0,agd);
+    agd=max(0,agd*(1-istress));
+    *rd=*rd*(1-istress);
   }
   else
     agd=0;
@@ -256,6 +286,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
+  getoutput(&pft->stand->cell->output,RA,config)+=*rd*pft->stand->frac;
 #ifdef USE_TIMING
   timing_stop(WATER_STRESSED_FCN,tstart);
 #endif

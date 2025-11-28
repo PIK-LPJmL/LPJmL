@@ -43,9 +43,11 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
     {
        fprintf(file,"dfout:\t\t%g (dm3/d)\n"
                     "dmass_river:\t%g (dm3)\n"
-                    "dmass_sum:\t%g (dm3)\n",
+                    "dmass_sum:\t%g (dm3)\n"
+                     "lateral water:\t%g (dm3)\n",
                grid[cell].discharge.dfout,
-               grid[cell].discharge.dmass_river,grid[cell].discharge.dmass_sum);
+               grid[cell].discharge.dmass_river,grid[cell].discharge.dmass_sum,
+               grid[cell].lateral_water);
        fputs("Queue:\t\t",file);
        fprintqueue(file,grid[cell].discharge.queue);
        fputc('\n',file);
@@ -91,7 +93,9 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         fputs("--------",file);
         for(cft=0;cft<ncft;cft++)
           fputs(" -----",file);
-        fprintf(file,"\nCropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
+        fprintf(file,"\nCropfrac (rf/ir/wl):\t%g\t%g\t%g\n",
+                grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir,
+                grid[cell].ml.cropfrac_wl);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
       fputs("Establ. stock for biomass:\n"
@@ -117,7 +121,10 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
         fprintignition(file,&grid[cell].ignition);
       fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
-      fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft);
+      fprintf(file,"lateral water:\t%g (mm)\n",grid[cell].lateral_water);
+      fprintf(file,"lateral NO3:\t%g (mm)\n",grid[cell].NO3_lateral);
+     fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft);
     }
+    fprinthydrotope(file,&grid[cell].hydrotopes);
   } /* of 'for(cell=...)' */
 } /* of 'fprintcell' */

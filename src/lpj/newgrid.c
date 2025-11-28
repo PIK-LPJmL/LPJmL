@@ -273,7 +273,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].ml.grassland_lsuha=param.lsuha;
     grid[i].ml.dam=FALSE;
     grid[i].ml.seasonality_type=NO_SEASONALITY;
-    grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
+    grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.cropfrac_wl=grid[i].ml.reservoirfrac=0;
     grid[i].ml.product.fast.carbon=grid[i].ml.product.slow.carbon=grid[i].ml.product.fast.nitrogen=grid[i].ml.product.slow.nitrogen=0;
     grid[i].balance.totw=grid[i].balance.tot.carbon=grid[i].balance.tot.nitrogen=0.0;
     grid[i].balance.estab_storage_tree[0].carbon=grid[i].balance.estab_storage_tree[1].carbon=100.0;
@@ -281,6 +281,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.estab_storage_grass[0].carbon=grid[i].balance.estab_storage_grass[1].carbon=20.0;
     grid[i].balance.estab_storage_grass[0].nitrogen=grid[i].balance.estab_storage_grass[1].nitrogen=2.0;
     grid[i].balance.surface_storage_last=grid[i].balance.soil_storage_last=0.0;
+    grid[i].balance.ricefrac=0.0;
     grid[i].discharge.waterdeficit=0.0;
     grid[i].discharge.wateruse=0.0;
 #ifdef IMAGE
@@ -294,16 +295,32 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.gir=grid[i].discharge.irrig_unmet=0.0;
     grid[i].discharge.act_irrig_amount_from_reservoir=0.0;
     grid[i].discharge.withdrawal=grid[i].discharge.wd_demand=0.0;
-#ifdef IMAGE
-    grid[i].discharge.dmass_gw=0.0;
+    grid[i].discharge.dmass_gw=6000*grid[i].coord.area;
     grid[i].discharge.withdrawal_gw=0.0;
-#endif
     grid[i].discharge.wd_neighbour=grid[i].discharge.wd_deficit=0.0;
     grid[i].discharge.mfout=grid[i].discharge.mfin=0.0;
+    grid[i].ground_st = 6000*0.3;
+    grid[i].ground_st_am = 6000*0.7;
     grid[i].discharge.dmass_sum=0.0;
     grid[i].discharge.fin_ext=0.0;
     grid[i].discharge.afin_ext=0.0;
     grid[i].discharge.queue=NULL;
+    grid[i].icefrac = 0;
+    grid[i].wetlandfrac=0;
+    grid[i].hydrotopes.meanwater = 0.;
+    grid[i].hydrotopes.changecount = 0;
+    grid[i].hydrotopes.wetland_area = 0.;
+    grid[i].hydrotopes.wetland_area_runmean = 0.;
+    grid[i].hydrotopes.wetland_cti = 0.;
+    grid[i].hydrotopes.wetland_cti_runmean = 0.;
+    grid[i].hydrotopes.wetland_wtable_current = -40;
+    grid[i].hydrotopes.wetland_wtable_max = -40;
+    grid[i].hydrotopes.wetland_wtable_mean = -40;
+    grid[i].hydrotopes.wtable_mean = -40;
+    grid[i].is_glaciated = FALSE;
+    grid[i].was_glaciated = FALSE;
+    grid[i].lateral_water = 0.0;
+    grid[i].NO3_lateral=0.0;
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;
     grid[i].ignition.nesterov_day=0;
@@ -376,6 +393,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           n=addstand(&natural_stand,grid+i);
           stand=getstand(grid[i].standlist,n-1);
           stand->frac=1-grid[i].lakefrac;
+          stand->Hag_Beta = grid[i].Hag_beta;
+          stand->slope_mean = grid[i].slope;
           if(initsoil(stand,config->soilpar+soil_id,npft+ncft,config))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
@@ -421,8 +440,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(!config->ischeckpoint && config->new_seed)
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
-        check_stand_fracs(grid+i,
-                          grid[i].lakefrac+grid[i].ml.reservoirfrac);
+        check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac,ncft);
       else
         (*count)++;
     }
@@ -563,5 +581,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(readcottondays(grid,config))
      return NULL;
   }
+  if(inithydro(grid,config))
+    return NULL;
   return grid;
 } /* of 'newgrid' */

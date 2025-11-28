@@ -40,7 +40,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           new_grassland.$O fwrite_grassland.$O fread_grassland.$O\
           fprint_grassland.$O new_biomass_tree.$O fread_biomass_tree.$O\
           fwrite_biomass_tree.$O fprint_biomass_tree.$O init_irrigation.$O\
-          scancftmap.$O\
+          scancftmap.$O ispftinstand.$O\
           fscanmowingdays.$O getnsoil_agr.$O agriculture_tree.$O agriculture_grass.$O\
           daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
           findstandpft.$O isirrigevent.$O\
@@ -64,7 +64,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/biomes.h\
           $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h $(INC)/param.h\
           $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/woodplantation.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
-          $(INC)/timing.h $(INC)/bstruct.h
+          $(INC)/bstruct.h $(INC)/hydrotope.h $(INC)/timing.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

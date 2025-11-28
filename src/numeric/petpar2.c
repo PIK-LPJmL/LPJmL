@@ -26,7 +26,6 @@
 #include "numeric.h"
 #include "units.h"
 
-#define sigma 5.6704e-8  /* Stefan-Boltzmann constant (W m-2 K-4) */
 #define dayseconds 86400 /* seconds per day */
 
 #define gamma_t(temp)  (65.05+temp*0.064)
@@ -65,7 +64,7 @@ void petpar2(Real *daylength, /**< daylength (h) */
   *par=dayseconds*swdown/2; /* MPAR based on SWdown instead of SWnet because albedo will be removed with PFT-dependent leaf albedo in water_stressed */
 
   if(islwdown)
-    lw-=sigma*pow(degCtoK(temp),4);
+    lw-=sigma_B*pow(degCtoK(temp),4);
   //*par=dayseconds*swnet/2;
   s=2.503e6*exp(17.269*temp/(237.3+temp))/
           ((237.3+temp)*(237.3+temp));

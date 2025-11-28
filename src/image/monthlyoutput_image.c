@@ -26,9 +26,9 @@ void monthlyoutput_image(Output *output,
 {
   getoutput(output,TEMP_IMAGE,config)+=(getcelltemp(climate,cell))[month];
   getoutput(output,PREC_IMAGE,config)+=(getcellprec(climate,cell))[month];
-  if(climate->data.sun!=NULL)
+  if(climate->data[0].sun!=NULL)
     getoutput(output,SUN_IMAGE,config)+=(getcellsun(climate,cell))[month];
-  if(climate->data.wet!=NULL)
+  if(climate->data[0].wet!=NULL)
     getoutput(output,WET_IMAGE,config)+=(getcellwet(climate,cell))[month];
 } /* of 'monthlyoutput_image' */
 

@@ -93,7 +93,7 @@ Real firedangerindex(Real char_moist_factor,
       break;
     default:
       d_fdi=0;
-      fail(INVALID_FIRE_INDEX_ERR,TRUE,"Invalid fire index %d",fid);
+      fail(INVALID_FIRE_INDEX_ERR,TRUE,TRUE,"Invalid fire index %d",fid);
   }  /* of 'switch' */
   return d_fdi;
 } /* of 'firedangerindex' */

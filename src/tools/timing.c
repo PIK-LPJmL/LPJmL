@@ -22,15 +22,16 @@ double timing[N_FCN]={};
 
 char *timing_fcn[N_FCN]=
 {
+  "daily_littersom",
   "drain",
   "fopenoutput",
   "fwriterestart",
   "fwriteoutput",
+  "gasdiffusion",
   "getclimate",
   "initinput",
   "initoutput",
   "irrig_amount_reservoir",
-  "littersom",
   "MPI_Barrier",
   "MPI_Init",
   "newgrid",

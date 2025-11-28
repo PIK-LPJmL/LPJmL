@@ -108,7 +108,8 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void fail(int,Bool,const char *,...);
+extern void printfailerr(int,Bool,const char *,...);
+extern void fail(int,Bool,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool ffscanreal(FILE *,Real *,const char *,Verbosity);
 extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
@@ -213,7 +214,7 @@ extern void enablefpe(void);
 #define newvec2(type,lo,hi) (type *)newarray(sizeof(type),lo,hi)
 #define newmatrix(type,ysize,xsize) (type **)newmat(sizeof(type),ysize,xsize)
 #define freevec(ptr,lo,hi) free(ptr+lo)
-#define check(ptr) if((ptr)==NULL) fail(ALLOC_MEMORY_ERR,FALSE,"Cannot allocate memory for '%s' in %s()",#ptr,__FUNCTION__)
+#define check(ptr) if((ptr)==NULL) fail(ALLOC_MEMORY_ERR,TRUE,FALSE,"Cannot allocate memory for '%s' in %s()",#ptr,__FUNCTION__)
 #define printintf(i) fprintintf(stdout,i)
 
 #define new(type) (type *)malloc(sizeof(type))

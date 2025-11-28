@@ -75,7 +75,9 @@ struct config
   Attr *global_attrs;         /**< array of global attributes */
   char *json_filename;        /**< filename of preprocessed JSON file */
   Filename temp_filename;
+  Filename delta_temp_filename;
   Filename prec_filename;
+  Filename delta_prec_filename;
   Filename cloud_filename;
   Filename wet_filename;
   Filename wind_filename;
@@ -85,10 +87,14 @@ struct config
   Filename tmin_filename;
   Filename lightning_filename;
   Filename lwnet_filename;
+  Filename delta_lwnet_filename;
   Filename swdown_filename;
+  Filename delta_swdown_filename;
   Filename popdens_filename;
   Filename human_ignition_filename;
   Filename co2_filename;
+  Filename ch4_filename;
+  Filename icefrac_filename;
   Filename drainage_filename;
   Filename extflow_filename;
   Filename neighb_irrig_filename;
@@ -97,8 +103,13 @@ struct config
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
+  Filename kbf_filename;
+  Filename slope_filename;
+  Filename slope_min_filename;
+  Filename slope_max_filename;
   Filename countrycode_filename;
   Filename landuse_filename;
+  Filename hydrotopes_filename;
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
   Filename nh4deposition_filename;
@@ -156,6 +167,7 @@ struct config
   int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
+  Hydropar hydropar;      /**< Hydrology parameter */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
   Outputvar *outputvars;
@@ -173,7 +185,7 @@ struct config
   Bool unlim_nitrogen;      /**< enable unlimited nitrogen (TRUE/FALSE) */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
-  int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
+  int residue_treatment; /**< residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
   int fertilizer_input;     /**< simulation with fertilizer input */
@@ -185,6 +197,7 @@ struct config
   Bool with_days;         /**< using days as a unit for monthly output */
   Type grid_type;         /**<  datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
+  Bool river_routing_restart; /**< river routing enabled in restart file */
   Bool separate_harvests;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
@@ -221,6 +234,13 @@ struct config
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
   Variable *outnames;
+  Bool isanomaly;        /**< with climate anomalies (TRUE/FALSE) */
+  int time_shift;
+  int delta_year;
+  Bool with_glaciers;    /**< read ice fraction (TRUE/FALSE) */
+  int  with_dynamic_ch4;
+  Bool with_methane;   /**< methane and oxygen balance enabled */
+
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;
@@ -293,8 +313,9 @@ struct config
   int soilmap_size;
   int grazing;
   int grazing_others;
-#ifdef IMAGE
+  int rice_pft;             /**< PFT index of rice */
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
+#ifdef IMAGE
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/
 #endif
   int irrig_scenario;       /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
@@ -323,6 +344,7 @@ struct config
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */
+  Bool natNBP_only;
 }; /* LPJ configuration */
 
 typedef struct

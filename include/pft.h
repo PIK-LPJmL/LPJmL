@@ -26,7 +26,6 @@
 #define LAMBDA_OPT 0.8  /* optimal Ci/Ca ratio */
 #define NHSG 4 /* number of hydrological soil groups */
 #define CCpDM 0.4763 /*leaf carbon content per dry mass  Kattge et al. 2011*/
-#define cmass 12.0    /* atomic mass of carbon */
 
 /* Definitions of datatypes */
 
@@ -104,7 +103,8 @@ typedef struct Pft
   {
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
-    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP, WP, */
+    Bool peatland;               /**< peatland_pft --> NOPEATLAND, PEATLAND */
+    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP*/
     Bool nfixing;               /**< PFT can fix N (TRUE/FALSE) */
     char *name;                 /**< Pft name */
     Real cn[NHSG];              /**< pft specific curve number for each hydr. soil group */
@@ -169,7 +169,10 @@ typedef struct Pft
     Real fnpp_nrecovery;         /**< NPP fraction for N recovery from leaf turnover (-) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
-    Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
+    Real inun_thres;            /**< inund_height: max WTP tolerated [m]*/
+    Real inun_dur;              /**< max days of inundation tolerated */
+    Real alpha_e;               /**< ebullition suppression factor  */
+    Real alpha_fuelp;           /**< fire danger parameter */
     Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
@@ -182,7 +185,7 @@ typedef struct Pft
     void (*newpft)(struct Pft *,int,int,const Config *);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
-    Real (*npp)(struct Pft*,Real,Real,Real);
+    Real (*npp)(struct Pft*,Real,Real,Real,const Config *);
     Real (*fpar) (const struct Pft*);
     void (*snow_canopy) (struct Pft*, Real, Real);
     Real (*alphaa_manage) (const struct Pft*,int);
@@ -200,9 +203,11 @@ typedef struct Pft
     void (*reduce)(Litter *,struct Pft *,Real,const Config *);
     void (*free)(struct Pft *);
     Real (*vegc_sum)(const struct Pft *);
+    Real (*leafc)(const struct Pft *);
     Real (*vegn_sum)(const struct Pft *);
     Real (*agb)(const struct Pft *);
     void (*mix_veg)(struct Pft *,Real);
+    Bool(*mix_veg_stock)(struct Pft *, struct Pft *, Real, Real,const Config *);
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
@@ -213,6 +218,7 @@ typedef struct Pft
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
     Real (*ndemand)(const struct Pft *,Real *,Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real);
+    void (*copy)(struct Pft *, const struct Pft *);
     void (*getb)(struct Pft *,Real);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
@@ -231,6 +237,8 @@ typedef struct Pft
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
+  Real inun_stress;
+  int inun_count;
   Real npp_bnf;
   Real npp_nrecovery; /**< N recovery from leaf turnover */
 #ifdef DAILY_ESTABLISHMENT
@@ -276,7 +284,8 @@ extern Stocks nofire(Pft *,Real *);
 extern Real nowdf(Pft *,Real,Real);
 extern void noadjust(Litter *,Pft *,Real,Real,const Config *);
 extern void nomix_veg(Pft *,Real);
-extern Bool establish(Real,const Pftpar *,const Climbuf *);
+extern void nomix_veg_carbon(Pft *,Real);
+extern Bool establish(Real, const Pftpar *, const Climbuf *, Bool);
 extern Stocks noestablishment(Pft *,Real,Real,int);
 extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
 extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
@@ -285,12 +294,13 @@ extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Bool fscannuptakepar(LPJfile *,Nuptake_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void output_daily(const Pft *,Real,Real,const Config *);
-extern void equilsoil(Soil *, int, const Pftpar [],Bool);
+extern void equilsoil(Soil *, int, const Pftpar [],Bool,Bool);
 extern void noturnover_monthly(Litter *,Pft *,const Config *);
 extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
+extern void copypft(Pft *, const Pft *);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool,Real,const Config *);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
@@ -324,16 +334,19 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
 #define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
 #define alphaa(pft,lai_opt) pft->par->alphaa_manage(pft,lai_opt)
-#define npp(pft,gtemp_air,gtemp_soil,assim) pft->par->npp(pft,gtemp_air,gtemp_soil,assim)
+#define npp(pft,gtemp_air,gtemp_soil,assim,config) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,config)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
 #define litter_update(litter,pft,frac,config) pft->par->litter_update(litter,pft,frac,config)
 #define fire(pft,fireprob) pft->par->fire(pft,fireprob)
 #define actual_lai(pft) pft->par->actual_lai(pft)
+#define lai(pft) pft->par->lai(pft)
 #define init(pft) pft->par->init(pft)
 #define vegc_sum(pft) pft->par->vegc_sum(pft)
+#define leafc(pft) pft->par->leafc(pft)
 #define vegn_sum(pft) pft->par->vegn_sum(pft)
 #define agb(pft) pft->par->agb(pft)
 #define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
+#define mix_veg_stock(pft1,pft2,frac1,frac2,config) pft->par->mix_veg_stock(pft1,pft2,frac1,frac2,config)
 #define adjust(litter,pft,fpc,fpc_max,config) pft->par->adjust(litter,pft,fpc,fpc_max,config)
 #define reduce(litter,pft,fpc,config) pft->par->reduce(litter,pft,fpc,config)
 #define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)

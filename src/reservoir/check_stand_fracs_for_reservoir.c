@@ -34,7 +34,7 @@ Bool check_stand_fracs_for_reservoir(const Cell *cell, /**< cell pointer */
     if(stand->frac>0) 
       frac_sum+=stand->frac;
     else 
-      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"negative STAND_FRAC :%g %g %g",
+      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"negative STAND_FRAC :%g %g %g",
            stand->frac,cell->lakefrac,cell->ml.reservoirfrac);
   }
   *difffrac=frac_sum-1;

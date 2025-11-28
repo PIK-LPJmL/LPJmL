@@ -15,24 +15,26 @@
 #include "lpj.h"
 #include "grass.h"
 
-Stocks firepft(Stand *stand,   /**< Litter pool */
-               Real fire_frac,    /**< fire fraction (0..1) */
+Stocks firepft(Stand *stand,        /**< pointer to stand */
+               Real fire_frac,      /**< fire fraction (0..1) */
                const Config *config /**< LPJmL configuration */
-              )                  /** \return fire flux (gC/m2) */
+              )                     /** \return fire flux (gC/m2) */
 {
   int i,p;
   Pft *pft;
-  Litter *litter;
   Stocks flux,flux_litter,flux_sum;
-  litter=&stand->soil.litter;
+  Litter *litter;
   flux_litter.carbon=flux_litter.nitrogen=flux_sum.carbon=flux_sum.nitrogen=0;
   if(isempty(&stand->pftlist)) /*if(pftlist->n==0)*/
     return flux_sum;
+  litter=&stand->soil.litter;
   foreachpft(pft,p,&stand->pftlist)
   {
     flux=fire(pft,&fire_frac);
     flux_sum.carbon+=flux.carbon;
     flux_sum.nitrogen+=flux.nitrogen;
+    stand->cell->balance.aCH4_fire+=flux.carbon*pft->par->emissionfactor.ch4*stand->frac;
+    getoutput(&stand->cell->output,FIREEMISSION_CH4,config)+=flux.carbon*pft->par->emissionfactor.ch4*stand->frac;
   }
   /* Update FPCs after fire loop because grass FPCs depend
    * on the aggregated grass cover across all grasses.
@@ -44,10 +46,13 @@ Stocks firepft(Stand *stand,   /**< Litter pool */
       fpc_grass(pft);
   for(p=0;p<litter->n;p++)
   {
+    stand->cell->balance.aCH4_fire+=litter->item[p].agtop.leaf.carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
     flux_litter.carbon+=litter->item[p].agtop.leaf.carbon;
     flux_litter.nitrogen+=litter->item[p].agtop.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
     {
+      stand->cell->balance.aCH4_fire+=litter->item[p].agtop.wood[i].carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
+      getoutput(&stand->cell->output,FIREEMISSION_CH4,config)+=litter->item[p].agtop.wood[i].carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
       flux_litter.carbon+=litter->item[p].agtop.wood[i].carbon;
       flux_litter.nitrogen+=litter->item[p].agtop.wood[i].nitrogen;
     }

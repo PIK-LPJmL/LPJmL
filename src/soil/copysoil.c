@@ -26,14 +26,20 @@ void copysoil(Soil *dst,       /**< destination */
   forrootsoillayer(l)
   {
     dst->pool[l]=src->pool[l];
-    dst->NH4[l]=src->NH4[l];
-    dst->NO3[l]=src->NO3[l];
     dst->k_mean[l].slow=src->k_mean[l].slow;
     dst->k_mean[l].fast=src->k_mean[l].fast;
+    dst->NO3[l]=src->NO3[l];
+    dst->NH4[l]=src->NH4[l];
+    dst->CH4[l] = src->CH4[l];
+    dst->O2[l] = src->O2[l];
+    dst->layer_exists[l] = src->layer_exists[l];
     dst->decay_rate[l].slow=src->decay_rate[l].slow;
     dst->decay_rate[l].fast=src->decay_rate[l].fast;
     for(p=0;p<ntotpft;p++)
+    {
       dst->c_shift[l][p]=src->c_shift[l][p];
+      dst->socfraction[l][p]=src->socfraction[l][p];
+    }
   }
   dst->YEDOMA=src->YEDOMA;
 #ifdef MICRO_HEATING
@@ -43,8 +49,14 @@ void copysoil(Soil *dst,       /**< destination */
   dst->amp=src->amp;
   dst->meanw1=src->meanw1;
   dst->snowpack=src->snowpack;
+  dst->snowdens = src->snowdens;
+  dst->snowheight = src->snowheight;
+  dst->snowfraction = src->snowfraction;
+  dst->icefrac=src->icefrac;
+  dst->fastfrac=src->fastfrac;
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
+  dst->whcs_all=src->whcs_all;
   dst->decomp_litter_mean.carbon=src->decomp_litter_mean.carbon;
   dst->decomp_litter_mean.nitrogen=src->decomp_litter_mean.nitrogen;
   for(p=0;p<ntotpft;p++)
@@ -87,6 +99,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->wpwps[i]=src->wpwps[i];
     dst->k_dry[i]=src->k_dry[i];
     dst->Ks[i]=src->Ks[i];
+    dst->psi_sat[l]=src->psi_sat[l];
+    dst->b[l]=src->b[l];
     dst->bulkdens[i]=src->bulkdens[i];
     dst->beta_soil[i]=src->beta_soil[i];
     dst->wi_abs_enth_adj[i]=src->wi_abs_enth_adj[i];
@@ -98,10 +112,16 @@ void copysoil(Soil *dst,       /**< destination */
   }
   dst->w_evap=src->w_evap;
   for(i=0;i<NSOILLAYER+1;i++)
+  {
     dst->temp[i]=src->temp[i];
+    dst->amean_temp[i] = src->amean_temp[i];
+  }
   for(i=0;i<NHEATGRIDP;i++)
     dst->enth[i]=src->enth[i];
   dst->rw_buffer=src->rw_buffer;
+  dst->wa = src->wa;
+  dst->wtable = src->wtable;
+  dst->iswetland = src->iswetland;
   for(i=0;i<NTILLLAYER;i++)
     dst->df_tillage[i]=src->df_tillage[i];
 } /* of 'copysoil' */
