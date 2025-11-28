@@ -23,8 +23,8 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    const Config *config /**< LPJmL configuration */
                   )
 {
-  const Pfttreepar *treepar;
-  Pfttree *tree;
+  const Pfttreepar *treepar=NULL;
+  Pfttree *tree=NULL;
   /* get parameters */
   Phen_param tminpar = getpftpar(pft, tmin);
   Phen_param tmaxpar = getpftpar(pft, tmax);

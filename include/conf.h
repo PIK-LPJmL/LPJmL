@@ -56,6 +56,9 @@
 #define RADIATION_SWONLY 2
 #define RADIATION 1
 #define CLOUDINESS 0
+#define FIXED_CH4 0
+#define PRESCRIBED_CH4 1
+#define DYNAMIC_CH4 2
 #define ALL -1
 #define RAW 0
 #define CLM 1
@@ -82,7 +85,8 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 337            /* number of output files */
+#define NOUT 361
+/* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -94,26 +98,26 @@
 #define GLOBALFLUX 2
 #define TERR_AREA 3
 #define LAKE_AREA 4
-#define FPC 5
-#define PFT_WATER_SUPPLY 6
-#define TRANSP 7
-#define RUNOFF 8
-#define DISCHARGE 9
-#define EVAP 10
-#define INTERC 11
-#define SWC1 12
-#define SWC2 13
-#define FIREC 14
-#define FIREF 15
-#define VEGC 16
-#define SOILC 17
-#define LITC 18
-#define FLUX_ESTABC 19
-#define PFT_NPP 20
-#define PFT_GCGP 21
-#define HARVESTC 22
-#define IRRIG 23
-#define SDATE 24
+#define PCH4 5
+#define PCO2 6
+#define FPC 7
+#define NBP 8
+#define PFT_WATER_SUPPLY 9
+#define TRANSP 10
+#define RUNOFF 11
+#define DISCHARGE 12
+#define EVAP 13
+#define INTERC 14
+#define SWC1 15
+#define SWC2 16
+#define FIREC 17
+#define FIREF 18
+#define VEGC 19
+#define SOILC 20
+#define LITC 21
+#define FLUX_ESTABC 22
+#define PFT_NPP 23
+#define PFT_GCGP 24
 #define PFT_HARVESTC 25
 #define PFT_RHARVESTC 26
 #define NPP 27
@@ -419,15 +423,41 @@
 #define NDEPOS 327
 #define RIVERVOL 328
 #define SWC_VOL 329
-#define FLUX_ESTABN_MG 330
-#define NAPPLIED_MG 331
-#define BNF_MG 332
-#define NDEPO_MG 333
-#define LITTERTEMP 334
-#define NBP 335
-#define TWS 336
+#define CH4_OXIDATION 330
+#define SDATE 331
+#define WETFRAC 332
+#define WTAB 333
+#define CH4_EMISSIONS 334
+#define CH4_SINK 335
+#define CH4_AGR 336
+#define MT_WATER 337
+#define MEANSOILO2 338
+#define MEANSOILCH4 339
+#define CH4_EBULLITION 340
+#define CH4_PLANT_GAS 341
+#define WPC 342
+#define GW_STORAGE 343
+#define GW_OUTFLUX 344
+#define CH4_RICE_EM 345
+#define MWATER 346
+#define FLUX_ESTABN_MG 347
+#define NAPPLIED_MG 348
+#define BNF_MG 349
+#define NDEPO_MG 350
+#define LITTERTEMP 351
+#define TWS 352
+#define HARVESTC 353
+#define IRRIG 354
+#define RA 355
+#define SOILC_1m 356
+#define CH4_EMISSIONS_WET 357
+#define METHANOGENESIS 358
+#define CH4_LITTER 359
+#define CH4_GRASSLAND 360
+
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
+
 #define RANDOM_SEED 0
 
 #endif

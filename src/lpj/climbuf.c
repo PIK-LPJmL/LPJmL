@@ -19,6 +19,7 @@
 #define kk100 0.01
 #define readint(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
 #define readreal(file,name,val) if(bstruct_readreal(file,name,val)) return TRUE
+#define readint(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
 #define readrealarray(file,name,val,size) if(bstruct_readrealarray(file,name,val,size)) return TRUE
 
 Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
@@ -46,6 +47,7 @@ Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
    climbuf->V_req[c]=-9999;
    climbuf->V_req_a[c]=0;
   }
+  climbuf->atemp_mean=0;
   climbuf->aetp_mean=0;
   climbuf->atemp=0;
   climbuf->atemp_mean20=-9999;
@@ -141,7 +143,7 @@ Real getgdd(const Climbuf *climbuf, Real basetemp)
       gpdays+=ndaymonth[m];
     }
   if(gpdays>0)
-      gdd/=gpdays;
+    gdd/=gpdays;
   return gdd;
 } /* of 'getgdd' */
 
@@ -175,6 +177,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
     climbuf->temp_min=mtemp;
   if(climbuf->temp_max<mtemp)
     climbuf->temp_max=mtemp;
+  climbuf->atemp_mean=(1-k)*climbuf->atemp_mean+k*mtemp;
   climbuf->mprec20[month]= (climbuf->mprec20[month]<-9998) ? mprec : (1-kk)*climbuf->mprec20[month]+kk*mprec;
   climbuf->mprec100[month]= (climbuf->mprec100[month]<-9998) ? mprec : (1-kk100)*climbuf->mprec100[month]+kk100*mprec;
   climbuf->mpet20[month]= (climbuf->mpet20[month]<-9998) ? mpet : (1-kk)*climbuf->mpet20[month]+kk*mpet;
@@ -216,6 +219,7 @@ Bool fwriteclimbuf(Bstruct file,           /**< pointer to restart file */
   bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"temp_max",climbuf->temp_max);
   bstruct_writereal(file,"temp_min",climbuf->temp_min);
+  bstruct_writereal(file,"atemp_mean",climbuf->atemp_mean);
   bstruct_writereal(file,"aetp_mean",climbuf->aetp_mean);
   bstruct_writereal(file,"atemp_mean20",climbuf->atemp_mean20);
   bstruct_writereal(file,"atemp_mean20_fix",climbuf->atemp_mean20_fix);
@@ -246,6 +250,7 @@ Bool freadclimbuf(Bstruct file,     /**< pointer to restart file */
     return TRUE;
   readreal(file,"temp_max",&climbuf->temp_max);
   readreal(file,"temp_min",&climbuf->temp_min);
+  readreal(file,"atemp_mean",&climbuf->atemp_mean);
   readreal(file,"aetp_mean",&climbuf->aetp_mean);
   readreal(file,"atemp_mean20",&climbuf->atemp_mean20);
   readreal(file,"atemp_mean20_fix",&climbuf->atemp_mean20_fix);

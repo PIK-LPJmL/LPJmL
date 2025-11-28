@@ -44,7 +44,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   char *lpjversion,*pftname;
   Real cellsize_lon,cellsize_lat;
   int i,offset,ncell,restart_npft,restart_ncft,firstcell,firstyear,size;
-  Bool separate_harvests,river_routing;
+  Bool separate_harvests;
   Type datatype;
   char *type;
   /* Open restart file */
@@ -95,7 +95,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readbool(file,"landuse",&config->landuse_restart);
   readint(file,"sdate_option",&config->sdate_option_restart);
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
-  readbool(file,"river_routing",&river_routing);
+  readbool(file,"river_routing",&config->river_routing_restart);
   readbool(file,"separate_harvests",&separate_harvests);
   if(bstruct_readbeginarray(file,"pfts",&size))
   {
@@ -190,11 +190,16 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       return NULL;
     }
   }
-  if(river_routing!=config->river_routing)
+  if(!config->river_routing_restart && config->river_routing)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"WARNING040: River routing in '%s' not set while set in run.\n",filename);
+  }
+  else if(config->river_routing_restart!=config->river_routing)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR181: River-routing setting %s is different from %s in %s file '%s'.\n",
-              bool2str(config->river_routing),bool2str(river_routing),type,filename);
+              bool2str(config->river_routing),bool2str(config->river_routing_restart),type,filename);
     bstruct_finish(file);
     return NULL;
   }

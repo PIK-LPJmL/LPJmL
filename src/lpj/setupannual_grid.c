@@ -65,16 +65,18 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     }
     else
 #endif
-    /* read landuse pattern from file */
-    rc=getlanduse(input->landuse,grid,landuse_year,year,ncft,config);
-    if(iserror(rc,config))
     {
-      if(isroot(*config))
+      /* read landuse pattern from file */
+      rc=getlanduse(input->landuse,grid,landuse_year,year,npft,ncft,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
+          fflush(stderr);
+        }
+        return TRUE; /* leave time loop */
       }
-      return TRUE; /* leave time loop */
     }
     if(config->reservoir)
       allocate_reservoir(grid,year,config);
@@ -160,28 +162,39 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
-      if(config->withlanduse)
+      if (config->with_glaciers)
       {
-        if(grid[cell].lakefrac<1)
-        {
-          /* calculate landuse change */
-          if(year>config->firstyear-config->nspinup || config->from_restart)
-            landusechange(grid+cell,npft,ncft,intercrop,year,config);
-          else if(grid[cell].ml.dam)
-            landusechange_for_reservoir(grid+cell,npft,ncft,
-                                        intercrop,year,config);
-        }
-#if defined IMAGE && defined COUPLED
-        setoutput_image(grid+cell,ncft,config);
-#endif
-        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-        getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
-        getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
-        getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
-        foreachstand(stand,s,(grid+cell)->standlist)
-          if(stand->type->landusetype==GRASSLAND)
-            getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
+        grid[cell].icefrac = geticefrac(input->icefrac, cell);
+        grid[cell].is_glaciated=grid[cell].icefrac>=1-epsilon;
       }
+      if (grid[cell].is_glaciated)
+        check_glaciated(grid + cell,config);
+      else
+      {
+        if(config->withlanduse)
+        {
+          if(grid[cell].lakefrac<1)
+          {
+            /* calculate landuse change */
+            if(year>config->firstyear-config->nspinup || config->from_restart)
+              landusechange(grid+cell,npft,ncft,intercrop,year,config);
+            else if(grid[cell].ml.dam)
+              landusechange_for_reservoir(grid+cell,npft,ncft,
+                                          intercrop,year,config);
+          }
+#if defined IMAGE && defined COUPLED
+          setoutput_image(grid+cell,ncft,config);
+#endif
+          getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+          getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
+          foreachstand(stand,s,(grid+cell)->standlist)
+            if(getlandusetype(stand)==GRASSLAND)
+              getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
+        }
+      }
+      grid[cell].was_glaciated=grid[cell].is_glaciated;
       gdd=getgdd(&grid[cell].climbuf,0);
       foreachstand(stand,s,(grid+cell)->standlist)
         foreachpft(pft,p,&stand->pftlist)

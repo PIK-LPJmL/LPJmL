@@ -64,6 +64,18 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
     free(stand);
     return NULL;
   }
+  if(bstruct_readreal(file,"Hag_Beta",&stand->Hag_Beta))
+  {
+    fprintf(stderr,"ERROR254: Cannot read Hag_Beta for %s stand.\n",stand->type->name);
+    free(stand);
+    return NULL;
+  }
+  if(bstruct_readreal(file,"slope_mean",&stand->slope_mean))
+  {
+    fprintf(stderr,"ERROR254: Cannot read slope_mean for %s stand.\n",stand->type->name);
+    free(stand);
+    return NULL;
+  }
   if(bstruct_readreal(file,"frac",&stand->frac))
   {
     fprintf(stderr,"ERROR254: Cannot read stand fraction for %s stand.\n",stand->type->name);

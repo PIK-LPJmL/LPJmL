@@ -22,6 +22,7 @@
 Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
                      int npft,             /**< number of natural PFTs */
                      int UNUSED(ncft),     /**< number of crop PFTs */
+                     Real UNUSED(natfrac), /**< natural and wetland fraction */
                      int year,             /**< simulation year */
                      Bool isdaily,         /**< daily temperature data? */
                      Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
@@ -48,7 +49,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
 
   foreachpft(pft,p,&stand->pftlist)
   {
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("PFT:%s fpc=%g\n",pft->par->name,pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
            pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
@@ -71,8 +72,8 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
     fpc_grass(pft);
 
-#ifdef DEBUG2
-  printf("Number of updated pft: %d\n",stand->pftlist.n);
+#ifdef DEBUG3
+  printf("5 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
 #ifndef DAILY_ESTABLISHMENT
@@ -80,8 +81,8 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
   {
     for(p=0;p<npft;p++)
     {
-      if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE 
-         && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf))
+      if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss
+         && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
       {
         if(!present[p])
          addpft(stand,config->pftpar+p,year,0,config);
@@ -90,7 +91,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
     }
     fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
     foreachpft(pft,p,&stand->pftlist)
-      if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+      if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
       {
         stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
         flux_estab.carbon+=stocks.carbon;

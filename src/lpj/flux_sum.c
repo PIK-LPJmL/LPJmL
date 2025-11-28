@@ -21,7 +21,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
               const Config *config /**< LPJ configuration */
              )                     /** \return total flux (gC) */
 {
-  int cell,s,p,l;
+  int cell;
+  int s, p, l;
   Stand *stand;
   Pft *pft;
   Flux flux={};
@@ -30,6 +31,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
     if(!grid[cell].skip)
     {
       flux.area+=grid[cell].coord.area;
+      flux.temp+=grid[cell].balance.temp/NDAYYEAR*grid[cell].coord.area;
       flux.npp+=grid[cell].balance.anpp*grid[cell].coord.area;
       flux.gpp+=grid[cell].balance.agpp*grid[cell].coord.area;
       flux.rh+=grid[cell].balance.arh*grid[cell].coord.area;
@@ -41,6 +43,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.harvest.nitrogen+=(grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen)*grid[cell].coord.area;
       flux.transp+=grid[cell].balance.atransp*grid[cell].coord.area;
       flux.evap+=grid[cell].balance.aevap*grid[cell].coord.area;
+      flux.nat_nbpflux+=grid[cell].balance.nat_fluxes*grid[cell].coord.area;
       flux.interc+=grid[cell].balance.ainterc*grid[cell].coord.area;
       flux.wd+=(grid[cell].balance.airrig+grid[cell].balance.aconv_loss_evap+grid[cell].balance.aconv_loss_drain)*grid[cell].coord.area;
 #ifdef IMAGE
@@ -49,6 +52,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.wd_unsustainable+=grid[cell].balance.awd_unsustainable;
 #endif
       flux.evap_lake+=grid[cell].balance.aevap_lake*grid[cell].coord.area;
+      flux.MT_water+=grid[cell].balance.aMT_water*grid[cell].coord.area;
       flux.evap_res+=grid[cell].balance.aevap_res*grid[cell].coord.area;
       flux.irrig+=grid[cell].balance.airrig*grid[cell].coord.area;
       flux.conv_loss_evap+=grid[cell].balance.aconv_loss_evap*grid[cell].coord.area; /* only evaporated conveyance losses */
@@ -64,13 +68,20 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.influx.nitrogen+=grid[cell].balance.influx.nitrogen*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
+      flux.CH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area;
+      flux.CH4_oxidation+=grid[cell].balance.aCH4_oxid*grid[cell].coord.area;
+      flux.CH4_sink+=grid[cell].balance.aCH4_sink*grid[cell].coord.area;
+      flux.CH4_rice+=grid[cell].balance.aCH4_rice*grid[cell].coord.area;
+      flux.CH4_agr+=grid[cell].balance.aCH4_agr*grid[cell].coord.area;
+      flux.CH4_grassland+=grid[cell].balance.aCH4_grassland*grid[cell].coord.area;
+      flux.CH4_fire+=grid[cell].balance.aCH4_fire*grid[cell].coord.area;
       flux.product.carbon+=(grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon)*grid[cell].coord.area;
       flux.product.nitrogen+=(grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen)*grid[cell].coord.area;
       flux.product_turnover.carbon+=(grid[cell].balance.prod_turnover.fast.carbon+grid[cell].balance.prod_turnover.slow.carbon)*grid[cell].coord.area;
       flux.product_turnover.nitrogen+=(grid[cell].balance.prod_turnover.fast.nitrogen+grid[cell].balance.prod_turnover.slow.nitrogen)*grid[cell].coord.area;
       flux.neg_fluxes.carbon+=grid[cell].balance.neg_fluxes.carbon*grid[cell].coord.area;
       flux.neg_fluxes.nitrogen+=grid[cell].balance.neg_fluxes.nitrogen*grid[cell].coord.area;
-      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir)*grid[cell].coord.area;
+      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir+grid[cell].ml.cropfrac_wl)*grid[cell].coord.area;
       flux.estab_storage.carbon+=(grid[cell].balance.estab_storage_tree[0].carbon +
                                  grid[cell].balance.estab_storage_tree[1].carbon +
                                  grid[cell].balance.estab_storage_grass[0].carbon +
@@ -95,6 +106,9 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
           flux.soil.nitrogen+=(stand->soil.pool[l].fast.nitrogen+stand->soil.pool[l].slow.nitrogen)*stand->frac*grid[cell].coord.area;
           flux.soil_slow.carbon+=stand->soil.pool[l].slow.carbon*stand->frac*grid[cell].coord.area;
           flux.soil_slow.nitrogen+=stand->soil.pool[l].slow.nitrogen*stand->frac*grid[cell].coord.area;
+          flux.soil_CH4+=stand->soil.CH4[l]*stand->frac*grid[cell].coord.area;
+          flux.soil_NO3+=stand->soil.NO3[l]*stand->frac*grid[cell].coord.area;
+          flux.soil_NH4+=stand->soil.NH4[l]*stand->frac*grid[cell].coord.area;
         }
         foreachpft(pft,p,&stand->pftlist)
         {
@@ -127,5 +141,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #else
   *flux_global=flux;
 #endif
-  return flux_global->npp+flux_global->influx.carbon-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
+  if(isroot(*config) && flux_global->area>epsilon)
+    flux_global->temp/=flux_global->area;
+  return flux_global->npp-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
 } /* of 'flux_sum' */
