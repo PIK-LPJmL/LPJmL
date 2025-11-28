@@ -23,14 +23,16 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
 
 ### Added
 
- - Base temp value area read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
- - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` data.
+ - Base temp and hlimit values are read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
+ - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` or `"hlimit"` data.
  - Band names for mapping are read from JSON metafiles and NetCDF input files.
  - Globale attribute `"title"` is read from climate input files and checked for matching titles.
  - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
+ - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
 
 ### Changed
 
@@ -38,10 +40,12 @@ of `major.minor.patch` with
 - JSON metafiles are read for climate input to get title.
 - Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
 - The global attributes in JSON metafiles are printed on separate lines.
+- If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
 
 ### Fixed
 
 - Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
+- Typos in help text in `regridclm.c` corrected.
 
 
 ## [5.10.1] - 2025-09-30
