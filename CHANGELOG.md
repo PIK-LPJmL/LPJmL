@@ -58,6 +58,7 @@ of `major.minor.patch` with
 - Double entry of `getlag.$O` removed in `src/soil/Makefile`.
 - Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
 - Function `fwritecell.c` fixed to compile with `-DCOUPLING_WITH_FMS` flag.
+- Missing deallocation of `items` array added in `sendhash.c`.
 
 
 ## [6.0.0] - 2025-11-25
