@@ -59,6 +59,7 @@ of `major.minor.patch` with
 - Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
 - Function `fwritecell.c` fixed to compile with `-DCOUPLING_WITH_FMS` flag.
 - Missing deallocation of `items` array added in `sendhash.c`.
+- Filename for population density input corrected in `regridlpj`.
 
 
 ## [6.0.0] - 2025-11-25
