@@ -70,7 +70,7 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
       fprintf(stderr,"frac[%s]= %g standNR: %d iswetland: %d\n",stand->type->name,stand->frac,s,stand->soil.iswetland);
     }
     fail(STAND_FRAC_SUM_ERR,TRUE,FALSE,
-        "Sum of stand fractions differs from 1 by %g, lakefrac: %g, fracsum: %g  fracsum2: %g reservoirfrac: %g cell (%s) from functtion %s() in line %d.\n",
+         "Sum of stand fractions differs from 1 by %g, lakefrac: %g, fracsum: %g  fracsum2: %g reservoirfrac: %g cell (%s) from function %s() in line %d.\n",
          (frac_sum-1),cell->lakefrac,frac_sum,frac_sum2,cell->ml.reservoirfrac,sprintcoord(line,&cell->coord),routine,linenr);
 #endif
   }
