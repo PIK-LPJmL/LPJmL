@@ -27,8 +27,10 @@ void fprintflux(FILE *file,          /**< Output file pointer */
 {
   int i,tabs;
   Real convert;
-  if(config->nall > 80) convert = 1e-15;
-    else convert = 1/flux.area;
+  if(config->nall > 80)
+    convert = 1e-15;
+  else
+    convert = 1e-9;
   if((year<config->firstyear &&
      (year-config->firstyear+config->nspinup) % LINES_PER_HEADER==0) ||
      (year>=config->firstyear && (year-config->firstyear) % LINES_PER_HEADER==0))

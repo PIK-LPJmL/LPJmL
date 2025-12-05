@@ -26,10 +26,6 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   char d;
   d=config->csv_delimit;
-  if(config->nall<80)
-    scale=1/flux.area;
-  else
-    scale=1e-15;
   if(year==config->firstyear-config->nspinup)
   {
     fprintf(file,"Year%cNEP%cGPP%cNPP%cRH%cestabc%cnegc_fluxes",d,d,d,d,d,d);
