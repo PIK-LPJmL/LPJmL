@@ -12,7 +12,7 @@
 static Real fcn(Real x,void *data)
 {
   return x*x-*((Real *)data);
-} /* of 'fcn' */ 
+} /* of 'fcn' */
 
 void test_bisect(void)
 {

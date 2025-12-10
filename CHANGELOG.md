@@ -61,6 +61,7 @@ of `major.minor.patch` with
 - Function `fwritecell.c` fixed to compile with `-DCOUPLING_WITH_FMS` flag.
 - Missing deallocation of `items` array added in `sendhash.c`.
 - Filename for population density input corrected in `regridlpj`.
+- Header files added for unit tests to compile tests successfully.
 
 
 ## [6.0.0] - 2025-11-25
