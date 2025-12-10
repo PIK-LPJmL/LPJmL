@@ -71,7 +71,7 @@ static int ncft;           /*< Number of crop PFT's */
 
 /// from iterate()
 static Real co2,ch4,pch4;
-static int year, landuse_year, wateruse_year;
+static int year;
 
 static double glon_min, glon_max, glat_min, glat_max;
 
@@ -1474,7 +1474,7 @@ void lpj_update_
 
         if (silvester)
         { /* from iterateyear() */
-          updateannual_grid(output,grid,input.landcover,&ch4,&pch4,year,npft,ncft,intercrop,daily.isdailytemp,&config);
+          updateannual_grid(output,grid,input.landcover,co2,&ch4,&pch4,year,npft,ncft,intercrop,daily.isdailytemp,&config);
           for(cell=0;cell<config.ngridcell;cell++)
           {
             grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
