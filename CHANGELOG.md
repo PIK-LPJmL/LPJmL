@@ -34,7 +34,7 @@ of `major.minor.patch` with
 ### Changed
 
 - Error about first simulation year is less than first year of climate data replaced by warning in `initclimate.c`.
-- First and last simulation year in spinup changed from 1901 to 1840 in `lpjml_config.cjson`.
+- First and last simulation year in spinup changed from 1901 to 1700 in `lpjml_config.cjson`.
 - Number of spinup years changed from 4000 to 3799 in `lpjml_config.cjson` in order to get bit-identical results.
 - Test files for unit test and shell scripts added to tar and zip file in `Makefile`.
 - First year of climate data set instead of first simulation year used in `initsoiltemp.c`.
