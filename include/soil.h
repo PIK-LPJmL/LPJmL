@@ -57,6 +57,9 @@
 #define c_soilheatcapdry 1.2e6/*1.2e6   J/m3/K */
 #define c_albsnow        0.65 /* Albedo of snow (0-1) */
 #define c_albsoil        0.30 /* Albedo of bare soil (0-1). Should be soil and soil moisture dependent */
+#define c_albedo_bare_soil  0.31 /* albedo of the bare soil as used by Gascoin et al 2009 */
+#define c_albedo_wet_soil 0.15 /* Albedo of wet soil */
+#define decay_alb_moist  12.7    /* Describes how fast the moisture dependence is */
 #define c_albwater       0.10 /* Albedo of water (0-1). */
 #define c_snowcanopyfrac  0.40 /* Maximum snow cover fraction in the canopy (with leaves) */
 #define c_watertosnow    6.70 /* Conversion factor from water to snowdepth, i.e. 1 cm water equals 6.7 cm of snow. Taken from RAKMO and personal communication with KNMI. */

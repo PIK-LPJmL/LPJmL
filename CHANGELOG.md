@@ -62,6 +62,7 @@ of `major.minor.patch` with
 - Missing deallocation of `items` array added in `sendhash.c`.
 - Filename for population density input corrected in `regridlpj`.
 - Header files added for unit tests to compile tests successfully.
+- Function `albedo_crop.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
 
 
 ## [6.0.0] - 2025-11-25
