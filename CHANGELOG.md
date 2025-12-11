@@ -17,6 +17,19 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+## [Unreleased]
+
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Removed
+
+- Support for cloudiness and short wave only setting for climate input removed.
+
+
 ## [5.10.0] - 2025-08-14
 
 ### Contributors
