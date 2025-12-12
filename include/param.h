@@ -37,6 +37,7 @@ typedef struct
   Real soil_infil;      /**< soil infiltration */
   Real soil_infil_litter; /**< soil infiltration intensification by litter cover*/
   Real k;
+  Real pch4;       /* Initial concentration of atmospheric CH4 (ppb) */
   Real theta;      /**< co-limitation (shape) parameter */
   Real alphac3;    /**< intrinsic quantum efficiency of CO2 uptake in C4 plants */
   Real alphac4;    /**< intrinsic quantum efficiency of CO2 uptake in C3 plants */
@@ -60,6 +61,7 @@ typedef struct
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
   Real fpc_tree_max; /**< maximum foliage projective cover for trees */
   Real temp_response; /**< parameter in temperature response function */
+  Real tscal_b;      /**< exponential scaling factor for b */
   Real percthres;
   Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
   Real n0;           /**< regression coefficient from Haxltine and Prentice */

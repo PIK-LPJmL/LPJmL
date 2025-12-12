@@ -27,7 +27,115 @@ of `major.minor.patch` with
 
 ### Removed
 
-- Support for cloudiness and short wave only setting for climate input removed.
+- Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
+- Output `"SUN"` and `"sun_image"` removed.
+
+
+## [6.0.0] - 2025-11-25
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), David Hötten (cmueller@pik-potsdam.de)
+
+### Added
+
+- extensive development for calculating methane and wetland dynamics (Schaphoff et al. in prep.), including:
+  - calculation of the water table in `infil_perc.c` (merged `infil_perc_rain.c` and `infil_perc_irr.c`)
+  - calculation of a dynamic wetland area in `update_wetlands.c`
+  - extends soil pools by the oxygen pool
+  - ground water pool added
+  - calculates subdaily `littersom.c`
+    - oxic decomposition depending on oxygen content
+    - diffusion of methane and oxygen
+    - methane production and oxidation added
+    - nitrification depending on oxygen content
+  - root respiration consumes oygen
+  - new routines `ebullition` and `plant_gas_transport.c`
+  - extensive restructuring of `landusechange.c`
+  - new `SETASIDE_WETLAND`  added, converted from wetlands to grow rice
+  - rice always irrigated and assuming a levelled water table
+  - introducing new, inundation insensitive, PFTs: `tropical broadleaved evergreen tree floodtolerant`, `C3 graminoid flood tolerant`, `Sphagnum moss`
+  - new PFT parameters `ist_m`. `idt_d`, and `alpha_e` for inundation tolerance and ebullition suppression
+  - new soil parameters `psi_sat`, `b`. `efold`. `ctimax`
+  - configuration flag `with_methane` added to run LPJmL6 with or without methane and oxygen dynamics (original daily version of littersom is called)
+  - reading new inputs `slope_mean`, `slope_max`, `slope_min`,`kbf value`,`CH4 (atmospheric CH4 concentration)`, `hydrotopes (CTI values)`,`climate delta values (optional)`,`icefrac (optional)`
+  - boolean flag `"natNBP_only"` defined to calculate NBP from natural vegetaton only
+  - optional input for ice cover can be read by setting `"with_glaciers" : true`
+  - optional reading in of climate anomalies for CLIMBER applications, enabled by setting `"anomaly" : true`.
+
+
+### Changed
+
+- `CN_GC4_MX` set to 42.71
+- `K_LATOSA` set to 4e3 for all trees
+- adjusted `beta_root`, `resist`, `ligthextcoeff`, `gmin` parameters
+- adjusted phenology parameters `wscal base`, `tmax base`
+
+
+## [5.10.2] - 2025-10-24
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Option `-with_timing` added to `configure.sh` to enable timing, corresponding man page updated.
+- Flag `-DUSE_TIMING` enables now timing for several LPJmL functions for performance analysis.
+- Macros `timing_start()` and `timing_stop()` defined to allow timing of specific functions.
+
+### Changed
+
+- Flag `-DUSE_TIMING` removed from default compilation flags. Has to be enabled by `./configure.sh -with_timing`.
+- Timing function for socket I/O are replaced by two separate items `read_socket` and `write_socket`.
+
+### Fixed
+
+- `pft->fapar` computation for maize in `albedo_crop.c`
+- `albedo_green_leaves` computation for crops in `albedo_crop.c`
+- `pft->albedo`, which is now a sum of `albedo_green_leaves`, `albedo_brown_litter`, and `albedo_soil`
+
+
+## [5.10.1] - 2025-09-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Maik Billing (billing@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Variable `phen` added to output in `fprintpft.c`.
+- Compile option `NRECOVERY_COST` added to `INSTALL` and man page of `configure.sh`.
+- Check for valid `swc_bnf` parameters added in `fscanpftpar.c`.
+- Wirth et al. (2024)  article added to `REFERENCES`.
+- New parameter `"tscal_b"` added in `lpjparam.cjson`.
+- New virtual function `getb()` added to type `Pft`.
+
+### Changed
+
+- 2 boolean flags `phen_to_one` and `rainyseason` added to tree parameter. These are used in `phenology_gsi.c` instead of string compare with tree names.
+- Unused argument `aet_layer` removed from `nitrogen_stress()` function.
+- `phi_bnf` parameter calculated from `swc_bnf` parameter instead of reading from `pft.cjson` file in `fscanpftpar.c`.
+- Hard-coded parameter in temperature dependent calculation of `b` replaced by global parameter `tscal_b`.
+- Calculation of `b` in `setupannual_grid.c` replaced by call to new virtual PFT function `getb()`.
+
+### Removed
+
+- Parameter `phi_bnf` removed from `pft.cjson`.
+- Variable `b` removed from restart file.
+- Unused macro `RESTART_VERSION` removed from `header.h`.
+
+### Fixed
+
+- Arguments of `npp` function corrected in `daily_woodplantation.c`. The current version leads to a too strong reduction in NPP.
+- `nuptake_crop.c` changed to compile with `-DDEBUG_N` option.
+- `update_daily_cell.c` changed to compile with `-DDEBUG` option.
+- `daily_agriculture_tree.c` changed to compile with `-DDEBUG2` option.
+- Typo in error message in `bstruct_writearrayindex.c` corrected.
+- Error message corrected in `bstruct_wopen.c`.
+- Error number corrected in `bstruct_finish.c`.
+- Argument `temp` added to `f_turnover_tree` function to compile with `-DNRECOVERY_COST` option.
 
 
 ## [5.10.0] - 2025-08-14
@@ -96,7 +204,7 @@ of `major.minor.patch` with
 - If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
 - Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 - File `default.md` converted from DOS to Linux format.
-- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used instead that one defined in the JSON metafile.
 - Man pages updated.
 
 ### Fixed
@@ -287,6 +395,8 @@ of `major.minor.patch` with
 
 
 ## [5.9.21] - 2025-03-13
+
+## [5.9.21] - 2025-01-31
 
 ### Contributors
 

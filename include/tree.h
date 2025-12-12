@@ -78,6 +78,8 @@ typedef struct
   Real cnratio_fruit;               /**< C:N ration of fruits */
   Bool with_grass;                  /**< grass PFT allowed under agriculture tree? */
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
+  Bool phen_to_one;                 /**< set phen always to 1 (used by phenology_gsi()) */
+  Bool rainyseason;                 /**< aphen set to zero on rainyseason from climbuf (used by phenology_gsi()) */
 } Pfttreepar;
 
 typedef struct
@@ -106,7 +108,7 @@ extern char *leaftype[];
 
 extern void new_tree(Pft *,int,int,const Config *);
 extern Pft *newpftage(Pftpar *,int);
-extern Real npp_tree(Pft *,Real,Real,Real);
+extern Real npp_tree(Pft *,Real,Real,Real,const Config *);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool,const Config *);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
@@ -128,9 +130,11 @@ extern Stocks establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);
 extern Stocks fire_tree(Pft *,Real *);
 extern Real vegc_sum_tree(const Pft *);
+extern Real leafc_tree(const Pft *);
 extern Real vegn_sum_tree(const Pft *);
 extern Real agb_tree(const Pft *);
 extern void mix_veg_tree(Pft *,Real);
+extern Bool mix_veg_stock_tree(Pft *, Pft *, Real, Real,const Config *);
 extern void free_tree(Pft *);
 extern void light_tree(Litter *,Pft *,Real,const Config *);
 extern void adjust_tree(Litter *,Pft *,Real,Real,const Config *);
@@ -142,6 +146,7 @@ extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
 extern Bool annual_tree(Stand *,Pft *,Real *,Bool,const Config *);
 extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
+extern void copy_tree(Pft *, const Pft *);
 extern void turnover_monthly_tree(Litter *,Pft *,const Config *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,int,Bool,const Config *);
 extern Stocks harvest_tree(Pft *);

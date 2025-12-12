@@ -70,9 +70,9 @@ int delintlistitem(Intlist *list, /**< pointer to integer list */
   /* does not check for empty list if SAFE not defined */
 #ifdef SAFE
   if(isemptyintlist(list))
-    fail(IS_EMPTY_ERR,TRUE,"list is empty in delintlistitem()");
+    fail(IS_EMPTY_ERR,TRUE,TRUE,"list is empty in delintlistitem()");
   if(index<0 || index>=list->n)
-    fail(OUT_OF_RANGE_ERR,TRUE,"index=%d out of range in delintlistitem()",index);
+    fail(OUT_OF_RANGE_ERR,TRUE,TRUE,"index=%d out of range in delintlistitem()",index);
 #endif
   list->n--;
   list->index[index]=list->index[list->n];

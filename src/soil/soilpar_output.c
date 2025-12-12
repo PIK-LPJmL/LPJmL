@@ -24,7 +24,7 @@ void soilpar_output(Cell *cell,          /**< pointer to cell */
   Stand *stand;
   int s,l;
   foreachstand(stand,s,cell->standlist)
-    if(isagriculture(stand->type->landusetype))
+    if(isagriculture(stand))
       foreachsoillayer(l)
       {
         getoutputindex(&cell->output,WHC_AGR,l,config)+=stand->soil.whc[l]*stand->frac/frac_agr;

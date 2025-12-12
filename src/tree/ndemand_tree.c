@@ -29,7 +29,7 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
   Real ndemand_tot;
   tree=pft->data; 
   treepar=pft->par->data;
-  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*cmass*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon);
+  *ndemand_leaf=param.p*1e-3*vmax/(NSECONDSDAY*WC*1e-6)*exp(-param.k_temp*(temp-25)) + pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon);
   if(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind==0)
     nc_ratio=pft->par->ncleaf.low;
   else

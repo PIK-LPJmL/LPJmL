@@ -19,14 +19,15 @@
 #include <sys/socket.h>
 #endif
 #include "types.h"
+#include "timing.h"
 #include "channel.h"
 
 Bool read_socket(Socket *socket,void *data,int n)
 {
   int i,j;
 #ifdef USE_TIMING
-  double tstart,tend;
-  tstart=mrun();
+  double tstart;
+  timing_start(tstart);
 #endif
   i=n;
   do
@@ -37,8 +38,7 @@ Bool read_socket(Socket *socket,void *data,int n)
     i-=j;
   }while(i);
 #ifdef USE_TIMING
-  tend=mrun();
-  timing+=tend-tstart;
+  timing_stop(READ_SOCKET_FCN,tstart);
 #endif
   return FALSE;
 } /* of 'read_socket' */

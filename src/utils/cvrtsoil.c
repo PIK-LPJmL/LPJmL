@@ -57,7 +57,10 @@ int main(int argc,char **argv)
   }
   /* skip first 12 lines in ASCII soildata file */
   for(i=0;i<12;i++)
-   fgets(line,STRING_LEN,file); 
+    if(fgets(line,STRING_LEN,file)==NULL){
+      fprintf(stderr,"Error skipping file header in '%s'.\n",argv[1]);
+      return EXIT_FAILURE;
+    }
   n=0;
   soildata=newvec(Soildata,NSLICE);
   if(soildata==NULL)

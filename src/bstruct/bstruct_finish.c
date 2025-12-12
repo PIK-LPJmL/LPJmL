@@ -61,7 +61,7 @@ Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
         id=list[i].data;
         if(fwrite(id,sizeof(short),1,bstruct->file)!=1)
         {
-          fprintf(stderr,"ERROR259: Cannot write name table.\n");
+          fprintf(stderr,"ERROR529: Cannot write name table.\n");
           rc=TRUE;
           break;
         }

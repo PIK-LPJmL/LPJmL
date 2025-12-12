@@ -31,6 +31,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "evap soildepth:\t%g (mm)\n"
                "soil infil:\t%g\n"
                "soil infil litt:\t%g\n"
+               "pCH4:\t\t%g (ppb)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
                "alphac3:\t%g\n"
@@ -46,16 +47,17 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "K_MORT:\t\t%g\n"
                "fpc_tree_max:\t%g\n"
                "temp_response:\t%g\n"
+               "tscal_b:\t%g\n"
                "percthres:\t%g\n",
           param.error_limit.stocks.carbon,param.error_limit.stocks.nitrogen,
           param.error_limit.w_local,param.error_limit.w_global,
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
-          param.soil_infil,param.soil_infil_litter,
+          param.soil_infil,param.soil_infil_litter,param.pch4,
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
-          param.fpc_tree_max,param.temp_response,param.percthres);
+          param.fpc_tree_max,param.temp_response,param.tscal_b,param.percthres);
   if(config->landfrac_from_file)
     fprintf(file,"minlandfrac:\t%g\n",param.minlandfrac);
   if(config->equilsoil)
@@ -153,6 +155,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config);
+  fprinthydropar(file,&config->hydropar);
   fputs("PFT parameter\n",file);
   if(config->withlanduse!=NO_LANDUSE)
   {

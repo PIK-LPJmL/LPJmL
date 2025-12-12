@@ -16,20 +16,24 @@
 #include "grass.h"
 #include "tree.h"
 
-static void remove_vegetation_copy(Soil *soil, /* soil pointer */
-                                   const Stand *stand, /* stand pointer */
-                                   Cell *cell, /* cell pointer */
-                                   Real standfrac, /* stand fraction (0..1) */
-                                   Bool luc_timber,
-                                   const Config *config
-                                  )
+void remove_vegetation_copy(Soil *soil, /* soil pointer */
+                            const Stand *stand, /* stand pointer */
+                            Cell *cell, /* cell pointer */
+                            Real standfrac, /* stand fraction (0..1) */
+                            Bool luc_timber,
+                            Bool usefrac,
+                            const Config *config
+                           )
 {
   int p;
   Pft *pft;
-  Real nind;
+  Real nind, sfrac=1;
+ // Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
-  Stocks stocks;
+  Stocks stocks={0,0};
   Stocks trad_biofuel;
+  if(usefrac)
+    sfrac=standfrac;
 #if defined IMAGE && defined COUPLED
   Real ftimber; /* fraction harvested for timber */
   Bool tharvest=FALSE;
@@ -48,7 +52,6 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     /* do not change pft->nind, as this is from the stand from which a copy is made
        and it should not be modified */
     nind = pft->nind;
-
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
@@ -92,7 +95,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel,config);
+        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel,config); //stand weighting in timber_harvest
 #endif
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
@@ -110,13 +113,20 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind,config);
 #else
-        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
+        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config); //carbon balance closed by calling litter_update line 144
 #endif
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        if(stocks.nitrogen>0)
+        {
+          soil->NO3[0]+=stocks.nitrogen*param.q_ash;
+          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        }
+        else
+        {
+          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*standfrac;
+        }
         getoutput(&cell->output,DEFOREST_EMIS_N,config)+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
     else
@@ -143,7 +153,11 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     }
 #endif
     /* rest goes to litter */
-    litter_update(&soil->litter,pft,nind,config);
+    if(stand->type->landusetype!=AGRICULTURE && !(stand->type->landusetype==OTHERS && pft->par->type==CROP))
+    {
+      soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*sfrac;
+    }
+    litter_update(&soil->litter,pft,nind*sfrac,config);
 #ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||
       (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -170,23 +184,30 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,i
   int l,p;
   Soil *soil;
   soil=&stand2->soil;
+
   stand2->fire_sum=stand1->fire_sum;
+  stand2->slope_mean=stand1->slope_mean;
+  stand2->Hag_Beta=stand1->Hag_Beta;
 
   for (l=0;l<LASTLAYER;l++)
   {
     soil->c_shift[l]=newvec(Poolpar,ntotpft);
     check(soil->c_shift[l]);
+    soil->socfraction[l]=newvec(Real,ntotpft);
+    check(soil->socfraction[l]);
   }
   for (p=0;p<ntotpft;p++)
   {
-    soil->c_shift[0][p].fast=1;
-    soil->c_shift[0][p].slow=1;
+    soil->c_shift[0][p].fast=0.6;
+    soil->c_shift[0][p].slow=0.6;
+    soil->socfraction[0][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[0]);
   }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift[l][p].fast=0;
-      soil->c_shift[l][p].slow=0;
+      soil->c_shift[l][p].fast=0.4/(LASTLAYER-1);
+      soil->c_shift[l][p].slow=0.4/(LASTLAYER-1);
+      soil->socfraction[l][p]=pow(10,config->pftpar[p].soc_k*logmidlayer[l])-pow(10,config->pftpar[p].soc_k*logmidlayer[l-1]);
     }
   soil->decomp_litter_pft=newvec(Stocks,ntotpft);
   check(soil->decomp_litter_pft);
@@ -194,7 +215,8 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,i
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];
   remove_vegetation_copy(&stand2->soil,stand1,cell,stand2->frac,
-                         luc_timber,config);
+                         luc_timber,FALSE,config);
+
 }/* of 'reclaim_land' */
 
 /*

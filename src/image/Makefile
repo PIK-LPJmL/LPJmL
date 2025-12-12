@@ -36,7 +36,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/stand.h $(INC)/discharge.h $(INC)/queue.h $(INC)/intlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/reservoir.h\
-          $(INC)/spitfire.h
+          $(INC)/spitfire.h $(INC)/hydrotope.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

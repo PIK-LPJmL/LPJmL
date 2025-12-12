@@ -68,5 +68,6 @@ extern void send_output_coupler(int,int,int,const Config *);
 
 #define receive_int_coupler(index,data,size,year,config) receive_coupler(index,data,LPJ_INT,size,year,config)
 #define send_flux_coupler(flux,scalar,year,config) send_real_scalar_coupler(GLOBALFLUX,(Real *)flux,sizeof(Flux)/sizeof(Real),scalar,year,config)
+#define send_conc_coupler(id,value,year,config) send_real_scalar_coupler(id,value,1,1.0,year,config)
 
 #endif /* COUPLER_H */

@@ -6,7 +6,8 @@
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
 ##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-debug] [-check]        ##
-##                       [-nompi] [-noerror] [-Dmacro[=value] ...]             ##
+##                       [-with_timing] [-nompi] [-noerror]                    ##
+##                       [-Dmacro[=value] ...]                                 ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -15,7 +16,7 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 #################################################################################
 
-USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]"
+USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-with_timing] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]"
 ERR_USAGE="\nTry \"$0 --help\" for more information."
 debug=0
 nompi=0
@@ -36,6 +37,7 @@ while(( "$#" )); do
       echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
+      echo "-with_timing    enable timing functions for performance analysis"
       echo "-check          enable run-time checking of memory leaks and access out of bounds"
       echo "-noerror        do not stop compilation on warnings"
       echo "-nompi          do not build MPI version"
@@ -80,6 +82,10 @@ while(( "$#" )); do
       ;;
     -nompi)
       nompi=1
+      shift 1
+      ;;
+    -with_timing)
+      macro="$macro -DUSE_TIMING"
       shift 1
       ;;
     -D*)

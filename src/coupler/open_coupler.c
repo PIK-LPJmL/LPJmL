@@ -24,12 +24,12 @@ static char *coupled_model;
 
 static void handler(int UNUSED(num))
 {
-  fail(SOCKET_ERR,FALSE,"Channel to %s is broken",coupled_model);
+  fail(SOCKET_ERR,TRUE,FALSE,"Channel to %s is broken",coupled_model);
 } /* of 'handler' */
 
 static void alarmhandler(int UNUSED(num))
 {
-  fail(OPEN_COUPLER_ERR,FALSE,"Timeout in connection to %s",coupled_model);
+  fail(OPEN_COUPLER_ERR,TRUE,FALSE,"Timeout in connection to %s",coupled_model);
 } /* of 'alarmhandler' */
 
 Bool open_coupler(Config *config /**< LPJmL configuration */

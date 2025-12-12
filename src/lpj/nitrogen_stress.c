@@ -16,8 +16,7 @@
 
 Real nitrogen_stress(Pft *pft,             /**< PFT */
                      Real temp,            /**< temperature (deg C) */
-                     Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
-                     Real npp,
+                     Real npp,             /**< net primary production (gC/m2/day) */
                      int npft,             /**< number of natural PFTs */
                      int ncft,             /**< number of crop PFTs */
                      const Config *config  /**< LPJmL configuration  */
@@ -49,7 +48,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))
       pft->vscal+=1;
     getoutput(&pft->stand->cell->output,NUPTAKE,config)+=nup*pft->stand->frac;
-    if(isagriculture(pft->stand->type->landusetype))
+    if(isagriculture(pft->stand))
       getoutput(&pft->stand->cell->output,NUPTAKE_AGR,config)+=nup*pft->stand->frac;
     pft->nleaf=max(0,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)

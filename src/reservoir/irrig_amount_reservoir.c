@@ -18,6 +18,10 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
 {
   Real *in,*out;
   int i,cell,k;
+#ifdef USE_TIMING
+  double t;
+  t=mrun();
+#endif
 
   grid-=config->startgrid-config->firstgrid;
   out=(Real *)pnet_output(config->irrig_res);
@@ -43,10 +47,10 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
         for(k=0;k<NIRRIGDAYS;k++)
           grid[cell].ml.resdata->dfout_irrigation+=grid[cell].ml.resdata->dfout_irrigation_daily[k]; /*sum buffers to get total available water for irrigation*/
 
-        if(grid[cell].ml.resdata->dfout_irrigation<0 && grid[cell].ml.resdata->dfout_irrigation>=-0.0001)
+        if(grid[cell].ml.resdata->dfout_irrigation<0 && grid[cell].ml.resdata->dfout_irrigation>=-0.001)
           grid[cell].ml.resdata->dfout_irrigation=0.0;
         if(grid[cell].ml.resdata->dfout_irrigation<-0.0001)
-          fail(OUTFLOW_RESERVOIR_ERR,TRUE,"dfout_irrigation<-0.0001");
+          fail(OUTFLOW_RESERVOIR_ERR,TRUE,TRUE,"dfout_irrigation<-0.0001");
 
         /*calculate how much of todays demand is available*/
         grid[cell].ml.resdata->demand_fraction=grid[cell].ml.resdata->dfout_irrigation/grid[cell].ml.resdata->ddemand;
@@ -68,7 +72,7 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
         if(grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]<0 && grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]>=-0.0005)
           grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]=0.0;
         if(grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]<-0.005)
-          fail(OUTFLOW_RESERVOIR_ERR,TRUE,"dfout_irrigation_daily[%d] <-0.005: %.5f",NIRRIGDAYS-1,grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]);
+          fail(OUTFLOW_RESERVOIR_ERR,TRUE,TRUE,"dfout_irrigation_daily[%d] <-0.005: %.5f demand_fraction: %g resdata->ddemand: %g ",NIRRIGDAYS-1,grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1],grid[cell].ml.resdata->demand_fraction,grid[cell].ml.resdata->ddemand);
 
         grid[cell].discharge.mfout+=grid[cell].ml.resdata->demand_fraction*grid[cell].ml.resdata->ddemand;
 
@@ -93,4 +97,7 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
       grid[cell].discharge.act_irrig_amount_from_reservoir+=grid[cell].ml.fraction[i]*in[pnet_inindex(config->irrig_res_back,cell,i)]*grid[cell].discharge.irrig_unmet;
     }
    }
+#ifdef USE_TIMING
+  timing[IRRIG_AMOUNT_RESERVOIR_FCN]+=mrun()-t;
+#endif
 } /* of 'irrig_amount_reservoir' */
