@@ -330,7 +330,8 @@ echo "module list 2>&1 # show all loaded modules" >>slurm.jcf
 echo >>slurm.jcf
 if [ "$couple" != "" ]
 then
-  echo $couple " &" >>slurm.jcf
+  echo $couple "& # start program in background" >>slurm.jcf
+  echo "couple_pid=\$! # store PID" >>slurm.jcf
   echo >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf
@@ -339,6 +340,14 @@ mpirun \$LPJROOT/bin/lpjml --version
 mpirun \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of mpirun
+
+EOF
+if [ "$couple" != "" ]
+then
+  echo "wait \$couple_pid # wait for $couple to finish" >>slurm.jcf
+  echo >>slurm.jcf
+fi
+cat <<EOF >>slurm.jcf
 exit \$rc # exit with return code
 EOF
   if [ "$norun" = "0" ]
