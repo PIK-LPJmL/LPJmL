@@ -19,6 +19,22 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+## Changed
+
+- Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
+- Wait for coupled program to finish added in slurm script.
+
+## Fixed
+
+- `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
+
+
 ## [6.0.0] - 2025-11-25
 
 - author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de
@@ -57,21 +73,6 @@ of `major.minor.patch` with
 - `K_LATOSA` set to 4e3 for all trees
 - adjusted `beta_root`, `resist`, `ligthextcoeff`, `gmin` parameters
 - adjusted phenology parameters `wscal base`, `tmax base`
-
-
-### Contributors
-
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
-
-## Changed
-
-- Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
-- Wait for coupled program to finish added in slurm script.
-
-## Fixed
-
-- `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
 
 
 ## [5.10.2] - 2025-10-24
