@@ -30,9 +30,9 @@ int delpft(Pftlist *pftlist, /**< PFT list */
 {
 #ifdef SAFE
   if(isempty(pftlist))
-    fail(IS_EMPTY_ERR,TRUE,"PFT list is empty in delpft()");
+    fail(IS_EMPTY_ERR,TRUE,TRUE,"PFT list is empty in delpft()");
   if(index<0 || index>=pftlist->n)
-    fail(OUT_OF_RANGE_ERR,TRUE,"index=%d out of range in delpft()",index);
+    fail(OUT_OF_RANGE_ERR,TRUE,TRUE,"index=%d out of range in delpft()",index);
 #endif
   freepft(pftlist->pft+index);
   pftlist->n--;

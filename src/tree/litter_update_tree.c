@@ -53,26 +53,26 @@ void litter_update_tree(Litter *litter, /**< Litter pool */
   getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*frac*pft->stand->frac;
   for(i=0;i<NFUELCLASS;i++)
   {
-    litter->item[pft->litter].agtop.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+    litter->item[pft->litter].agtop.wood[i].carbon+=(tree->ind.sapwood.carbon*2/3+tree->ind.heartwood.carbon-
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
-    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon*2/3+tree->ind.heartwood.carbon-
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
-    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon*2/3+tree->ind.heartwood.carbon-
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
-    litter->item[pft->litter].agtop.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+    litter->item[pft->litter].agtop.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen*2/3+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
-    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen*2/3+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
-    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen*2/3+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
-                    (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
+                    (tree->ind.sapwood.carbon*2/3+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
                *frac*treepar->fuelfrac[i],i);
   }
-  litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*frac;
-  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*frac*pft->stand->frac;
-  litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*frac;
-  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*frac*pft->stand->frac;
+  litter->item[pft->litter].bg.carbon+=(tree->ind.sapwood.carbon/3+tree->ind.root.carbon)*frac;
+  getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon/3+tree->ind.root.carbon)*frac*pft->stand->frac;
+  litter->item[pft->litter].bg.nitrogen+=(tree->ind.sapwood.nitrogen/3+tree->ind.root.nitrogen)*frac;
+  getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen/3+tree->ind.root.nitrogen)*frac*pft->stand->frac;
   update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
 
 } /* of 'litter_update_tree' */

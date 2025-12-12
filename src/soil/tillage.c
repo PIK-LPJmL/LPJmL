@@ -19,36 +19,37 @@ void tillage(Soil *soil, /**< pointer to soil data */
             )
 {
   int i,l;
-
-  /* move above ground litter pools to same litter structure in sub-soil (agsub) */
-  for (l = 0; l < soil->litter.n; l++)
+  if (soil->wtable>layerbound[1])                            // tillage not possible if flooded
   {
-    soil->litter.item[l].agsub.leaf.carbon += soil->litter.item[l].agtop.leaf.carbon*frac;
-    soil->litter.item[l].agtop.leaf.carbon *= (1-frac);
-    if (soil->litter.item[l].agtop.leaf.carbon < epsilon)
-      soil->litter.item[l].agtop.leaf.carbon = 0;
-    soil->litter.item[l].agsub.leaf.nitrogen += soil->litter.item[l].agtop.leaf.nitrogen*frac;
-    soil->litter.item[l].agtop.leaf.nitrogen *= (1 - frac);
-    if (soil->litter.item[l].agtop.leaf.nitrogen < epsilon)
-      soil->litter.item[l].agtop.leaf.nitrogen = 0;
-
-    for (i = 0; i < NFUELCLASS; i++)
+    /* move above ground litter pools to same litter structure in sub-soil (agsub) */
+    for (l = 0; l < soil->litter.n; l++)
     {
-      soil->litter.item[l].agsub.wood[i].carbon += soil->litter.item[l].agtop.wood[i].carbon*frac;
-      soil->litter.item[l].agtop.wood[i].carbon *= (1 - frac);
-      if (soil->litter.item[l].agtop.wood[i].carbon < epsilon)
-        soil->litter.item[l].agtop.wood[i].carbon = 0;
-      soil->litter.item[l].agsub.wood[i].nitrogen += soil->litter.item[l].agtop.wood[i].nitrogen*frac;
-      soil->litter.item[l].agtop.wood[i].nitrogen *= (1 - frac);
-      if (soil->litter.item[l].agtop.wood[i].nitrogen < epsilon)
-        soil->litter.item[l].agtop.wood[i].nitrogen = 0;
+      soil->litter.item[l].agsub.leaf.carbon += soil->litter.item[l].agtop.leaf.carbon*frac;
+      soil->litter.item[l].agtop.leaf.carbon *= (1-frac);
+      if (soil->litter.item[l].agtop.leaf.carbon < epsilon)
+        soil->litter.item[l].agtop.leaf.carbon = 0;
+      soil->litter.item[l].agsub.leaf.nitrogen += soil->litter.item[l].agtop.leaf.nitrogen*frac;
+      soil->litter.item[l].agtop.leaf.nitrogen *= (1 - frac);
+      if (soil->litter.item[l].agtop.leaf.nitrogen < epsilon)
+        soil->litter.item[l].agtop.leaf.nitrogen = 0;
+
+      for (i = 0; i < NFUELCLASS; i++)
+      {
+        soil->litter.item[l].agsub.wood[i].carbon += soil->litter.item[l].agtop.wood[i].carbon*frac;
+        soil->litter.item[l].agtop.wood[i].carbon *= (1 - frac);
+        if (soil->litter.item[l].agtop.wood[i].carbon < epsilon)
+          soil->litter.item[l].agtop.wood[i].carbon = 0;
+        soil->litter.item[l].agsub.wood[i].nitrogen += soil->litter.item[l].agtop.wood[i].nitrogen*frac;
+        soil->litter.item[l].agtop.wood[i].nitrogen *= (1 - frac);
+        if (soil->litter.item[l].agtop.wood[i].nitrogen < epsilon)
+          soil->litter.item[l].agtop.wood[i].nitrogen = 0;
+      }
     }
+
+    /* do some changes to bulk density here */
+    for(l=0;l<NTILLLAYER;l++)
+      soil->df_tillage[l]-=(soil->df_tillage[l]-0.667*1)*param.mixing_efficiency; /* eq. 305 from APEX documentation, expressed as fraction of BD after full settling */
+    /* do whatever tillage is supposed to do otherwise here */
   }
-
-  /* do some changes to bulk density here */
-  for(l=0;l<NTILLLAYER;l++)
-    soil->df_tillage[l]-=(soil->df_tillage[l]-0.667*1)*param.mixing_efficiency; /* eq. 305 from APEX documentation, expressed as fraction of BD after full settling */
-
-  /* do whatever tillage is supposed to do otherwise here */
  
 } /* of 'tillage' */

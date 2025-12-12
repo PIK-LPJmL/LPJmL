@@ -22,6 +22,10 @@ void convert_water(Soil* soil, /**< pointer to soil data */
   Real heatcap,
        freeze_heat,
        melt_heat;
+#ifdef CHECK_BALANCE
+  Real water_after, water_before,balancew;
+  water_before=soilwater(soil);
+#endif
   switch (getstate(soil->temp+l))
   {
     case AT_T_ZERO:  /** most probable, continue below */
@@ -51,10 +55,13 @@ void convert_water(Soil* soil, /**< pointer to soil data */
       }
       else
       {
-        if (fabs(soil->w[l])<epsilon)
+        if ((soil->w[l])<0)
+        {
+          fprintf(stderr,"w[%d]=%g < 0 in convert_water()\n",l,soil->w[l]);
           soil->w[l]=0.0;
+        }
         if (soil->w[l]<0)
-          fail(PERM_ERR,FALSE,"soil->w[%d]=%.10f<0 in convert_water()",l,
+          fail(PERM_ERR,TRUE,FALSE,"soil->w[%d]=%.10f<0 in convert_water()",l,
                soil->w[l]);
       }
       break;
@@ -78,7 +85,7 @@ void convert_water(Soil* soil, /**< pointer to soil data */
         }
       }     
       else if (soil->ice_depth[l]<0)
-        fail(PERM_ERR,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+        fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
       break;
     default:
       /* do nothing */
@@ -94,4 +101,20 @@ void convert_water(Soil* soil, /**< pointer to soil data */
     else if(*heat<-epsilon && (allwater(soil,l)>epsilon))   /** freezing */
       moisture2soilice(soil,heat,l);
   }
+  if (soil->ice_depth[l]<0)
+  {
+    //fprintf(stderr,"ice_depth[%d]=%g < 0 in convert_water()\n",l,soil->ice_depth[l]);
+    if (soil->ice_depth[l]<-epsilon)
+      soil->ice_depth[l]=0;
+    else
+      fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+  }
+#ifdef CHECK_BALANCE
+  water_after=soilwater(soil);
+   balancew=water_after-water_before;
+   if(fabs(balancew)>epsilon)
+     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  balanceW: %g water_before: %g water_after: %g \n",
+       __FUNCTION__,balancew,water_before,water_after);
+#endif
+
 } /* of 'convert_water' */

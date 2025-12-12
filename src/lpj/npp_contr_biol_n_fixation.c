@@ -64,16 +64,16 @@ Real npp_contr_biol_n_fixation(Pft *pft,             /**< PFT */
       rootdist_n[l]=pft->par->rootdist[l];
 
   for(l=0; l<=1; l++) //only first 50cm of soil considered for BNF
-    bnf+=pft->par->nfixpot*rootdist_n[l]*f_temp_bnf(pft, soil->temp[l])*f_water_bnf(pft, soil->w[l]);
+    bnf+=pft->par->nfixpot*rootdist_n[l]*f_temp_bnf(pft, soil->temp[l])*f_water_bnf(pft, soil->w[l]);   //gN/d
   if(bnf > n_deficit)
     bnf = n_deficit;
-  npp_requ = pft->par->bnf_cost*bnf;
-  max_cost = pft->npp_bnf*pft->par->maxbnfcost;
+  npp_requ = pft->par->bnf_cost*bnf;                 // gC/d
+  max_cost = pft->npp_bnf*pft->par->maxbnfcost;      //maxbnfcost is a share maxcost gC/d
   if(npp_requ > max_cost)
   {
     npp_requ = max_cost;
     bnf =  max_cost / pft->par->bnf_cost;
   }
-  pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp
+  pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp, this is the NPP cost
   return(bnf);
 }

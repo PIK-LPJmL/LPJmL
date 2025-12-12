@@ -23,25 +23,25 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
                  )
 {
   int nirrig;
+  Bool isrice;
   Pft *pft;
   Real conv_loss,irrig_stand;
   Pftcrop *crop;
-
+  isrice=ispftinstand(&stand->pftlist,config->rice_pft);
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
   data->irrig_amount=0;
   nirrig=getnirrig(ncft,config);
 
-  if(data->irrigation)
+  if((data->irrigation||isrice) && stand->pftlist.n>0 && config->irrig_scenario!=NO_IRRIGATION)
   {
     data->irrig_event=isirrigevent(stand);
-
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);
 
     /* conveyance losses */
     conv_loss=irrig_stand*(1/data->ec-1);
 
-    if(data->irrig_event)
+    if(data->irrig_event||isrice)
     {
 
       /* net irrigation requirement */

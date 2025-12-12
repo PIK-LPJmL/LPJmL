@@ -26,7 +26,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   Pft *pft;
   Stand *stand;
   init_climbuf(&cell->climbuf,ncft);
-  cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
+  cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=cell->balance.gw_withdrawal=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
   cell->balance.influx.nitrogen=cell->balance.influx.carbon=
@@ -39,24 +39,32 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.fire.carbon=cell->balance.fire.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
+  cell->balance.aCH4_em=cell->balance.aCH4_oxid=cell->balance.aCH4_sink=cell->balance.aCH4_fire=cell->balance.aCH4_rice=cell->balance.aCH4_agr=cell->balance.aCH4_grassland=cell->balance.aMT_water=0;
   cell->balance.timber_harvest.carbon=cell->balance.timber_harvest.nitrogen=0;
   cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
-  cell->balance.excess_water=cell->balance.agpp=0;
+  cell->balance.excess_water=cell->balance.agpp=cell->balance.nat_fluxes=0;
+  cell->balance.temp=0;
+  cell->hydrotopes.wetland_wtable_mean=0;
+  cell->hydrotopes.wtable_mean=0;
   if(config->separate_harvests)
     for(p=0;p<2*ncft;p++)
       cell->output.syear2[p]=cell->output.syear[p]=0;
   foreachstand(stand,s,cell->standlist)
   {
+    stand->soil.icefrac=cell->icefrac;
 #ifdef DEBUG3
     printf("init npft=%d\n",stand->pftlist.n);
 #endif
     stand->fire_sum=0;
     stand->soil.maxthaw_depth=0;
     foreachpft(pft,p,&stand->pftlist)
+    {
+      pft->inun_stress=pft->establish.carbon=pft->establish.nitrogen=0;
       init(pft);
+    }
   } /* of foreachstand */
 #if defined IMAGE && defined COUPLED
   cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;
