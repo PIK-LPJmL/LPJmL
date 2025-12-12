@@ -28,7 +28,7 @@ of `major.minor.patch` with
 ## Changed
 
 - Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
-- Wait for coupled program to finsih added in slurm script.
+- Wait for coupled program to finish added in slurm script.
 
 ## Fixed
 
