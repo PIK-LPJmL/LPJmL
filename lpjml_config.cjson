@@ -201,7 +201,9 @@
                     "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
                     "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
 
-#if defined OLD_LU || defined MADRAT
+/* The following maps will override the maps defined in the JSON input files if enabled */
+
+#if 0
 
   /* the following array describes the order of the bands in the land use file */
   "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
@@ -220,11 +222,6 @@
                  "temperate roots", "tropical roots", "oil crops sunflower",
                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                  "sugarcane","others","grassland","biomass grass","biomass tree"],
-#endif
-
-/* The following maps will override the maps defined in the JSON input files if enabled */
-
-#if 0
 
   "sdatemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                 "temperate roots", "tropical roots", "oil crops sunflower",

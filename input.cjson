@@ -66,13 +66,13 @@
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "id" : 46, "fmt" : "clm",  "name" : "input_toolbox_30arcmin/soil_pH_30arcmin.bin"},
 #ifdef OLD_LU
-  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
-  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
-  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+  "landuse" :      { "id" : 6, "fmt" : "meta",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin.json"},
+  "fertilizer_nr" : { "id" : 18, "fmt" :"meta",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm.json"},
+  "manure_nr" :    { "id" : 19, "fmt" : "meta", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm.json"},
 #elif defined MADRAT
-  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
-  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
-  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+  "landuse" :      { "id" : 6, "fmt" : "meta",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm.json"},
+  "fertilizer_nr" : { "id" : 18, "fmt" :"meta",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm.json"},
+  "manure_nr" :    { "id" : 19, "fmt" : "meta", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm.json"},
 #else /* Default from LandInG toolbox  */
   "landuse" :      { "id" : 6, "fmt" : "meta",  "name" : "input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others_64bands.clm.json"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"meta",  "name" : "input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm.json"},
