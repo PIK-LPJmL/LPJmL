@@ -274,19 +274,23 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
   Climatefile input;
   size_t offset;
   Map *map=NULL;
+  Attr *attrs=NULL;
+  int n_attr;
   if(filename->fmt==CDF)
   {
-    if(openfile_netcdf(&input,&map,NULL,NULL,filename,unit,config))
+    if(openfile_netcdf(&input,&map,&attrs,&n_attr,filename,unit,config))
       return 1;
     closeclimate_netcdf(&input,TRUE);
   }
   else
   {
-    file=openinputfile(&header,&map,NULL,NULL,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&map,&attrs,&n_attr,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
   }
+  checktitle(attrs,n_attr,name,&config->landuse,TRUE);
+  freeattrs(attrs,n_attr);
   getmap(map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
   if(*cftmap==NULL)
     *cftmap=defaultcftmap(cftmapsize,name,cftonly,npft,ncft,config);
@@ -338,7 +342,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         }
         else
         {
-          checkclimatetitle(attrs,n_attr,name,config);
+          checktitle(attrs,n_attr,name,&config->climate,TRUE);
           freeattrs(attrs,n_attr);
           closeclimate_netcdf(&input,TRUE);
         }
@@ -351,7 +355,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     {
       if(openclimate_netcdf(&input,NULL,(isclimate) ? &attrs : NULL,&n_attr,filename->name,filename,unit,config))
         return 1;
-      checkclimatetitle(attrs,n_attr,filename->name,config);
+      checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
       freeattrs(attrs,n_attr);
       closeclimate_netcdf(&input,TRUE);
       if(check)
@@ -380,7 +384,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     if(file==NULL)
       return 1;
     fclose(file);
-    checkclimatetitle(attrs,n_attr,filename->name,config);
+    checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
     freeattrs(attrs,n_attr);
     if(check)
     {

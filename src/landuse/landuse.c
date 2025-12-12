@@ -91,11 +91,13 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&map,NULL,NULL,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata(&landuse->landuse,&map,&attrs,&n_attr,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     freelanduse(landuse,config);
     return NULL;
   }
+  checktitle(attrs,n_attr,config->landuse_filename.name,&config->landuse,isroot(*config));
+  freeattrs(attrs,n_attr);
   if(getmap(map,config->landuse_filename.name,"landusemap",FALSE,
             &config->landusemap,&config->landusemap_size,npft,ncft,config))
   {
@@ -254,11 +256,13 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&map,NULL,NULL,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
+    if(opendata(&landuse->fertilizer_nr,&map,&attrs,&n_attr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
+    checktitle(attrs,n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config));
+    freeattrs(attrs,n_attr);
     if(getmap(map,config->fertilizer_nr_filename.name,"fertilizermap",FALSE,
               &config->fertilizermap,&config->fertilizermap_size,npft,ncft,config))
     {
@@ -283,11 +287,13 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&map,NULL,NULL,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
+    if(opendata(&landuse->manure_nr,&map,&attrs,&n_attr,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
+    checktitle(attrs,n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config));
+    freeattrs(attrs,n_attr);
     if(getmap(map,config->manure_nr_filename.name,"manuremap",FALSE,
               &config->manuremap,&config->manuremap_size,npft,ncft,config))
     {

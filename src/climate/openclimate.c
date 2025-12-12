@@ -89,7 +89,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         s=getsprintf(file->filename,file->firstyear);
         check(s);
         rc=openclimate_netcdf(file,NULL,&attrs,&n_attr,s,filename,units,config);
-        checkclimatetitle(attrs,n_attr,s,config);
+        checktitle(attrs,n_attr,s,&config->climate,isroot(*config));
         freeattrs(attrs,n_attr);
         free(s);
       }
@@ -126,7 +126,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     {
       if(mpi_openclimate_netcdf(file,NULL,&attrs,&n_attr,filename,units,config))
         return TRUE;
-      checkclimatetitle(attrs,n_attr,filename->name,config);
+      checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
       freeattrs(attrs,n_attr);
       if(file->time_step==MISSING_TIME)
       {
@@ -155,7 +155,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                                headername,units,datatype,
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
-  checkclimatetitle(attrs,n_attr,filename->name,config);
+  checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
   freeattrs(attrs,n_attr);
   if (header.order!=CELLYEAR)
   {

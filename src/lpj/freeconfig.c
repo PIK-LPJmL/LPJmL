@@ -30,6 +30,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
 {
   int i;
   free(config->climate);
+  free(config->landuse);
   freeconfig_netcdf(&config->netcdf);
   free(config->cmd);
   free(config->json_filename);

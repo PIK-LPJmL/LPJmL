@@ -152,6 +152,6 @@ extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,int,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
 extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
-extern Bool checkclimatetitle(const Attr *,int,const char *,Config *);
+extern Bool checktitle(const Attr *,int,const char *,char **,Bool);
 
 #endif

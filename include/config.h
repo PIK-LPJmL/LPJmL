@@ -151,6 +151,7 @@ struct config
 #endif
 #endif
   char *climate;          /**< climatology used */
+  char *landuse;          /**< landuse dataset used */
   int wait;               /**< time to wait for connection (sec) */
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
   Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */
