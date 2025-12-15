@@ -64,6 +64,8 @@ int iterate(Outputfile *output, /**< Output file data */
   {
     if(config->climate!=NULL)
       printf("Climate input: %s.\n",config->climate);
+    if(config->landuse!=NULL)
+      printf("Land-use input: %s.\n",config->landuse);
     if(config->nspinup && !config->isfirstspinupyear)
       printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
   }
