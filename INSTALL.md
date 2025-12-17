@@ -216,7 +216,7 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 |`LINEAR_DECAY`       |use linearized functions for litter decay                    |
 |`MICRO_HEATING`      |enable microbial heating                                     |
 |`NO_FAIL_BALANCE`    |lpjml does not terminate on balance errors                   |
-|`NRECOVEY_COST´       |costs for N recovery enabled                                |
+|`NRECOVEY_COST`       |costs for N recovery enabled                                |
 |`PERMUTE`            |random permutation of PFT list                               |
 |`SAFE`               |code is compiled with additional checks                      |
 |`STRICT_JSON`        |strict JSON checking                                         |
