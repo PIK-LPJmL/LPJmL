@@ -90,17 +90,13 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
   bstruct_writerealarray(file,"freeze_depth",soil->freeze_depth,NSOILLAYER);
   bstruct_writerealarray(file,"ice_pwp",soil->ice_pwp,NSOILLAYER);
   bstruct_writerealarray(file,"perc_energy",soil->perc_energy,NSOILLAYER);
-  bstruct_writeshortarray(file,"state",soil->state,NSOILLAYER);
   bstruct_writereal(file,"mean_maxthaw",soil->mean_maxthaw);
-  bstruct_writereal(file,"alag",soil->alag);
-  bstruct_writereal(file,"amp",soil->amp);
   bstruct_writereal(file,"rw_buffer",soil->rw_buffer);
   fwritepoolpararray(file,"k_mean",soil->k_mean,LASTLAYER);
   fwritepoolpararray(file,"decay_rate",soil->decay_rate,LASTLAYER);
   fwritestocks(file,"decomp_litter_mean",&soil->decomp_litter_mean);
   fwritestocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft);
   bstruct_writeint(file,"count",soil->count);
-  bstruct_writereal(file,"meanw1",soil->meanw1);
   bstruct_writereal(file,"wtable",soil->wtable);
   bstruct_writereal(file,"wa",soil->wa);
   bstruct_writebool(file,"iswetland",soil->iswetland);

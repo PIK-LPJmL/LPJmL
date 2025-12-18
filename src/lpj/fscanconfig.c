@@ -351,7 +351,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #ifdef IMAGE
   config->aquifer_irrig = FALSE;
 #endif
-  fscanbool2(file,&config->permafrost,"permafrost");
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
