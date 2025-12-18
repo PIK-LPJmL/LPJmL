@@ -864,11 +864,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
           config->firstyear,config->lastyear);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-    fprintf(file,"Start IMAGE coupling:        %6d\n",
+    fprintf(file,"Start IMAGE coupling:        %8d\n",
             config->start_coupling);
 #else
   if(iscoupled(*config))
-    fprintf(file,"Start coupling:              %6d\n",
+    fprintf(file,"Start coupling:              %8d\n",
             config->start_coupling);
 #endif
   if(config->nall==-1)

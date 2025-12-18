@@ -25,14 +25,20 @@ of `major.minor.patch` with
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de) 
 
+## Changed
+
+- Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
+- Wait for coupled program to finish added in slurm script.
+
 ### Removed
 
 - Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
-- Output `"SUN"` and `"sun_image"` removed.
+- Output `"sun"` and `"sun_image"` removed.
 
 ### Fixed
 
- - Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
+- Function `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
+- Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
 
 
 ## [6.0.0] - 2025-11-25
