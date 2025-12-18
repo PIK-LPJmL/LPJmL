@@ -20,10 +20,12 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.0.1] - 2025-12-18
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
 
 ### Changed
 
