@@ -57,6 +57,24 @@ of `major.minor.patch` with
 - Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
 
 
+## [6.0.1] - 2025-12-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
+
+### Changed
+
+- Declaration of `mixsoilenergy()` moved from `setaside.c` to `landuse.h`.
+
+### Removed
+
+- Unused functions `snow.old()`, `soiltemp()` and related functions removed.
+- Setting without permafrost removed
+- Soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
+
+
 ## [6.0.0] - 2025-11-25
 
 - author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de

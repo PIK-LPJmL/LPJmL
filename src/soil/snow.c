@@ -25,36 +25,6 @@
  *
  */
 
-Real snow_old(Real *snowpack, /**< snowpack depth (mm) */
-              Real *prec,     /**< Precipitation (mm) */
-              Real *snowmelt, /**< snowmelt (mm) */
-              Real temp       /**< temperature (deg C) */
-             )                /** \return runoff (mm) */
-{
-  Real runoff=0;
-
-  if(temp<tsnow)
-  {
-    *snowpack+=*prec;
-    if(*snowpack>param.maxsnowpack)
-    {
-      runoff=(*snowpack)-param.maxsnowpack;
-      *snowpack=param.maxsnowpack;
-    }
-    *snowmelt=*prec=0.0;
-  }
-  else
-  {
-    /* *snowmelt=km*(temp-tsnow);*/
-    /* following Gerten et al. 2004 */
-    *snowmelt=(1.5+0.007**prec)*(temp-tsnow);
-    if(*snowmelt>*snowpack)
-      *snowmelt=*snowpack;
-    *snowpack-=*snowmelt;
-  }
-  return runoff;
-} /* of 'snow_old' */
-
 Real snow(Soil *soil,       /**< pointer to soil data */
           Real *prec,       /**< Precipitation (mm) */
           Real *snowmelt,   /**< snowmelt (mm) */

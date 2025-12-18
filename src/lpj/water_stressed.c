@@ -107,13 +107,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   pft->inun_stress+=istress/NDAYYEAR;
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
-  forrootsoillayer(l)
-    rootdist_n[l]=pft->par->rootdist[l];
-  if(config->permafrost)
-  {
-    /*adjust root layer*/
-    getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
-  }
+  /*adjust root layer*/
+  getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
   wr=0;
   for(l=0;l<LASTLAYER;l++)
   {

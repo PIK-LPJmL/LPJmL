@@ -55,7 +55,6 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
         update_reservoir_monthly(grid+cell,month,config);
       foreachstand(stand,s,grid[cell].standlist)
       {
-        getlag(&stand->soil,month);
         foreachpft(pft,p,&stand->pftlist)
           turnover_monthly(&stand->soil.litter,pft,config);
       } /* of foreachstand */

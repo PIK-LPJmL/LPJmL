@@ -47,11 +47,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Real n_fixed=0.0;
   soil=&pft->stand->soil;
   ndemand_all=*n_plant_demand;
-  if(config->permafrost)
-    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
-  else
-    forrootsoillayer(l)
-      rootdist_n[l]=pft->par->rootdist[l];
+  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
   tree=pft->data;
   treepar=pft->par->data;
   nnat=getnnat(npft,config);
