@@ -18,30 +18,30 @@
 
 Bool checktitle(const Attr *attrs,    /**< pointer to array of attributes or NULL */
                 int n_attr,           /**< size of array attribute */
-                const char *filename, /**< filename of climate input file */
+                const char *filename, /**< filename of  input file */
                 char **title,         /**< title or NULL */
                 Bool isout            /**< output to stderr (TRUE/FALSE) */
                )                      /** \return FALSE on matching titles */
 {
-  char *climate;
+  char *mytitle;
   Bool rc=FALSE;
   if(attrs!=NULL)
   {
-    climate=getattr(attrs,n_attr,"title");
-    if(climate!=NULL)
+    mytitle=getattr(attrs,n_attr,"title");
+    if(mytitle!=NULL)
     {
       if(*title==NULL)
-        *title=climate;
+        *title=mytitle;
       else
       {
-        if(strcmp(climate,*title))
+        if(strcmp(mytitle,*title))
         {
           if(isout)
-            fprintf(stderr,"WARNING043: Title %s in file '%s' differs from %s.\n",
-                    climate,filename,*title);
+            fprintf(stderr,"WARNING043: Title '%s' in file '%s' differs from '%s'.\n",
+                    mytitle,filename,*title);
           rc=TRUE;
         }
-        free(climate);
+        free(mytitle);
       }
     }
   }
