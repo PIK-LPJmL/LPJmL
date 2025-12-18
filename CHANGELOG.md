@@ -22,13 +22,17 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de) 
 
 ### Removed
 
 - Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
 - Output `"SUN"` and `"sun_image"` removed.
+
+### Fixed
+
+ - Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
 
 
 ## [6.0.0] - 2025-11-25
