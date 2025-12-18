@@ -625,7 +625,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         getoutput(&stand->cell->output,NMINERALIZATION_AGR,config)+=F_Nmineral*stand->frac;
 
       N_sum=soil->NH4[l]+soil->NO3[l];
-      if(N_sum>0) /* immobilization of N */
+      if(N_sum>epsilon) /* immobilization of N */
       {
         n_immo=param.fastfrac*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].fast*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
         if(n_immo >0)
@@ -656,7 +656,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       else
         n_immo=0;
       N_sum=soil->NH4[l]+soil->NO3[l];
-      if(N_sum>0)
+      if(N_sum>epsilon)
       {
         n_immo=(1-param.fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].slow*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
         if(n_immo >0)

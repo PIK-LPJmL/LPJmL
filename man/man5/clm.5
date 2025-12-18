@@ -2,11 +2,11 @@
 .SH NAME
 clm \- Input data files for LPJmL runs
 .SH DESCRIPTION
-LPJmL is driven by monthly fields of temperature, precipitation, cloudiness and number of days with rain. Additionally static information on soil properties, geographic coordinates of climate and soil data, and mean annual atmospheric CO2 concentration are required. Except for CO2 all files are binary data including a header (except for the soil and lake fraction data).
+LPJmL is driven by monthly fields of temperature, precipitation, long and shortwave radtion, number of days with rain. Additionally static information on soil properties, geographic coordinates of climate and soil data, and mean annual atmospheric CO2 concentration are required. Except for CO2 all files are binary data including a header (except for the soil and lake fraction data).
 .SS Structure of the header
 .TP
 header name 
-(7 byte char array, LPJCLIM for temp, precip, wet days and cloudiness, LPJGRID for coordinate data, LPJLUSE for land use data, LPJ_COW for country codes, LPJDAMS for reservoir data)
+(7 byte char array, LPJCLIM for temp, precip, wet days, long and short wave radiation, LPJGRID for coordinate data, LPJLUSE for land use data, LPJ_COW for country codes, LPJDAMS for reservoir data)
 .TP
 header version 
 (4 byte integer, currently set to 3, also used to determine if input data needs byte swapping)
@@ -83,8 +83,7 @@ climate data
 - precipitation [mm/month]
   size of header: 43 bytes
 
-- cloudiness [%]
-  for internal computation of radiation
+- short and long wave radiation [W/m2]
   size of header: 43 bytes
 
 - wet days

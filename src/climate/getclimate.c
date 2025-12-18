@@ -5,8 +5,8 @@
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
 /**     Function getclimate reads monthly climate data (temperature,               \n**/
-/**     precipitation, cloudiness and wet days) for a specified year.              \n**/
-/**     The pointer to the climate data has to be initialized by the               \n**/
+/**     precipitation, short and long wave radiation and wet days) for a specified \n**/
+/**     year. The pointer to the climate data has to be initialized by the         \n**/
 /**     function initclimate.                                                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -144,50 +144,27 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         return TRUE;
       }
     }
-    if(climate->data[0].sun!=NULL)
+    if(readclimate(&climate->file_lwnet,climate->data[data_index].lwnet,0,climate->file_lwnet.scalar,grid,year,1,config))
     {
-      if(readclimate(&climate->file_cloud,climate->data[data_index].sun,100,-climate->file_cloud.scalar,grid,year,1,config))
+      if(isroot(*config))
       {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->cloud_filename);
-          fprintf(stderr,"ERROR131: Cannot read cloudiness of year %d from '%s'.\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
+        name=getrealfilename(&config->lwnet_filename);
+        fprintf(stderr,"ERROR131: Cannot read lwnet of year %d from '%s'.\n",
+                year,name);
+        free(name);
       }
-      if(config->cloud_filename.fmt==CDF)
-        for(i=0;i<climate->file_cloud.n;i++)
-          climate->data[data_index].sun[data_index]=100-climate->data[0].sun[i];
+      return TRUE;
     }
-    if(climate->data[0].lwnet!=NULL)
+    if(readclimate(&climate->file_swdown,climate->data[data_index].swdown,0,climate->file_swdown.scalar,grid,year,1,config))
     {
-      if(readclimate(&climate->file_lwnet,climate->data[data_index].lwnet,0,climate->file_lwnet.scalar,grid,year,1,config))
+      if(isroot(*config))
       {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->lwnet_filename);
-          fprintf(stderr,"ERROR131: Cannot read lwnet of year %d from '%s'.\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
+        name=getrealfilename(&config->swdown_filename);
+        fprintf(stderr,"ERROR131: Cannot read swdown of year %d from '%s'.\n",
+                year,name);
+        free(name);
       }
-    }
-    if(climate->data[0].swdown!=NULL)
-    {
-      if(readclimate(&climate->file_swdown,climate->data[data_index].swdown,0,climate->file_swdown.scalar,grid,year,1,config))
-      {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->swdown_filename);
-          fprintf(stderr,"ERROR131: Cannot read swdown of year %d from '%s'.\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
-      }
+      return TRUE;
     }
     if(climate->data[0].humid!=NULL)
     {
@@ -203,19 +180,16 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         return TRUE;
       }
     }
-    if(climate->data[0].wind!=NULL)
+    if(readclimate(&climate->file_wind,climate->data[data_index].wind,0,climate->file_wind.scalar,grid,year,1,config))
     {
-      if(readclimate(&climate->file_wind,climate->data[data_index].wind,0,climate->file_wind.scalar,grid,year,1,config))
+      if(isroot(*config))
       {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->wind_filename);
-          fprintf(stderr,"ERROR131: Cannot read wind of year %d from '%s'.\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
+        name=getrealfilename(&config->wind_filename);
+        fprintf(stderr,"ERROR131: Cannot read wind of year %d from '%s'.\n",
+                year,name);
+        free(name);
       }
+      return TRUE;
     }
     if(climate->data[0].tamp!=NULL)
     {

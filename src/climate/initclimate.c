@@ -25,7 +25,6 @@ static void initdata(Climate *climate)
   climate->file_prec.isopen=FALSE;
   climate->file_lwnet.isopen=FALSE;
   climate->file_swdown.isopen=FALSE;
-  climate->file_cloud.isopen=FALSE;
   climate->file_wet.isopen=FALSE;
   climate->file_no3deposition.isopen=FALSE;
   climate->file_nh4deposition.isopen=FALSE;
@@ -52,7 +51,6 @@ static void initdata(Climate *climate)
     climate->data[i].tmin=NULL;
     climate->data[i].prec=NULL;
     climate->data[i].temp=NULL;
-    climate->data[i].sun=NULL;
     climate->data[i].lwnet=NULL;
     climate->data[i].swdown=NULL;
     climate->data[i].wet=NULL;
@@ -130,42 +128,24 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   }
   if(climate->firstyear<climate->file_prec.firstyear)
     climate->firstyear=climate->file_prec.firstyear;
-  if(config->with_radiation)
+  if(openclimate(&climate->file_lwnet,&config->lwnet_filename,"W/m2",LPJ_SHORT,1,0.1,config))
   {
-    if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-    {
-      if(openclimate(&climate->file_lwnet,&config->lwnet_filename,"W/m2",LPJ_SHORT,1,0.1,config))
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR236: Cannot open %s data file.\n",(config->with_radiation==RADIATION) ? "lwnet" : "lwdown");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-      if(climate->firstyear<climate->file_lwnet.firstyear)
-        climate->firstyear=climate->file_lwnet.firstyear;
-    }
-    if(openclimate(&climate->file_swdown,&config->swdown_filename,"W/m2",LPJ_SHORT,1,0.1,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open swdown data file.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
-    }
-    if(climate->firstyear<climate->file_swdown.firstyear)
-      climate->firstyear=climate->file_swdown.firstyear;
+     if(isroot(*config))
+       fprintf(stderr,"ERROR236: Cannot open %s data file.\n",(config->radiation_lwdown) ? "lwdown" : "lwnet");
+     freeclimate(climate,isroot(*config));
+     return NULL;
   }
-  else
+  if(climate->firstyear<climate->file_lwnet.firstyear)
+    climate->firstyear=climate->file_lwnet.firstyear;
+  if(openclimate(&climate->file_swdown,&config->swdown_filename,"W/m2",LPJ_SHORT,1,0.1,config))
   {
-    if(openclimate(&climate->file_cloud,&config->cloud_filename,"%",LPJ_SHORT,1,1.0,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open cloud data file.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
-    }
-    if(climate->firstyear<climate->file_cloud.firstyear)
-      climate->firstyear=climate->file_cloud.firstyear;
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot open swdown data file.\n");
+    freeclimate(climate,isroot(*config));
+    return NULL;
   }
+  if(climate->firstyear<climate->file_swdown.firstyear)
+    climate->firstyear=climate->file_swdown.firstyear;
   if(config->wet_filename.name!=NULL)
   {
     if(isdaily(climate->file_prec))
@@ -447,44 +427,25 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
         return NULL;
       }
   } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
-  if(config->with_radiation)
+  if(config->lwnet_filename.fmt!=FMS)
   {
-    if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-    {
-      if(config->lwnet_filename.fmt!=FMS)
+    for (i = 0; i<ndata; i++)
+      if((climate->data[i].lwnet=newvec(Real,climate->file_lwnet.n))==NULL)
       {
-        for (i = 0; i<ndata; i++)
-          if((climate->data[i].lwnet=newvec(Real,climate->file_lwnet.n))==NULL)
-          {
-            printallocerr("lwnet");
-            freeclimate(climate,isroot(*config));
-            return NULL;
-          }
+        printallocerr("lwnet");
+        freeclimate(climate,isroot(*config));
+        return NULL;
       }
-    }
-    if(config->swdown_filename.fmt!=FMS)
-    {
-      for (i = 0; i < ndata; i++)
-        if((climate->data[i].swdown=newvec(Real,climate->file_swdown.n))==NULL)
-        {
-          printallocerr("swdown");
-          freeclimate(climate,isroot(*config));
-          return NULL;
-        }
-    }
   }
-  else
+  if(config->swdown_filename.fmt!=FMS)
   {
-    if(config->cloud_filename.fmt!=FMS)
-    {
-      for (i = 0; i < ndata; i++)
-        if((climate->data[i].sun=newvec(Real,climate->file_cloud.n))==NULL)
-        {
-          printallocerr("cloud");
-          freeclimate(climate,isroot(*config));
-          return NULL;
-        }
-    }
+    for (i = 0; i < ndata; i++)
+      if((climate->data[i].swdown=newvec(Real,climate->file_swdown.n))==NULL)
+      {
+        printallocerr("swdown");
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
   }
   if(config->wet_filename.name!=NULL && !isdaily(climate->file_prec) && config->wet_filename.fmt!=FMS)
   {

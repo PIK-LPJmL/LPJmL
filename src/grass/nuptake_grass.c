@@ -94,7 +94,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       else
         NH4_up[l]=0;
     }
-    if(nupsum==0)
+    if(nupsum<epsilon)
       n_uptake=0;
     else
     {

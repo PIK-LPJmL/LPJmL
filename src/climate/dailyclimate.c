@@ -5,7 +5,7 @@
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
 /**     Function dailyclimate gets daily value for temperature,                    \n**/
-/**     precipitation, cloudiness and wet days.                                    \n**/
+/**     precipitation, long and short wave radiation and wet days.                 \n**/
 /**     The pointer to the climate data has to be initialized by the               \n**/
 /**     function getclimate for the specified year.                                \n**/
 /**                                                                                \n**/
@@ -45,16 +45,10 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     daily->isdailytemp=TRUE;
     climbuf->mtemp+=daily->temp;
   }
-  if(climate->data[0].sun!=NULL)
-    daily->sun=isdaily(climate->file_cloud) ? climate->data[0].sun[cell*NDAYYEAR+day-1]
-                      : interpolate(getcellsun(climate,cell),month,dayofmonth);
-  if(climate->data[0].lwnet!=NULL)
-    daily->lwnet=isdaily(climate->file_lwnet) ? climate->data[0].lwnet[cell*NDAYYEAR+day-1]
+  daily->lwnet=isdaily(climate->file_lwnet) ? climate->data[0].lwnet[cell*NDAYYEAR+day-1]
                       : interpolate(getcelllwnet(climate,cell),month,dayofmonth);
-  if(climate->data[0].swdown!=NULL)
-    daily->swdown=isdaily(climate->file_swdown) ? climate->data[0].swdown[cell*NDAYYEAR+day-1]
+  daily->swdown=isdaily(climate->file_swdown) ? climate->data[0].swdown[cell*NDAYYEAR+day-1]
                       : interpolate(getcellswdown(climate,cell),month,dayofmonth);
-  if(climate->data[0].wind!=NULL)
   if(climate->data[0].humid!=NULL)
     daily->humid=isdaily(climate->file_humid) ? climate->data[0].humid[cell*NDAYYEAR+day-1]
                       : interpolate(getcellhumid(climate,cell),month,dayofmonth);

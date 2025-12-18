@@ -141,19 +141,13 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     addfilename(table,&config->prodpool_init_filename,FALSE);
   }
 #endif
-  if(config->with_radiation)
+  addfilename(table,&config->lwnet_filename,TRUE);
+  addfilename(table,&config->swdown_filename,TRUE);
+  if(config->isanomaly)
   {
-    if(config->with_radiation!=RADIATION_SWONLY)
-      addfilename(table,&config->lwnet_filename,TRUE);
-    if(config->isanomaly)
-    {
-      addfilename(table,&config->delta_lwnet_filename,TRUE);
-      addfilename(table,&config->delta_swdown_filename,TRUE);
-    }
-    addfilename(table,&config->swdown_filename,TRUE);
+    addfilename(table,&config->delta_lwnet_filename,TRUE);
+    addfilename(table,&config->delta_swdown_filename,TRUE);
   }
-  else
-    addfilename(table,&config->cloud_filename,TRUE);
   addfilename(table,&config->hydrotopes_filename,FALSE);
   addfilename(table,&config->co2_filename,FALSE);
   if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
