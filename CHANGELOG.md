@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Removed
+
+- Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
+- Output `"SUN"` and `"sun_image"` removed.
+
+
 ## [6.0.0] - 2025-11-25
 
 - author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de

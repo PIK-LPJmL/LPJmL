@@ -60,27 +60,10 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->tmin=NULL;
-  if(climate->data[0].sun!=NULL)
-  {
-    store->sun=newvec(Real,climate->file_cloud.n*nyear);
-    checkptr(store->sun);
-  }
-  else
-    store->sun=NULL;
-  if(climate->data[0].lwnet!=NULL)
-  {
-    store->lwnet=newvec(Real,climate->file_lwnet.n*nyear);
-    checkptr(store->lwnet);
-  }
-  else
-    store->lwnet=NULL;
-  if(climate->data[0].swdown!=NULL)
-  {
-    store->swdown=newvec(Real,climate->file_swdown.n*nyear);
-    checkptr(store->swdown);
-  }
-  else
-    store->swdown=NULL;
+  store->lwnet=newvec(Real,climate->file_lwnet.n*nyear);
+  checkptr(store->lwnet);
+  store->swdown=newvec(Real,climate->file_swdown.n*nyear);
+  checkptr(store->swdown);
   if(climate->data[0].wet!=NULL)
   {
     store->wet=newvec(Real,climate->file_wet.n*nyear);
@@ -88,13 +71,8 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->wet=NULL;
-  if(climate->data[0].wind!=NULL)
-  {
-    store->wind=newvec(Real,climate->file_wind.n*nyear);
-    checkptr(store->wind);
-  }
-  else
-    store->wind=NULL;
+  store->wind=newvec(Real,climate->file_wind.n*nyear);
+  checkptr(store->wind);
   if(climate->data[0].tamp!=NULL)
   {
     store->tamp=newvec(Real,climate->file_tamp.n*nyear);
@@ -142,12 +120,6 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
     count=climate->file_prec.n*(year-firstyear);
     for(j=0;j<climate->file_prec.n;j++)
       store->prec[count++]=climate->data[index].prec[j];
-    if(store->sun!=NULL)
-    {
-      count=climate->file_cloud.n*(year-firstyear);
-      for(j=0;j<climate->file_cloud.n;j++)
-        store->sun[count++]=climate->data[index].sun[j];
-    }
     if(store->tmax!=NULL)
     {
       count=climate->file_tmax.n*(year-firstyear);
@@ -166,18 +138,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_tmin.n;j++)
         store->tmin[count++]=climate->data[index].tmin[j];
     }
-    if(store->lwnet!=NULL)
-    {
-      count=climate->file_lwnet.n*(year-firstyear);
-      for(j=0;j<climate->file_lwnet.n;j++)
-        store->lwnet[count++]=climate->data[index].lwnet[j];
-    }
-    if(store->swdown!=NULL)
-    {
-      count=climate->file_swdown.n*(year-firstyear);
-      for(j=0;j<climate->file_swdown.n;j++)
-        store->swdown[count++]=climate->data[index].swdown[j];
-    }
+    count=climate->file_lwnet.n*(year-firstyear);
+    for(j=0;j<climate->file_lwnet.n;j++)
+      store->lwnet[count++]=climate->data[index].lwnet[j];
+    count=climate->file_swdown.n*(year-firstyear);
+    for(j=0;j<climate->file_swdown.n;j++)
+      store->swdown[count++]=climate->data[index].swdown[j];
     if(store->wet!=NULL)
     {
       count=climate->file_wet.n*(year-firstyear);
@@ -249,36 +215,21 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_tmin.n;i++)
       climate->data[0].tmin[i]=store->tmin[index++];
   }
-  if(store->sun!=NULL)
-  {
-    index=year*climate->file_cloud.n;
-    for(i=0;i<climate->file_cloud.n;i++)
-      climate->data[0].sun[i]=store->sun[index++];
-  }
-  if(store->lwnet!=NULL)
-  {
-    index=year*climate->file_lwnet.n;
-    for(i=0;i<climate->file_lwnet.n;i++)
-      climate->data[0].lwnet[i]=store->lwnet[index++];
-  }
-  if(store->swdown!=NULL)
-  {
-    index=year*climate->file_swdown.n;
-    for(i=0;i<climate->file_swdown.n;i++)
-      climate->data[0].swdown[i]=store->swdown[index++];
-  }
+  index=year*climate->file_lwnet.n;
+  for(i=0;i<climate->file_lwnet.n;i++)
+    climate->data[0].lwnet[i]=store->lwnet[index++];
+  index=year*climate->file_swdown.n;
+  for(i=0;i<climate->file_swdown.n;i++)
+    climate->data[0].swdown[i]=store->swdown[index++];
   if(store->wet!=NULL)
   {
     index=year*climate->file_wet.n;
     for(i=0;i<climate->file_wet.n;i++)
       climate->data[0].wet[i]=store->wet[index++];
   }
-  if(store->wind!=NULL)
-  {
-    index=year*climate->file_wind.n;
-    for(i=0;i<climate->file_wind.n;i++)
-      climate->data[0].wind[i]=store->wind[index++];
-  }
+  index=year*climate->file_wind.n;
+  for(i=0;i<climate->file_wind.n;i++)
+    climate->data[0].wind[i]=store->wind[index++];
   if(store->tamp!=NULL)
   {
     index=year*climate->file_tamp.n;
@@ -319,16 +270,11 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data[index].tmin=store->tmin+climate->file_tmin.n*year;
   if(climate->data[index].humid!=NULL)
     climate->data[index].humid=store->humid+climate->file_humid.n*year;
-  if(climate->data[index].sun!=NULL)
-    climate->data[index].sun=store->sun+climate->file_cloud.n*year;
-  if(climate->data[index].lwnet!=NULL)
-    climate->data[index].lwnet=store->lwnet+climate->file_lwnet.n*year;
-  if(climate->data[index].swdown!=NULL)
-    climate->data[index].swdown=store->swdown+climate->file_swdown.n*year;
+  climate->data[index].lwnet=store->lwnet+climate->file_lwnet.n*year;
+  climate->data[index].swdown=store->swdown+climate->file_swdown.n*year;
   if(climate->data[0].wet!=NULL)
     climate->data[index].wet=store->wet+climate->file_wet.n*year;
-  if(climate->data[0].wind!=NULL)
-    climate->data[index].wind=store->wind+climate->file_wind.n*year;
+  climate->data[index].wind=store->wind+climate->file_wind.n*year;
   if(climate->data[0].tamp!=NULL)
     climate->data[index].tamp=store->tamp+climate->file_tamp.n*year;
   if(climate->data[0].burntarea!=NULL)
@@ -337,5 +283,4 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data[index].no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
   if(climate->data[0].nh4deposition!=NULL)
     climate->data[index].nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
-
 } /* of 'moveclimate' */

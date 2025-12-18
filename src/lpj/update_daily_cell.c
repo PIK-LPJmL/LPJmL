@@ -134,7 +134,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       popdensity=getpopdens(input->popdens,cell_id);
     cell->output.dcflux=0;
     initoutputdata(&cell->output,DAILY,year,config);
-    /* get daily values for temperature, precipitation and sunshine */
+    /* get daily values for temperature, precipitation, short and long wave radiation */
     dailyclimate(climate,input->climate,&cell->climbuf,cell_id,day,
                  month,dayofmonth);
     prec_save=climate->prec;
@@ -145,23 +145,11 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(climate->temp),cell_id+config->startgrid,day);
       climate->temp=-273.15;
     }
-    if(config->with_radiation)
-    {
-      if(climate->swdown<0)
-        fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",climate->swdown,cell_id+config->startgrid,day);
-    }
-    else
-    {
-      if(climate->sun<-1e-5 || climate->sun>100)
-        fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",climate->sun,cell_id+config->startgrid,day);
-      getoutput(&cell->output,SUN,config)+=climate->sun;
-    }
+    if(climate->swdown<0)
+      fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",climate->swdown,cell_id+config->startgrid,day);
     if(climate->windspeed<0)
       fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Wind speed=%g less than zero for cell %d at day %d",climate->windspeed,cell_id+config->startgrid,day);
 #endif
-    if(config->with_radiation==CLOUDINESS && climate->sun<0)
-      climate->sun=0;
-    /* get daily values for temperature, precipitation and sunshine */
     getoutput(&cell->output,TEMP,config)+=climate->temp;
     getoutput(&cell->output,PREC,config)+=climate->prec;
 
@@ -200,7 +188,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
 
       beta=albedo_stand(stand);
-      radiation(&daylength,&par,&eeq,cell->coord.lat,day,climate,beta,config->with_radiation);
+      petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,beta);
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
@@ -589,7 +577,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     cell->balance.awater_flux+=cell->discharge.drunoff;
     if(config->with_lakes)
     {
-      radiation(&daylength,&par,&eeq,cell->coord.lat,day,climate,c_albwater,config->with_radiation);
+      petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,c_albwater);
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
       cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
       getoutput(&cell->output,ALBEDO,config)+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);
