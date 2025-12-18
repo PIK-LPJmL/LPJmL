@@ -234,7 +234,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   /* printf("cellsize=%d\n",width); */
-  fscanf(mfp,"%*s %d",&nodata);
+  if(fscanf(mfp,"%*s %d",&nodata)!=1)
+      {
+        fprintf(stderr,"Error reading nodata value in '%s'.\n",argv[2]);
+        return EXIT_FAILURE;
+      }
   /*printf("found cols %d rows %d xcorner %f ycorner %f rbuf2 %f nodata %d\n",
    *      cols, rows, xcorner, ycorner, rbuf2, nodata);
    */

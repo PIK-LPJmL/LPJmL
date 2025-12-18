@@ -142,31 +142,34 @@ int main(int argc,char **argv)
 
   for(p=0;p<bands;p++)
   {
-    for(i=0;i<runs;i++)
+    for(j=0;j<runs;j++)
     {
       if(outfile!=NULL && p==0) 
-        printf("run: %d n: %d\n",i,n[i]);
-      fseek(ifp[i],typesizes[k]*n[i]*p,SEEK_SET);
-      data=malloc(n[i]*typesizes[k]);
+        printf("run: %d n: %d\n",i,n[j]);
+      fseek(ifp[j],typesizes[k]*n[j]*p,SEEK_SET);
+      data=malloc(n[j]*typesizes[k]);
       if(data==NULL)
       {
         printallocerr("data");
         return EXIT_FAILURE;
       }
-      fread(data,typesizes[k],n[i],ifp[i]);
-      fwrite(data,typesizes[k],n[i],ofp);
+      if(fread(data,typesizes[k],n[j],ifp[j])!=1){
+        fprintf(stderr,"Error reading %s.\n",argv[i+j]);
+        exit(1);
+      }
+      fwrite(data,typesizes[k],n[j],ofp);
       free(data);
     }
   }
   if(outfile!=NULL)
   {
     sum=0;
-    for(i=0;i<runs;i++)
-      sum+=n[i];
+    for(j=0;j<runs;j++)
+      sum+=n[j];
     printf("Number of cells: %d\n",sum); 
   }
-  for(i=0;i<runs;i++) 
-    fclose(ifp[i]);
+  for(j=0;j<runs;j++)
+    fclose(ifp[j]);
   fclose(ofp);
   return EXIT_SUCCESS;
 } /* of 'main' */

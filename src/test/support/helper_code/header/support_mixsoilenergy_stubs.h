@@ -25,7 +25,7 @@ void tillage(Soil *x, Real y)
 
 Pft *addpft(Stand *x, const Pftpar * y,int z,int a,const Config *b)
 {
-
+    return 0;
 }
 
 int findlandusetype(const Standlist x,Landusetype y)
@@ -33,7 +33,14 @@ int findlandusetype(const Standlist x,Landusetype y)
     return 0;
 }
 
-Bool establish(Real gdd,   const Pftpar *pftpar, const Climbuf *climbuf) 
+Bool establish(Real gdd,   const Pftpar *pftpar, const Climbuf *climbuf, Bool) 
 {
   return 0;
 }
+
+char *sprintcoord(String,const Coord *)
+{
+    return 0;
+}
+
+Standtype setaside_wetland_stand;

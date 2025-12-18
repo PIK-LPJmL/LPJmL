@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 #include "grass.h"
+#include "tree.h"
+
 
 Real fpc_grass(Pft *pft /**< pointer to grass PFT */
               )         /** \return positive change in FPC */

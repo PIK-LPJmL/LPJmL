@@ -132,11 +132,13 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->fwrite=fwrite_crop;
   pft->fprint=fprint_crop;
   pft->fread=fread_crop;
+  pft->copy=copy_crop;
   pft->litter_update=litter_update_crop;
   pft->actual_lai=actual_lai_crop;
   pft->fpar=fpar_crop;
   pft->alphaa_manage=alphaa_crop;
   pft->free=free_crop;
+  pft->leafc=leafc_crop;
   pft->vegc_sum=vegc_sum_crop;
   pft->vegn_sum=vegn_sum_crop;
   pft->wdf=wdf_crop;

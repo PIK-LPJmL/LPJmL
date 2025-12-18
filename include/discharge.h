@@ -39,9 +39,7 @@ typedef struct
   Real dmass_lake_max;
   Real dmass_river;
   Real dmass_sum;         /**< sum of dmass_lake, dmass_new, dmass_queue (m3) */
-#ifdef IMAGE
   Real dmass_gw;          /**< groundwater reservoir */
-#endif
   Real drunoff;           /**< daily runoff (mm) */
   Real dfout;
   Real fout;
@@ -56,9 +54,7 @@ typedef struct
   Real wd_deficit;        /**< withdrawal demand that can not be fulfilled locally */
   Real wd_neighbour;      /**< sum of withdrawal requests from neighbour cells */
   Real withdrawal;        /**< amount of water withdrawn from river */
-#ifdef IMAGE
   Real withdrawal_gw;     /**< amount of water withdrawn from groundwater (shallow and aquifer) */
-#endif
   Real irrig_unmet;       /**< amount of irrigation water not met by local sources or neighbor cell */
 #ifdef IMAGE
   int aquifer;            /**< is there an aquifer below this cell? (Later change to year aquifer is expected to be empty or inaccessible) */

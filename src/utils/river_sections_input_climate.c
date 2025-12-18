@@ -73,12 +73,12 @@ int main(int argc,char **argv)
   if(freadanyheader(climate_file,&header,&swap,headername,&climate_version,TRUE))
   {
     fclose(climate_file);
-    fail(2,FALSE,"Invalid header in climate-infile.");
+    fail(2,TRUE,FALSE,"Invalid header in climate-infile.");
   }
   if(header.order!=CELLYEAR)
   {
     fclose(climate_file);
-    fail(2,FALSE,"Order in climate-infile not CELLYEAR.");
+    fail(2,TRUE,FALSE,"Order in climate-infile not CELLYEAR.");
   }
   ncell=header.ncell;
 
@@ -90,7 +90,7 @@ int main(int argc,char **argv)
   if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(mfp);
-    fail(23,FALSE,"Invalid header in original grid file.");
+    fail(23,TRUE,FALSE,"Invalid header in original grid file.");
   }
 
   for(i=0;i<ncell;i++)
@@ -112,7 +112,7 @@ int main(int argc,char **argv)
   if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(ifp);
-    fail(23,FALSE,"Invalid header in re-ordered grid file");
+    fail(23,TRUE,FALSE,"Invalid header in re-ordered grid file");
   }
 
   /* HEADER */

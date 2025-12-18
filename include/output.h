@@ -48,6 +48,7 @@ typedef struct
   Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+  Real bm_inc;
   int *syear2;           /**< sowing year of second season, used for separate_harvests */
   int *syear;            /**< sowing year of first season, used for separate_harvests */
 #ifdef COUPLING_WITH_FMS
@@ -60,6 +61,7 @@ typedef struct
   Real npp;      /**< Total NPP (gC/yr) */
   Real gpp;      /**< Total GPP (gC/yr) */
   Real rh;       /**< Total heterotrophic respiration (gC/yr) */
+  Real ra;       /**< Total autotrophic respiration (gC/yr) */
   Stocks fire;   /**< Total fire (gC/yr,gN/yr) */
   Stocks estab;  /**< Total extablishment flux (gC/yr,gN/yr) */
   Stocks harvest;/**< Total harvested carbon (gC/yr,gN/yr) */
@@ -85,7 +87,19 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants (gN/yr) */
   Stocks influx;              /**< total influx  (gC/yr,gN/yr) */
   Real n_outflux;             /**< total N losses (gN/yr) */
-  Real excess_water;          /**< Exess water (dm3) */
+  Real excess_water;          /**< Excess water (dm3) */
+  Real MT_water;              /**< water from methanogenis  (dm3) */
+  Real CH4_emissions;         /**< Total Emissions (gCH4/yr)) positive and negative*/
+  Real CH4_sink;
+  Real CH4_fire;
+  Real CH4_rice;
+  Real CH4_agr;
+  Real CH4_grassland;
+  Real CH4_oxidation;
+  Real soil_CH4;
+  Real soil_NO3;
+  Real soil_NH4;
+  Real temp;                  /**< global average temperature (celsius) */
   Stocks soil;                /**< soil stocks (gC,gN) */
   Stocks soil_slow;           /**< slow soil stocks (gC,gN) */
   Stocks lit;                 /**< litter stocks (gC,gN) */
@@ -95,6 +109,8 @@ typedef struct
   Stocks neg_fluxes;
   Stocks estab_storage;       /**< Storage for establishment (gC, gN) */
   Real area_agr;              /**< agriculture area (m2) */
+  Real nat_nbpflux;
+
 } Flux;
 
 typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
@@ -127,8 +143,9 @@ extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
 extern int getmintimestep(int);
 extern Bool fprintoutputjson(int,int,const Config *);
+extern Bool ismethane_output(int);
 #ifdef USE_MPI
-extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
+extern Bool mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
 extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
                          int *,int,char,MPI_Comm);

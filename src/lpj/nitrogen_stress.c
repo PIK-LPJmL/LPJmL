@@ -48,7 +48,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))
       pft->vscal+=1;
     getoutput(&pft->stand->cell->output,NUPTAKE,config)+=nup*pft->stand->frac;
-    if(isagriculture(pft->stand->type->landusetype))
+    if(isagriculture(pft->stand))
       getoutput(&pft->stand->cell->output,NUPTAKE_AGR,config)+=nup*pft->stand->frac;
     pft->nleaf=max(0,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)

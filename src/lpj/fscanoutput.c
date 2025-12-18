@@ -342,6 +342,18 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         return TRUE;
       }
     }
+    else if(!config->with_methane && ismethane_output(flag))
+    {
+      if(verbosity)
+        fprintf(stderr,"WARNING006: Output file for '%s' is methane output but methane is not enabled, will be ignored.\n",
+                config->outnames[flag].name);
+      freefilename(&config->outputvars[count].filename);
+      if(config->pedantic)
+      {
+        free(default_suffix);
+        return TRUE;
+      }
+    }
     else if(config->outputvars[count].filename.fmt==CLM2)
     {
       if(verbosity)
@@ -374,6 +386,14 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(verbosity)
           fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
                   fmt[config->outputvars[count].filename.fmt]);
+        free(default_suffix);
+        return TRUE;
+      }
+      else if ((flag==PCO2 || flag==PCH4) && config->outputvars[count].filename.fmt==CDF)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR224: Format 'cdf' not allowed for '%s' output.\n",
+                  config->outnames[flag].name);
         free(default_suffix);
         return TRUE;
       }

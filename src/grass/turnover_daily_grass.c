@@ -30,13 +30,13 @@ void turnover_daily_grass(Litter *litter,
   Pftgrass *grass;
   Pftgrasspar *grasspar;
   Output *output;
-  #ifdef NRECOVERY_COST
+#ifdef NRECOVERY_COST
   Real nrecovered=0.0, navailable=0.0;
   Real nplant_demand=0.0, ndemand_leaf=0.0;
   Real npp_for_recovery=0.0;
-  #endif
+#endif
 
-  if(pft->stand->type->landusetype==NATURAL)
+  if(isnatural(pft->stand))
   {
     grass=pft->data;
     grasspar=pft->par->data;

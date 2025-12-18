@@ -425,7 +425,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
 
     sum.harvest.carbon   += c_methane+c_milk+c_co2;       // sum of losses
     if(isempty(&stand->pftlist))
-      fail(IS_EMPTY_ERR,TRUE,"PFT list must no be empty in harvest_stand()");
+      fail(IS_EMPTY_ERR,TRUE,TRUE,"PFT list must no be empty in harvest_stand()");
     pft=getpft(&stand->pftlist,0);
     stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=c_feces+c_urine; // to litter
     sum.harvest.nitrogen += n_milk;                       // sum of losses

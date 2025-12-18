@@ -44,16 +44,10 @@ Socket *open_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   version=MAKEWORD(1,1);
-#ifdef USE_TIMING
-  timing=0;
-#endif
   if(WSAStartup(version,&data))
     return NULL;
 #else
   int my_socket;
-#ifdef USE_TIMING
-  timing=0;
-#endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {

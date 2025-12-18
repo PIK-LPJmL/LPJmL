@@ -36,7 +36,7 @@ OBJS    = open_socket.$O connect_socket.$O read_socket.$O\
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)
 
-$(OBJS): $(INC)/channel.h $(INC)/types.h $(INC)/swap.h
+$(OBJS): $(INC)/channel.h $(INC)/types.h $(INC)/swap.h $(INC)/timing.h
 
 .c.$O:
 	$(CC) -c $(CFLAGS) -I$(INC) $*.c

@@ -38,7 +38,6 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
     a_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
     ua_wi  = soil->wpwps[layer];
     f_wi  = soil->w_fw[layer] + soil->ice_fw[layer];
-
     /* get target ice content */
     ice_target = freezfrac[layer] * allwaterice;
 

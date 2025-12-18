@@ -1,4 +1,4 @@
-# Installation of LPJmL C Version 5.10.0
+# Installation of LPJmL C Version 6.0.0
 
 ## Overview
 
@@ -58,7 +58,7 @@ After extracting the source files, the directory structure will look like this:
 ```bash
 mkdir lpjml
 cd lpjml
-gzip -cd lpjml-5.10.0.tar.gz | tar -xf -
+gzip -cd lpjml-6.0.0.tar.gz | tar -xf -
 ```
 
 ---
@@ -216,7 +216,7 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 |`LINEAR_DECAY`       |use linearized functions for litter decay                    |
 |`MICRO_HEATING`      |enable microbial heating                                     |
 |`NO_FAIL_BALANCE`    |lpjml does not terminate on balance errors                   |
-|`NRECOVEY_COST`       |costs for N recovery enabled                                |
+|`NRECOVERY_COST`     |costs for N recovery enabled                                 |
 |`PERMUTE`            |random permutation of PFT list                               |
 |`SAFE`               |code is compiled with additional checks                      |
 |`STRICT_JSON`        |strict JSON checking                                         |
@@ -224,7 +224,7 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 |`USE_NETCDF`         |enable NetCDF input/output                                   |
 |`USE_RAND48`         |use drand48() random number generator                        |
 |`USE_UDUNITS`        |enable unit conversion in NetCDF files                       |
-|`USE_TIMING`         |enable timing for socket I/O                                 |
+|`USE_TIMING`         |enable timing for LPJmL functions for performace analysis    |
 |`WITH_FIRE_MOISTURE` |enable moisture dependent fire emissions                     |
 |`WITH_FPE`           |floating point exceptions are enabled for debugging purposes |
 
@@ -263,7 +263,7 @@ mpirun -np 32 ./bin/lpjml lpjml_config.cjson
 ### Runtime Options of Lpjml
 
 The following runtime options are defined:
-| Option               | Descritiption                                                                        |
+| Option               | Description                                                                          |
 |----------------------|--------------------------------------------------------------------------------------|
 | `-Iincludepath`      | add include path for LPJmL configuration file                                        |
 | `-Dmacro[=value]`    | define macro                                                                         |
@@ -271,7 +271,8 @@ The following runtime options are defined:
 | `-l`                 | print license                                                                        |
 | `-v`                 | print compiler used and LPJmL flags set                                              |
 | `-vv`                | verbosely print the actual values during reading of the configuration files          |
-| `-pedantic`          | stops on warnings                                                                    |
+| `-pedantic`          | stop on warnings                                                                     |
+| `-print_noread`      | print variable names not read from restart file                                      |
 | `-ofiles`            | list only all available output variables                                             |
 | `-param`             | print LPJmL parameter for soils and PFTs                                             |
 | `-nopp`              | disable preprocessing                                                                |
@@ -341,6 +342,13 @@ ERRORxxx: message
 |       45   |Error initializing output data                 | External   |
 |       46   |Invalid crop PHU option                        | Internal   |
 |       47   |Invalid fire danger index                      | Internal   |
+|       48   |Gamma function error                           | Internal   |
+|       49   |Wetland error                                  | Internal   |
+|       50   |Invalid `hag_beta` error                       | External   |
+|       51   |Invalid inundation stress                      | Internal   |
+|       52   |Error writing output                           | External   |
+|       53   |Negative soil carbon error                     | Internal   |
+
 
 - **External Errors**: Caused by invalid or missing input files.
 - **Internal Errors**: Caused by issues in the LPJmL code and may require debugging.

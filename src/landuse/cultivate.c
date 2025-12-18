@@ -35,15 +35,28 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stand *cropstand;
   Irrigation *data;
   Stocks bm_inc;
-  //Real split_fert=0.5;
-  //Real fmanure_NH4=2/3;
   Pftcrop *crop;
-  Real manure;
-  Real fertil;
+  Real manure=0;
+  Real fertil=0;
   Real landfrac;
-#ifdef IMAGE
-  int nagr,s;
+#if defined CHECK_BALANCE || defined IMAGE
+  int s;
   Stand *stand;
+#endif
+#ifdef CHECK_BALANCE
+  Stocks start={0,0};
+  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_after=0;
+  foreachstand(stand,s,cell->standlist)
+  {
+    start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
+    water_before+=soilwater(&stand->soil)*stand->frac;
+  }
+#endif
+
+#ifdef IMAGE
+  int nagr;
 #endif
   vern_date20=cell->ml.cropdates[cft].vern_date20;
   landfrac=(isother) ? cell->ml.landfrac[irrigation].grass[0] : cell->ml.landfrac[irrigation].crop[cft];
@@ -66,6 +79,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     /* delete all PFTs */
     cutpfts(setasidestand,config);
     cropstand=setasidestand;
+    cropstand->soil.iswetland=setasidestand->soil.iswetland;
+#ifdef DEBUG3
+    fprintf(stdout,"cultivate HIER day: %d cft: %d type: %s landfrac: %g  setasidefrac: %g isother: %d defores.nitrogen: %g timber_harvest.n: %g iswetland: %d \n",day,cft,
+        setasidestand->type->name,landfrac,setasidestand->frac,isother,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen,cropstand->soil.iswetland);
+#endif
   }
   else
   {
@@ -73,6 +91,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand=getstand(cell->standlist,pos-1);
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
+#ifdef DEBUG3
+    fprintf(stdout,"cultivate HIER2 day: %d cft: %d type: %s landfrac: %g setasidefrac: %g  isother: %d iswetland: %d \n",day,cft,
+        setasidestand->type->name,landfrac,setasidestand->frac,isother,setasidestand->soil.iswetland);
+#endif
+
     setasidestand->frac-=landfrac;
   }
   if(cell->ml.with_tillage)
@@ -85,8 +108,23 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   data=cropstand->data;
   data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
   set_irrigsystem(cropstand,cft,npft,ncft,config);
+  if(cft==(config->rice_pft-npft))
+  {
+    cropstand->slope_mean=0;
+    cropstand->Hag_Beta=min(1,(0.06*log(tan(cropstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
+    cropstand->soil.iswetland=TRUE;
+  }
+  else
+  {
+    cropstand->Hag_Beta=min(1,(0.06*log(tan(cropstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
+    cropstand->soil.iswetland=FALSE;
+  }
   pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
   phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft,config);
+#ifdef DEBUG3
+  if(cft==config->rice_pft-npft)
+    fprintf(stdout,"cultivate A D D P F T year: %d day: %d bminc: %g cft: %d irrig: %d standfrac: %g landfrac: %g setasidfrac: %g iswetland: %d \n",year,day,pft->bm_inc.carbon,cft,irrigation,cropstand->frac,landfrac,setasidestand->frac,setasidestand->soil.iswetland);
+#endif
   bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
   bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
   if (cell->ml.manure_nr != NULL)
@@ -115,6 +153,43 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     crop = pft->data;
     crop->nfertilizer = fertil*(1-param.nfert_split_frac);
   }
+#ifdef CHECK_BALANCE
+  Real end=0;
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+ foreachstand(stand,s,cell->standlist)
+  {
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    water_after+=soilwater(&stand->soil)*stand->frac;
+  }
+  if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.001)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d   %.4f start: %.4f  end: %.3f  bm_inc.carbon: %.4f manure: %.4f\n",
+         "cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
+         __FUNCTION__,day,end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
+         start.carbon, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
+         cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
+  }
+  end=0;
+  foreachstand(stand,s,cell->standlist)
+  {
+    end+=standstocks(stand).nitrogen*stand->frac;
+  }
+  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.0001)
+  {
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n",
+         "cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g setasidestand.nitrogen: %g defores.nitrogen: %g timber_harvest.n: %g\n ",
+         __FUNCTION__,day,cft,end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac,
+         start, end,bm_inc.nitrogen,manure*cropstand->frac*param.nfert_split_frac,fertil*cropstand->frac*param.nfert_split_frac,
+        cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
+  }
+  if(fabs(water_before-water_after)>0.001)
+  {
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: day %d water_after: %g water_before: %g",
+          __FUNCTION__,day,water_after,water_before);
+  }
+
+
+#endif
 
     /*cropstand->soil.NH4[0] += manure*fmanure_NH4;
     cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;

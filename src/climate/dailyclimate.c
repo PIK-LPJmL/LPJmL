@@ -34,7 +34,7 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     daily->isdailytemp=isdaily(climate->file_temp);
     if(isdaily(climate->file_temp))
     {
-      daily->temp=climate->data.temp[cell*NDAYYEAR+day-1];
+      daily->temp=climate->data[0].temp[cell*NDAYYEAR+day-1];
       climbuf->mtemp+=daily->temp;
     }
     else
@@ -45,54 +45,55 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     daily->isdailytemp=TRUE;
     climbuf->mtemp+=daily->temp;
   }
-  if(climate->data.sun!=NULL)
-    daily->sun=isdaily(climate->file_cloud) ? climate->data.sun[cell*NDAYYEAR+day-1]
+  if(climate->data[0].sun!=NULL)
+    daily->sun=isdaily(climate->file_cloud) ? climate->data[0].sun[cell*NDAYYEAR+day-1]
                       : interpolate(getcellsun(climate,cell),month,dayofmonth);
-  if(climate->data.lwnet!=NULL)
-    daily->lwnet=isdaily(climate->file_lwnet) ? climate->data.lwnet[cell*NDAYYEAR+day-1]
+  if(climate->data[0].lwnet!=NULL)
+    daily->lwnet=isdaily(climate->file_lwnet) ? climate->data[0].lwnet[cell*NDAYYEAR+day-1]
                       : interpolate(getcelllwnet(climate,cell),month,dayofmonth);
-  if(climate->data.swdown!=NULL)
-    daily->swdown=isdaily(climate->file_swdown) ? climate->data.swdown[cell*NDAYYEAR+day-1]
+  if(climate->data[0].swdown!=NULL)
+    daily->swdown=isdaily(climate->file_swdown) ? climate->data[0].swdown[cell*NDAYYEAR+day-1]
                       : interpolate(getcellswdown(climate,cell),month,dayofmonth);
-  if(climate->data.humid!=NULL)
-    daily->humid=isdaily(climate->file_humid) ? climate->data.humid[cell*NDAYYEAR+day-1]
+  if(climate->data[0].wind!=NULL)
+  if(climate->data[0].humid!=NULL)
+    daily->humid=isdaily(climate->file_humid) ? climate->data[0].humid[cell*NDAYYEAR+day-1]
                       : interpolate(getcellhumid(climate,cell),month,dayofmonth);
-  if(climate->data.wind!=NULL)
+  if(climate->data[0].wind!=NULL)
   {
     if(isdaily(climate->file_wind))
-      daily->windspeed=climate->data.wind[cell*NDAYYEAR+day-1];
+      daily->windspeed=climate->data[0].wind[cell*NDAYYEAR+day-1];
     else
       daily->windspeed=interpolate(getcellwind(climate,cell),month,dayofmonth);
   }
-  if(climate->data.tmax!=NULL&&climate->data.tmin!=NULL) /* Tmin and Tmax available */
+  if(climate->data[0].tmax!=NULL&&climate->data[0].tmin!=NULL) /* Tmin and Tmax available */
   {
-    daily->tmax=isdaily(climate->file_tmax) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
-    daily->tmin=isdaily(climate->file_tmin) ?  climate->data.tmin[cell*NDAYYEAR+day-1] : interpolate(getcelltmin(climate,cell),month,dayofmonth);
+    daily->tmax=isdaily(climate->file_tmax) ?  climate->data[0].tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
+    daily->tmin=isdaily(climate->file_tmin) ?  climate->data[0].tmin[cell*NDAYYEAR+day-1] : interpolate(getcelltmin(climate,cell),month,dayofmonth);
   }
-  else if(climate->data.tamp!=NULL)
+  else if(climate->data[0].tamp!=NULL)
   {
-    tamp=isdaily(climate->file_tamp) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
+    tamp=isdaily(climate->file_tamp) ?  climate->data[0].tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
     daily->tmin=daily->temp-tamp*0.5;
     daily->tmax=daily->temp+tamp*0.5;
   }
-  if(climate->data.no3deposition!=NULL)
+  if(climate->data[0].no3deposition!=NULL)
   {
     if(isdaily(climate->file_no3deposition))
-      daily->no3deposition=climate->data.no3deposition[cell*NDAYYEAR+day-1];
+      daily->no3deposition=climate->data[0].no3deposition[cell*NDAYYEAR+day-1];
     else
       daily->no3deposition=interpolate(getcellno3deposition(climate,cell),month,dayofmonth);
   }
-  if(climate->data.nh4deposition!=NULL)
+  if(climate->data[0].nh4deposition!=NULL)
   {
     if(isdaily(climate->file_nh4deposition))
-      daily->nh4deposition=climate->data.nh4deposition[cell*NDAYYEAR+day-1];
+      daily->nh4deposition=climate->data[0].nh4deposition[cell*NDAYYEAR+day-1];
     else
       daily->nh4deposition=interpolate(getcellnh4deposition(climate,cell),month,dayofmonth);
   }
-  if(climate->data.lightning!=NULL)
+  if(climate->data[0].lightning!=NULL)
   {
     if(isdaily(climate->file_lightning))
-      daily->lightning=climate->data.lightning[cell*NDAYYEAR+day-1];
+      daily->lightning=climate->data[0].lightning[cell*NDAYYEAR+day-1];
     else
       daily->lightning=interpolate(getcelllightning(climate,cell),month,dayofmonth)*ndaymonth1[month];
   }
@@ -100,7 +101,7 @@ void dailyclimate(Dailyclimate *daily,    /**< */
   {
     if(isdaily(climate->file_prec))
     {
-      daily->prec=climate->data.prec[cell*NDAYYEAR+day-1];
+      daily->prec=climate->data[0].prec[cell*NDAYYEAR+day-1];
       climbuf->mprec+=daily->prec;
     }
     else
@@ -114,10 +115,10 @@ void dailyclimate(Dailyclimate *daily,    /**< */
   else
     climbuf->mprec+=daily->prec;
  
-  if(climate->data.burntarea!=NULL)
+  if(climate->data[0].burntarea!=NULL)
    {
-    daily->burntarea=isdaily(climate->file_burntarea) ? climate->data.burntarea[cell*NDAYYEAR+day-1]
-                     : climate->data.burntarea[cell*12+month] * ndaymonth1[month]; 
+    daily->burntarea=isdaily(climate->file_burntarea) ? climate->data[0].burntarea[cell*NDAYYEAR+day-1]
+                     : climate->data[0].burntarea[cell*12+month] * ndaymonth1[month];
     daily->burntarea=(daily->burntarea > 0.000001) ? daily->burntarea : 0.0;
   }
 } /* of 'dailyclimate' */

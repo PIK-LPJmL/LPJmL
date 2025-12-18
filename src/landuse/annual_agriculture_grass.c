@@ -23,6 +23,7 @@
 Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
                               int npft,             /**< number of natural pfts */
                               int ncft,             /**< number of crop PFTs */
+                              Real UNUSED(natfrac), /**< natural and wetland fraction */
                               int year,
                               Bool isdaily,         /**< daily temperature data? */
                               Bool UNUSED(intercrop),
@@ -52,7 +53,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   index=agtree(ncft,config->nwptype)+irrigation->pft_id-npft+config->nagtree+irrigation->irrigation*getnirrig(ncft,config);
   foreachpft(pft, p, &stand->pftlist)
   {
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("PFT:%s fpc=%g\n", pft->par->name, pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n", pft->par->name,
            pft->bm_inc.carbon, vegc_sum(pft), soilcarbon(&stand->soil));
@@ -91,7 +92,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
       light_grass(&stand->soil.litter,pft,excess);
     }
 
-  if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf))
+  if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
   {
     if(!present[p])
      addpft(stand,config->pftpar+irrigation->pft_id,year,0,config);
@@ -100,7 +101,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
 
   fpc_total = fpc_sum(fpc_type, config->ntypes, &stand->pftlist);
   foreachpft(pft, p, &stand->pftlist)
-    if (establish(stand->cell->gdd[pft->par->id], pft->par, &stand->cell->climbuf))
+    if (establish(stand->cell->gdd[pft->par->id], pft->par, &stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       stocks=establishment_grass(pft, fpc_total, fpc_type[pft->par->type], n_est);
       flux_estab.carbon+=stocks.carbon;

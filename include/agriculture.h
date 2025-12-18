@@ -21,15 +21,16 @@ extern Standtype agriculture_stand;
 extern Standtype managedforest_stand;
 extern Standtype setaside_rf_stand;
 extern Standtype setaside_ir_stand;
+extern Standtype setaside_wetland_stand;
 extern Standtype kill_stand;
 
 extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,int,
                               Real,
                               Real,Real,Real,Real,Real,int,int,int,
                               Bool,Real,const Config *);
-extern Bool annual_agriculture(Stand *,int,int,int,Bool,Bool,const Config *);
+extern Bool annual_agriculture(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
-extern Bool annual_setaside(Stand *,int,int,int,Bool,Bool,const Config *);
+extern Bool annual_setaside(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
 extern void output_gbw_agriculture(Output *,const Stand *,Real,Real,Real,Real,
                                    const Real[LASTLAYER],const Real[LASTLAYER],Real,Real,int,int,

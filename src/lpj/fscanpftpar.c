@@ -166,6 +166,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   for(n=0;n<count;n++)
     config->pftpar[n].id=UNDEF;
   isbiomass=isagtree=iscrop=iswp=FALSE;
+  config->rice_pft=NOT_FOUND;
   npft=0;
   for(n=0;n<count;n++)
   {
@@ -196,7 +197,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     }
     pft->name=strdup(s); /* store PFT name */
     checkptr(pft->name);
-    npft++;
+    fscanpftbool(verb,item,&pft->peatland,pft->name,"peatland_pft");
     if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {
       if(verb)
@@ -276,6 +277,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         break;
       case ANNUAL_CROP:
         iscrop=TRUE;
+        if(!strcmp(pft->name,"rice"))
+          config->rice_pft=npft;
         break;
       case WP:
         iswp=TRUE;
@@ -377,11 +380,10 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftreal(verb,item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
       if(config->fdi==WVPD_INDEX)
         fscanpftreal(verb,item,&pft->vpd_par,pft->name,"vpd_par");
-      fscanpftemissionfactor(verb,item,&pft->emissionfactor,
-                             pft->name,"emission_factor");
     }
     else
       pft->fuelbulkdensity=0;
+    fscanpftemissionfactor(verb,item,&pft->emissionfactor,pft->name,"emission_factor");
     fscanpftreal(verb,item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
     fscanpftreal(verb,item,&pft->aprec_min,pft->name,"aprec_min");
     if(config->fire!=NO_FIRE)
@@ -436,6 +438,10 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,item,&pft->fnpp_nrecovery,pft->name,"fnpp_nrecovery");
     fscanpftreal(verb,item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,item,&pft->roughness,pft->name,"roughness_length");
+    fscanpftreal(verb,item,&pft->inun_thres,pft->name,"ist_m");
+    fscanpftreal(verb,item,&pft->inun_dur,pft->name,"idt_d");
+    pft->inun_thres*=1000;
+    fscanpftreal(verb,item,&pft->alpha_e,pft->name,"alpha_e");
     fscanpftirrig2(verb,item,&pft->irrig_threshold,pft->name,"irrig_threshold");
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
@@ -451,6 +457,14 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     /* Now scan PFT-specific parameters and set specific functions */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
+    npft++;
   } /* of for(n=0;n<count;n++) */
+  if(config->withlanduse && config->rice_pft==NOT_FOUND)
+  {
+    if(verb)
+      fprintf(stderr,"WARNING043: No rice CFT found in PFT parameter array.\n");
+    if(config->pedantic)
+      return TRUE;
+  }
   return FALSE;
 } /* of 'fscanpftpar' */

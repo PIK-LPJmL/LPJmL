@@ -21,8 +21,29 @@ Real soilwater(const Soil *soil /**< pointer to soil data */
 {
   Real totw;
   int l;
-  totw=soil->snowpack+soil->rw_buffer+soil->litter.agtop_moist;
+  totw=soil->snowpack+soil->litter.agtop_moist;
   foreachsoillayer(l)
     totw+=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]+soil->wpwps[l];
+  totw+=soil->rw_buffer+soil->wa;
   return totw;
 } /* of 'soilwater' */
+
+Real rootwater(const Soil *soil /**< pointer to soil data */
+              )                 /** \return soil water (mm) */
+{
+  Real totw=0;
+  int l;
+  forrootsoillayer(l)
+    totw+=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]+soil->wpwps[l];
+  return totw;
+}
+
+Real satwater(const Soil *soil /**< pointer to soil data */
+              )                 /** \return soil water (mm) */
+{
+  Real totw=0;
+  int l;
+  forrootsoillayer(l)
+    totw+=soil->wsats[l];
+  return totw;
+}

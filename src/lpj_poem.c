@@ -35,7 +35,6 @@
  */
 
 #include <time.h>
-#include <math.h>
 #include <assert.h>
 #include "lpj.h"
 #include "grass.h"
@@ -48,6 +47,7 @@
 #include "agriculture.h"
 #include "agriculture_tree.h"
 #include "agriculture_grass.h"
+#include "wetland.h"
 
 #include "cpl.h"
 
@@ -56,7 +56,7 @@
 //#endif
 
 #define NTYPES 3 /*< number of plant functional types: grass, tree, crop, bioenergy */
-#define NSTANDTYPES 13 /*< number of stand types / land use types as defined in landuse.h */
+#define NSTANDTYPES 15 /*< number of stand types / land use types as defined in landuse.h */
 
 static const char *progname;
 
@@ -70,8 +70,7 @@ static int npft;           /*< Number of natural PFT's */
 static int ncft;           /*< Number of crop PFT's */
 
 /// from iterate()
-static Real co2,cflux_total;
-static Flux flux;
+static Real co2,ch4,pch4;
 static int year, landuse_year, wateruse_year;
 
 static double glon_min, glon_max, glat_min, glat_max;
@@ -415,6 +414,7 @@ void lpj_init_
     fprintf(stderr,"WARNING018: Arguments listed after configuration filename, will be ignored.\n");
 
   standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
@@ -471,6 +471,8 @@ void lpj_init_
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
+  pch4 = param.pch4*1e-3;
+  ch4 = pch4*1e15*2.123; /* convert ppm to gC */
 
   /* open output files */
   output=fopenoutput(grid,NOUT,&config);
@@ -1197,9 +1199,19 @@ void lpj_update_
       //getclimate(input.climate,grid,input.climate->firstyear+(year-config.firstyear+config.nspinup) % config.nspinyear,&config);
 //#endif
       //else
+      if(config.with_dynamic_ch4==PRESCRIBED_CH4)
+      {
+        if(getch4(input.climate,&ch4,year,&config)) /* get atmospheric CH4 concentration */
+        {
+          if(isroot(config))
+            fprintf(stderr,"ERROR015: Invalid year %d in getch4().\n",year);
+          abort();
+        }
+        pch4=ch4*1e-3; /*convert to ppm*/
+      }
       {
         /* read climate from files */
-          if(getclimate(input.climate,grid,year,&config))
+          if(getclimate(input.climate,grid,year,1,&config))
           {
             fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
             fflush(stderr);
@@ -1300,7 +1312,7 @@ void lpj_update_
                 co2 = tmp_co2[cell];
               }
               /******* now do the MAIN work ****************************************         \n**/
-              update_daily_cell(grid+cell,cell,&daily,co2,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
+              update_daily_cell(grid+cell,cell,&daily,co2,pch4,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
               //grid[cell].output.daily.sun=daily.sun; not used for FMS coupling
 
 
@@ -1462,7 +1474,7 @@ void lpj_update_
 
         if (silvester)
         { /* from iterateyear() */
-          updateannual_grid(output,grid,input.landcover,year,npft,ncft,intercrop,daily.isdailytemp,&config);
+          updateannual_grid(output,grid,input.landcover,&ch4,&pch4,year,npft,ncft,intercrop,daily.isdailytemp,&config);
           for(cell=0;cell<config.ngridcell;cell++)
           {
             grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;

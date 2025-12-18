@@ -27,14 +27,15 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
   Stocks flux_estab={0,0};
   Bool alloc_today[2]={FALSE,FALSE};
   const Pftcroppar *croppar;
-  int cft,s,s2;
+  int cft,s,s2,s3;
   int earliest_sdate;
   int cft_other;
   Bool wtype;
 
   s=findlandusetype(cell->standlist,SETASIDE_RF);
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
-  if (s!=NOT_FOUND||s2!=NOT_FOUND)
+  s3=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+  if (s!=NOT_FOUND||s2!=NOT_FOUND||s3!=NOT_FOUND)
   {
     if(config->others_to_crop)
        cft_other=(fabs(cell->coord.lat)>30) ? config->cft_temp : config->cft_tropic;

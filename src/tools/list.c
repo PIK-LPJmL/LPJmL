@@ -60,9 +60,9 @@ int dellistitem(List *list, /**< pointer to list */
   /* does not check for empty list or index out of range if SAFE not defined */
 #ifdef SAFE
   if(isempty(list))
-    fail(IS_EMPTY_ERR,TRUE,"list is empty in dellistitem()");
+    fail(IS_EMPTY_ERR,TRUE,TRUE,"list is empty in dellistitem()");
   if(index<0 || index>=list->n)
-    fail(OUT_OF_RANGE_ERR,TRUE,"index=%d out of range in dellistitem()",index);
+    fail(OUT_OF_RANGE_ERR,TRUE,TRUE,"index=%d out of range in dellistitem()",index);
 #endif
   list->n--;
   list->data[index]=list->data[list->n];

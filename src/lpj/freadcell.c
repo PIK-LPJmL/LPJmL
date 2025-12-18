@@ -53,35 +53,49 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
   readreal(file,"dmass_lake",&cell->discharge.dmass_lake);
   if(config->river_routing)
   {
-#ifdef IMAGE
-    readreal(file,"dmass_gw",&cell->discharge.dmass_gw); // groundwater mass
-#endif
-    readreal(file,"dfout",&cell->discharge.dfout);
-    readreal(file,"dmass_river",&cell->discharge.dmass_river);
-    readreal(file,"dmass_sum",&cell->discharge.dmass_sum);
+    if(config->river_routing_restart)
+    {
+      readreal(file,"dmass_gw",&cell->discharge.dmass_gw); // groundwater mass
+      readreal(file,"dfout",&cell->discharge.dfout);
+      readreal(file,"dmass_river",&cell->discharge.dmass_river);
+      readreal(file,"dmass_sum",&cell->discharge.dmass_sum);
+      cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
-    readreal(file,"laketemp",&cell->laketemp);
+      readreal(file,"laketemp",&cell->laketemp);
 #endif
-    cell->discharge.queue=freadqueue(file,"queue");
-    if(cell->discharge.queue==NULL)
-    {
-      fprintf(stderr,"ERROR254: Cannot read queue data.\n");
-      return TRUE;
-    }
-    if(bstruct_readbool(file,"dam",&cell->ml.dam))
-      return TRUE;
-    if(cell->ml.dam)
-    {
-      if(freadresdata(file,"resdata",cell))
+      cell->discharge.queue=freadqueue(file,"queue");
+      if(cell->discharge.queue==NULL)
       {
-        fprintf(stderr,"ERROR254: Cannot read reservoir data.\n");
+        fprintf(stderr,"ERROR254: Cannot read queue data.\n");
         return TRUE;
       }
+      if(bstruct_readbool(file,"dam",&cell->ml.dam))
+        return TRUE;
+      if(cell->ml.dam)
+      {
+        if(freadresdata(file,"resdata",cell))
+        {
+          fprintf(stderr,"ERROR254: Cannot read reservoir data.\n");
+          return TRUE;
+        }
+      }
+    }
+    else
+    {
+      cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
+#ifdef COUPLING_WITH_FMS
+      cell->laketemp=0;
+#endif
+      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=cell->NO3_lateral=0.0;
+      cell->ml.dam=FALSE;
+      cell->discharge.queue=NULL;
     }
   }
   if(!cell->skip)
   {
     /* cell has valid soilcode */
+    readreal(file,"lateral_water",&cell->lateral_water);
+    readreal(file,"NO3_lateral",&cell->NO3_lateral);
     if(freadstocksarray(file,"estab_storage_tree",cell->balance.estab_storage_tree,2))
       return TRUE;
     if(freadstocksarray(file,"estab_storage_grass",cell->balance.estab_storage_grass,2))
@@ -109,8 +123,12 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
     }
+    readreal(file,"ground_st",&cell->ground_st);
+    readreal(file,"ground_st_am",&cell->ground_st_am);
     readreal(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
+    readreal(file,"cropfrac_wl",&cell->ml.cropfrac_wl);
     readreal(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
+    cell->discharge.dmass_gw=(cell->ground_st+cell->ground_st_am)*cell->coord.area;;
     if(freadclimbuf(file,"climbuf",&cell->climbuf,ncft))
     {
       fprintf(stderr,"ERROR254: Cannot read climbuf data.\n");
@@ -174,6 +192,11 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
     if(bstruct_readintarray(file,"gs",cell->ml.gs,2*ncft))
     {
       fprintf(stderr,"ERROR254: Cannot read gs data.\n");
+      return TRUE;
+    }
+    if (freadhydrotope(file,"hydrotope", &cell->hydrotopes))
+    {
+      fprintf(stderr,"ERROR254: Cannot read hydrotope data.\n");
       return TRUE;
     }
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
