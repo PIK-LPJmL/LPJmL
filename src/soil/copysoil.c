@@ -45,9 +45,6 @@ void copysoil(Soil *dst,       /**< destination */
 #ifdef MICRO_HEATING
   dst->litter.decomC=src->litter.decomC;
 #endif
-  dst->alag=src->alag;
-  dst->amp=src->amp;
-  dst->meanw1=src->meanw1;
   dst->snowpack=src->snowpack;
   dst->snowdens = src->snowdens;
   dst->snowheight = src->snowheight;
@@ -88,7 +85,6 @@ void copysoil(Soil *dst,       /**< destination */
     dst->ice_depth[i]=src->ice_depth[i];
     dst->freeze_depth[i]=src->freeze_depth[i];
     dst->ice_pwp[i]=src->ice_pwp[i];
-    dst->state[i]=src->state[i];
     dst->perc_energy[i]=src->perc_energy[i];
     dst->wpwp[i]=src->wpwp[i];
     dst->wfc[i]=src->wfc[i];
