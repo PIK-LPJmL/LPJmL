@@ -360,8 +360,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=printsim(file,len,&count,"dynamic CH4");
   }
   len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
-  if(config->permafrost)
-    len=printsim(file,len,&count,"permafrost");
   if (config->isanomaly)
   {
     if(config->time_shift==0)

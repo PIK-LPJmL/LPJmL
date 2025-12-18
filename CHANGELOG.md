@@ -19,6 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
@@ -45,6 +46,25 @@ of `major.minor.patch` with
 
 - Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
 - Typos in help text in `regridclm.c` corrected.
+
+
+## [6.0.1] - 2025-12-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
+
+### Changed
+
+- Declaration of `mixsoilenergy()` moved from `setaside.c` to `landuse.h`.
+
+### Removed
+
+- Unused functions `snow.old()`, `soiltemp()` and related functions removed.
+- Setting without permafrost removed
+- Soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
+>>>>>>> eac2d8b8f3cd7bcdadfe8c86e75783f5280a7d6b
 
 
 ## [6.0.0] - 2025-11-25
@@ -77,7 +97,6 @@ of `major.minor.patch` with
   - boolean flag `"natNBP_only"` defined to calculate NBP from natural vegetaton only
   - optional input for ice cover can be read by setting `"with_glaciers" : true`
   - optional reading in of climate anomalies for CLIMBER applications, enabled by setting `"anomaly" : true`.
-
 
 ### Changed
 

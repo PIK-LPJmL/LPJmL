@@ -53,7 +53,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->socfraction[l]=newvec(Real,ntotpft);
     check(soil->socfraction[l]);
   }
-  soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
+  soil->YEDOMA=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   soil->snowpack=soil->icefrac = 0.0;
   soil->decomp_litter_pft=newvec(Stocks,ntotpft);
   checkptr(soil->decomp_litter_pft);
@@ -78,7 +78,6 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->ice_depth[l]=0;
     soil->freeze_depth[l]=0;
     soil->ice_pwp[l]=0;
-    soil->state[l]=NOSTATE;
     soil->perc_energy[l]=0;
     soil->whcs[l]=0;
     soil->wi_abs_enth_adj[l]=0.0;
