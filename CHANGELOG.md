@@ -63,7 +63,7 @@ of `major.minor.patch` with
 - Filename for population density input corrected in `regridlpj`.
 - Header files added for unit tests to compile tests successfully.
 - Function `albedo_crop.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
-- Misplaced check for NULL pointer for wind removed in `dailyclimate.c`
+- Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
 - Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
 
 
