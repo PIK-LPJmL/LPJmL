@@ -52,7 +52,7 @@ of `major.minor.patch` with
 - `setupannual_grid.c` corrected to compile with `-DIMAGE -DCOUPLED` flag.
 - Error message for different datatypes corrected in `lpjcat.c`.
 - Variables initialized to zero and NULL in `phenology_gsi.c`, `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
-- Man page for `json2restart` corrected.
+- Man page for `json2restart` and `restart2yaml` corrected.
 - Missing option `-nooutput` added to man page of `lpjfiles`.
 - Help text for `-h` option of `printclm` and `regridclm` corrected.
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
