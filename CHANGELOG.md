@@ -58,11 +58,10 @@ of `major.minor.patch` with
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
 - Double entry of `getlag.$O` removed in `src/soil/Makefile`.
 - Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
-- Function `fwritecell.c` fixed to compile with `-DCOUPLING_WITH_FMS` flag.
 - Missing deallocation of `items` array added in `sendhash.c`.
 - Filename for population density input corrected in `regridlpj`.
 - Header files added for unit tests to compile tests successfully.
-- Function `albedo_crop.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
+- Function `albedo_crop.c` and `fwritecell.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
 - Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
 - Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
 
@@ -446,8 +445,6 @@ of `major.minor.patch` with
 
 
 ## [5.9.21] - 2025-03-13
-
-## [5.9.21] - 2025-01-31
 
 ### Contributors
 
