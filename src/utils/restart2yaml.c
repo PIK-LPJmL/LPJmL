@@ -63,9 +63,9 @@ int main(int argc,char **argv)
         printf(USAGE,progname);
         printf("\nArguments:\n"
                "-h,--help     print this help text\n"
-               "-name         key print only variables/array/structures with name key\n"
+               "-name key     print only variables/array/structures with name key\n"
                "-first        stop at first occurrence of key specified by the -name option\n"
-               "-json         output format is set to JSON, default ist YAML\n"
+               "-json         output format is set to JSON, default is YAML\n"
                "-noindent     disable indentations in JSON files, default is 2 spaces per level\n"
                "-invalid2null set all NaN and infinite values to null\n"
                "-d n          set the number of decimal places for float/double values, default is 16\n"
