@@ -9,7 +9,7 @@
 # Arguments (use name=value format):
 #   sim_path   : Path for simulation results (required)
 #   ntasks     : Number of parallel tasks (default: 512)
-#   blocking   : Cores per task to block (default: 128)
+#   blocking   : Cores per task to block (default: 128, or "unlimited")
 #   model_path : Path to model binary (default: ../)
 #   qos        : Quality of service (optional, default: "short")
 
@@ -36,8 +36,15 @@ parse_args <- function(args) {
       value <- parts[2]
 
       if (key %in% names(parsed)) {
-        if (key %in% c("ntasks", "blocking")) {
+        if (key == "ntasks") {
           parsed[[key]] <- as.integer(value)
+        } else if (key == "blocking") {
+          # Handle blocking as either integer or "unlimited"
+          if (tolower(value) == "unlimited") {
+            parsed[[key]] <- "unlimited"
+          } else {
+            parsed[[key]] <- as.integer(value)
+          }
         } else {
           parsed[[key]] <- value
         }
@@ -62,7 +69,7 @@ if (is.null(parsed_args$sim_path)) {
     "(required)\n",
     "  ntasks     : Number of tasks for parallel execution",
     "(optional, default: 512)\n",
-    "  blocking   : Number of cores per task to be blocked",
+    "  blocking   : Number of cores per task to be blocked or 'unlimited'",
     "(optional, default: 128)\n",
     "  model_path : Path to model binary (optional, default: ../)"
   ))
