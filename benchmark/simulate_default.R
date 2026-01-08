@@ -91,10 +91,19 @@ runs <- tibble::tibble(
   landuse = c(NA, NA, "no", "no", NA, NA)
 )
 
+outputvars_benchmark <- c("vegc", "soilc", "litc", "vegn", "soiln", "soilnh4",
+                        "soilno3", "leaching",  "n_immo", "n_mineralization",
+                        "n_volatilization", "n2_emis", "n2o_denit", "n2o_nit",
+                        "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
+                        "nbp", "rh", "evap", "transp", "interc", "runoff",
+                        "fpc", "pft_harvestc")
+
 configs <- write_config(
   x = runs,
   model_path = model_path,
-  sim_path = sim_path
+  sim_path = sim_path,
+  output_list = outputvars_benchmark,
+  output_list_timestep = "annual"
 )
 
 submitted_runs <- submit_lpjml(
