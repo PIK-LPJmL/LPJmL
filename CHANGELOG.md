@@ -64,6 +64,7 @@ of `major.minor.patch` with
 - Function `albedo_crop.c` and `fwritecell.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
 - Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
 - Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
+- Missing dependency on `climate.h` add to Makefile in `src/landuse`.
 
 
 ## [6.0.1] - 2025-12-18
