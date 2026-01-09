@@ -52,9 +52,9 @@ of `major.minor.patch` with
 - `setupannual_grid.c` corrected to compile with `-DIMAGE -DCOUPLED` flag.
 - Error message for different datatypes corrected in `lpjcat.c`.
 - Variables initialized to zero and NULL in `phenology_gsi.c`, `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
-- Man page for `json2restart` and `restart2yaml` corrected.
+- Man page for `lpjml`, `lpjcheck`, `lpjrun`, `lpjfiles`, `json2restart` and `restart2yaml` corrected.
 - Missing option `-nooutput` added to man page of `lpjfiles`.
-- Help text for `-h` option of `restart2yaml`, `printclm` and `regridclm` corrected.
+- Help text for `-h` option of `lpjfiles`, `restart2yaml`, `printclm` and `regridclm` corrected.
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
 - Double entry of `getlag.$O` removed in `src/soil/Makefile`.
 - Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
@@ -64,7 +64,7 @@ of `major.minor.patch` with
 - Function `albedo_crop.c` and `fwritecell.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
 - Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
 - Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
-- Missing dependency on `climate.h` add to Makefile in `src/landuse`.
+- Missing dependency on `climate.h` added to Makefile in `src/landuse`.
 
 
 ## [6.0.1] - 2025-12-18
