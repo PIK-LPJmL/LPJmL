@@ -137,9 +137,6 @@ extern Real fbd_fac[NFUELCLASS];
 
 /* Definition of datatypes */
 
-typedef enum {NOSTATE,BELOW_T_ZERO,AT_T_ZERO,ABOVE_T_ZERO,FREEZING,
-              THAWING} Soilstate;
-
 typedef struct
 {
   Real fast;       /**< fast-decomposing component */
@@ -244,7 +241,6 @@ typedef struct
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
 #endif
-  Real alag,amp,meanw1;
   Real snowpack;
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
@@ -271,7 +267,6 @@ typedef struct
   Real bulkdens[NSOILLAYER];     /**<  bulk density of soil [kg/m3]*/
   Real df_tillage[NTILLLAYER];
   Real beta_soil[NSOILLAYER];
-  short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
   Real fastfrac;
@@ -315,7 +310,6 @@ struct Dailyclimate; /* forward declaration */
  * NOTE: initsoiltemp() in cell.h */
 
 extern int addlitter(Litter *,const struct Pftpar *);
-extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern void soil_status(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
@@ -339,9 +333,7 @@ extern FILE *fopensoilcode(const Filename *,Map **,Bool *,size_t *,Type *,unsign
 extern int *getsoilmap(Map *,const Config *);
 extern Bool fwritesoil(Bstruct,const char *,const Soil *,int);
 extern Bool fwritelitter(Bstruct,const char *,const Litter *);
-extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,const Netcdf_config *,unsigned int,Bool);
-extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_agtop_sum(const Litter *);
 extern Real litter_agtop_sum_n(const Litter *);
@@ -355,24 +347,18 @@ extern Stocks littersom_nomethane(Stand *,const Real [NSOILLAYER], Real,int,int,
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
-extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real,Real *);
-extern Real snow_old(Real *,Real *,Real *,Real);
-extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif
-extern Real soiltemp_lag(const Soil *,const Climbuf *);
 extern Real soilcarbon(const Soil *);
 extern Real soilcarbon_slow(const Soil *);
 extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
 extern Real rootwater(const Soil *);
 extern Real satwater(const Soil *);
-extern Real soilconduct(const Soil *,int,Bool);
-extern Real soilheatcap(const Soil *,int);
 extern void apply_heatconduction_of_a_day(Uniform_temp_sign, Real *, const Real *, Real, const Soil_thermal_prop *);
 extern void calc_soil_thermal_props(Uniform_temp_sign, Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
 extern void compute_mean_layer_temps_from_enth(Real *, const Real *,const  Soil_thermal_prop *);
@@ -380,7 +366,6 @@ extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real
 extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
 extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
-extern void soilice2moisture(Soil *, Real *,int);
 extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *,const Real *,const Real *, int);
 extern Real soilmethane(const Soil *);
 extern Real temp_response(Real, Real);

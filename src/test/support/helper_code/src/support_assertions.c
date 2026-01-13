@@ -38,9 +38,6 @@ void no_nas_should_have_been_generated_in_soil(Soil soil)
   }
 
   TEST_ASSERT_FALSE(isnan(soil.w_evap));
-  TEST_ASSERT_FALSE(isnan(soil.alag));
-  TEST_ASSERT_FALSE(isnan(soil.amp));
-  TEST_ASSERT_FALSE(isnan(soil.meanw1));
   TEST_ASSERT_FALSE(isnan(soil.snowpack));
   TEST_ASSERT_FALSE(isnan(soil.snowheight));
   TEST_ASSERT_FALSE(isnan(soil.snowfraction));

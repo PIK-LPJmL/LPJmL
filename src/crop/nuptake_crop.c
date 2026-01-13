@@ -45,11 +45,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real nc_ratio;
   int l,nirrig,nnat,index;
   soil=&pft->stand->soil;
-  if(config->permafrost)
-    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
-  else
-    forrootsoillayer(l)
-      rootdist_n[l]=pft->par->rootdist[l];
+  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
   index=(pft->stand->type->landusetype==AGRICULTURE) ? pft->par->id-npft : rothers(ncft);
