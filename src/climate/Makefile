@@ -22,7 +22,7 @@ OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
           addanomaly_climate.$O readdata.$O readintdata.$O\
           openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O\
-          opendata_seq.$O openclmdata.$O realdata.$O getrealdata.$O
+          opendata_seq.$O openclmdata.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -44,12 +44,6 @@ $(OBJS): $(HDRS)
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
-
-realdata.$O: $(INC)/realdata.h realdata.c
-	$(CC) $(CFLAGS) -I$(INC) -c realdata.c
-
-getrealdata.$O: $(INC)/realdata.h getrealdata.c
-	$(CC) $(CFLAGS) -I$(INC) -c getrealdata.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)
