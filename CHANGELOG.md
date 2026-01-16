@@ -38,6 +38,8 @@ of `major.minor.patch` with
 - Number of spinup years changed from 4000 to 3799 in `lpjml_config.cjson` in order to get bit-identical results.
 - Test files for unit test and shell scripts added to tar and zip file in `Makefile`.
 - First year of climate data set instead of first simulation year used in `initsoiltemp.c`.
+- Unused argument `ncft` removed from `check_stand_fracs.c` and `update_wetland.c`.
+- Redundant calculation of stand fraction sum removed in `check_stand_fracs.c`.
 
 ### Removed
 
