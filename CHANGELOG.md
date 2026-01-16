@@ -67,6 +67,7 @@ of `major.minor.patch` with
 - Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
 - Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
 - Missing dependency on `climate.h` added to Makefile in `src/landuse`.
+- Double occurrence of `"outputyear"` removed in `lpjml_config_pnv.cjson`.
 
 
 ## [6.0.1] - 2025-12-18
