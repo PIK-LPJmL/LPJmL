@@ -60,7 +60,6 @@ of `major.minor.patch` with
 - Missing option `-nooutput` added to man page of `lpjfiles`.
 - Help text for `-h` option of `lpjfiles`, `restart2yaml`, `printclm` and `regridclm` corrected.
 - Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
-- Double entry of `getlag.$O` removed in `src/soil/Makefile`.
 - Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
 - Missing deallocation of `items` array added in `sendhash.c`.
 - Filename for population density input corrected in `regridlpj`.
