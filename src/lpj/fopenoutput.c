@@ -143,8 +143,8 @@ static void openfile(Outputfile *output,const Cell grid[],
                 header.scalar=0.01;
                 if(isfloatcoord(config->resolution.lon*0.5,0.01) || isfloatcoord(config->resolution.lat*0.5,0.01))
                 {
-                  fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid in '%s'.\n",
-                          config->resolution.lat,config->resolution.lon,filename);
+                  fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g in '%s'.\n",
+                          config->resolution.lat,config->resolution.lon,header.scalar,filename);
                   if(config->pedantic)
                   {
                     fclose(output->files[config->outputvars[i].id].fp.file);
