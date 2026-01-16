@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 6.0.1
+|_____|_|   \___/|_| |_| |_|_____| Version 6.0.2
 
 
-Installation of LPJmL C Version 6.0.1
+Installation of LPJmL C Version 6.0.2
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-6.0.1.tar.gz|tar -xf -
+gzip -cd lpjml-6.0.2.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -111,6 +111,7 @@ sudo apt-get install libudunits2-dev
 sudo apt-get install libjson-c-dev
 and optionally the MPICH parallel library:
 sudo apt-get install mpich
+sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev
 
 Then LPJmL can be configured via
 
