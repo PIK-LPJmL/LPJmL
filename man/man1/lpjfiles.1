@@ -3,7 +3,7 @@
 lpjfiles \- Prints list of input/output files of LPJmL
 .SH SYNOPSIS
 .B lpjfiles
-[\-h] [\-v] [\-noinput] [-nopp] [-pp cmd] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-noinput] [\-nooutput] [-nopp] [-pp cmd] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -19,6 +19,9 @@ Print LPJmL version.
 \-noinput
 Do not list input data files.
 .TP
+\-nooutput
+Do not list output data files.
+.TP
 \-nopp
 Disabling preprocessing of configuration file by \fBcpp\fP.
 .TP
@@ -30,6 +33,9 @@ Set the output directory path. The path is added to the output filenames if they
 .TP
 \-inpath \fIdir\fP
 Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+.TP
+\-restartpath \fIdir\fP
+Set the restart directory path. The path is added to the restart filenames if they do not contain an absolute path.
 .TP
 \-Dmacro[=value]
 Define macro for the preprocessor of the configuration file.

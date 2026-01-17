@@ -46,6 +46,7 @@ void sendhash(const Hash hash, /**< pointer to hash */
     MPI_Send(&data,sizeof(data),MPI_BYTE,task,MSGTAG,comm);
     MPI_Send(items[i].key,data.len,MPI_BYTE,task,MSGTAG,comm);
   }
+  free(items);
 } /* of 'sendhash' */
 
 void receivehash(Hash hash,    /**< pointer to hash */
