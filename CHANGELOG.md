@@ -20,7 +20,7 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
-## [6.0.2] - 2026-01-16
+## [6.0.2] - 2026-01-17
 
 ### Contributors
 
