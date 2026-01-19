@@ -31,11 +31,13 @@
 
 void test_writename(void)
 {
+  char *filename;
   String s;
   int i,value;
   Bool rc;
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   for(i=0;i<=N;i++)
   {
@@ -45,7 +47,7 @@ void test_writename(void)
   }
   rc=bstruct_finish(bstr);
   TEST_ASSERT_EQUAL_INT(FALSE,rc);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   for(i=0;i<=N;i++)
   {
@@ -55,5 +57,5 @@ void test_writename(void)
     TEST_ASSERT_EQUAL_INT(i,value);
   }
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

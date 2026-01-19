@@ -64,8 +64,8 @@ int main(int argc,char **argv)
         printf(USAGE
                "\nArguments:\n"
                "-h,--help    print this help text\n"
-               "-v,--version print LPJml versions\n"
-               "-metafle     files are JSON metafiles,\n"
+               "-v,--version print LPJml version\n"
+               "-metafile    files are JSON metafiles,\n"
                "             additional JSON file is written\n"
                "-size4       size of CLM input data is set to 4 bytes\n"
                "-byte        size of CLM input data is set to 1 byte\n"

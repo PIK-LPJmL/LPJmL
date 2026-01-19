@@ -30,15 +30,14 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
   Stand* stand;
   Real nsoilmeanyears;
   nsoilmeanyears=min(30,climate->file_temp.nyear);
+  startyear=climate->file_temp.firstyear;
   if (config->isanomaly)
   {
-    startyear=climate->file_temp.firstyear;
     index=(config->delta_year>1) ? 3 : 1;
   }
   else
   {
     index=0;
-    startyear = (config->sim_id == LPJ || config->sim_id == LPJML) ? config->firstyear : 1901;
   }
   for (year = startyear; year < startyear + nsoilmeanyears; ++year)
   {

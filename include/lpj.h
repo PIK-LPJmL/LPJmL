@@ -98,7 +98,6 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "cell.h"
 #include "tree.h"
 #include "biomass_tree.h"
-#include "landuse.h"
 #include "woodplantation.h"
 #include "biomes.h"
 
@@ -128,9 +127,6 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 /* Declaration of variables */
 
 extern char *lpj_usage;
-#ifdef USE_TIMING
-extern double tread,twrite;         /* timing of read/write of restart file */
-#endif
 
 /* Declaration of functions */
 

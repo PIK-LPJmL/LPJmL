@@ -39,6 +39,7 @@
 
 void test_restart(void)
 {
+  char *filename;
   int i,size;
   struct
   {
@@ -52,7 +53,8 @@ void test_restart(void)
     float vec[2];
   } data1={1,2.0,{3.0,4.0},{7.0,8.0}},data2={};
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writeint(bstr,"a",data1.a);
   bstruct_writefloat(bstr,"b",data1.b);
@@ -65,7 +67,7 @@ void test_restart(void)
     bstruct_writefloat(bstr,NULL,data1.vec[i]);
   bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&data2.a);
   TEST_ASSERT_EQUAL_INT(data1.a,data2.a);
@@ -84,5 +86,5 @@ void test_restart(void)
   TEST_ASSERT_EQUAL_FLOAT_ARRAY(data1.vec,data2.vec,2);
   bstruct_readendarray(bstr,"vec");
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

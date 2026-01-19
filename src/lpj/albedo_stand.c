@@ -17,9 +17,6 @@
 
 #define c_albAntarctica  0.7
 #define c_roughness      0.06 /* Roughness height of vegetation below the canopy. Source: FOAM/LPJ */
-#define c_albedo_bare_soil  0.31 /* albedo of the bare soil as used by Gascoin et al 2009 */
-#define c_albedo_wet_soil  0.15  /* see above */
-#define decay_alb_moist  12.7    /* Describes how fast the moisture dependence is */
 
 Real albedo_stand(const Stand *stand /**< pointer to stand */
                  )             /** \return albedo (0..1) */
