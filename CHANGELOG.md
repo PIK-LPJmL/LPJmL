@@ -34,6 +34,7 @@ of `major.minor.patch` with
 
 - Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
 - Output `"sun"` and `"sun_image"` removed.
+- Unused file `nooutput_gbw.c` and `update_monthly.c` removed.
 
 ### Fixed
 
@@ -603,7 +604,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+- Missing dependency on `getbuild.c` for target `lpjml` added in `src/Makefile`.
 - `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
 - Typos in error messages in `filesexist.c` and `cdf2soil.c`fixed.
 - Missing check for open file added to `joingrid.c`.
