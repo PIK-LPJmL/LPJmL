@@ -25,7 +25,7 @@ of `major.minor.patch` with
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de) 
 
-## Changed
+### Changed
 
 - Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
 - Wait for coupled program to finish added in slurm script.
