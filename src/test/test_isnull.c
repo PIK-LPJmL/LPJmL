@@ -34,18 +34,20 @@
 
 void test_isnull(void)
 {
+  char *filename;
   int i,size;
   int a1=1,a2=0;
   Bool rc;
   float b1=2,b2=0;
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writeint(bstr,"a",a1);
   bstruct_writenull(bstr,"c");
   bstruct_writefloat(bstr,"b",b1);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",0);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   rc=bstruct_isnull(bstr,"a");
   TEST_ASSERT_EQUAL_INT(rc,FALSE);
@@ -56,5 +58,5 @@ void test_isnull(void)
   rc=bstruct_isnull(bstr,"c");
   TEST_ASSERT_EQUAL_INT(TRUE,rc);
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

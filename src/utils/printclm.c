@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-h] [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "\nUsage: %s [-h] [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] clmfile ...\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 #define NO_HEADER 1
@@ -434,6 +434,7 @@ int main(int argc,char **argv)
         printf("\n\nPrint contents of clm files for LPJmL version %s\n",getversion());
         printf(USAGE
                "\nArguments:\n"
+               "-h,--help   print this help text\n"
                "-metafile   file is a JSON metafile describing the structure of the raw binary file\n"
                "-header     print without header\n"
                "-data       print without data\n"

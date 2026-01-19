@@ -12,6 +12,7 @@
 
 /* modules under test */
 #include "initsoil.h"
+#include "fail.h"
 #include "calc_soil_thermal_props.h"
 #include "compute_mean_layer_temps_from_enth.h"
 

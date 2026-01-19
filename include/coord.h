@@ -55,6 +55,7 @@ extern void fprintcoord(FILE *,const Coord *);
 extern int findcoord(const Coord *,const Coord [],const Coord *,int);
 extern int findnextcoord(Real *,const Coord *,const Coord[],int);
 extern Type getcoordtype(const Coordfile);
+extern Bool isfloatcoord(Real,Real);
 
 /* Definition of macros */
 

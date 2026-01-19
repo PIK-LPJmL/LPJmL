@@ -34,6 +34,7 @@
 
 void test_getnoread(void)
 {
+  char *filename;
   int noread;
   struct
   {
@@ -43,7 +44,8 @@ void test_getnoread(void)
     float d;
   } data1={1.0,2.0,3.0,4.0},data2={};
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writebeginstruct(bstr,"s");
   bstruct_writefloat(bstr,"a",data1.a);
@@ -52,7 +54,7 @@ void test_getnoread(void)
   bstruct_writefloat(bstr,"d",data1.d);
   bstruct_writeendstruct(bstr);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readbeginstruct(bstr,"s");
   bstruct_readfloat(bstr,"a",&data2.a);
@@ -99,5 +101,5 @@ void test_getnoread(void)
   noread=bstruct_getnoread(bstr);
   TEST_ASSERT_EQUAL_INT(2,noread);
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

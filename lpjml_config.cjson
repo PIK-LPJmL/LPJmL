@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 6.0.1                           \n**/
+/** Default configuration file for LPJmL C Version 6.0.2                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -490,10 +490,10 @@ ID                               Fmt                        filename
 
 #else
   /* first spinup */
-  "nspinup" : 4000,  /* spinup years */
+  "nspinup" : 3799,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
+  "firstyear": 1700, /* first year of simulation */
+  "lastyear" : 1700, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" :  -2099,
   "write_restart" : true, /* create restart file at year defined in "restart_year" */

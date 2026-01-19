@@ -48,6 +48,57 @@ of `major.minor.patch` with
 - Typos in help text in `regridclm.c` corrected.
 
 
+## [6.0.2] - 2026-01-17
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Warning message added in `lpjml`, `lpjcheck`,`cdf2soil`, `txt2grid` and `cdf2coord` if cell size cannot be resolved by grid data in short format.
+- Function `isfloatcoord()` added in `coord.c` to check whether coordinate must be stored as a float variable, test function `test_isfloatcoord.c` added.
+- Test functions for `vmaxlimit_tree`, `vmaxlimit_grass`, `vmaxlimit_crop`, `bisect`, `leftmostzero` and `getbufferavg` functions added.
+
+### Changed
+
+- Error about first simulation year is less than first year of climate data replaced by warning in `initclimate.c` and `filesexist.c`.
+- First and last simulation year in spinup changed from 1901 to 1700 in `lpjml_config.cjson`.
+- Number of spinup years changed from 4000 to 3799 in `lpjml_config.cjson` in order to get bit-identical results.
+- Test files for unit test and shell scripts added to tar and zip file in `Makefile`.
+- First year of climate data set instead of first simulation year used in `initsoiltemp.c`.
+- Unused argument `ncft` removed from `check_stand_fracs.c` and `update_wetland.c`.
+- Redundant calculation of stand fraction sum removed in `check_stand_fracs.c`.
+
+### Removed
+
+- Unused source file `src/lpj/part.c` removed.
+
+### Fixed
+
+- Expected number of bands set correctly for raw input files in `openinputdata.c`.
+- Hard-coded filename `test.lpj` replaced by temporary filename in `test_append.c`, `test_getnoread.c`, `test_indexarray.c`, `test_isdefined.c`, `test_isnull.c`, `test_restart.c`, and `test_writename.c` in order to allow parallel execution of tests.
+- Arguments corrected in calls of lpjml functions in `lpj_poem.c`.
+- Missing `-print_noread` option added in `INSTALL`.
+- `setupannual_grid.c` corrected to compile with `-DIMAGE -DCOUPLED` flag.
+- Error message for different datatypes corrected in `lpjcat.c`.
+- Variables initialized to zero and NULL in `phenology_gsi.c`, `lpjcat.c` and `restart2yaml.c` to avoid warnings in `gcc`.
+- Man page for `lpjml`, `lpjcheck`, `lpjrun`, `lpjfiles`, `json2restart` and `restart2yaml` corrected.
+- Missing option `-nooutput` added to man page of `lpjfiles`.
+- Help text for `-h` option of `lpjfiles`, `restart2yaml`, `printclm` and `regridclm` corrected.
+- Check for NULL pointer for `pfts` array corrected in `lpjcat.c`.
+- Function `fread()` replaced by `freadint()` in `regridirrig.c` to account for different byte order.
+- Missing deallocation of `items` array added in `sendhash.c`.
+- Filename for population density input corrected in `regridlpj`.
+- Header files added for unit tests to compile tests successfully.
+- Function `albedo_crop.c` and `fwritecell.c` changed to compile with `-DCOUPLING_WITH_FMS` setting.
+- Misplaced check for NULL pointer for wind removed in `dailyclimate.c`, unnecessary check for NULL pointer for wind removed.
+- Missing `delta_prec` and `delta_temp` filenames added in `fprintfiles.c`.
+- Missing dependency on `climate.h` added to Makefile in `src/landuse`.
+- Double occurrence of `"outputyear"` removed in `lpjml_config_pnv.cjson`.
+
+
 ## [6.0.1] - 2025-12-18
 
 ### Contributors
@@ -187,27 +238,25 @@ of `major.minor.patch` with
 
 ### Changed
 
-- parameter changes: 
-  - `alphaa` from 0.5 to 0.7 for natural vegetation; 
-  - `theta` from 0.9 to 0.95; 
+- parameter changes:
+  - `alphaa` from 0.5 to 0.7 for natural vegetation;
+  - `theta` from 0.9 to 0.95;
   - `fn_turnover` PFT1: 0.5, PFT2: 0.5, PFT3: 0.7, PFT4: 0.3, PFT5: 0.3, PFT6: 0.7, PFT7: 0.3, PFT8: 0.3; updated values from [Sophia et al. 2024](https://doi.org/10.5194/bg-21-4169-2024) for all other PFTs except crops
   - `cnratio_leaf.low/median/high` for all PFTs updated from TRY data
   - `b` (ratio of dark respiration Rd to maximum photosynthetic capacity Vcmax) set to 0.031 for C3 and C4 plants (value for 25°C, from [Wang et al. 2020](https://doi.org/10.1111/gcb.14980), consistent with TRY data)
   - `aphen_min` from 60 to 90 and `aphen_max` from 245 to 180
   - `nfixpot` from 0.01 to 0.5 (middle of proposed range in [Yu and Zhuang 2020](https://doi.org/10.5194/bg-17-3643-2020))
-  - `turnover` parameter for leaves&roots set to 2 for TeNE and 3 BoNE 
+  - `turnover` parameter for leaves&roots set to 2 for TeNE and 3 BoNE
   - temperature boundary between temperate and boreal zone changed from -2°C to -5°C
 - acclimation of `b` to mean vegetation period temperature (following [Wang et al. 2020](https://doi.org/10.1111/gcb.14980))
 - calculation of structural leaf N content (leaf N independent of Vcmax) based on `ncleaf.low` in both `ndemand_xx` and `vmaxlimit_xx` (was `ncleaf.medium` in `ndemand_xx`)
-- scaling of vmax with f_LAI removed
+- scaling of vmax with `f_LAI` removed
 - N recovery from turnover directly added to `bm_inc.nitrogen`
 - N uptake now separated for uptake of NH4 and NO3 with parameters from  [Craig et al. 2025](https://doi.org/10.1111/nph.70140) (median of values)
 - trees are burnt (instead of added to the litter) when running with `luc_timber=FALSE`
 - beginning of vegetative period for tropical raingreen trees set at beginning of 6 month period with highest precipitation sum
 - leaf shedding for deciduous trees induced after `aphen_max` or when `phen<0.1` after `aphen_min`
 - `phen` permanently set to 1 for tropical evergreen trees
-
-### Removed
 
 ### Fixed
 
@@ -216,7 +265,7 @@ of `major.minor.patch` with
 - corrected `f_NCplant` to comply with equation from [Smith et al. 2014](https://doi.org/10.5194/bg-11-2027-2014)
 - corrected phenology of trees:
   - leaf turnover of raingreen trees at leaf shedding (same as for summergreen trees, had continuous daily leaf turnover like evergreen trees)
-  - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon 
+  - `phen` set to zero at leaf shedding until restart of phenological cycle to prevent phen>1 without leaf carbon
 
 
 ## [5.9.28] - 2025-07-31
@@ -252,7 +301,7 @@ of `major.minor.patch` with
 - Comment for `pft` initialized in `initsetting_netcdf.c`.
 - Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
 - Short data handled correctly for metafile input in `bin2cdf`.
-- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1. 
+- Missing check for sum operator added in utility `mathclm`. Without this check number of bands in output file is always set to 1.
 - Man page for `mathclm` corrected for option `-v`.
 
 
@@ -430,8 +479,6 @@ of `major.minor.patch` with
 
 
 ## [5.9.21] - 2025-03-13
-
-## [5.9.21] - 2025-01-31
 
 ### Contributors
 
