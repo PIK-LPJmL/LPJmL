@@ -362,14 +362,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     {
       len=fputstring(file,len,", ",78);
       count++;
-      snprintf(s,STRING_LEN,"with time shifted by %d yrs",config->time_shift);
+      snprintf(s,STRING_LEN,"anomalies with time shifted by %d yrs",config->time_shift);
       len=fputstring(file,len,s,78);
     }
     if(config->with_glaciers)
       len=printsim(file,len,&count,"with glaciers");
   }
   if(config->with_methane)
-      len=printsim(file,len,&count,"with methane");
+    len=printsim(file,len,&count,"with methane");
 
 #ifdef COUPLING_WITH_FMS
   if(!config->nitrogen_coupled)

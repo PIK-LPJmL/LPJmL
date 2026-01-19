@@ -147,6 +147,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     addfilename(table,&config->delta_lwnet_filename,TRUE);
     addfilename(table,&config->delta_swdown_filename,TRUE);
+    addfilename(table,&config->delta_temp_filename,TRUE);
+    addfilename(table,&config->delta_prec_filename,TRUE);
   }
   addfilename(table,&config->hydrotopes_filename,FALSE);
   addfilename(table,&config->co2_filename,FALSE);

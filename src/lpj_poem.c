@@ -71,7 +71,7 @@ static int ncft;           /*< Number of crop PFT's */
 
 /// from iterate()
 static Real co2,ch4,pch4;
-static int year, landuse_year, wateruse_year;
+static int year;
 
 static double glon_min, glon_max, glat_min, glat_max;
 
@@ -417,6 +417,7 @@ void lpj_init_
   standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;
@@ -1233,7 +1234,7 @@ void lpj_update_
         if (happynewyear)
         { /* things from iterateyear_river() to be done at begin of year */
           intercrop=getintercrop(input.landuse);
-          setupannual_grid(grid,year,npft,ncft,intercrop,config);
+          setupannual_grid(output,grid,&input,year,npft,ncft,intercrop,&config);
           dayofyear = 1;
         } /* if (happynewyear) */
 
@@ -1312,7 +1313,7 @@ void lpj_update_
                 co2 = tmp_co2[cell];
               }
               /******* now do the MAIN work ****************************************         \n**/
-              update_daily_cell(grid+cell,cell,&daily,co2,pch4,&input,day,dayofmonth,month,year,npft,ncft,intercrop,&config);
+              update_daily_cell(grid+cell,cell,&daily,co2,pch4,&input,dayofyear,dayofmonth,month,year,npft,ncft,intercrop,&config);
               //grid[cell].output.daily.sun=daily.sun; not used for FMS coupling
 
 
@@ -1321,7 +1322,7 @@ void lpj_update_
 #endif
             }
           }
-          updatedaily_grid(output,grid,input.extflow,day,month,year,npft,ncft,&config);
+          updatedaily_grid(output,grid,input.extflow,dayofyear,month,year,npft,ncft,&config);
 
           /******* prepare OUTPUT for land_lad ****************************************         \n**/
 
@@ -1474,7 +1475,7 @@ void lpj_update_
 
         if (silvester)
         { /* from iterateyear() */
-          updateannual_grid(output,grid,input.landcover,&ch4,&pch4,year,npft,ncft,intercrop,daily.isdailytemp,&config);
+          updateannual_grid(output,grid,input.landcover,co2,&ch4,&pch4,year,npft,ncft,intercrop,daily.isdailytemp,&config);
           for(cell=0;cell<config.ngridcell;cell++)
           {
             grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;

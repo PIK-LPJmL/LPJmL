@@ -304,8 +304,10 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
       {
         if(input.firstyear>config->firstyear)
         {
-          fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
-          return 1;
+          fprintf(stderr,"%s: First year=%d in '%s' is greater than first simulation year %d.\n",
+                  (config->nspinup==0) ? "ERROR200" : "WARNING043",input.firstyear,filename->name,config->firstyear);
+          if(config->nspinup==0)
+            return 1;
         }
         if(!config->fix_climate && input.firstyear+input.nyear-1<config->lastyear)
         {
@@ -330,8 +332,10 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
     {
       if(header.firstyear>config->firstyear)
       {
-        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
-        return 1;
+        fprintf(stderr,"%s: First year=%d in '%s' is greater than first simulation year %d.\n",
+                (config->nspinup==0) ? "ERROR200" : "WARNING043",header.firstyear,filename->name,config->firstyear);
+        if(config->nspinup==0)
+          return 1;
       }
       if(!config->fix_climate && header.firstyear+(header.nyear-1)*config->delta_year<config->lastyear)
       {
@@ -597,6 +601,9 @@ Bool filesexist(Config config, /**< LPJmL configuration */
           fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
         free(oldpath);
         oldpath=path;
+        if(config.outputvars[i].id==GRID && config.grid_type==LPJ_SHORT && (config.outputvars[i].filename.fmt==RAW || config.outputvars[i].filename.fmt==CLM) && (isfloatcoord(config.resolution.lat*0.5,0.01) || isfloatcoord(config.resolution.lon*0.5,0.01)))
+          fprintf(stderr,"WARNING041: Cell size (%g,%g) does not allow short datatype for grid with scaling factor 0.01 in '%s'.\n",
+                  config.resolution.lat,config.resolution.lon,config.outputvars[i].filename.name);
       }
       else
         free(path);

@@ -11,8 +11,9 @@
 /* c unit testing framework */
 #include "unity.h" 
 /* modules under test */
+#include "thomas_algorithm.h"
 #include "finite_volume_diffusion.h"
-
+#include "support_global_variables.h"
 #include "apply_heatconduction_of_a_day.h"
 #include "compute_mean_layer_temps_from_enth.h"
 #include "calc_soil_thermal_props.h"

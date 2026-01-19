@@ -56,11 +56,14 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)
     {
-      if(receive_image_data(grid,npft,ncft,config))
+      rc=receive_image_data(grid,npft,ncft,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
-        fflush(stderr);
-        return TRUE; /* leave time loop */
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
+          fflush(stderr);
+        }
       }
     }
     else

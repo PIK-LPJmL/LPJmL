@@ -29,21 +29,23 @@
 
 void test_restart(void)
 {
+  char *filename;
   float a1=1,b1=10,a2=0,b2=0;
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writefloat(bstr,"a",a1);
   bstruct_finish(bstr);
-  bstr=bstruct_append("test.lpj",TRUE);
+  bstr=bstruct_append(filename,TRUE);
   bstruct_writefloat(bstr,"b",b1);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readfloat(bstr,"a",&a2);
   bstruct_readfloat(bstr,"b",&b2);
   bstruct_finish(bstr);
   TEST_ASSERT_EQUAL_FLOAT(a1,a2);
   TEST_ASSERT_EQUAL_FLOAT(b1,b2);
-  unlink("test.lpj");
+  unlink(filename);
 }

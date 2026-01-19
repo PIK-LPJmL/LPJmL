@@ -52,13 +52,10 @@ void dailyclimate(Dailyclimate *daily,    /**< */
   if(climate->data[0].humid!=NULL)
     daily->humid=isdaily(climate->file_humid) ? climate->data[0].humid[cell*NDAYYEAR+day-1]
                       : interpolate(getcellhumid(climate,cell),month,dayofmonth);
-  if(climate->data[0].wind!=NULL)
-  {
-    if(isdaily(climate->file_wind))
-      daily->windspeed=climate->data[0].wind[cell*NDAYYEAR+day-1];
-    else
-      daily->windspeed=interpolate(getcellwind(climate,cell),month,dayofmonth);
-  }
+  if(isdaily(climate->file_wind))
+    daily->windspeed=climate->data[0].wind[cell*NDAYYEAR+day-1];
+  else
+    daily->windspeed=interpolate(getcellwind(climate,cell),month,dayofmonth);
   if(climate->data[0].tmax!=NULL&&climate->data[0].tmin!=NULL) /* Tmin and Tmax available */
   {
     daily->tmax=isdaily(climate->file_tmax) ?  climate->data[0].tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);

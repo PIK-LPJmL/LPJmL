@@ -216,7 +216,7 @@ EOF
   "humid"            : { "fmt" : "clm", "name" : "$dir/humid_$name.clm"},
   "lightning"        : { "fmt" : "clm", "name" : "$dir/lightning_$name.clm"},
   "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
-  "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
+  "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm"},
   "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
   "ch4"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/CH4_concentration_1841-2022.dat"},
   "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
