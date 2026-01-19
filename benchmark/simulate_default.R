@@ -10,7 +10,7 @@
 #   sim_path   : Path for simulation results (required)
 #   ntasks     : Number of parallel tasks (default: 512)
 #   blocking   : Cores per task to block (default: 128, or "unlimited")
-#   model_path : Path to model binary (default: ../)
+#   model_path : Path to model directory with binary and configs (default: .)
 #   qos        : Quality of service (optional, default: "short")
 
 library(lpjmlkit)
@@ -24,9 +24,8 @@ parse_args <- function(args) {
     sim_path = NULL,
     ntasks = 512,
     blocking = 128,
-    model_path = "../",
-    qos = "short",
-
+    model_path = getwd(),
+    qos = "standby"
   )
 
   for (arg in args) {
@@ -64,14 +63,14 @@ parsed_args <- parse_args(args)
 if (is.null(parsed_args$sim_path)) {
   stop(paste(
     "Usage: Rscript simulate_default.R sim_path=<path>",
-    "[ntasks=512] [blocking=128] [model_path=../]\n",
+    "[ntasks=512] [blocking=128] [model_path=.]\n",
     "  sim_path   : Path where simulation results will be stored",
     "(required)\n",
     "  ntasks     : Number of tasks for parallel execution",
     "(optional, default: 512)\n",
     "  blocking   : Number of cores per task to be blocked or 'unlimited'",
     "(optional, default: 128)\n",
-    "  model_path : Path to model binary (optional, default: ../)"
+    "  model_path : Path to model directory with binary and configs (optional, default: .)"
   ))
 }
 
@@ -88,7 +87,8 @@ runs <- tibble::tibble(
   dependency = c(NA, NA, "spinup_full", "spinup_reduced", "spinup_full",
                  "spinup_reduced"),
   percolation_heattransfer = c(NA, FALSE, NA, FALSE, NA, FALSE),
-  landuse = c(NA, NA, "no", "no", NA, NA)
+  landuse = c(NA, NA, "no", "no", NA, NA),
+  wateruse = c(NA, NA, FALSE, FALSE, NA, NA),
 )
 
 outputvars_benchmark <- c("vegc", "soilc", "litc", "vegn", "soiln", "soilnh4",
@@ -112,5 +112,5 @@ submitted_runs <- submit_lpjml(
   sim_path = sim_path,
   ntasks = ntasks,
   blocking = blocking,
-  sclass = qos,
+  sclass = qos
 )
