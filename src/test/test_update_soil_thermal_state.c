@@ -17,6 +17,7 @@
 #include "calc_soil_thermal_props.h"
 #include "compute_mean_layer_temps_from_enth.h"
 #include "enth2freezefrac.h"
+#include "thomas_algorithm.h"
 #include "freezefrac2soil.h"
 #include "updatelitterproperties.h"
 #include "update_soil_thermal_state.h"

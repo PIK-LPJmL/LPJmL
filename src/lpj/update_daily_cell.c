@@ -677,7 +677,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     soilpar_output(cell,agrfrac,config);
     killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 #endif
     /* Establishment fluxes are area weighted in subroutines */
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;

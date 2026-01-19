@@ -1,1 +1,1 @@
-void fail(int,Bool,const char *,...);
+void fail(int,Bool,Bool,const char *,...);

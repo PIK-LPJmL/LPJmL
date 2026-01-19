@@ -130,9 +130,6 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 /* Declaration of variables */
 
 extern char *lpj_usage;
-#ifdef USE_TIMING
-extern double tread,twrite;         /* timing of read/write of restart file */
-#endif
 
 /* Declaration of functions */
 

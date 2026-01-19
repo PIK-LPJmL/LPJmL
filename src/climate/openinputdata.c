@@ -52,6 +52,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
       return TRUE;
     }
+    file->nbands=(size==0) ? 1 : size;
     if(file->fmt==RAW)
     {
       header.nbands=1;
@@ -61,7 +62,6 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
     }
     else
     {
-      file->nbands=(size==0) ? 1 : size;
       file->type=header.datatype;
       if(isroot(*config) && filename->fmt!=META)
       {

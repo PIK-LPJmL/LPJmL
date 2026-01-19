@@ -1592,7 +1592,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     else if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl<(1-epsilon))
       deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
 
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
 
 #ifdef DEBUG4
@@ -1633,7 +1633,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
               difffrac,grassfrac,s);
 #endif
     }
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
 #ifdef DEBUG4
     foreachstand(stand,s,cell->standlist)
@@ -1676,7 +1676,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       if(year>1989)
         fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
 #endif
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
    /* Biomass plantations */
     cultivation_type=BIOMASS_TREE_PLANTATION;
     irrigation=i;
@@ -1786,7 +1786,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
                     irrigation,cultivation_type,0,ncft,year,config);
     }
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
   foreachstand(stand,s,cell->standlist)
     if(getlandusetype(stand)==GRASSLAND || 
@@ -1798,7 +1798,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
        (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 #endif
   sum_wl=sum[0]=sum[1]=0;
   foreachstand(stand,s,cell->standlist)
@@ -1838,7 +1838,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     cell->ml.image_data->timber_frac=0.0;
   }
   /* check that sum of fractions is 1.0 */
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft,TRUE);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
   /* check if there is more than 1 natural stand */
   nnat = 0;

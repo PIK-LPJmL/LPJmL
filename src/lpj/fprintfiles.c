@@ -154,6 +154,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   else
     addfilename(table,&config->cloud_filename,TRUE);
+  if(config->isanomaly)
+  {
+    addfilename(table,&config->delta_temp_filename,TRUE);
+    addfilename(table,&config->delta_prec_filename,TRUE);
+  }
   addfilename(table,&config->hydrotopes_filename,FALSE);
   addfilename(table,&config->co2_filename,FALSE);
   if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)

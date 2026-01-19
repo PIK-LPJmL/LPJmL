@@ -101,39 +101,39 @@ script has to be used.
 .SH ENVIRONMENT
 .TP
 LPJNOPP
-disables preprocessor if set to "true", same as -nopp option
+Disables preprocessor if set to "true", same as -nopp option
 .TP
 LPJPEDANTIC
-enables pedantic mode if set to "true", same as -pedantic option
+Enables pedantic mode if set to "true", same as -pedantic option
 .TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
+Defines the root directory for LPJmL. This directory is added to the
 include directories of the preprocessor. Invoking \fBlpj_paths.sh\fP or \fBlpj_paths.csh\fP will set this
 environment variable correctly.
 .TP
 LPJCOUPLEDHOST
-sets the host where the coupled model is running. Same as '-couple' option.
+Sets the host where the coupled model is running. Same as '-couple' option.
 .TP
 LPJWAIT
-sets time to wait for connection to coupled/IMAGE model. Same as '-wait' option.
+Sets time to wait for connection to coupled/IMAGE model. Same as '-wait' option.
 .TP
 LPJIMAGE
-sets the host where IMAGE model is running. Same as '-image' option.
+Sets the host where IMAGE model is running. Same as '-image' option.
 .TP
 LPJINPATH
-path appended to the input filenames. Only done for filenames without absolute path. Same as '-inpath \fIdir\fP' option.
+Path appended to the input filenames. Only done for filenames without absolute path. Same as '-inpath \fIdir\fP' option.
 .TP
 LPJOPTIONS
-runtime options for the preprocessor of LPJmL configuration files
+Runtime options for the preprocessor of LPJmL configuration files
 .TP
 LPJOUTPATH
-path appended to the output filenames. Only done for filenames without absolute path. Same as '-outpath \fIdir\fP' option.
+Path appended to the output filenames. Only done for filenames without absolute path. Same as '-outpath \fIdir\fP' option.
 .TP
 LPJRESTARTPATH
-path appended to the restart filenames. Only done for filenames without absolute path. Same as '-restartpath \fIdir\fP' option.
+Path appended to the restart filenames. Only done for filenames without absolute path. Same as '-restartpath \fIdir\fP' option.
 
 .SH EXIT STATUS
 .B lpjml

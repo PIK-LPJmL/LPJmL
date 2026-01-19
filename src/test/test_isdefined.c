@@ -36,6 +36,7 @@
 
 void test_isdefined(void)
 {
+  char *filename;
   Bool rc;
   struct
   {
@@ -48,7 +49,8 @@ void test_isdefined(void)
     } s;
   } data1={1,2.0,{3.0,4.0}},data2={};
   Bstruct bstr;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writeint(bstr,"a",data1.a);
   bstruct_writefloat(bstr,"b",data1.b);
@@ -57,7 +59,7 @@ void test_isdefined(void)
   bstruct_writefloat(bstr,"d",data1.s.d);
   bstruct_writeendstruct(bstr);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&data2.a);
   TEST_ASSERT_EQUAL_INT(data1.a,data2.a);
@@ -74,5 +76,5 @@ void test_isdefined(void)
   rc=bstruct_isdefined(bstr,"d");
   TEST_ASSERT_EQUAL_INT(FALSE,rc);
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

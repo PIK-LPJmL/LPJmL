@@ -49,7 +49,7 @@
         - -O2
     :link:
       :*:
-        - -O0
+        - -O0 -ljson-c
       :high_res:
         - -O2
 
@@ -90,8 +90,12 @@
     - ../soil/**
     - ../numeric/**
     - ../landuse/**
+    - ../tree/**
+    - ../grass/**
+    - ../crop/**
     - ../tools/**
     - ../bstruct/**
+    - ../numeric/**
     - support/helper_code/src
   :include:
     - ../../include

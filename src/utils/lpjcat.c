@@ -57,7 +57,7 @@ int main(int argc,char **argv)
     int sdate_option;
     Bool crop_phu_option;
     Bool separate_harvests;
-  } header,header_first;
+  } header,header_first={};
   Seed seed;
   long long filepos;
   char *s,*arglist,*pftname;
@@ -71,13 +71,12 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-o"))
       {
-         if(argc==i+1)
-         {
-           fprintf(stderr,"Missing argument after option '-o'.\n"
-                  USAGE,argv[0]);
-           return EXIT_FAILURE;
-         }
-
+        if(argc==i+1)
+        {
+          fprintf(stderr,"Missing argument after option '-o'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
         outfile=argv[++i];
       }
       else
@@ -214,6 +213,7 @@ int main(int argc,char **argv)
     if(pfts==NULL)
     {
       pfts=newvec(char *,size);
+      check(pfts);
       for(j=0;j<size;j++)
       {
         pfts[j]=bstruct_readstring(item[count].file,NULL);
@@ -328,7 +328,7 @@ int main(int argc,char **argv)
       if(header.datatype!=header_first.datatype)
       {
         fprintf(stderr,"ERROR180: Datatype %s is different from %s in file '%s'.\n",
-                typenames[header.crop_phu_option],typenames[header_first.crop_phu_option],argv[i]);
+                typenames[header.datatype],typenames[header_first.datatype],argv[i]);
         bstruct_finish(item[count].file);
         return EXIT_FAILURE;
       }
@@ -351,7 +351,7 @@ int main(int argc,char **argv)
       header_first=header;
     ncell+=item[count].ncell;
     count++;
-  } /*  for(;i<argc;i++) */
+  } /* for(;i<argc;i++) */
   if(count==0)
   {
     fprintf(stderr,"No restart file successfully read.\n");
@@ -399,7 +399,7 @@ int main(int argc,char **argv)
   bstruct_writebool(out,"river_routing",header_first.river_routing);
   bstruct_writebool(out,"lakes",header_first.with_lakes);
   bstruct_writebool(out,"separate_harvests",header_first.separate_harvests);
-  if(pfts[i]!=NULL)
+  if(pfts!=NULL)
   {
     bstruct_writebeginarray(out,"pfts",size);
     for(i=0;i<size;i++)
