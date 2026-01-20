@@ -273,7 +273,6 @@ typedef struct
   Real maxthaw_depth;
   Real mean_maxthaw;
   Real fastfrac;
-  Real layer_exists[LASTLAYER]; /* allows variable soil depth */
   Stocks decomp_litter_mean;
   Stocks *decomp_litter_pft;
   int count;

@@ -34,7 +34,8 @@ of `major.minor.patch` with
 
 - Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
 - Output `"sun"` and `"sun_image"` removed.
-- Unused file `nooutput_gbw.c` and `update_monthly.c` removed.
+- Unused files `nooutput_gbw.c` and `update_monthly.c` removed.
+- Unused array `layer_exists` in soil struct removed.
 
 ### Fixed
 
