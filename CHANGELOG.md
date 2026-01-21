@@ -25,10 +25,13 @@ of `major.minor.patch` with
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de) 
 
+### Added
+- Added benchmark folder with with two R scripts (`simulate_default.R`, `benchmark_default.R`) to simulate default scenarios and run benchmark.
 ### Changed
 
 - Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
 - Wait for coupled program to finish added in slurm script.
+- Fixed several potential floating point exceptions in `nuptake_tree.c`, `nuptake_gras.c`, `nuptake_crop.c` and `littersom.c`
 
 ### Removed
 
