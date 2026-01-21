@@ -1165,7 +1165,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen,stand->cell->NO3_lateral);
 
   water_after=soilwater(&stand->soil);
-  balancew=water_after-water_before-prec+runoff_surface+runoff+runoff_neg+((stand->cell->ground_st_am+stand->cell->ground_st)-gw_start)/stand->frac;
+  balancew=water_after-water_before-prec+runoff_surface+runoff+runoff_neg+rsub_top+((stand->cell->ground_st_am+stand->cell->ground_st)-gw_start)/stand->frac;
   if(fabs(balancew)>0.001 && stand->frac>epsilon)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
