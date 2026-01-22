@@ -44,6 +44,9 @@ of `major.minor.patch` with
 
 - Function `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
 - Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
+- Function `cutpfts.c` corrected to close carbon balance.
+- Water balance check in `infil_perc.c` correcte to avoid false water balance errors.
+- Balance error messages correcetd in `cultivate.c`.
 
 
 ## [6.0.2] - 2026-01-17
