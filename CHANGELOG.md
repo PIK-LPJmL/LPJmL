@@ -33,7 +33,8 @@ of `major.minor.patch` with
 
 - Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
 - Wait for coupled program to finish added in slurm script.
-- Fixed several potential floating point exceptions in `nuptake_tree.c`, `nuptake_gras.c`, `nuptake_crop.c` and `littersom.c`
+- Fixed several potential floating point exceptions in `nuptake_tree.c`, `nuptake_grass.c`, `nuptake_crop.c` and `littersom.c`
+- Printing of balance error messages replaced by call to `fail()` function in `allocation_grass.c`, `litter_update_grass.c`, `turnover_grass.c` and `update_annual_cell.c`.
 
 ### Removed
 
