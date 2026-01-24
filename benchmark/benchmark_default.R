@@ -225,6 +225,43 @@ cat("  Number of sims:      ", length(transient_sims), "\n\n")
 # Run benchmark for each transient simulation
 benchmark_results <- list()
 
+# Create modified default settings with updated variable names to match output files
+bm_default_settings <- default_settings
+var_names <- names(bm_default_settings)
+
+# Define mapping from default_settings names to actual output file names
+name_mapping <- c(
+  "mleaching" = "leaching",
+  "mn_immo" = "n_immo",
+  "mn_mineralization" = "n_mineralization",
+  "mn_volatilization" = "n_volatilization",
+  "mn2_emis" = "n2_emis",
+  "mn2o_denit" = "n2o_denit",
+  "mn2o_nit" = "n2o_nit",
+  "mnuptake" = "nuptake",
+  "mbnf" = "bnf",
+  "flux_estab" = "flux_estabc",
+  "mgpp" = "gpp",
+  "mnpp" = "npp",
+  "anbp" = "nbp",
+  "mrh" = "rh",
+  "mevap" = "evap",
+  "mtransp" = "transp",
+  "minterc" = "interc",
+  "mrunoff" = "runoff"
+)
+
+# Apply all name mappings using gsub
+for (old_name in names(name_mapping)) {
+  var_names <- gsub(paste0("^", old_name, "$"), name_mapping[old_name], var_names)
+}
+
+# Handle pft_harvest prefix replacement
+var_names <- gsub("^pft_harvest", "pft_harvestc", var_names)
+names(bm_default_settings) <- var_names
+
+
+
 for (sim_name in transient_sims) {
   cat("===================================================\n")
   cat("Running benchmark for:", sim_name, "\n")
@@ -278,7 +315,8 @@ for (sim_name in transient_sims) {
       author = author,
       description = description,
       output_file = output_file,
-      pdf_report = TRUE
+      pdf_report = TRUE,
+      settings = bm_default_settings
     )
     benchmark_results[[sim_name]] <- bm_result
     cat("Successfully completed benchmark for", sim_name, "\n\n")
