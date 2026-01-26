@@ -16,13 +16,13 @@
 
 include Makefile.inc
 
-TARFILE = lpjml-$(shell cat VERSION).tar
+TARFILE	= lpjml-$(shell cat VERSION).tar
 
-ZIPFILE = lpjml-$(shell cat VERSION).zip
+ZIPFILE	= lpjml-$(shell cat VERSION).zip
 
-INC     = include
+INC	= include
 
-HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
+HDRS	= $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/config.h $(INC)/coord.h $(INC)/crop.h $(INC)/cropdates.h\
           $(INC)/date.h $(INC)/discharge.h $(INC)/param.h $(INC)/input.h\
           $(INC)/errmsg.h $(INC)/grass.h $(INC)/header.h $(INC)/landuse.h\
@@ -40,16 +40,34 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/couplerpar.h $(INC)/bstruct.h $(INC)/hash.h $(INC)/bstruct_intern.h\
           $(INC)/timing.h
 
-DATA    = par/*.cjson
+DATA	= par/*.cjson
 
-JSON	= lpjml_config.cjson input.cjson input_netcdf.cjson
+JSON	= lpjml_config.cjson lpjml_config_pnv.cjson input.cjson input_netcdf.cjson
 
-SCRIPTS	= configure.bat configure.sh\
-          bin/output_bsq bin/lpjrun bin/backtrace\
+SCRIPTS	= configure.bat configure.sh bin/allbin2cdf bin/cdf2reservoir\
+          bin/output_bsq bin/lpjrun bin/backtrace bin/filetypes.vim\
           bin/regridlpj bin/lpjsubmit_hpc
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md CHANGELOG.md\
-          $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md\
+          REFERENCES COPYRIGHT CHANGELOG.md CITATION.cff .zenodo.json\
+          $(JSON) $(DATA) $(HDRS) $(SCRIPTS)\
+          src/Makefile src/*.c src/climate/Makefile src/climate/*.c\
+          man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
+          man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
+          src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
+          src/image/Makefile src/image/*.c\
+          src/landuse/*.c src/landuse/Makefile src/lpj/*.c src/lpj/Makefile\
+          src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
+          src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
+          src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
+          src/socket/*.c src/reservoir/Makefile src/bstruct/Makefile\
+          src/image/Makefile src/image/*.c src/reservoir/*.c src/bstruct/*.c\
+          src/pnet/Makefile src/utils/*.c src/utils/Makefile\
+          src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
+          src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c\
+          src/test/*.c src/test/support/header_of_lpjml_files_to_link/*.h\
+          src/test/support/helper_code/src/*.c src/test/support/helper_code/header/*.h\
+          src/test/project.yml
 
 main:
 	$(MKDIR) lib
@@ -101,35 +119,8 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar:
-	tar -cf $(TARFILE) $(FILES) src/Makefile src/*.c\
-	    src/climate/Makefile src/climate/*.c\
-            man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
-            man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
-	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
-	    src/image/Makefile src/image/*.c\
-	    src/landuse/*.c src/landuse/Makefile src/lpj/*.c src/lpj/Makefile\
-	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
-	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
-            src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile src/bstruct/Makefile\
-            src/image/Makefile src/image/*.c src/reservoir/*.c src/bstruct/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
-            src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
-	    gzip -f $(TARFILE)
+	tar -cf $(TARFILE) $(FILES)
+	gzip -f $(TARFILE)
 
 zipfile:
-	zip -l $(ZIPFILE) $(FILES) src/Makefile src/*.c\
-	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
-            man/man3/*.3 man/man5/*.5\
-	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
-	    src/image/Makefile src/image/*.c\
-	    src/landuse/*.c src/landuse/Makefile src/lpj/*.c src/lpj/Makefile\
-	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
-	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
-            src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile src/bstruct/Makefile\
-            src/image/*.c src/image/Makefile src/reservoir/*.c src/bstruct/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
-            src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
+	zip -l $(ZIPFILE) $(FILES)

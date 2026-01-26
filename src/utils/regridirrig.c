@@ -2,8 +2,7 @@
 /**                                                                                \n**/
 /**                    r  e  g  r  i  d  i  r  r  i  g  .  c                       \n**/
 /**                                                                                \n**/
-/**     CLM data in 0.5 degree resolution is regridded to 0.25 degree              \n**/
-/**     resolution.                                                                \n**/
+/**     Irrigation file is regridded to a new grid file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +13,8 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+
+#define USAGE "Usage: %s [-longheader] coord_old.clm coord_new.clm data_old.clm data_new.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -37,7 +38,8 @@ int main(int argc,char **argv)
         setversion=2;
       else
       {
-        fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
+        fprintf(stderr,"Invalid option '%s'.\n"
+                USAGE,argv[i],argv[0]);
         return EXIT_FAILURE;
       }
     }
@@ -48,8 +50,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            "Usage: %s [-longheader] coord_all.clm coord.clm data_all.clm data.clm\n",
-            argv[1-i]);
+            USAGE,argv[1-i]);
     return EXIT_FAILURE;
   }
   filename.name=argv[1];
@@ -163,7 +164,7 @@ int main(int argc,char **argv)
     fclose(data_file);
     return EXIT_FAILURE;
   }
-  fread(data,sizeof(int),header.ncell,data_file);
+  freadint(data,header.ncell,swap,data_file);
   fclose(data_file);
   file=fopen(argv[4],"wb");
   if(file==NULL)
@@ -217,7 +218,15 @@ int main(int argc,char **argv)
       fprintf(stderr," not found in '%s', set to itself.\n",argv[2]);
       index2=i;
     }
-    fwrite(&index2,1,sizeof(int),file);
+    if(fwrite(&index2,sizeof(int),1,file)!=1)
+    {
+      fprintf(stderr,"Error writing '%s': %s.\n",argv[4],strerror(errno));
+      free(c);
+      free(c2);
+      free(data);
+      fclose(file);
+      return EXIT_FAILURE;
+    }
   }
   fclose(file);
   free(c);

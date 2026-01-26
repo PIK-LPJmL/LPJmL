@@ -41,11 +41,13 @@
 
 void test_restart(void)
 {
+  char *filename;
   Bstruct bstr;
   long long pos[N],filepos;
   float vec[N],vec5=0;
   int i,size;
-  bstr=bstruct_create("test.lpj");
+  filename=tmpnam(NULL);
+  bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writebeginindexarray(bstr,"vec",&filepos,N); 
   for(i=0;i<N;i++)
@@ -57,7 +59,7 @@ void test_restart(void)
   bstruct_writearrayindex(bstr,filepos,pos,0,N);
   bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
-  bstr=bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readbeginarray(bstr,"vec",&size);
   TEST_ASSERT_EQUAL_INT(N,size);
@@ -65,5 +67,5 @@ void test_restart(void)
   bstruct_readfloat(bstr,NULL,&vec5);
   TEST_ASSERT_EQUAL_FLOAT(vec[5],vec5);
   bstruct_finish(bstr);
-  unlink("test.lpj");
+  unlink(filename);
 }

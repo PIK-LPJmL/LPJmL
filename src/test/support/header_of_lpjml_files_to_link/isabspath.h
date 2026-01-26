@@ -1,0 +1,1 @@
+Bool isabspath(const char *);

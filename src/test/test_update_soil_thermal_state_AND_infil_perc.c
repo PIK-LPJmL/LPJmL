@@ -13,6 +13,7 @@
 /* modules under test */
 #include "apply_enth_of_untracked_mass_shifts.h"
 #include "apply_heatconduction_of_a_day.h"
+#include "thomas_algorithm.h"
 #include "apply_perc_enthalpy.h"
 #include "calc_soil_thermal_props.h"
 #include "compute_mean_layer_temps_from_enth.h"

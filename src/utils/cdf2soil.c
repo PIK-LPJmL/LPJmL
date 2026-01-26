@@ -270,6 +270,9 @@ int main(int argc,char **argv)
   header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)(fabs(lat[lat_len-1]-lat[0])/(lat_len-1));
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,header.scalar) || isfloatcoord(header.cellsize_lat*0.5,header.scalar)))
+    fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
+            header.cellsize_lat,header.cellsize_lon,header.scalar);
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(out);
   free(lon);

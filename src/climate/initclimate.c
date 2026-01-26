@@ -303,10 +303,13 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   if(!config->isanomaly && (config->sim_id == LPJML || config->sim_id == LPJ) && climate->firstyear>config->firstyear)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR200: Climate data starts at %d, later than first simulation year %d.\n",
-              climate->firstyear,config->firstyear);
-    freeclimate(climate,isroot(*config));
-    return NULL;
+      fprintf(stderr,"%s: Climate data starts at %d, later than first simulation year %d.\n",
+              (config->nspinup==0) ? "ERROR200" : "WARNING043",climate->firstyear,config->firstyear);
+    if(config->nspinup==0)
+    {
+      freeclimate(climate,isroot(*config));
+      return NULL;
+    }
   }
   if(readtracegas(&climate->co2,&config->co2_filename,config))
   {
