@@ -52,5 +52,5 @@
   "elevation" :    { "id" : 39, "fmt" : "meta",  "name" : "elevation_gadm_30arcmin.clm.json"},
   "reservoir" :    { "id" : 40, "fmt" : "meta",  "name" : "reservoir_stn_30arcmin_par1.clm.json"},
   "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "global_co2_ann_1700_2022.txt"},
-  "wateruse" :     { "id" : 20, "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
+  "wateruse" :     { "id" : 20, "fmt" : "meta",  "name" : "wateruse_isimip3a_histsoc_1850-2021.clm.json" } /* water consumption for industry,household and livestock */
 }
