@@ -1,17 +1,22 @@
 # Standardized LPJmL benchmark comparison using lpjmlstats
 #
-# This script automatically detects and runs benchmarks for all transient
-# simulations in the baseline directory (directories starting with
-# "transient"). It compares baseline and under-test versions.
+# This script can work in two modes:
+# 1. Auto-detect mode: baseline_sim_path contains subdirectories starting with
+#    "transient" and the script automatically detects and benchmarks all of them
+# 2. Direct mode: baseline_sim_path points directly to a simulation output
+#    directory and is compared with the provided under_test_sim_paths
 #
-# Usage example:
+# Usage example (auto-detect mode):
 # Rscript benchmark_default.R baseline_sim_path="/path/to/baseline" \
 #   under_test_sim_paths="/path/to/test1"
-# Rscript benchmark_default.R baseline_sim_path="/path/to/baseline" \
-#   under_test_sim_paths="/path/to/test1,/path/to/test2"
+#
+# Usage example (direct mode):
+# Rscript benchmark_default.R baseline_sim_path="/path/to/baseline/sim1" \
+#   under_test_sim_paths="/path/to/test1/sim1,/path/to/test2/sim1"
 #
 # Arguments (use name=value format):
 #   baseline_sim_path    : Path to baseline simulation results (required)
+#                          Can be a parent directory or a direct simulation path
 #   under_test_sim_paths : Comma-separated paths to test simulation results
 #                          (required)
 
@@ -87,69 +92,124 @@ get_transient_sims <- function(path) {
   sort(transient)
 }
 
-# Detect transient simulations from baseline directory structure
-baseline_transient_sims <- get_transient_sims(baseline_sim_path)
-
-# Check if any transient simulations were found in baseline
-if (length(baseline_transient_sims) == 0) {
-  stop(paste(
-    "No transient simulation directories found in baseline path:",
-    baseline_sim_path, "\n",
-    "Expected directories starting with 'transient_'\n"
-  ))
+# Function to check if a path contains output files (is a simulation directory)
+is_simulation_dir <- function(path) {
+  if (!dir.exists(path)) return(FALSE)
+  files <- list.files(path, pattern = "\\.bin$|\\.nc$|\\.clm$",
+                      full.names = TRUE)
+  length(files) > 0
 }
 
-# Detect transient simulations from all under-test directories
-under_test_transient_sims_list <- lapply(under_test_sim_paths,
-                                         get_transient_sims)
+# Detect if baseline is a direct simulation path or a parent directory
+baseline_is_direct <- is_simulation_dir(baseline_sim_path)
 
-# Find common simulations across all paths
-transient_sims <- baseline_transient_sims
-for (i in seq_along(under_test_transient_sims_list)) {
-  transient_sims <- intersect(transient_sims,
-                              under_test_transient_sims_list[[i]])
-}
+# Detect which under_test paths are direct simulation directories
+under_test_is_direct <- sapply(under_test_sim_paths, is_simulation_dir)
 
-# Check if there are any common simulations
-if (length(transient_sims) == 0) {
-  stop(paste(
-    "No common transient simulation directories found across all paths.\n",
-    "Baseline contains:",
-    paste(baseline_transient_sims, collapse = ", "), "\n",
-    "Under-test paths contain different sets of simulations.\n"
-  ))
-}
-
-# Check for differences and warn if directories don't match
-all_sims <- unique(c(baseline_transient_sims,
-                     unlist(under_test_transient_sims_list)))
-missing_somewhere <- setdiff(all_sims, transient_sims)
-
-if (length(missing_somewhere) > 0) {
-  cat("WARNING: Not all simulation directories match across all paths!\n")
-  cat("=========================================================\n")
-
-  # Check which are missing from baseline
-  missing_in_baseline <- setdiff(unlist(under_test_transient_sims_list),
-                                 baseline_transient_sims)
-  if (length(missing_in_baseline) > 0) {
-    cat("Missing in BASELINE (", baseline_version, "):\n  ",
-        paste(missing_in_baseline, collapse = ", "), "\n", sep = "")
-  }
-
-  # Check which are missing from each under-test path
-  for (i in seq_along(under_test_sim_paths)) {
-    missing_in_test <- setdiff(baseline_transient_sims,
-                               under_test_transient_sims_list[[i]])
-    if (length(missing_in_test) > 0) {
-      cat("Missing in UNDER-TEST (", under_test_versions[i], "):\n  ",
-          paste(missing_in_test, collapse = ", "), "\n", sep = "")
+if (baseline_is_direct) {
+  # Direct mode: baseline is a simulation directory itself
+  cat("Using DIRECT mode: baseline_sim_path points to a simulation directory\n")
+  
+  # Determine simulation name
+  # If all under_test paths are direct, use basename of first one
+  # Otherwise, auto-detect from parent directories
+  if (all(under_test_is_direct)) {
+    sim_name <- basename(under_test_sim_paths[1])
+    cat("All paths are direct simulation directories\n\n")
+  } else {
+    # Mixed or all parent directories - need to auto-detect
+    cat("Under-test paths are parent directories\n\n")
+    # Get sim names from non-direct paths
+    non_direct_paths <- under_test_sim_paths[!under_test_is_direct]
+    under_test_sims <- lapply(non_direct_paths, get_transient_sims)
+    # Use first common simulation
+    sim_name <- intersect(under_test_sims[[1]], 
+                         if(length(under_test_sims) > 1) 
+                           Reduce(intersect, under_test_sims[-1]) 
+                         else under_test_sims[[1]])[1]
+    if (is.na(sim_name) || length(sim_name) == 0) {
+      stop("Cannot determine simulation name from under-test paths")
     }
   }
+  
+  transient_sims <- sim_name
+  baseline_transient_sims <- sim_name
+  
+} else {
+  # Auto-detect mode: baseline contains subdirectories with simulations
+  cat("Using AUTO-DETECT mode: scanning for transient_* subdirectories\n\n")
+  
+  # Detect transient simulations from baseline directory structure
+  baseline_transient_sims <- get_transient_sims(baseline_sim_path)
 
-  cat("\nOnly benchmarking COMMON simulations:\n  ",
-      paste(transient_sims, collapse = ", "), "\n", sep = "")
-  cat("=========================================================\n\n")
+  # Auto-detect mode: baseline contains subdirectories with simulations
+  cat("Using AUTO-DETECT mode: scanning for transient_* subdirectories\n\n")
+  
+  # Detect transient simulations from baseline directory structure
+  baseline_transient_sims <- get_transient_sims(baseline_sim_path)
+
+  # Check if any transient simulations were found in baseline
+  if (length(baseline_transient_sims) == 0) {
+    stop(paste(
+      "No transient simulation directories found in baseline path:",
+      baseline_sim_path, "\n",
+      "Expected directories starting with 'transient_'\n",
+      "Or provide a direct path to a simulation directory"
+    ))
+  }
+
+  # Detect transient simulations from all under-test directories
+  under_test_transient_sims_list <- lapply(under_test_sim_paths,
+                                           get_transient_sims)
+
+  # Find common simulations across all paths
+  transient_sims <- baseline_transient_sims
+  for (i in seq_along(under_test_transient_sims_list)) {
+    transient_sims <- intersect(transient_sims,
+                                under_test_transient_sims_list[[i]])
+  }
+
+  # Check if there are any common simulations
+  if (length(transient_sims) == 0) {
+    stop(paste(
+      "No common transient simulation directories found across all paths.\n",
+      "Baseline contains:",
+      paste(baseline_transient_sims, collapse = ", "), "\n",
+      "Under-test paths contain different sets of simulations.\n"
+    ))
+  }
+
+  # Check for differences and warn if directories don't match
+  all_sims <- unique(c(baseline_transient_sims,
+                       unlist(under_test_transient_sims_list)))
+  missing_somewhere <- setdiff(all_sims, transient_sims)
+
+  if (length(missing_somewhere) > 0) {
+    cat("WARNING: Not all simulation directories match across all paths!\n")
+    cat("=========================================================\n")
+
+    # Check which are missing from baseline
+    missing_in_baseline <- setdiff(unlist(under_test_transient_sims_list),
+                                   baseline_transient_sims)
+    if (length(missing_in_baseline) > 0) {
+      cat("Missing in BASELINE (", baseline_version, "):\n  ",
+          paste(missing_in_baseline, collapse = ", "), "\n", sep = "")
+    }
+
+    # Check which are missing from each under-test path
+    for (i in seq_along(under_test_sim_paths)) {
+      missing_in_test <- setdiff(baseline_transient_sims,
+                                 under_test_transient_sims_list[[i]])
+      if (length(missing_in_test) > 0) {
+        cat("Missing in UNDER-TEST (", under_test_versions[i], "):\n  ",
+            paste(missing_in_test, collapse = ", "), "\n", sep = "")
+      }
+    }
+
+    cat("\nOnly benchmarking COMMON simulations:\n  ",
+        paste(transient_sims, collapse = ", "), "\n", sep = "")
+    cat("=========================================================\n\n")
+  }
 }
 
 # Print summary
@@ -165,16 +225,63 @@ cat("  Number of sims:      ", length(transient_sims), "\n\n")
 # Run benchmark for each transient simulation
 benchmark_results <- list()
 
+# Create modified default settings with updated variable names to match output files
+bm_default_settings <- default_settings
+var_names <- names(bm_default_settings)
+
+# Define mapping from default_settings names to actual output file names
+name_mapping <- c(
+  "mleaching" = "leaching",
+  "mn_immo" = "n_immo",
+  "mn_mineralization" = "n_mineralization",
+  "mn_volatilization" = "n_volatilization",
+  "mn2_emis" = "n2_emis",
+  "mn2o_denit" = "n2o_denit",
+  "mn2o_nit" = "n2o_nit",
+  "mnuptake" = "nuptake",
+  "mbnf" = "bnf",
+  "flux_estab" = "flux_estabc",
+  "mgpp" = "gpp",
+  "mnpp" = "npp",
+  "anbp" = "nbp",
+  "mrh" = "rh",
+  "mevap" = "evap",
+  "mtransp" = "transp",
+  "minterc" = "interc",
+  "mrunoff" = "runoff"
+)
+
+# Apply all name mappings using gsub
+for (old_name in names(name_mapping)) {
+  var_names <- gsub(paste0("^", old_name, "$"), name_mapping[old_name], var_names)
+}
+
+# Handle pft_harvest prefix replacement
+var_names <- gsub("^pft_harvest", "pft_harvestc", var_names)
+names(bm_default_settings) <- var_names
+
+
+
 for (sim_name in transient_sims) {
   cat("===================================================\n")
   cat("Running benchmark for:", sim_name, "\n")
   cat("===================================================\n")
 
   # Construct baseline directory
-  baseline_dir <- file.path(baseline_sim_path, sim_name)
+  if (baseline_is_direct) {
+    baseline_dir <- baseline_sim_path
+  } else {
+    baseline_dir <- file.path(baseline_sim_path, sim_name)
+  }
 
   # Construct under-test directories
-  under_test_dirs <- file.path(under_test_sim_paths, sim_name)
+  under_test_dirs <- sapply(seq_along(under_test_sim_paths), function(i) {
+    if (under_test_is_direct[i]) {
+      under_test_sim_paths[i]
+    } else {
+      file.path(under_test_sim_paths[i], sim_name)
+    }
+  })
 
   # Generate description
   if (length(under_test_versions) == 1) {
@@ -208,7 +315,8 @@ for (sim_name in transient_sims) {
       author = author,
       description = description,
       output_file = output_file,
-      pdf_report = TRUE
+      pdf_report = TRUE,
+      settings = bm_default_settings
     )
     benchmark_results[[sim_name]] <- bm_result
     cat("Successfully completed benchmark for", sim_name, "\n\n")

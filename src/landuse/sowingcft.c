@@ -182,6 +182,29 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
         if(irrigation->irrigation==irrig && stand->frac > (2*param.tinyfrac+epsilon) && stand->frac > landfrac+epsilon && cell->ml.landfrac[irrig].crop[cft]>0)
         {
           difffrac=min(stand->frac-param.tinyfrac,stand->frac-landfrac);
+          /* pay back irrigation storage for the split-off fraction before reducing stand frac */
+          if(irrigation->irrig_stor+irrigation->irrig_amount>0)
+          {
+            /* return irrigation storage for split-off fraction to lake */
+            cell->discharge.dmass_lake+=(irrigation->irrig_stor+irrigation->irrig_amount)*cell->coord.area*difffrac;
+            cell->balance.awater_flux-=(irrigation->irrig_stor+irrigation->irrig_amount)*difffrac;
+            getoutput(&cell->output,STOR_RETURN,config)+=(irrigation->irrig_stor+irrigation->irrig_amount)*difffrac;
+            /* pay back evaporative conveyance losses for split-off fraction */
+            cell->discharge.dmass_lake+=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*irrigation->conv_evap*cell->coord.area*difffrac;
+            cell->balance.awater_flux-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*irrigation->conv_evap*difffrac;
+            getoutput(&cell->output,CONV_LOSS_EVAP,config)-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*irrigation->conv_evap*difffrac;
+            cell->balance.aconv_loss_evap-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*irrigation->conv_evap*difffrac;
+            /* pay back drainage conveyance losses for split-off fraction */
+            getoutput(&cell->output,CONV_LOSS_DRAIN,config)-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*(1-irrigation->conv_evap)*difffrac;
+            cell->balance.aconv_loss_drain-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*(1-irrigation->conv_evap)*difffrac;
+#if defined IMAGE && defined COUPLED
+            if(cell->ml.image_data!=NULL)
+            {
+              cell->ml.image_data->mirrwatdem[0]-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*difffrac;
+              cell->ml.image_data->mevapotr[0]-=(irrigation->irrig_stor+irrigation->irrig_amount)*(1/irrigation->ec-1)*difffrac;
+            }
+#endif
+          }
           pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;

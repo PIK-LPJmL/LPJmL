@@ -148,12 +148,11 @@ if (!is.null(runs_filter)) {
 }
 
 outputvars_benchmark <- c(
-  "vegc", "soilc", "litc", "vegn", "soiln", "soilnh4",
-  "soilno3", "leaching", "n_immo", "n_mineralization",
-  "n_volatilization", "n2_emis", "n2o_denit", "n2o_nit",
-  "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
-  "nbp", "rh", "evap", "transp", "interc", "runoff",
-  "fpc", "pft_harvestc"
+  "grid", "terr_area", "land_area", "lake_area", "vegc", "soilc", "litc",
+  "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
+  "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
+  "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
+  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc", "pft_harvestc"
 )
 
 # Write configs for all runs (needed for dependency resolution)
