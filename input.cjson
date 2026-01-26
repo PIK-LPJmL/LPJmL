@@ -18,7 +18,7 @@
   "slope_mean" :   { "fmt" : "meta", "name" : "GloSlope-30as_mean.clm.json"},
   "slope_min"  :   { "fmt" : "meta", "name" : "GloSlope-30as_min.clm.json"},
   "slope_max"  :   { "fmt" : "meta", "name" : "GloSlope-30as_max.clm.json"},
-  "ch4" :          { "fmt" : "meta", "name" : "CH4_concentration_1700-2022.dat.json"},
+  "ch4" :          { "fmt" : "txt", "name" : "CH4_concentration_1700-2022.dat"},
   "hydrotopes" :   { "fmt" : "meta", "name" : "hydro2_shuffle_new.clm.json"},
 #ifdef CRU_MONTHLY
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
