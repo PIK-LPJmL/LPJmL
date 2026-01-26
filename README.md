@@ -80,7 +80,7 @@ Outside of collaborative agreements with PIK:
 
 ## License
 LPJmL is open-source software licensed under the GNU Affero General Public License Version 3 (AGPLv3).
-See the [LICENSE](./LICENSE) file for details.
+See the [LICENSE](./LICENSE.md) file for details.
 
 ## Acknowledgments
 LPJmL is the result of collaborative work. See the [AUTHORS](./AUTHORS.md) file for contributors.
