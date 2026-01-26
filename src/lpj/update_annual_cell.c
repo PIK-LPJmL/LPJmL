@@ -144,7 +144,7 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in update_annual_cell(): year=%d, error=%g, start=%g, end=%g, balance.carbon=%g",
          year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE, "Invalid water balance in update_annual_cell(): year=%d, error=%g, start=%g, end=%g\n",
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE, "Invalid water balance in update_annual_cell(): year=%d, error=%g, start=%g, end=%g",
          year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen - end.nitrogen+balance.nitrogen)>0.001)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in update_annual_cell(): year=%d, error=%g, start=%g, end=%g, balance.nitrogen=%g",

@@ -255,13 +255,13 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   end = vegc_sum(pft)+stocks.carbon+neg_flux;
 
   if(fabs(end-start.carbon)>0.0001)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in allocation_grass(): %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g .neg_fluxes.carbon: %g",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in allocation_grass(): %g start : %g end : %g bm_inc.carbon: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g leaf_turn: %g neg_fluxes.carbon: %g",
         end-start.carbon, start.carbon,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon,neg_flux);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
 
   if(fabs(end-start.nitrogen)>epsilon)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in allocation_grass(): %g start : %g end : %g  bm_inc.nitrogen: %g   PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in allocation_grass(): %g start : %g end : %g bm_inc.nitrogen: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g leaf_turn: %g",
          end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,grass->turn.root.nitrogen,grass->turn.leaf.nitrogen);
 #endif
 

@@ -612,7 +612,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       soil->NH4[l]+=F_Nmineral;
 #ifdef SAFE
       if(soil->NH4[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"2 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
+        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
       if(soil->pool[l].fast.carbon<-epsilon || soil->pool[l].slow.carbon<-epsilon)
       {
         fail(NEGATIVE_SOIL_CARBON_ERR,TRUE,TRUE,"Negative soil carbon in cell (s), fast.carbon[%d]: %g slow.carbon: %g decom_sum.carbon: %g decay_litter: %g",
@@ -720,21 +720,22 @@ if(soil->NH4[l]<-epsilon)
   if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4))>0.0001)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s at the end: iswetland: %d type: %s %.8f start: %.8f  end: %.8f decomCO2: %.8f methane_em: %.8f"
-        " oxidation: %.8f decom_litter: %.8f soil_cflux: %.8f stand->frac: %g decay_litter: %g ch4_sink: %g \n",
+        " oxidation: %.8f decom_litter: %.8f soil_cflux: %.8f stand->frac: %g decay_litter: %g ch4_sink: %g",
          __FUNCTION__,soil->iswetland,stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4,
          oxidation_stand,decom_litter.carbon*param.atmfrac,soil_cflux,stand->frac,decay_litter,*ch4_sink*WC/WCH4);
     //fprintsoil(stderr,&stand->soil,config->pftpar,npft+ncft);
     //forrootsoillayer(l) fprintf(stderr,"socfracion: %g ",soil->socfraction[l][stand->soil.litter.item[p].pft->id]);
-    fprintf(stderr,"\n");
+    //fprintf(stderr,"\n");
   }
   if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.0001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start: %.8f  end: %.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start: %.8f  end: %.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g",
          __FUNCTION__,soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
          start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
   balanceW=water_after-water_before-*MT_water+*runoff;
   if(fabs(balanceW)>epsilon)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g stand->frac: %g\n"
-         "MT_water_local: %g runoff_local= %g\n",__FUNCTION__,balanceW,water_after,water_before,water_after-water_before,soil->w[0],soil->w[1],*MT_water,*runoff,stand->frac);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g stand->frac: %g"
+         "MT_water_local: %g runoff_local: %g",
+         __FUNCTION__,balanceW,water_after,water_before,water_after-water_before,soil->w[0],soil->w[1],*MT_water,*runoff,stand->frac);
 #endif
   return flux;
 } /* of 'littersom' */

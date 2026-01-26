@@ -713,14 +713,16 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 //  }
     if(fabs(balanceW)>0.0001)
     {
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
-          "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
-          "  ground_st_am: %g ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
-          __FUNCTION__,day,balanceW,excess_old,cell->balance.excess_water,gw_outflux,
+      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: %d balanceW: %g exess_old: %g balance.excess_water: %g\n"
+           "=====001: gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g\n"
+           "=====002: atransp: %g aevap %g ainterc %g aevap_lake %g aevap_res: %g airrig : %g aMT_water : %g\n"
+           "=====003: MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g dmassriver : %g\n"
+           "=====004: ground_st_am: %g ground_st: %g gw_balance: %g groundwater: %g irrigstore_bal: %g",
+           __FUNCTION__,day,balanceW,excess_old,cell->balance.excess_water,gw_outflux,
           water_after,water_before,climate->prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
-          ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
-          cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
-          cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),groundwater,irrigstore_end-irrigstore);
+           ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+           cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
+           cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),groundwater,irrigstore_end-irrigstore);
     }
 #endif
 

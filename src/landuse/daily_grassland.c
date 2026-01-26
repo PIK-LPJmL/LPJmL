@@ -623,7 +623,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(fabs(balancew)>0.001 && stand->frac>0.00001)
   {
 
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g wstore: %g wstore_new: %g wstore_old: %g \n",
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g wstore: %g wstore_new: %g wstore_old: %g",
         __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrigation.irrig_stor,stand->frac,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
   }
 ////////CARBON//////////////
@@ -648,8 +648,9 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>epsilon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
-        "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g\n",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  error: %g start: %g end: %g CH4_fluxes: %g\n"
+        "=====001: flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g\n"
+        "=====002: fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g",
         __FUNCTION__,day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
         stand->cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, stand->cell->balance.neg_fluxes.carbon,stand->cell->output.bm_inc,stand->cell->balance.arh,stand->cell->balance.aCH4_sink*WC/WCH4,
         stand->cell->balance.aCH4_em*WC/WCH4,dcflux);
@@ -666,8 +667,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
        stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
   if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-        "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d error: %g start: %g end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
+        "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g",
         __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
         fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
     foreachstand(checkstand,s,stand->cell->standlist)

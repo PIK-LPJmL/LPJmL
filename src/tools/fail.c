@@ -25,7 +25,7 @@ static void printfailerr2(int errcode,Bool stop,const char *msg,va_list ap)
   char *s;
   int len;
   if(stop)
-    len=strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1;
+    len=strlen(msg)+strlen("ERROR000: ")+strlen(".\nProgram terminated unsuccessfully.\n")+1;
   else
     len=strlen(msg)+strlen("ERROR000: ")+strlen(".\n")+1;
   /*
@@ -39,7 +39,7 @@ static void printfailerr2(int errcode,Bool stop,const char *msg,va_list ap)
     errcode=1;
   snprintf(s,len,"ERROR%03d: ",errcode);
   strcat(s,msg);
-  strcat(s,(stop) ? ", program terminated unsuccessfully.\n" : ".\n");
+  strcat(s,(stop) ? ".\nProgram terminated unsuccessfully.\n" : ".\n");
   vfprintf(stderr,s,ap);
   fflush(stderr);
 }  /* of 'printfailerr2' */

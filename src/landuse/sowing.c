@@ -75,7 +75,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
   if(fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon)>0.0001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d    %g start: %g end: %g flux_out.carbon: %g fluxes_in.carbon: %g flux_estab.carbon: %g CH4_fluxes: %g",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d error: %g start: %g end: %g flux_out.carbon: %g fluxes_in.carbon: %g flux_estab.carbon: %g CH4_fluxes: %g",
           __FUNCTION__,day,end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon,start.carbon,end,fluxes_out.carbon,fluxes_in.carbon,flux_estab.carbon,CH4_fluxes);
   }
   fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
@@ -88,7 +88,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   end+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
        cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
   if(fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen-flux_estab.nitrogen)>0.001)
-     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d    %g start: %.3f  end: %.3f influx: %g outflux: %g flux_estab.nitrogen: %g",
+     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d error: %g start: %.3f  end: %.3f influx: %g outflux: %g flux_estab.nitrogen: %g",
           __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen-flux_estab.nitrogen,start.nitrogen,end,fluxes_in.nitrogen,fluxes_out.nitrogen,flux_estab.nitrogen);
 #endif
   getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen;
