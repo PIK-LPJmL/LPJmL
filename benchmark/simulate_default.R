@@ -107,7 +107,7 @@ runs <- tibble::tibble(
     NA, NA, "spinup_full", "spinup_reduced", "spinup_full",
     "spinup_reduced"
   ),
-  percolation_heattransfer = c(NA, FALSE, NA, FALSE, NA, FALSE),
+  with_methane = c(NA, FALSE, NA, FALSE, NA, FALSE),
   landuse = c(NA, NA, "no", "no", NA, NA),
   wateruse = c(NA, NA, FALSE, FALSE, NA, NA)
 )
