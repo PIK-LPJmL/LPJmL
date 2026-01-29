@@ -92,8 +92,17 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     else
     {
       /* negative bm_inc reduces leaves and roots proportionally */
-      inc_ind.leaf.carbon=bm_inc_ind.carbon*grass->ind.leaf.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
-      inc_ind.root.carbon=bm_inc_ind.carbon*grass->ind.root.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+      if(grass->ind.root.carbon+grass->ind.leaf.carbon > epsilon)
+      {
+        inc_ind.leaf.carbon=bm_inc_ind.carbon*grass->ind.leaf.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+        inc_ind.root.carbon=bm_inc_ind.carbon*grass->ind.root.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+      }
+      else
+      {
+        /* Plant has no carbon - split equally */
+        inc_ind.leaf.carbon=bm_inc_ind.carbon*0.5;
+        inc_ind.root.carbon=bm_inc_ind.carbon*0.5;
+      }
     }
     output->bm_inc=pft->bm_inc.carbon;
     pft->bm_inc.carbon-=(inc_ind.leaf.carbon+inc_ind.root.carbon)*pft->nind;
@@ -157,13 +166,13 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   if(grass->ind.leaf.carbon<0){
     litter->item[pft->litter].bg.carbon+=grass->ind.leaf.carbon;
     grass->ind.leaf.carbon=0;
-    if(litter->item[pft->litter].agtop.leaf.carbon<0)
+    if(litter->item[pft->litter].bg.carbon<0)
     {
 #ifdef CHECK_BALANCE
-      neg_flux+=litter->item[pft->litter].agtop.leaf.carbon;
+      neg_flux+=litter->item[pft->litter].bg.carbon;
 #endif
-      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].agtop.leaf.carbon*pft->stand->frac;
-      litter->item[pft->litter].agtop.leaf.carbon=0;
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].bg.carbon*pft->stand->frac;
+      litter->item[pft->litter].bg.carbon=0;
     }
   }
 
