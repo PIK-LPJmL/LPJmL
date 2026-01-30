@@ -66,6 +66,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
   Hashitem *item,key;
   Var *var;
   long long filepos;
+  int size;
 #ifdef DEBUG_BSTRUCT
   printf("Looking for %s\n",name);
 #endif
@@ -81,6 +82,26 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
         bstruct_printnamestack(bstr);
       }
       return TRUE;
+    }
+    else if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINARRAY && *token==BSTRUCT_INDEXARRAY)
+    {
+      /* skip index array object */
+      if(freadint(&size,1,bstr->swap,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR512: Cannot read length of index array skippping data.\n");
+        return TRUE;
+      }
+      if(size!=bstr->namestack[bstr->level-1].size)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR512: Size of index array=%d is not equal to size of array=%d skippping data.\n",
+                  size,bstr->namestack[bstr->level-1].size);
+        return TRUE;
+      }
+      fseek(bstr->file,size*sizeof(long long),SEEK_CUR);
+      if(bstruct_readtoken(bstr,token,token_expected,name))
+        return TRUE;
     }
     if(bstruct_hasname(*token))
     {
@@ -149,6 +170,16 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
          return TRUE;
        }
        /* found, goto object position */
+       if(filepos<0 || filepos>=getfilesizep(bstr->file))
+       {
+         if(bstr->isout)
+         {
+           fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s'.\n",
+                   name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+           bstruct_printnamestack(bstr);
+         }
+         return TRUE;
+       }
        fseek(bstr->file,filepos,SEEK_SET);
        return FALSE;
     }
@@ -258,6 +289,17 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
             return TRUE;
           }
           /* found, goto object position */
+          if(filepos<0 || filepos>=getfilesizep(bstr->file))
+          {
+            if(bstr->isout)
+            {
+              fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s'.\n",
+                      name,bstruct_typenames[token_expected],
+                      getname(bstr->namestack[bstr->level-1].name));
+              bstruct_printnamestack(bstr);
+            }
+            return TRUE;
+          }
           fseek(bstr->file,filepos,SEEK_SET);
           return FALSE;
         }

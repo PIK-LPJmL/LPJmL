@@ -11,6 +11,7 @@
 #include "list.h"
 #include "hash.h"
 #include "swap.h"
+#include "getfilesizep.h"
 #include "freadtopheader.h"
 #include "fwritetopheader.h"
 #include "fputprintable.h"

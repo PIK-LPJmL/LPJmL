@@ -115,16 +115,17 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   }
   /* save file position and seek to table */
   save=ftell(bstruct->file);
-  if(fseek(bstruct->file,filepos,SEEK_SET))
+  if(filepos<0 || filepos>=getfilesizep(bstruct->file))
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot seek to name table in '%s'.\n",
+      fprintf(stderr,"ERROR517: Cannot seek to name table in '%s', file is too short.\n",
               filename);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
+  fseek(bstruct->file,filepos,SEEK_SET);
   /* read size of name table */
   if(freadint(&bstruct->count,1,bstruct->swap,bstruct->file)!=1)
   {

@@ -45,11 +45,12 @@ Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
       fprintf(stderr,"ERROR510: Size of index array=%d not %d.\n",n,size);
     return TRUE;
   }
-  if(fseek(bstr->file,sizeof(long long)*index,SEEK_CUR))
+  if(index<0 || index>=getfilesizep(bstr->file))
   {
     fprintf(stderr,"ERROR511: Cannot skip to %d in index array.\n",index);
     return TRUE;
   }
+  fseek(bstr->file,sizeof(long long)*index,SEEK_CUR);
   if(freadlong(&pos,1,bstr->swap,bstr->file)!=1)
   {
     fprintf(stderr,"ERROR512: Cannot read file index for %d.\n",index);
