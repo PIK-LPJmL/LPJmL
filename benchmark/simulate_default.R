@@ -145,7 +145,8 @@ if (!is.null(runs_subset)) {
   }
 }
 
-outputvars_benchmark <- c(
+# Base outputs for all benchmark runs
+outputvars_base <- c(
   "grid", "terr_area", "land_area", "lake_area", "cftfrac", "vegc", "soilc",
   "litc", "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
   "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
@@ -153,14 +154,39 @@ outputvars_benchmark <- c(
   "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc", "pft_harvestc"
 )
 
-# Write configs for all runs (needed for dependency resolution)
-configs <- write_config(
-  x = runs,
+# Additional outputs for full runs (with methane cycle)
+# TODO: Add methane-specific outputs here once available
+outputvars_methane <- c(
+  # e.g., "mch4_emis", "mch4_oxid", ...
+)
+
+# Combine outputs based on run type
+outputvars_reduced <- outputvars_base
+outputvars_full <- c(outputvars_base, outputvars_methane)
+
+# Split runs into reduced and full
+runs_reduced <- runs[grepl("_reduced", runs$sim_name), ]
+runs_full <- runs[!grepl("_reduced", runs$sim_name), ]
+
+# Write configs separately for reduced and full runs
+configs_reduced <- write_config(
+  x = runs_reduced,
   model_path = model_path,
   sim_path = sim_path,
-  output_list = outputvars_benchmark,
+  output_list = outputvars_reduced,
   output_list_timestep = "annual"
 )
+
+configs_full <- write_config(
+  x = runs_full,
+  model_path = model_path,
+  sim_path = sim_path,
+  output_list = outputvars_full,
+  output_list_timestep = "annual"
+)
+
+# Combine configs
+configs <- rbind(configs_full, configs_reduced)
 
 # Filter configs to submit only the requested runs
 if (!is.null(runs_to_submit)) {
