@@ -4,19 +4,19 @@
 # Rscript simulate_default.R sim_path="/path/to/results"
 # Rscript simulate_default.R sim_path="/path/to/results" ntasks=256
 # Rscript simulate_default.R sim_path="/path/to/results" ntasks=256 \
-#   blocking=64 model_path="../bin/lpjml" qos="short"
+#   blocking=64 model_path="../bin/lpjml" qos="standby"
 # Rscript simulate_default.R sim_path="/path/to/results" \
-#   runs_filter="transient_full_pnv,transient_full_lu" wtime="10:00:00"
+#   runs_subset="transient_full_pnv,transient_full_lu" wtime="10:00:00"
 # Rscript simulate_default.R sim_path="/path/to/results" \
-#   runs_filter="1,3,5" wtime="10:00:00"
+#   runs_subset="1,3,5" wtime="10:00:00"
 #
 # Arguments (use name=value format):
 #   sim_path    : Path for simulation results (required)
 #   ntasks      : Number of parallel tasks (default: 512)
 #   blocking    : Cores per task to block (default: 128, or "unlimited")
 #   model_path  : Path to model directory with binary and configs (default: .)
-#   qos         : Quality of service (optional, default: "short")
-#   runs_filter : Comma-separated list of simulation names or
+#   qos         : Quality of service (optional, default: "standby")
+#   runs_subset : Comma-separated list of simulation names or
 #                 indices (default: all)
 #   wtime       : Wall time for all runs (default: NULL, uses lpjmlkit defaults)
 
@@ -33,7 +33,7 @@ parse_args <- function(args) {
     blocking = 128,
     model_path = getwd(),
     qos = "standby",
-    runs_filter = NULL,
+    runs_subset = NULL,
     wtime = NULL
   )
 
@@ -72,20 +72,18 @@ parsed_args <- parse_args(args)
 if (is.null(parsed_args$sim_path)) {
   stop(paste(
     "Usage: Rscript simulate_default.R sim_path=<path>",
-    "[ntasks=512] [blocking=128] [model_path=.] [runs_filter=<names>] ",
-    "[wtime=<time>]\n",
-    "  sim_path    : Path where simulation results will be stored",
-    "(required)\n",
-    "  ntasks      : Number of tasks for parallel execution",
-    "(optional, default: 512)\n",
+    "[ntasks=512] [blocking=128] [model_path=.] [qos=standby]",
+    "[runs_subset=<names>] [wtime=<time>]\n",
+    "  sim_path    : Path where simulation results will be stored (required)\n",
+    "  ntasks      : Number of tasks for parallel execution (default: 512)\n",
     "  blocking    : Number of cores per task to be blocked or 'unlimited'",
-    "(optional, default: 128)\n",
-    "  model_path  : Path to model directory with binary and configs ",
-    "(optional, default: .)\n",
-    "  runs_filter : Comma-separated list of simulation names or indices ",
-    "(optional, default: all)\n",
-    "  wtime       : Wall time for all runs (optional, default: ",
-    "uses lpjmlkit defaults)"
+    "(default: 128)\n",
+    "  model_path  : Path to model directory with binary and configs",
+    "(default: .)\n",
+    "  qos         : SLURM quality of service class (default: standby)\n",
+    "  runs_subset : Comma-separated simulation names or indices",
+    "(default: all)\n",
+    "  wtime       : Wall time for all runs (default: 7 days for standby qos)"
   ))
 }
 
@@ -94,7 +92,7 @@ ntasks <- parsed_args$ntasks
 blocking <- parsed_args$blocking
 model_path <- parsed_args$model_path
 qos <- parsed_args$qos
-runs_filter <- parsed_args$runs_filter
+runs_subset <- parsed_args$runs_subset
 wtime <- parsed_args$wtime
 
 runs <- tibble::tibble(
@@ -114,8 +112,8 @@ runs <- tibble::tibble(
 
 # Store filtered run indices/names if filter is specified
 runs_to_submit <- NULL
-if (!is.null(runs_filter)) {
-  filter_values <- strsplit(runs_filter, ",")[[1]]
+if (!is.null(runs_subset)) {
+  filter_values <- strsplit(runs_subset, ",")[[1]]
   filter_values <- trimws(filter_values) # Remove whitespace
 
   # Check if filter values are numeric indices or names
@@ -148,8 +146,8 @@ if (!is.null(runs_filter)) {
 }
 
 outputvars_benchmark <- c(
-  "grid", "terr_area", "land_area", "lake_area", "cftfrac", "vegc", "soilc", "litc",
-  "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
+  "grid", "terr_area", "land_area", "lake_area", "cftfrac", "vegc", "soilc",
+  "litc", "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
   "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
   "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
   "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc", "pft_harvestc"
