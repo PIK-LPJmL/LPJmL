@@ -180,7 +180,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon-pft->establish.carbon;
   if(fabs(end-start.carbon)>0.0001)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in turnover_grass(): landusetype %s : %g start : %g end : %g bm_inc.carbon: %g\n"
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in turnover_grass(): landusetype: %s error: %g start: %g end: %g bm_inc.carbon: %g\n"
          "=====001: bminc_old: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
          "=====002: leaf_turn: %g reprod: %g litter_old: %g litter: %g est.carbon: %g est.carbon_old: %g\n"
          "=====003:  fraction: %g vegsum: %g vegsum_old: %g excess_carbon: %g excess_carbon_old: %g",
@@ -188,8 +188,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
          grass->turn.root.carbon,grass->turn.leaf.carbon,reprod1,litter_old,stocks.carbon,pft->establish.carbon, establish_old, fraction,vegc_sum(pft),vegsum_old,grass->excess_carbon,ecxess_carbon_old);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen-pft->establish.nitrogen;
-  if(TRUE || fabs(end-start.nitrogen)>0.00001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in turnover_grass(): landusetype %s : %g start : %g end : %g\n"
+  if(fabs(end-start.nitrogen)>0.00001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in turnover_grass(): landusetype:%s error: %g start: %g end: %g\n"
          "=====001: bm_inc.nitrogen: %g bminc_old: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
          "=====002: leaf_turn: %g reprod: %g litter_old: %g litter: %g est.nitrogen: %g\n"
          "=====003: est.nitrogen_old: %g fraction: %g vegsum: %g",
