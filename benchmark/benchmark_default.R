@@ -260,12 +260,12 @@ create_bm_settings <- function(base_settings, name_mapping) {
   base_settings
 }
 
-# Create settings for reduced runs (base outputs only)
-bm_settings_reduced <- create_bm_settings(default_settings, name_mapping)
+# Create settings for no_methane runs (base outputs only)
+bm_settings_no_methane <- create_bm_settings(default_settings, name_mapping)
 
-# Create settings for full runs by adding methane-specific outputs
+# Create settings for methane runs by adding methane-specific outputs
 # TODO: Add methane settings once available (copy from existing, rename)
-bm_settings_full <- bm_settings_reduced
+bm_settings_methane <- bm_settings_no_methane
 
 
 
@@ -310,12 +310,12 @@ for (sim_name in transient_sims) {
   }
 
   # Select appropriate settings based on run type
-  if (grepl("_reduced", sim_name)) {
-    bm_settings <- bm_settings_reduced
-    run_type <- "reduced"
+  if (grepl("no_methane", sim_name)) {
+    bm_settings <- bm_settings_no_methane
+    run_type <- "no_methane"
   } else {
-    bm_settings <- bm_settings_full
-    run_type <- "full"
+    bm_settings <- bm_settings_methane
+    run_type <- "methane"
   }
 
   cat("  Baseline:    ", baseline_dir, "\n")

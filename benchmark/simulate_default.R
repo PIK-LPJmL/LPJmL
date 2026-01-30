@@ -6,7 +6,7 @@
 # Rscript simulate_default.R sim_path="/path/to/results" ntasks=256 \
 #   blocking=64 model_path="../bin/lpjml" qos="standby"
 # Rscript simulate_default.R sim_path="/path/to/results" \
-#   runs_subset="transient_full_pnv,transient_full_lu" wtime="10:00:00"
+#   runs_subset="transient_methane_pnv,transient_methane_lu" wtime="10:00:00"
 # Rscript simulate_default.R sim_path="/path/to/results" \
 #   runs_subset="1,3,5" wtime="10:00:00"
 #
@@ -97,13 +97,13 @@ wtime <- parsed_args$wtime
 
 runs <- tibble::tibble(
   sim_name = c(
-    "spinup_full", "spinup_reduced", "transient_full_pnv",
-    "transient_reduced_pnv", "transient_full_lu",
-    "transient_reduced_lu"
+    "spinup_methane", "spinup_no_methane", "transient_methane_pnv",
+    "transient_no_methane_pnv", "transient_methane_lu",
+    "transient_no_methane_lu"
   ),
   dependency = c(
-    NA, NA, "spinup_full", "spinup_reduced", "spinup_full",
-    "spinup_reduced"
+    NA, NA, "spinup_methane", "spinup_no_methane", "spinup_methane",
+    "spinup_no_methane"
   ),
   with_methane = c(NA, FALSE, NA, FALSE, NA, FALSE),
   landuse = c(NA, NA, "no", "no", NA, NA),
@@ -161,32 +161,32 @@ outputvars_methane <- c(
 )
 
 # Combine outputs based on run type
-outputvars_reduced <- outputvars_base
-outputvars_full <- c(outputvars_base, outputvars_methane)
+outputvars_no_methane <- outputvars_base
+outputvars_with_methane <- c(outputvars_base, outputvars_methane)
 
-# Split runs into reduced and full
-runs_reduced <- runs[grepl("_reduced", runs$sim_name), ]
-runs_full <- runs[!grepl("_reduced", runs$sim_name), ]
+# Split runs into methane and no_methane
+runs_no_methane <- runs[grepl("no_methane", runs$sim_name), ]
+runs_methane <- runs[!grepl("no_methane", runs$sim_name), ]
 
-# Write configs separately for reduced and full runs
-configs_reduced <- write_config(
-  x = runs_reduced,
+# Write configs separately for methane and no_methane runs
+configs_no_methane <- write_config(
+  x = runs_no_methane,
   model_path = model_path,
   sim_path = sim_path,
-  output_list = outputvars_reduced,
+  output_list = outputvars_no_methane,
   output_list_timestep = "annual"
 )
 
-configs_full <- write_config(
-  x = runs_full,
+configs_methane <- write_config(
+  x = runs_methane,
   model_path = model_path,
   sim_path = sim_path,
-  output_list = outputvars_full,
+  output_list = outputvars_with_methane,
   output_list_timestep = "annual"
 )
 
 # Combine configs
-configs <- rbind(configs_full, configs_reduced)
+configs <- rbind(configs_methane, configs_no_methane)
 
 # Filter configs to submit only the requested runs
 if (!is.null(runs_to_submit)) {
