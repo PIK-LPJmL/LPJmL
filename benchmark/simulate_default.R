@@ -107,7 +107,7 @@ runs <- tibble::tibble(
     NA, NA, "spinup_full", "spinup_reduced", "spinup_full",
     "spinup_reduced"
   ),
-  percolation_heattransfer = c(NA, FALSE, NA, FALSE, NA, FALSE),
+  with_methane = c(NA, FALSE, NA, FALSE, NA, FALSE),
   landuse = c(NA, NA, "no", "no", NA, NA),
   wateruse = c(NA, NA, FALSE, FALSE, NA, NA)
 )
@@ -148,7 +148,7 @@ if (!is.null(runs_filter)) {
 }
 
 outputvars_benchmark <- c(
-  "grid", "terr_area", "land_area", "lake_area", "vegc", "soilc", "litc",
+  "grid", "terr_area", "land_area", "lake_area", "cftfrac", "vegc", "soilc", "litc",
   "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
   "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
   "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",

@@ -257,7 +257,7 @@ for (old_name in names(name_mapping)) {
 }
 
 # Handle pft_harvest prefix replacement
-var_names <- gsub("^pft_harvest", "pft_harvestc", var_names)
+var_names <- gsub("^pft_harvest.pft", "pft_harvestc", var_names)
 names(bm_default_settings) <- var_names
 
 
