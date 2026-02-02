@@ -639,7 +639,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
       printinputfile(file,(config->with_radiation==RADIATION) ? "lwnet" : "lwdown",
                      &config->lwnet_filename,width,config);
-    printinputfile(file,(config->isswnet) ? "swnet" : "swdown",&config->swdown_filename,width,config);
+    printinputfile(file,"swdown",&config->swdown_filename,width,config);
   }
   else
     printinputfile(file,"cloud",&config->cloud_filename,width,config);

@@ -345,9 +345,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
   }
   fscanbool2(file,&config->ispopulation,"population");
-  config->isswnet=FALSE;
-  if(fscanbool(file,&config->isswnet,"isswnet",!config->pedantic,verbose))
-    return TRUE;
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,!config->pedantic,verbose))
     return TRUE;
@@ -937,25 +934,25 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
       if (config->isanomaly)
         scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwnet");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       if (config->isanomaly)
-        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, (config->isswnet) ? "delta_swnet": "delta_swdown");
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE,"delta_swdown");
       break;
     case RADIATION_LWDOWN:
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
       if (config->isanomaly)
-        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwdown");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
+        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE,"delta_lwdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       if (config->isanomaly)
-        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, (config->isswnet) ? "delta_swnet": "delta_swdown");
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE,"delta_swdown");
       break;
     case CLOUDINESS:
       scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       if (config->isanomaly)
-        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, (config->isswnet) ? "delta_swnet": "delta_swdown");
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, "delta_swdown");
      break;
     default:
       if(verbose)

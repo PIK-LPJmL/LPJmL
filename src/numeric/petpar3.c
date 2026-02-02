@@ -40,7 +40,6 @@ void petpar3(Real *daylength, /**< daylength (h) */
              int day,         /**< day (1..365) */
              Real temp,       /**< temperature (deg C) */
              Real swdown,     /**< shortwave downward flux (W m-2) */
-             Bool isswnet,    /**< shortwave net radiation (TRUE/FALSE) */
              Real beta        /**< albedo */
             )
 {
@@ -50,10 +49,7 @@ void petpar3(Real *daylength, /**< daylength (h) */
   u=sin(deg2rad(lat))*sin(delta);
   v=cos(deg2rad(lat))*cos(delta);
 
-  if(isswnet)
-    swnet=swdown;  /* shortwave net flux, downward positive (W m-2) */
-  else
-    swnet=(1-beta)*swdown;  /* shortwave net flux, downward positive (W m-2) */
+  swnet=(1-beta)*swdown;  /* shortwave net flux, downward positive (W m-2) */
 
   if(u>=v)
   {

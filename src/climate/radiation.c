@@ -36,14 +36,14 @@ void radiation(Real *daylength,       /**< daylength (h) */
       break;
     case RADIATION:
       petpar2(daylength,par,eeq,lat,day,climate->temp,
-              climate->lwnet,climate->swdown,FALSE,config->isswnet,beta);
+              climate->lwnet,climate->swdown,FALSE,beta);
       break;
     case RADIATION_LWDOWN:
       petpar2(daylength,par,eeq,lat,day,climate->temp,
-              climate->lwnet,climate->swdown,TRUE,config->isswnet,beta);
+              climate->lwnet,climate->swdown,TRUE,beta);
       break;
     case RADIATION_SWONLY:
-      petpar3(daylength,par,eeq,lat,day,climate->temp,climate->swdown,config->isswnet,beta);
+      petpar3(daylength,par,eeq,lat,day,climate->temp,climate->swdown,beta);
       break;
 #ifdef SAFE
     default:

@@ -69,11 +69,10 @@
 #endif
     "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
 #endif /* CRU_MONTHLY */
-  "isswnet" : false,          /* short-wave data is net radiation */
   "gsilivefuel" : true,
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
-  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+  "fireduration" : [{"stand" : "grassland", "duration" : [120,480] ,"ndayfire" : 1},
                     {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 3},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
   "prescribe_ignition" : false, /* read ignitions from file */
