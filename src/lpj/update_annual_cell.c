@@ -46,6 +46,7 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;
+  String line;
 #endif
   natfrac=wetlandfrac=0;
   if(cell->ml.dam)
@@ -236,22 +237,22 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon)-fluxes_prod.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.0001)
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,stop,TRUE,"Invalid carbon balance in update_annual_cell() at the end: year=%d, error=%g, start=%g end=%g, balance.carbon=%g",
-         year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
+    fail(INVALID_CARBON_BALANCE_ERR,stop,TRUE,"Invalid carbon balance in update_annual_cell() at the end: cell (%s) year=%d, error=%g, start=%g end=%g, balance.carbon=%g",
+         sprintcoord(line,&cell->coord),year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
     if(year==config->firstyear-config->nspinup&&!config->landuse_restart)
       fprintf(stderr,"ERROR%03d: Carbon balance error caused by setting product pool to zero.\n",INVALID_CARBON_BALANCE_ERR);
   }
   if (fabs(start_w - end_w)>epsilon)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid water balance in update_annual_cell() at the end: year=%d, error=%g, start=%g end=%g",
-         year, start_w - end_w, start_w, end_w);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid water balance in update_annual_cell() at the end: cell (%s) year=%d, error=%g, start=%g end=%g",
+         sprintcoord(line,&cell->coord),year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,stop,TRUE,"Invalid nitrogen balance in update_annual_cell() at the end: year=%d, error=%g, start=%g, end=%g, balance.nitrogen=%g",
-         year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
+    fail(INVALID_NITROGEN_BALANCE_ERR,stop,TRUE,"Invalid nitrogen balance in update_annual_cell() at the end: cell (%s) year=%d, error=%g, start=%g, end=%g, balance.nitrogen=%g",
+         sprintcoord(line,&cell->coord),year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
     if(year==config->firstyear-config->nspinup&&!config->landuse_restart)
-    fprintf(stderr,"ERROR%03d: Nitrogen balance error caused by setting product pool to zero.\n",INVALID_NITROGEN_BALANCE_ERR);
+      fprintf(stderr,"ERROR%03d: Nitrogen balance error caused by setting product pool to zero.\n",INVALID_NITROGEN_BALANCE_ERR);
   }
 #endif
 

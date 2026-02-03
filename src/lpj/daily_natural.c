@@ -301,8 +301,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
   if(fabs(balanceW)>0.1)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g lateral_in: %g water_after: %g water_before: %g prec: %g melt: %g\n"
-         "=====001: evapotransp: %g aevap_lake  %g aevap_res: %g airrig : %g aMT_water : %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g\n"
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: %d balanceW: %g exess_old: %g balance.excess_water: %g lateral_in: %g water_after: %g water_before: %g prec: %g melt: %g\n"
+         "=====001: evapotransp: %g aevap_lake: %g aevap_res: %g airrig: %g aMT_water: %g runoff: %g awater_flux: %g lateral_water: %g mfin-mfout: %g dmass_lake: %g\n"
          "=====002: dmassriver: %g  ground_st_am: %g ground_st: %g gw_balance:%g\n"
          "=====003: bal_lat_exess:%g groundwater:%g groundwater_new:%g standfrac:%g wa_old: %g wa: %g",
          __FUNCTION__,day,balanceW,exess_old,stand->cell->balance.excess_water,lateral_in*stand->frac,

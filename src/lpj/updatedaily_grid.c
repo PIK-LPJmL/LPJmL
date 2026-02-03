@@ -119,7 +119,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
     if(fabs(balance_per_area) > param.error_limit.w_global)
     {
       fail(GLOBAL_WATER_BALANCE_ERR, FAIL_ON_BALANCE, FALSE,
-           "Daily water balance error in year %d day %d: diff=%.5g (%.5g mm), "
+           "Global water balance not closed in year %d day %d: diff=%.5g (%.5g mm), "
            "prec=%.5g, conv_loss=%.5g, delta_surface=%.5g, delta_soil=%.5g",
            year, day, running_balance, balance_per_area,
            cum_prec, cum_conv_loss, delta_surface, delta_soil);

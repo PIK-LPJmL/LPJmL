@@ -145,7 +145,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(end-start.carbon+fluxes_out.carbon-fluxes_in.carbon)>0.0001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: end %g start: %.3f end: %.3f estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g",
          __FUNCTION__,end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,
          fluxes_out.carbon,fluxes_in.carbon);
     //    foreachpft(pft,p,&stand->pftlist)
@@ -160,7 +160,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.N=%g vegN=%g soilN=%g establish.nitrogen=%g\n",pft->par->name,
     //                 pft->bm_inc.nitrogen,vegn_sum(pft),soilstocks(&stand->soil).nitrogen,pft->establish.nitrogen);
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: end %g start:%g  end:%g flux_in: %g flux_out %g  bm_inc: %g standfrac: %g landusetype: %s",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: end: %g start: %g end: %g flux_in: %g flux_out %g  bm_inc: %g standfrac: %g landusetype: %s",
          __FUNCTION__,end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen, start.nitrogen,end,
          fluxes_in.nitrogen, fluxes_out.nitrogen, bm_inc.nitrogen,stand->frac, stand->type->name);
   }

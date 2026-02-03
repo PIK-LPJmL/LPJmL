@@ -101,7 +101,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
      }
      else
      {
-       fprintf(stderr, "landuse== KILL ind daily agriculture 1 stand.C= %.3f standfrac:%.3f\n", (standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4),checkstand->frac);
+       fprintf(stderr, "landuse==KILL in daily_agriculture, stand.C=%.3f, standfrac=%.3f\n",
+               standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4,checkstand->frac);
         start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
         start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
      }
@@ -470,9 +471,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 #if DEBUG2
   if(stand->type->landusetype!=KILL && pft->par->id==config->rice_pft)
   {
-    fprintf(stdout,"\n year:%d day:%d isrice: %d bm_inc:%g inun_stress: %g\n",year,day,isrice,pft->bm_inc.carbon,pft->inun_stress);
-    fprintf(stdout,"\n irrig_amount:%g irrig_stor:%g irrig_apply: %g satwater:%g rootwater:%g net_irrig_amount:%g\n",
-        data->irrig_amount,data->irrig_stor,irrig_apply,satwater(&stand->soil),rootwater(&stand->soil),data->net_irrig_amount);
+    printf("\nyear:%d day:%d isrice: %d bm_inc:%g inun_stress: %g\n",year,day,isrice,pft->bm_inc.carbon,pft->inun_stress);
+    printf("\nirrig_amount:%g irrig_stor:%g irrig_apply: %g satwater:%g rootwater:%g net_irrig_amount:%g\n",
+           data->irrig_amount,data->irrig_stor,irrig_apply,satwater(&stand->soil),rootwater(&stand->soil),data->net_irrig_amount);
     if(day==240)
       fprintstand(stdout,stand,config->pftpar,npft+ncft,config->with_nitrogen);
   }

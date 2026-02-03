@@ -384,13 +384,13 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
     end_w+= soilwater(&stand->soil)*stand->frac;
   }
   if(fabs(start.carbon-end.carbon)>0.01)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s mixsetaside at the end: error=%g start : %g end : %g",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__,start.carbon-end.carbon,start.carbon,end.carbon);
   if (fabs(start_w - end_w)>0.001)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s mixsetaside at the end: error=%g start : %g end : %g",
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__,start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen-end.nitrogen)>0.001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s mixsetaside at the end: error=%g start : %g end : %g",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__, start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif
 } /* of 'mixsetaside' */
