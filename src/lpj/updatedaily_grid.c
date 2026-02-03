@@ -55,8 +55,8 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
   }
 
 #ifdef CHECK_BALANCE
-  /* Daily water balance check - catches balance errors as they occur */
-  if(config->river_routing)
+  /* Daily water balance check - catches balance errors as they occur, works only for one task */
+  if(config->river_routing && config->ntask==1)
   {
     int cell;
     Real cum_prec = 0, cum_evap = 0, cum_transp = 0, cum_interc = 0;
