@@ -109,7 +109,7 @@ under_test_is_direct <- sapply(under_test_sim_paths, is_simulation_dir)
 if (baseline_is_direct) {
   # Direct mode: baseline is a simulation directory itself
   cat("Using DIRECT mode: baseline_sim_path points to a simulation directory\n")
-  
+
   # Determine simulation name
   # If all under_test paths are direct, use basename of first one
   # Otherwise, auto-detect from parent directories
@@ -131,14 +131,14 @@ if (baseline_is_direct) {
       stop("Cannot determine simulation name from under-test paths")
     }
   }
-  
+
   transient_sims <- sim_name
   baseline_transient_sims <- sim_name
-  
+
 } else {
   # Auto-detect mode: baseline contains subdirectories with simulations
   cat("Using AUTO-DETECT mode: scanning for transient_* subdirectories\n\n")
-  
+
   # Detect transient simulations from baseline directory structure
   baseline_transient_sims <- get_transient_sims(baseline_sim_path)
 
@@ -225,10 +225,6 @@ cat("  Number of sims:      ", length(transient_sims), "\n\n")
 # Run benchmark for each transient simulation
 benchmark_results <- list()
 
-# Create modified default settings with updated variable names to match output files
-bm_default_settings <- default_settings
-var_names <- names(bm_default_settings)
-
 # Define mapping from default_settings names to actual output file names
 name_mapping <- c(
   "mleaching" = "leaching",
@@ -251,14 +247,25 @@ name_mapping <- c(
   "mrunoff" = "runoff"
 )
 
-# Apply all name mappings using gsub
-for (old_name in names(name_mapping)) {
-  var_names <- gsub(paste0("^", old_name, "$"), name_mapping[old_name], var_names)
+# Function to create benchmark settings with mapped variable names
+create_bm_settings <- function(base_settings, name_mapping) {
+  var_names <- names(base_settings)
+  for (old_name in names(name_mapping)) {
+    pattern <- paste0("^", old_name, "$")
+    var_names <- gsub(pattern, name_mapping[old_name], var_names)
+  }
+  # Handle pft_harvest prefix replacement
+  var_names <- gsub("^pft_harvest.pft", "pft_harvestc", var_names)
+  names(base_settings) <- var_names
+  base_settings
 }
 
-# Handle pft_harvest prefix replacement
-var_names <- gsub("^pft_harvest.pft", "pft_harvestc", var_names)
-names(bm_default_settings) <- var_names
+# Create settings for no_methane runs (base outputs only)
+bm_settings_no_methane <- create_bm_settings(default_settings, name_mapping)
+
+# Create settings for methane runs by adding methane-specific outputs
+# TODO: Add methane settings once available (copy from existing, rename)
+bm_settings_methane <- bm_settings_no_methane
 
 
 
@@ -302,8 +309,18 @@ for (sim_name in transient_sims) {
                           "_vs_multiple.pdf")
   }
 
+  # Select appropriate settings based on run type
+  if (grepl("no_methane", sim_name)) {
+    bm_settings <- bm_settings_no_methane
+    run_type <- "no_methane"
+  } else {
+    bm_settings <- bm_settings_methane
+    run_type <- "methane"
+  }
+
   cat("  Baseline:    ", baseline_dir, "\n")
   cat("  Under test:  ", paste(under_test_dirs, collapse = ", "), "\n")
+  cat("  Run type:    ", run_type, "\n")
   cat("  Description: ", description, "\n")
   cat("  Output file: ", output_file, "\n\n")
 
@@ -316,7 +333,7 @@ for (sim_name in transient_sims) {
       description = description,
       output_file = output_file,
       pdf_report = TRUE,
-      settings = bm_default_settings
+      settings = bm_settings
     )
     benchmark_results[[sim_name]] <- bm_result
     cat("Successfully completed benchmark for", sim_name, "\n\n")

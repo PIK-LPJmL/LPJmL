@@ -27,7 +27,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- Added benchmark folder with with two R scripts (`simulate_default.R`, `benchmark_default.R`) to simulate default scenarios and run benchmark.
+- Added benchmark folder with two R scripts (`simulate_default.R`, `benchmark_default.R`) to simulate default scenarios and run benchmark.
 
 ### Changed
 
@@ -37,6 +37,8 @@ of `major.minor.patch` with
 - Printing of balance error messages replaced by call to `fail()` in `pedotransfer.c`, `allocation_grass.c`, `litter_update_grass.c`, `turnover_grass.c` and `update_annual_cell.c`
 - Function `fail.c` changed to print `"Program terminated unsucessfully"` on new line.
 - Check balance error messages reformatted.
+- Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
+- Fixed FPE in `allocation_grass.c`
 
 ### Removed
 
@@ -50,7 +52,7 @@ of `major.minor.patch` with
 - Function `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
 - Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
 - Function `cutpfts.c` corrected to close carbon balance.
-- Water balance check in `infil_perc.c` corrected to avoid false water balance errors.
+- Water balance check in `infil_perc.c` and `annual_grass.c` corrected to avoid false water balance errors.
 - Balance error messages corrected in `cultivate.c`.
 - Carbon balance closed in `update_wetland.c`.
 
