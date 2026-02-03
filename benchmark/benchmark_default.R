@@ -1,332 +1,187 @@
 # Standardized LPJmL benchmark comparison using lpjmlstats
 #
-# This script can work in two modes:
-# 1. Auto-detect mode: baseline_sim_path contains subdirectories starting with
-#    "transient" and the script automatically detects and benchmarks all of them
-# 2. Direct mode: baseline_sim_path points directly to a simulation output
-#    directory and is compared with the provided under_test_sim_paths
+# Modes:
+# 1. Auto-detect: baseline_sim_path contains transient_* subdirectories
+# 2. Direct: baseline_sim_path points to a simulation output directory
 #
-# Usage example (auto-detect mode):
+# Usage examples:
 # Rscript benchmark_default.R baseline_sim_path="/path/to/baseline" \
 #   under_test_sim_paths="/path/to/test1"
-#
-# Usage example (direct mode):
+# Rscript benchmark_default.R baseline_sim_path="/path/to/baseline" \
+#   under_test_sim_paths="/path/to/test1" \
+#   runs_subset="transient_no_methane_pnv,transient_no_methane_lu"
 # Rscript benchmark_default.R baseline_sim_path="/path/to/baseline/sim1" \
-#   under_test_sim_paths="/path/to/test1/sim1,/path/to/test2/sim1"
+#   under_test_sim_paths="/path/to/test1/sim1" output_dir="/path/to/reports"
 #
-# Arguments (use name=value format):
-#   baseline_sim_path    : Path to baseline simulation results (required)
-#                          Can be a parent directory or a direct simulation path
-#   under_test_sim_paths : Comma-separated paths to test simulation results
-#                          (required)
+# Arguments:
+#   baseline_sim_path    : Path to baseline simulation (required)
+#   under_test_sim_paths : Comma-separated test paths (required)
+#   runs_subset          : Comma-separated sim names (auto-detect mode only)
+#   output_dir           : Directory for PDF reports (default: current directory)
 
 library(lpjmlkit)
 library(lpjmlstats)
 
-# Parse command line arguments
-args <- commandArgs(trailingOnly = TRUE)
+# Source shared utilities
+script_dir <- (function() {
+  args <- commandArgs(trailingOnly = FALSE)
+  file_arg <- grep("--file=", args, value = TRUE)
+  if (length(file_arg) > 0) dirname(normalizePath(sub("--file=", "", file_arg)))
+  else getwd()
+})()
+source(file.path(script_dir, "benchmark_utils.R"))
 
-# Function to parse named arguments
-parse_args <- function(args) {
-  parsed <- list(
-    baseline_sim_path = NULL,
-    under_test_sim_paths = NULL
-  )
-
-  for (arg in args) {
-    if (grepl("=", arg)) {
-      parts <- strsplit(arg, "=", fixed = TRUE)[[1]]
-      key <- parts[1]
-      value <- parts[2]
-
-      if (key %in% names(parsed)) {
-        parsed[[key]] <- value
-      } else {
-        warning(paste("Unknown argument:", key))
-      }
-    }
-  }
-
-  parsed
-}
-
+# =============================================================================
 # Parse arguments
-parsed_args <- parse_args(args)
+# =============================================================================
 
-# Check if required arguments are provided
+parsed_args <- parse_args(
+  commandArgs(trailingOnly = TRUE),
+  list(baseline_sim_path = NULL, under_test_sim_paths = NULL,
+       runs_subset = NULL, output_dir = getwd())
+)
+
 if (is.null(parsed_args$baseline_sim_path) ||
-      is.null(parsed_args$under_test_sim_paths)) {
+    is.null(parsed_args$under_test_sim_paths)) {
   stop(paste(
     "Usage: Rscript benchmark_default.R baseline_sim_path=<path>",
-    "under_test_sim_paths=<path1[,path2,...]>\n",
-    "  baseline_sim_path    : Path to baseline simulation directory",
-    "(required)\n",
-    "  under_test_sim_paths : Comma-separated paths to test simulation",
-    "directories (required)\n"
+    "under_test_sim_paths=<paths> [runs_subset=<names>] [output_dir=<path>]\n",
+    "  baseline_sim_path    : Path to baseline simulation (required)\n",
+    "  under_test_sim_paths : Comma-separated test paths (required)\n",
+    "  runs_subset          : Comma-separated sim names (auto-detect only)\n",
+    "  output_dir           : Directory for PDF reports (default: .)\n"
   ))
 }
 
 baseline_sim_path <- parsed_args$baseline_sim_path
-under_test_sim_paths <- strsplit(parsed_args$under_test_sim_paths, ",",
-                                 fixed = TRUE)[[1]]
+under_test_sim_paths <- strsplit(parsed_args$under_test_sim_paths, ",", fixed = TRUE)[[1]]
+runs_subset <- parsed_args$runs_subset
+output_dir <- parsed_args$output_dir
 
-# Function to extract version from path
-extract_version <- function(path) {
-  # Remove trailing slash if present
-  path <- sub("/$", "", path)
-  # Get the last directory name
-  basename(path)
+# Create output directory if needed
+if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
+
+# =============================================================================
+# Helper functions
+# =============================================================================
+
+extract_version <- function(path) basename(sub("/$", "", path))
+
+get_transient_sims <- function(path) {
+ dirs <- list.dirs(path, full.names = FALSE, recursive = FALSE)
+ sort(dirs[grepl("^transient", dirs)])
 }
 
-# Extract versions
+is_simulation_dir <- function(path) {
+  dir.exists(path) && length(list.files(path, pattern = "\\.bin$|\\.nc$|\\.clm$")) > 0
+}
+
+# =============================================================================
+# Detect mode and find simulations
+# =============================================================================
+
 baseline_version <- extract_version(baseline_sim_path)
 under_test_versions <- sapply(under_test_sim_paths, extract_version)
-
-# Get current user
 author <- Sys.info()["user"]
 
-# Function to get transient simulation directories from a path
-get_transient_sims <- function(path) {
-  all_dirs <- list.dirs(path, full.names = FALSE, recursive = FALSE)
-  transient <- all_dirs[grepl("^transient", all_dirs)]
-  sort(transient)
-}
-
-# Function to check if a path contains output files (is a simulation directory)
-is_simulation_dir <- function(path) {
-  if (!dir.exists(path)) return(FALSE)
-  files <- list.files(path, pattern = "\\.bin$|\\.nc$|\\.clm$",
-                      full.names = TRUE)
-  length(files) > 0
-}
-
-# Detect if baseline is a direct simulation path or a parent directory
 baseline_is_direct <- is_simulation_dir(baseline_sim_path)
-
-# Detect which under_test paths are direct simulation directories
 under_test_is_direct <- sapply(under_test_sim_paths, is_simulation_dir)
 
 if (baseline_is_direct) {
-  # Direct mode: baseline is a simulation directory itself
-  cat("Using DIRECT mode: baseline_sim_path points to a simulation directory\n")
-
-  # Determine simulation name
-  # If all under_test paths are direct, use basename of first one
-  # Otherwise, auto-detect from parent directories
-  if (all(under_test_is_direct)) {
-    sim_name <- basename(under_test_sim_paths[1])
-    cat("All paths are direct simulation directories\n\n")
+  cat("Using DIRECT mode\n\n")
+  sim_name <- if (all(under_test_is_direct)) {
+    basename(under_test_sim_paths[1])
   } else {
-    # Mixed or all parent directories - need to auto-detect
-    cat("Under-test paths are parent directories\n\n")
-    # Get sim names from non-direct paths
-    non_direct_paths <- under_test_sim_paths[!under_test_is_direct]
-    under_test_sims <- lapply(non_direct_paths, get_transient_sims)
-    # Use first common simulation
-    sim_name <- intersect(under_test_sims[[1]], 
-                         if(length(under_test_sims) > 1) 
-                           Reduce(intersect, under_test_sims[-1]) 
-                         else under_test_sims[[1]])[1]
-    if (is.na(sim_name) || length(sim_name) == 0) {
-      stop("Cannot determine simulation name from under-test paths")
-    }
+    non_direct <- under_test_sim_paths[!under_test_is_direct]
+    sims_list <- lapply(non_direct, get_transient_sims)
+    Reduce(intersect, sims_list)[1]
   }
-
+  if (is.na(sim_name)) stop("Cannot determine simulation name")
   transient_sims <- sim_name
-  baseline_transient_sims <- sim_name
 
 } else {
-  # Auto-detect mode: baseline contains subdirectories with simulations
-  cat("Using AUTO-DETECT mode: scanning for transient_* subdirectories\n\n")
-
-  # Detect transient simulations from baseline directory structure
-  baseline_transient_sims <- get_transient_sims(baseline_sim_path)
-
-  # Auto-detect mode: baseline contains subdirectories with simulations
-  cat("Using AUTO-DETECT mode: scanning for transient_* subdirectories\n\n")
-  
-  # Detect transient simulations from baseline directory structure
-  baseline_transient_sims <- get_transient_sims(baseline_sim_path)
-
-  # Check if any transient simulations were found in baseline
-  if (length(baseline_transient_sims) == 0) {
-    stop(paste(
-      "No transient simulation directories found in baseline path:",
-      baseline_sim_path, "\n",
-      "Expected directories starting with 'transient_'\n",
-      "Or provide a direct path to a simulation directory"
-    ))
+  cat("Using AUTO-DETECT mode\n\n")
+  baseline_sims <- get_transient_sims(baseline_sim_path)
+  if (length(baseline_sims) == 0) {
+    stop("No transient_* directories found in baseline path")
   }
 
-  # Detect transient simulations from all under-test directories
-  under_test_transient_sims_list <- lapply(under_test_sim_paths,
-                                           get_transient_sims)
+  under_test_sims_list <- lapply(under_test_sim_paths, get_transient_sims)
+  transient_sims <- Reduce(intersect, c(list(baseline_sims), under_test_sims_list))
 
-  # Find common simulations across all paths
-  transient_sims <- baseline_transient_sims
-  for (i in seq_along(under_test_transient_sims_list)) {
-    transient_sims <- intersect(transient_sims,
-                                under_test_transient_sims_list[[i]])
-  }
-
-  # Check if there are any common simulations
   if (length(transient_sims) == 0) {
-    stop(paste(
-      "No common transient simulation directories found across all paths.\n",
-      "Baseline contains:",
-      paste(baseline_transient_sims, collapse = ", "), "\n",
-      "Under-test paths contain different sets of simulations.\n"
-    ))
+    stop("No common transient simulations found across all paths")
   }
 
-  # Check for differences and warn if directories don't match
-  all_sims <- unique(c(baseline_transient_sims,
-                       unlist(under_test_transient_sims_list)))
-  missing_somewhere <- setdiff(all_sims, transient_sims)
-
-  if (length(missing_somewhere) > 0) {
-    cat("WARNING: Not all simulation directories match across all paths!\n")
-    cat("=========================================================\n")
-
-    # Check which are missing from baseline
-    missing_in_baseline <- setdiff(unlist(under_test_transient_sims_list),
-                                   baseline_transient_sims)
-    if (length(missing_in_baseline) > 0) {
-      cat("Missing in BASELINE (", baseline_version, "):\n  ",
-          paste(missing_in_baseline, collapse = ", "), "\n", sep = "")
-    }
-
-    # Check which are missing from each under-test path
-    for (i in seq_along(under_test_sim_paths)) {
-      missing_in_test <- setdiff(baseline_transient_sims,
-                                 under_test_transient_sims_list[[i]])
-      if (length(missing_in_test) > 0) {
-        cat("Missing in UNDER-TEST (", under_test_versions[i], "):\n  ",
-            paste(missing_in_test, collapse = ", "), "\n", sep = "")
-      }
-    }
-
-    cat("\nOnly benchmarking COMMON simulations:\n  ",
-        paste(transient_sims, collapse = ", "), "\n", sep = "")
-    cat("=========================================================\n\n")
+  # Warn about missing simulations
+  all_sims <- unique(c(baseline_sims, unlist(under_test_sims_list)))
+  missing <- setdiff(all_sims, transient_sims)
+  if (length(missing) > 0) {
+    cat("WARNING: Some simulations missing in some paths\n")
+    cat("Benchmarking only:", paste(transient_sims, collapse = ", "), "\n\n")
   }
 }
 
+# Apply runs_subset filter
+if (!is.null(runs_subset)) {
+  if (baseline_is_direct) {
+    warning("runs_subset ignored in direct mode")
+  } else {
+    subset_values <- trimws(strsplit(runs_subset, ",")[[1]])
+    invalid <- subset_values[!subset_values %in% transient_sims]
+    if (length(invalid) > 0) {
+      stop(paste("Invalid runs_subset:", paste(invalid, collapse = ", ")))
+    }
+    transient_sims <- transient_sims[transient_sims %in% subset_values]
+    cat("Filtered to:", paste(transient_sims, collapse = ", "), "\n\n")
+  }
+}
+
+# =============================================================================
 # Print summary
-cat("Running benchmarks for:\n")
-cat("  Baseline version:    ", baseline_version, "\n")
-cat("  Under test versions: ", paste(under_test_versions,
-                                     collapse = ", "), "\n")
-cat("  Author:              ", author, "\n")
-cat("  Common sims:         ", paste(transient_sims, collapse = ", "),
-    "\n")
-cat("  Number of sims:      ", length(transient_sims), "\n\n")
+# =============================================================================
 
-# Run benchmark for each transient simulation
+cat("Running benchmarks:\n")
+cat("  Baseline:    ", baseline_version, "\n")
+cat("  Under test:  ", paste(under_test_versions, collapse = ", "), "\n")
+cat("  Simulations: ", paste(transient_sims, collapse = ", "), "\n")
+cat("  Output dir:  ", output_dir, "\n\n")
+
+# =============================================================================
+# Run benchmarks
+# =============================================================================
+
 benchmark_results <- list()
-
-# Define mapping from default_settings names to actual output file names
-name_mapping <- c(
-  "mleaching" = "leaching",
-  "mn_immo" = "n_immo",
-  "mn_mineralization" = "n_mineralization",
-  "mn_volatilization" = "n_volatilization",
-  "mn2_emis" = "n2_emis",
-  "mn2o_denit" = "n2o_denit",
-  "mn2o_nit" = "n2o_nit",
-  "mnuptake" = "nuptake",
-  "mbnf" = "bnf",
-  "flux_estab" = "flux_estabc",
-  "mgpp" = "gpp",
-  "mnpp" = "npp",
-  "anbp" = "nbp",
-  "mrh" = "rh",
-  "mevap" = "evap",
-  "mtransp" = "transp",
-  "minterc" = "interc",
-  "mrunoff" = "runoff"
-)
-
-# Function to create benchmark settings with mapped variable names
-create_bm_settings <- function(base_settings, name_mapping) {
-  var_names <- names(base_settings)
-  for (old_name in names(name_mapping)) {
-    pattern <- paste0("^", old_name, "$")
-    var_names <- gsub(pattern, name_mapping[old_name], var_names)
-  }
-  # Handle pft_harvest prefix replacement
-  var_names <- gsub("^pft_harvest.pft", "pft_harvestc", var_names)
-  names(base_settings) <- var_names
-  base_settings
-}
-
-# Create settings for no_methane runs (base outputs only)
-bm_settings_no_methane <- create_bm_settings(default_settings, name_mapping)
-
-# Create settings for methane runs by adding methane-specific outputs
-# TODO: Add methane settings once available (copy from existing, rename)
-bm_settings_methane <- bm_settings_no_methane
-
-
 
 for (sim_name in transient_sims) {
   cat("===================================================\n")
-  cat("Running benchmark for:", sim_name, "\n")
+  cat("Benchmarking:", sim_name, "\n")
   cat("===================================================\n")
 
-  # Construct baseline directory
-  if (baseline_is_direct) {
-    baseline_dir <- baseline_sim_path
-  } else {
-    baseline_dir <- file.path(baseline_sim_path, sim_name)
-  }
+  baseline_dir <- if (baseline_is_direct) baseline_sim_path
+                  else file.path(baseline_sim_path, sim_name)
 
-  # Construct under-test directories
   under_test_dirs <- sapply(seq_along(under_test_sim_paths), function(i) {
-    if (under_test_is_direct[i]) {
-      under_test_sim_paths[i]
-    } else {
-      file.path(under_test_sim_paths[i], sim_name)
-    }
+    if (under_test_is_direct[i]) under_test_sim_paths[i]
+    else file.path(under_test_sim_paths[i], sim_name)
   })
 
-  # Generate description
-  if (length(under_test_versions) == 1) {
-    description <- paste("Benchmark comparing", baseline_version, "with",
-                         under_test_versions[1], "for", sim_name)
-  } else {
-    description <- paste("Benchmark comparing", baseline_version, "with",
-                         paste(under_test_versions, collapse = ", "),
-                         "for", sim_name)
-  }
+  description <- paste("Benchmark:", baseline_version, "vs",
+                       paste(under_test_versions, collapse = ", "), "-", sim_name)
+  output_file <- file.path(output_dir, paste0(
+    "benchmark_", sim_name, "_", baseline_version, "_vs_",
+    if (length(under_test_versions) == 1) under_test_versions[1] else "multiple",
+    ".pdf"
+  ))
 
-  # Generate output file name
-  if (length(under_test_versions) == 1) {
-    output_file <- paste0("benchmark_", sim_name, "_", baseline_version,
-                          "_vs_", under_test_versions[1], ".pdf")
-  } else {
-    output_file <- paste0("benchmark_", sim_name, "_", baseline_version,
-                          "_vs_multiple.pdf")
-  }
+  run_type <- get_run_type(sim_name)
+  bm_settings <- get_bm_settings(default_settings, run_type)
 
-  # Select appropriate settings based on run type
-  if (grepl("no_methane", sim_name)) {
-    bm_settings <- bm_settings_no_methane
-    run_type <- "no_methane"
-  } else {
-    bm_settings <- bm_settings_methane
-    run_type <- "methane"
-  }
+  cat("  Run type:", run_type, "\n")
+  cat("  Output:  ", output_file, "\n\n")
 
-  cat("  Baseline:    ", baseline_dir, "\n")
-  cat("  Under test:  ", paste(under_test_dirs, collapse = ", "), "\n")
-  cat("  Run type:    ", run_type, "\n")
-  cat("  Description: ", description, "\n")
-  cat("  Output file: ", output_file, "\n\n")
-
-  # Run benchmark
   tryCatch({
-    bm_result <- benchmark(
+    benchmark_results[[sim_name]] <- benchmark(
       baseline_dir = baseline_dir,
       under_test_dirs = under_test_dirs,
       author = author,
@@ -335,24 +190,22 @@ for (sim_name in transient_sims) {
       pdf_report = TRUE,
       settings = bm_settings
     )
-    benchmark_results[[sim_name]] <- bm_result
-    cat("Successfully completed benchmark for", sim_name, "\n\n")
+    cat("SUCCESS:", sim_name, "\n\n")
   }, error = function(e) {
-    cat("ERROR in benchmark for", sim_name, ":", conditionMessage(e),
-        "\n\n")
-    benchmark_results[[sim_name]] <- NULL
+    cat("ERROR:", sim_name, "-", conditionMessage(e), "\n\n")
+    benchmark_results[[sim_name]] <<- NULL
   })
 }
 
-# Print final summary
+# =============================================================================
+# Summary
+# =============================================================================
+
 cat("===================================================\n")
-cat("BENCHMARK SUMMARY\n")
+cat("SUMMARY\n")
 cat("===================================================\n")
-for (sim_name in transient_sims) {
-  if (!is.null(benchmark_results[[sim_name]])) {
-    cat("[SUCCESS]", sim_name, "\n")
-  } else {
-    cat("[FAILED] ", sim_name, "\n")
-  }
+for (sim in transient_sims) {
+  status <- if (!is.null(benchmark_results[[sim]])) "[SUCCESS]" else "[FAILED] "
+  cat(status, sim, "\n")
 }
-cat("\nAll benchmarks completed.\n")
+cat("\nBenchmarks completed. Reports saved to:", output_dir, "\n")

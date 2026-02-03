@@ -27,7 +27,8 @@ of `major.minor.patch` with
 
 ### Added
 
-- Added benchmark folder with two R scripts (`simulate_default.R`, `benchmark_default.R`) to simulate default scenarios and run benchmark.
+- Added benchmark folder with R scripts (`simulate_default.R`, `benchmark_default.R`, `benchmark_utils.R`) to simulate default scenarios and run benchmarks.
+- Added support for separate methane/no_methane output configurations in benchmark scripts.
 
 ### Changed
 
