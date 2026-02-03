@@ -34,7 +34,9 @@ of `major.minor.patch` with
 - Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
 - Wait for coupled program to finish added in slurm script.
 - Fixed several potential floating point exceptions in `nuptake_tree.c`, `nuptake_grass.c`, `nuptake_crop.c` and `littersom.c`
-- Printing of balance error messages replaced by call to `fail()` function in `allocation_grass.c`, `litter_update_grass.c`, `turnover_grass.c` and `update_annual_cell.c`.
+- Printing of balance error messages replaced by call to `fail()` in `pedotransfer.c`, `allocation_grass.c`, `litter_update_grass.c`, `turnover_grass.c` and `update_annual_cell.c`
+- Function `fail.c` changed to print `"Program terminated unsucessfully"` on new line.
+- Check balance error messages reformatted.
 
 ### Removed
 
@@ -48,8 +50,9 @@ of `major.minor.patch` with
 - Function `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
 - Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
 - Function `cutpfts.c` corrected to close carbon balance.
-- Water balance check in `infil_perc.c` correcte to avoid false water balance errors.
+- Water balance check in `infil_perc.c` corrected to avoid false water balance errors.
 - Balance error messages corrected in `cultivate.c`.
+- Carbon balance closed in `update_wetland.c`.
 
 
 ## [6.0.2] - 2026-01-17
