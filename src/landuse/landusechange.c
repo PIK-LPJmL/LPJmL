@@ -905,7 +905,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Stocks balance= {0,0};
   Real start_w = cell->balance.excess_water;
   Real end_w = 0;
-  foreachstand(checkstand, s, cell->standlist)
+  int sn;
+  foreachstand(checkstand, sn, cell->standlist)
   {
     st=standstocks(checkstand);
     start.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
