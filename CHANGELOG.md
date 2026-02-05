@@ -58,6 +58,7 @@ of `major.minor.patch` with
 - Balance error messages corrected in `cultivate.c`.
 - Carbon balance closed in `update_wetland.c`.
 - Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
+- Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
 
 
 ## [6.0.2] - 2026-01-17
