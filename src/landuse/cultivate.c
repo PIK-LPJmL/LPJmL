@@ -109,14 +109,14 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
   end+=cell->balance.timber_harvest.carbon+cell->balance.deforest_emissions.carbon;
-  if (fabs(end-start.carbon)>0.001)
+  if (fabs(end-start.carbon)>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d error: %.4f start: %.4f  end: %.3f\n"
          "=====001: cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
          __FUNCTION__,day,end-start.carbon,start.carbon, end,
          cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
   }
-  if(fabs(water_before-water_after)>0.001)
+  if(fabs(water_before-water_after)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) after reclaim land at day %d: error: %g water_after: %g water_before: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);
@@ -186,7 +186,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
   end+=cell->balance.timber_harvest.carbon+cell->balance.deforest_emissions.carbon;
-  if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.001)
+  if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d   %.4f start: %.4f  end: %.3f  bm_inc.carbon: %.4f manure: %.4f\n"
          "=====001: cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
@@ -199,7 +199,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   {
     end+=standstocks(stand).nitrogen*stand->frac;
   }
-  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.0001)
+  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>param.error_limit.stocks_fcn.nitrogen)
   {
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n"
          "=====001: cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g\n"
@@ -208,7 +208,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
          start, end,bm_inc.nitrogen,manure*cropstand->frac*param.nfert_split_frac,fertil*cropstand->frac*param.nfert_split_frac,
         cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
-  if(fabs(water_before-water_after)>0.001)
+  if(fabs(water_before-water_after)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) at day %d: error: %g water_after: %g water_before: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);

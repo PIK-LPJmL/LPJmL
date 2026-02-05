@@ -150,11 +150,11 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   }
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end-start.carbon-flux_estab.carbon)>0.001)
+  if (fabs(end-start.carbon-flux_estab.carbon)>param.error_limit.stocks_fcn.carbon)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: %g start:%g  end:%g flux_estab.carbon: %g type:%s",
          __FUNCTION__,end-start.carbon, start.carbon, end, flux_estab.carbon, stand->type->name);
   end = standstocks(stand).nitrogen;
-  if (fabs(end-start.nitrogen-flux_estab.nitrogen)>0.0001)
+  if (fabs(end-start.nitrogen-flux_estab.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%g flux_estab.carbon: %g type:%s",
          __FUNCTION__,end-start.nitrogen, start.nitrogen, end, flux_estab.nitrogen, stand->type->name);
 #endif

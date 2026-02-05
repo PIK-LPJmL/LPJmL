@@ -141,7 +141,7 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
 
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(start - end - CH4_plant_all*WC/WCH4-CH4_sink*WC/WCH4)>0.0001)
+  if (fabs(start - end - CH4_plant_all*WC/WCH4-CH4_sink*WC/WCH4)>param.error_limit.stocks_fcn.carbon)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g CH4_sink: %g",
          __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4,CH4_sink*WC/WCH4);
 #endif

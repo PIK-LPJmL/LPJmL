@@ -285,7 +285,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end -start.carbon -dcflux )>0.0001)
+  if (fabs(end -start.carbon -dcflux )>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: error: %.3f start: %.3f end: %.3f type: %s\n"
          "=====001: flux_estab: %.3f dcflux: %.3f methane: start: %.3f  end: %.3f dcflux: %.3f",
@@ -299,7 +299,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
               -stand->cell->balance.airrig-stand->cell->balance.aMT_water)-wfluxes_old)
           +((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old);
 
-  if(fabs(balanceW)>0.1)
+  if(fabs(balanceW)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: %d balanceW: %g exess_old: %g balance.excess_water: %g lateral_in: %g water_after: %g water_before: %g prec: %g melt: %g\n"
          "=====001: evapotransp: %g aevap_lake: %g aevap_res: %g airrig: %g aMT_water: %g runoff: %g awater_flux: %g lateral_water: %g mfin-mfout: %g dmass_lake: %g\n"
@@ -320,7 +320,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     end+=standstocks(checkstand).nitrogen*checkstand->frac;
   end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
       stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
-  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
   {
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d error: %g start: %g end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
          "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g",

@@ -91,10 +91,10 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
         end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
         end.nitrogen+=st.nitrogen*stand->frac;
       }
-      if(fabs(start.carbon-end.carbon)>0.0001)
+      if(fabs(start.carbon-end.carbon)>param.error_limit.stocks_fcn.carbon)
           fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: error=%g start : %g end : %g ",
                __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
-      if(fabs(start.nitrogen-end.nitrogen)>0.001)
+      if(fabs(start.nitrogen-end.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
           fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: error=%g start : %g end : %g ",
                __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif

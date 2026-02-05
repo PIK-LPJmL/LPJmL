@@ -105,8 +105,11 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux+stand->cell->NO3_lateral;
 #endif
 
-#ifdef SAFE
+#if defined SAFE || defined CHECK_BALANCR
   String line;
+#endif
+
+#ifdef SAFE
   forrootsoillayer(l)
     if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
     {
@@ -371,9 +374,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #ifdef CHECK_BALANCE
   n_after=soilstocks(soil);
   n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->balance.n_outflux+stand->cell->NO3_lateral;
-  if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",
-         __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
+  if(fabs(n_after.nitrogen-n_before.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, cell (%s), N balance:%g",
+         __FUNCTION__,sprintcoord(line,&stand->cell->coord),n_after.nitrogen-n_before.nitrogen);
 
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff+lat_runoff_last+outflux;
@@ -1163,13 +1166,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #endif
   n_after=soilstocks(soil);
   n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->balance.n_outflux+stand->cell->NO3_lateral;
-  if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
+  if(fabs(n_after.nitrogen-n_before.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (%s), N balance:%g NO3_lateral: %g",
          __FUNCTION__,sprintcoord(line,&stand->cell->coord),n_after.nitrogen-n_before.nitrogen,stand->cell->NO3_lateral);
 
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff+runoff_neg+rsub_top+((stand->cell->ground_st_am+stand->cell->ground_st)-gw_start)/stand->frac;
-  if(fabs(balancew)>0.001 && stand->frac>epsilon)
+  if(fabs(balancew)>param.error_limit.w_fcn && stand->frac>epsilon)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
         "Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f\n"

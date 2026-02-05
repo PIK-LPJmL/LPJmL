@@ -711,7 +711,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 //         __FUNCTION__,day,end-start1.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start1.nitrogen, end,cell->balance.flux_estab.nitrogen,cell->balance.flux_harvest.nitrogen,
 //         fluxes_in.nitrogen,fluxes_out.nitrogen, cell->balance.neg_fluxes.nitrogen,cell->NO3_lateral);
 //  }
-    if(fabs(balanceW)>0.0001)
+    if(fabs(balanceW)>param.error_limit.w_fcn)
     {
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: %d balanceW: %g exess_old: %g balance.excess_water: %g\n"
            "=====001: gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g\n"

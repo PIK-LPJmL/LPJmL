@@ -620,7 +620,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   forrootsoillayer(l)
     transp+=aet_stand[l];
   balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply+intercep_stand_blue)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
-  if(fabs(balancew)>0.001 && stand->frac>0.00001)
+  if(fabs(balancew)>param.error_limit.w_fcn && stand->frac>0.00001)
   {
 
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g wstore: %g wstore_new: %g wstore_old: %g",
@@ -646,7 +646,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   end+=stand->cell->ml.product.fast.carbon+stand->cell->ml.product.slow.carbon+
       stand->cell->balance.estab_storage_grass[0].carbon+stand->cell->balance.estab_storage_tree[0].carbon+stand->cell->balance.estab_storage_grass[1].carbon+stand->cell->balance.estab_storage_tree[1].carbon;
 
-  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>epsilon)
+  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  error: %g start: %g end: %g CH4_fluxes: %g\n"
         "=====001: flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g\n"
@@ -665,7 +665,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     end+=standstocks(checkstand).nitrogen*checkstand->frac;
   end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
        stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
-  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
   {
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d error: %g start: %g end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
         "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g",

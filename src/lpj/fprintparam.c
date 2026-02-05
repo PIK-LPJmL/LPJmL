@@ -24,7 +24,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
 {
   int p;
   fprintf(file,"Parameter settings\n"
-               "Error limits:\t%g (gC/m2) %g (gN/m2) %g (mm) %g (mm)\n"
+               "Error limits:\t%g (gC/m2) %g (gN/m2) %g (gC/m2) %g (gN/m2) %g (mm) %g (mm) %g (mm)\n"
                "k_litter10:\t%g (1/yr)\n"
                "k_soil10:\t%g %g (1/yr)\n"
                "max snow pack:\t%g (mm)\n"
@@ -49,8 +49,9 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "temp_response:\t%g\n"
                "tscal_b:\t%g\n"
                "percthres:\t%g\n",
+          param.error_limit.stocks_fcn.carbon,param.error_limit.stocks_fcn.nitrogen,
           param.error_limit.stocks.carbon,param.error_limit.stocks.nitrogen,
-          param.error_limit.w_local,param.error_limit.w_global,
+          param.error_limit.w_fcn,param.error_limit.w_local,param.error_limit.w_global,
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
           param.soil_infil,param.soil_infil_litter,param.pch4,

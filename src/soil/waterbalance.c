@@ -333,7 +333,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before+marginal+aet+*evap;
-  if(fabs(balancew)>epsilon)
+  if(fabs(balancew)>param.error_limit.w_fcn)
   {
     fputs("\nWater                 ",stderr);
     foreachsoillayer(l)
