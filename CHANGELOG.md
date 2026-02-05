@@ -40,6 +40,7 @@ of `major.minor.patch` with
 - Check balance error messages reformatted.
 - Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
 - Fixed FPE in `allocation_grass.c`.
+- Global balance check in `updatedaily_grid.c` only done if running on one task.
 
 ### Removed
 
