@@ -41,13 +41,13 @@ static void checkbalance2(const Cell *cell,Stocks start,Real water_before,const 
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
   if (fabs(start.carbon - end.carbon)>param.error_limit.stocks_fcn.carbon)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance of cell (%s) in %s at line %d: %g start:%g  end:%g",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance of cell (%s) in %s at line %d: diff:%g start:%g end:%g",
          sprintcoord(line,&cell->coord),fcn,line_nr,start.carbon - end.carbon, start.carbon, end.carbon);
   if (fabs(start.nitrogen - end.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance of cell (%s) in %s at line %d: %g start:%g  end:%g",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance of cell (%s) in %s at line %d: diff:%g start:%g end:%g",
          sprintcoord(line,&cell->coord),fcn,line_nr,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
   if (fabs(water_before - water_after)>param.error_limit.w_fcn)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance of cell (%s) in %s at line %d: %g start:%g  end:%g lakefrac:%g wetlandfrac:%g ",
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance of cell (%s) in %s at line %d: diff:%g start:%g  end:%g lakefrac:%g wetlandfrac:%g ",
          sprintcoord(line,&cell->coord),fcn,line_nr,water_before - water_after, water_before, water_after,cell->lakefrac, cell->wetlandfrac);
 } /* ' of check_balance2' */
 

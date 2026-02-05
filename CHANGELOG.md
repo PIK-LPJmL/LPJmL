@@ -41,6 +41,7 @@ of `major.minor.patch` with
 - Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
 - Fixed FPE in `allocation_grass.c`.
 - Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fc"`, `"nitrogen_fcn`, and `"w_fcn"`.
+- Global balance check in `updatedaily_grid.c` only done if running on one task.
 
 ### Removed
 
@@ -58,6 +59,10 @@ of `major.minor.patch` with
 - Balance error messages corrected in `cultivate.c`.
 - Carbon balance closed in `update_wetland.c`.
 - Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
+<<<<<<< HEAD
+=======
+- Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
+>>>>>>> 7d33681b02df1c35c7db826692eb5e2d411cc884
 
 
 ## [6.0.2] - 2026-01-17

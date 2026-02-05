@@ -219,34 +219,6 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         return TRUE;
       }
     }
-    if(climate->data[0].no3deposition!=NULL)
-    {
-      if(readclimate(&climate->file_no3deposition,climate->data[data_index].no3deposition,0,climate->file_no3deposition.scalar,grid,year, 1,config))
-      {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->no3deposition_filename);
-          fprintf(stderr,"ERROR131: Cannot read no3deposition of year %d from '%s'.\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
-      }
-    }
-    if(climate->data[0].nh4deposition!=NULL)
-    {
-      if(readclimate(&climate->file_nh4deposition,climate->data[data_index].nh4deposition,0,climate->file_nh4deposition.scalar,grid,year, 1,config))
-      {
-        if(isroot(*config))
-        {
-          name=getrealfilename(&config->nh4deposition_filename);
-          fprintf(stderr,"ERROR131: Cannot read nh4deposition of year %d from '%s'\n",
-                  year,name);
-          free(name);
-        }
-        return TRUE;
-      }
-    }
     if(climate->data[0].wet!=NULL)
     {
       index=year-climate->file_wet.firstyear;
