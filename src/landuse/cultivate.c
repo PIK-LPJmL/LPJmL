@@ -44,8 +44,9 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stand *stand;
 #endif
 #ifdef CHECK_BALANCE
+  String line;
   Stocks start={0,0};
-  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->balance.excess_water;
   Real water_after=0;
   foreachstand(stand,s,cell->standlist)
   {
@@ -101,17 +102,24 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
 #ifdef CHECK_BALANCE
   Real end=0;
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->balance.excess_water;
   foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    water_after+=soilwater(&stand->soil)*stand->frac;
   }
   end+=cell->balance.timber_harvest.carbon+cell->balance.deforest_emissions.carbon;
   if (fabs(end-start.carbon)>0.001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d   %.4f start: %.4f  end: %.3f\n"
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d error: %.4f start: %.4f  end: %.3f\n"
          "=====001: cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
          __FUNCTION__,day,end-start.carbon,start.carbon, end,
          cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
+  }
+  if(fabs(water_before-water_after)>0.001)
+  {
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) after reclaim land at day %d: error: %g water_after: %g water_before: %g",
+         __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);
   }
 #endif
   if(cell->ml.with_tillage)
@@ -171,7 +179,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
 #ifdef CHECK_BALANCE
   end=0;
-  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->balance.excess_water;
   foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
@@ -202,11 +210,9 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if(fabs(water_before-water_after)>0.001)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: day %d water_after: %g water_before: %g",
-          __FUNCTION__,day,water_after,water_before);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) at day %d: error: %g water_after: %g water_before: %g",
+         __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);
   }
-
-
 #endif
 
     /*cropstand->soil.NH4[0] += manure*fmanure_NH4;
