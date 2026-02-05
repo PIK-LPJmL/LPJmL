@@ -38,7 +38,7 @@ of `major.minor.patch` with
 - Function `fail.c` changed to print `"Program terminated unsucessfully"` on new line.
 - Check balance error messages reformatted.
 - Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
-- Fixed FPE in `allocation_grass.c`
+- Fixed FPE in `allocation_grass.c`.
 
 ### Removed
 
@@ -55,6 +55,7 @@ of `major.minor.patch` with
 - Water balance check in `infil_perc.c` and `annual_grass.c` corrected to avoid false water balance errors.
 - Balance error messages corrected in `cultivate.c`.
 - Carbon balance closed in `update_wetland.c`.
+- Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
 
 
 ## [6.0.2] - 2026-01-17
