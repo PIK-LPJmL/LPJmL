@@ -26,18 +26,18 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   grass=pft->data;
   output=&pft->stand->cell->output; 
 #ifdef CHECK_BALANCE
-  Real end,vegcsum_alt,bminc_alt,ecxess_carbon_alt,vegnsum_alt,turn_old;
+  Real end,vegcsum_old,bminc_old,ecxess_carbon_old,vegnsum_old,turn_old;
   Stocks start={0,0};
-  Stocks stocks,litter_alt;
+  Stocks stocks,litter_old;
   stocks=litterstocks(litter);
-  litter_alt=stocks;
-  vegcsum_alt=vegc_sum(pft)+pft->bm_inc.carbon;
-  vegnsum_alt=vegn_sum(pft)+pft->bm_inc.nitrogen;
+  litter_old=stocks;
+  vegcsum_old=vegc_sum(pft)+pft->bm_inc.carbon;
+  vegnsum_old=vegn_sum(pft)+pft->bm_inc.nitrogen;
   start.carbon=vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon;
   start.nitrogen=vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
-  bminc_alt=pft->bm_inc.carbon;
+  bminc_old=pft->bm_inc.carbon;
   turn_old=(grass->turn.root.nitrogen+grass->turn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
-  ecxess_carbon_alt=grass->excess_carbon;
+  ecxess_carbon_old=grass->excess_carbon;
 #endif
   grass->ind.leaf.carbon-= grass->turn.leaf.carbon;
   grass->ind.root.carbon-= grass->turn.root.carbon;
@@ -69,18 +69,18 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   //vegC needs to be substracted as it is not balanced here
   if(fabs(end-start.carbon-vegc_sum(pft))>0.0001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in litter_update grass(): landusetype %s : %g start : %g end : %g\n"
-         "=====001: bm_inc.carbon: %g bminc_alt: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
-         "=====002: leaf_turn: %g litter_alt: %g litter: %g est.carbon: %g vegsum: %g vegsum_alt: %g excess_carbon: %g excess_carbon_alt: %g frac: %g",
-         pft->stand->type->name,end-start.carbon-(vegc_sum(pft)), start.carbon,end,pft->bm_inc.carbon,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,
-         grass->turn.root.carbon,grass->turn.leaf.carbon,litter_alt.carbon,stocks.carbon,pft->establish.carbon,vegc_sum(pft)+pft->bm_inc.carbon,vegcsum_alt,grass->excess_carbon,ecxess_carbon_alt,frac);
+         "=====001: bm_inc.carbon: %g bminc_old: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
+         "=====002: leaf_turn: %g litter_old: %g litter: %g est.carbon: %g vegsum: %g vegsum_old: %g excess_carbon: %g excess_carbon_old: %g frac: %g",
+         pft->stand->type->name,end-start.carbon-(vegc_sum(pft)), start.carbon,end,pft->bm_inc.carbon,bminc_old,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,
+         grass->turn.root.carbon,grass->turn.leaf.carbon,litter_old.carbon,stocks.carbon,pft->establish.carbon,vegc_sum(pft)+pft->bm_inc.carbon,vegcsum_old,grass->excess_carbon,ecxess_carbon_old,frac);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
   if(fabs(end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen))>0.00001)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in litter_update grass(): landusetype %s : %g start : %g end : %g\n"
-         "=====001: bm_inc.nitrogen: %g bminc_alt: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
-         "=====002: leaf_turn: %g turn_old: %g litter_alt: %g litter: %g est.nitrogen: %g vegsum: %g veg_sum_alt; %g frac: %g",
-         pft->stand->type->name,end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen), start.nitrogen,end,pft->bm_inc.nitrogen,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,
-         grass->turn.root.nitrogen,grass->turn.leaf.nitrogen,turn_old,litter_alt.nitrogen,stocks.nitrogen,pft->establish.nitrogen,vegn_sum(pft)+pft->bm_inc.nitrogen,vegnsum_alt,frac);
+         "=====001: bm_inc.nitrogen: %g bminc_old: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g\n"
+         "=====002: leaf_turn: %g turn_old: %g litter_old: %g litter: %g est.nitrogen: %g vegsum: %g veg_sum_old; %g frac: %g",
+         pft->stand->type->name,end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen), start.nitrogen,end,pft->bm_inc.nitrogen,bminc_old,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,
+         grass->turn.root.nitrogen,grass->turn.leaf.nitrogen,turn_old,litter_old.nitrogen,stocks.nitrogen,pft->establish.nitrogen,vegn_sum(pft)+pft->bm_inc.nitrogen,vegnsum_old,frac);
 #endif
 
 } /* of 'litter_update_grass' */

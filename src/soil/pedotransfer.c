@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+
 #define maxSOM_dens 130000 //g*m-3
 #define psi_som 10.3 /**> saturated suction (mm) for organic matter (Letts, 2000)*/
 #define b_som   2.7   /**> ! Clapp Hornberger paramater for oragnic soil (Letts, 2000)*/
@@ -48,7 +49,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   soil=&stand->soil;
   soilpar = soil->par;
-#ifdef SAFE
+#if defined SAFE || defined CHECK_BALANCE
   String line;
 #endif
 #ifdef CHECK_BALANCE
@@ -241,7 +242,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
     w_after=soilwater(&stand->soil)+excess;
     if(fabs(w_before-w_after)>epsilon)
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in pedotransfer(): %s water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
+      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in pedotransfer() in cell (%s): water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
            sprintcoord(line,&stand->cell->coord),fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */

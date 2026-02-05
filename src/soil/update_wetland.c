@@ -53,6 +53,19 @@ static void checkbalance2(const Cell *cell,Stocks start,Real water_before,const 
 
 #endif
 
+static void updatepresent(Bool present[],int position[],const Pftlist *pftlist,int ntotpft)
+{
+  const Pft *pft;
+  int p;
+  for (p = 0; p<ntotpft; p++)
+    present[p] = FALSE;
+  foreachpft(pft, p,pftlist)
+  {
+    present[pft->par->id] = TRUE;
+    position[pft->par->id] = p;
+  }
+} /* of 'update_present' */
+
 void update_wetland(Cell *cell,          /**< pointer to cell */
                     int ntotpft,         /**< total number of PFTs */
                     int year,            /**< simulation year */
@@ -60,8 +73,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                    )
 {
   Stand *stand;
-  Pft *pft, *wetpft, *pft_save;
-  int p,pn, l;
+  Pft *pft, *wetpft;
+  int p, l;
   int s,s2, pos;
   int wetlandstandnum,natstandnum;
   int *position;
@@ -88,8 +101,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   check(position);
   present = newvec(Bool, ntotpft);
   check(present);
-  for (p = 0; p<ntotpft; p++)
-    present[p] = FALSE;
   s2=NOT_FOUND;
 #ifdef CHECK_BALANCE
   water_before=cell->balance.excess_water;
@@ -290,14 +301,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           //        modify soil C pools -> acrotelm C density mixture of wetland and non-wetland SOM
           natstand->frac = min(frac,delta_wetland); // make mixsoil and mix_veg_stock work correctly
           delta_wetland=natstand->frac;
-          pos = 0;
           mixsoil(wetstand, natstand,year,ntotpft,config);
-          foreachpft(pft, p, &wetstand->pftlist)
-          {
-            present[pft->par->id] = TRUE;
-            position[pft->par->id] = pos;
-            pos++;
-          }
+          updatepresent(present,position,&wetstand->pftlist,ntotpft);
           foreachpft(pft, p, &natstand->pftlist)
           {
 
@@ -307,15 +312,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               if(mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac,config))
               {
                 delpft(&wetstand->pftlist,position[pft->par->id]);
-                pos=0;
-                for (pn = 0; pn<ntotpft; pn++)
-                  present[pn] = FALSE;
-                foreachpft(pft_save, pn, &wetstand->pftlist)
-                {
-                  present[pft_save->par->id] = TRUE;
-                  position[pft_save->par->id] = pos;
-                  pos++;
-                }
+                updatepresent(present,position,&wetstand->pftlist,ntotpft);
               }
             }
             else
@@ -324,15 +321,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               if(mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac,config))
               {
                 delpft(&wetstand->pftlist,wetstand->pftlist.n-1);
-                pos=0;
-                for (pn = 0; pn<ntotpft; pn++)
-                  present[pn] = FALSE;
-                foreachpft(pft_save, pn, &wetstand->pftlist)
-                {
-                  present[pft_save->par->id] = TRUE;
-                  position[pft_save->par->id] = pos;
-                  pos++;
-                }
+                updatepresent(present,position,&wetstand->pftlist,ntotpft);
               }
             }
           }
@@ -398,13 +387,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           //        mix wetland soil carbon into non-wetland
           frac = wetstand->frac;
           wetstand->frac = -delta_wetland;  // trick to make mixsoil do it
-          pos = 0;
-          foreachpft(pft, p, &natstand->pftlist)
-          {
-            present[pft->par->id] = TRUE;
-            position[pft->par->id] = pos;
-            pos++;
-          }
+          updatepresent(present,position,&natstand->pftlist,ntotpft);
           mixsoil(natstand, wetstand,year,ntotpft,config);
 
           foreachpft(wetpft, p, &wetstand->pftlist)
@@ -415,15 +398,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
               {
                 delpft(&natstand->pftlist,position[wetpft->par->id]);
-                pos=0;
-                for (pn = 0; pn<ntotpft; pn++)
-                  present[pn] = FALSE;
-                foreachpft(pft_save, pn, &natstand->pftlist)
-                {
-                  present[pft_save->par->id] = TRUE;
-                  position[pft_save->par->id] = pos;
-                  pos++;
-                }
+                updatepresent(present,position,&natstand->pftlist,ntotpft);
               }
             }
             else
@@ -434,15 +409,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                 if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
                 {
                   delpft(&natstand->pftlist,natstand->pftlist.n-1);
-                  pos=0;
-                  for (pn = 0; pn<ntotpft; pn++)
-                    present[pn] = FALSE;
-                  foreachpft(pft_save, pn, &natstand->pftlist)
-                  {
-                    present[pft_save->par->id] = TRUE;
-                    position[pft_save->par->id] = pos;
-                    pos++;
-                  }
+                  updatepresent(present,position,&natstand->pftlist,ntotpft);
                 }
                 else
                 {
@@ -456,15 +423,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                 if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
                 {
                   delpft(&natstand->pftlist,natstand->pftlist.n-1);
-                  pos=0;
-                  for (pn = 0; pn<ntotpft; pn++)
-                    present[pn] = FALSE;
-                  foreachpft(pft_save, pn, &natstand->pftlist)
-                  {
-                    present[pft_save->par->id] = TRUE;
-                    position[pft_save->par->id] = pos;
-                    pos++;
-                  }
+                  updatepresent(present,position,&natstand->pftlist,ntotpft);
                 }
               }
             }
@@ -473,10 +432,10 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           for (p = 0; p<ntotpft; p++)
             present[p] = FALSE;
           foreachpft(pft, p, &wetstand->pftlist)
-          present[pft->par->id] = TRUE;
+            present[pft->par->id] = TRUE;
           foreachpft(pft, p, &natstand->pftlist)
-          if(!present[pft->par->id])
-            mix_veg(pft,natstand->frac/(natstand->frac+wetstand->frac));
+            if(!present[pft->par->id])
+              mix_veg(pft,natstand->frac/(natstand->frac+wetstand->frac));
 
           //        shrink wetland stand
           wetstand->frac=frac+delta_wetland;
