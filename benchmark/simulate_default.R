@@ -22,51 +22,40 @@
 
 library(lpjmlkit)
 
+# Source shared utilities
+script_dir <- (function() {
+  args <- commandArgs(trailingOnly = FALSE)
+  file_arg <- grep("--file=", args, value = TRUE)
+  if (length(file_arg) > 0) dirname(normalizePath(sub("--file=", "", file_arg)))
+  else getwd()
+})()
+source(file.path(script_dir, "benchmark_utils.R"))
+
+# =============================================================================
 # Parse command line arguments
+# =============================================================================
+
 args <- commandArgs(trailingOnly = TRUE)
 
-# Function to parse named arguments
-parse_args <- function(args) {
-  parsed <- list(
-    sim_path = NULL,
-    ntasks = 512,
-    blocking = 128,
-    model_path = getwd(),
-    qos = "standby",
-    runs_subset = NULL,
-    wtime = NULL
-  )
+# Define defaults and type converters for this script
+defaults <- list(
+  sim_path = NULL,
+  ntasks = 512,
+  blocking = 128,
+  model_path = getwd(),
+  qos = "standby",
+  runs_subset = NULL,
+  wtime = NULL
+)
 
-  for (arg in args) {
-    if (grepl("=", arg)) {
-      parts <- strsplit(arg, "=", fixed = TRUE)[[1]]
-      key <- parts[1]
-      value <- parts[2]
-
-      if (key %in% names(parsed)) {
-        if (key == "ntasks") {
-          parsed[[key]] <- as.integer(value)
-        } else if (key == "blocking") {
-          # Handle blocking as either integer or "unlimited"
-          if (tolower(value) == "unlimited") {
-            parsed[[key]] <- "unlimited"
-          } else {
-            parsed[[key]] <- as.integer(value)
-          }
-        } else {
-          parsed[[key]] <- value
-        }
-      } else {
-        warning(paste("Unknown argument:", key))
-      }
-    }
+type_converters <- list(
+  ntasks = as.integer,
+  blocking = function(x) {
+    if (tolower(x) == "unlimited") "unlimited" else as.integer(x)
   }
+)
 
-  parsed
-}
-
-# Parse arguments
-parsed_args <- parse_args(args)
+parsed_args <- parse_args(args, defaults, type_converters)
 
 # Check if required argument is provided
 if (is.null(parsed_args$sim_path)) {
@@ -95,6 +84,10 @@ qos <- parsed_args$qos
 runs_subset <- parsed_args$runs_subset
 wtime <- parsed_args$wtime
 
+# =============================================================================
+# Define simulation runs
+# =============================================================================
+
 runs <- tibble::tibble(
   sim_name = c(
     "spinup_methane", "spinup_no_methane", "transient_methane_pnv",
@@ -110,11 +103,14 @@ runs <- tibble::tibble(
   wateruse = c(NA, NA, FALSE, FALSE, NA, NA)
 )
 
-# Store filtered run indices/names if filter is specified
+# =============================================================================
+# Apply runs_subset filter if specified
+# =============================================================================
+
 runs_to_submit <- NULL
 if (!is.null(runs_subset)) {
   filter_values <- strsplit(runs_subset, ",")[[1]]
-  filter_values <- trimws(filter_values) # Remove whitespace
+  filter_values <- trimws(filter_values)
 
   # Check if filter values are numeric indices or names
   if (all(grepl("^[0-9]+$", filter_values))) {
@@ -124,10 +120,6 @@ if (!is.null(runs_subset)) {
       stop(paste("Index out of range. Valid indices are 1 to", nrow(runs)))
     }
     runs_to_submit <- runs$sim_name[filter_indices]
-    message(paste(
-      "Will submit filtered simulations:",
-      paste(runs_to_submit, collapse = ", ")
-    ))
   } else {
     # Simulation names
     if (!all(filter_values %in% runs$sim_name)) {
@@ -138,55 +130,46 @@ if (!is.null(runs_subset)) {
       ))
     }
     runs_to_submit <- filter_values
-    message(paste(
-      "Will submit filtered simulations:",
-      paste(runs_to_submit, collapse = ", ")
-    ))
   }
+  message(paste(
+    "Will submit filtered simulations:",
+    paste(runs_to_submit, collapse = ", ")
+  ))
 }
 
-# Base outputs for all benchmark runs
-outputvars_base <- c(
-  "grid", "terr_area", "land_area", "lake_area", "cftfrac", "vegc", "soilc",
-  "litc", "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
-  "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
-  "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
-  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc", "pft_harvestc"
-)
+# =============================================================================
+# Split runs by type and write configs
+# =============================================================================
 
-# Additional outputs for full runs (with methane cycle)
-# TODO: Add methane-specific outputs here once available
-outputvars_methane <- c(
-  # e.g., "mch4_emis", "mch4_oxid", ...
-)
-
-# Combine outputs based on run type
-outputvars_no_methane <- outputvars_base
-outputvars_with_methane <- c(outputvars_base, outputvars_methane)
-
-# Split runs into methane and no_methane
+# Split runs into categories (spinups + transients for each methane setting)
+# no_methane runs: spinup_no_methane + all transient_no_methane_*
 runs_no_methane <- runs[grepl("no_methane", runs$sim_name), ]
+# methane runs: spinup_methane + all transient_methane_*
 runs_methane <- runs[!grepl("no_methane", runs$sim_name), ]
 
-# Write configs separately for methane and no_methane runs
+# Write configs for no_methane runs (use base outputs, no methane outputs)
+# PNV transients use outputvars_pnv, LU transients use outputvars_lu
+# Spinups don't have benchmarkable outputs, but need consistent config
 configs_no_methane <- write_config(
   x = runs_no_methane,
   model_path = model_path,
   sim_path = sim_path,
-  output_list = outputvars_no_methane,
+  output_list = outputvars_lu,  # LU outputs are superset of PNV
+
   output_list_timestep = "annual"
 )
 
+# Write configs for methane runs (include methane outputs)
 configs_methane <- write_config(
   x = runs_methane,
   model_path = model_path,
   sim_path = sim_path,
-  output_list = outputvars_with_methane,
+  output_list = outputvars_lu_methane,  # LU + methane is the full set
   output_list_timestep = "annual"
 )
 
 # Combine configs
-configs <- rbind(configs_methane, configs_no_methane)
+configs <- rbind(configs_no_methane, configs_methane)
 
 # Filter configs to submit only the requested runs
 if (!is.null(runs_to_submit)) {
@@ -194,7 +177,10 @@ if (!is.null(runs_to_submit)) {
   message(paste("Submitting", nrow(configs), "simulation(s)"))
 }
 
-# Build submit_lpjml arguments
+# =============================================================================
+# Submit simulations
+# =============================================================================
+
 submit_args <- list(
   x = configs,
   model_path = model_path,
@@ -204,7 +190,6 @@ submit_args <- list(
   sclass = qos
 )
 
-# Add wtime if specified
 if (!is.null(wtime)) {
   submit_args$wtime <- wtime
 }
