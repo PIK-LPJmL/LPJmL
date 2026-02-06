@@ -77,7 +77,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   if(fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon)>0.0001)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s in cell(%s): day: %d error: %g start: %g end: %g flux_out.carbon: %g fluxes_in.carbon: %g flux_estab.carbon: %g CH4_fluxes: %g",
-          __FUNCTION__,day,sprintcoord(line,&cell->coord),end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon,start.carbon,end,fluxes_out.carbon,fluxes_in.carbon,flux_estab.carbon,CH4_fluxes);
+          __FUNCTION__,sprintcoord(line,&cell->coord),day,end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon,start.carbon,end,fluxes_out.carbon,fluxes_in.carbon,flux_estab.carbon,CH4_fluxes);
   }
   fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
                       +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
