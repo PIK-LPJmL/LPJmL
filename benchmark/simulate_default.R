@@ -147,6 +147,12 @@ runs_no_methane <- runs[grepl("no_methane", runs$sim_name), ]
 # methane runs: spinup_methane + all transient_methane_*
 runs_methane <- runs[!grepl("no_methane", runs$sim_name), ]
 
+# Define which variables need monthly timestep
+monthly_vars <- c("gpp", "evap", "transp", "rh", "npp", "vegc")
+
+# Create timestep vector for no_methane runs (LU output list)
+timesteps_lu <- ifelse(outputvars_lu %in% monthly_vars, "monthly", "annual")
+
 # Write configs for no_methane runs (use base outputs, no methane outputs)
 # PNV transients use outputvars_pnv, LU transients use outputvars_lu
 # Spinups don't have benchmarkable outputs, but need consistent config
@@ -155,9 +161,11 @@ configs_no_methane <- write_config(
   model_path = model_path,
   sim_path = sim_path,
   output_list = outputvars_lu,  # LU outputs are superset of PNV
-
-  output_list_timestep = "annual"
+  output_list_timestep = timesteps_lu
 )
+
+# Create timestep vector for methane runs (LU + methane output list)
+timesteps_lu_methane <- ifelse(outputvars_lu_methane %in% monthly_vars, "monthly", "annual")
 
 # Write configs for methane runs (include methane outputs)
 configs_methane <- write_config(
@@ -165,7 +173,7 @@ configs_methane <- write_config(
   model_path = model_path,
   sim_path = sim_path,
   output_list = outputvars_lu_methane,  # LU + methane is the full set
-  output_list_timestep = "annual"
+  output_list_timestep = timesteps_lu_methane
 )
 
 # Combine configs
