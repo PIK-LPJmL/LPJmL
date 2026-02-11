@@ -23,6 +23,7 @@
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
 //#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
 //#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
+//#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -65,7 +66,11 @@
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
   "delta_year" : 100,       /* time step in anomalies (yrs) */
+#ifdef NO_METHANE
+  "with_methane" : false,    /* simulation without methane and oxygen dynamics */
+#else
   "with_methane" : true,    /* simulation with methane and oxygen dynamics */
+#endif
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
@@ -357,6 +362,7 @@ ID                               Fmt                        filename
     { "id" : "agb",              "file" : { "name" : "output_pnv/agb"}},
     { "id" : "agb_tree",         "file" : { "name" : "output_pnv/agb_tree"}},
     { "id" : "soilc_slow",       "file" : { "name" : "output_pnv/soilc_slow"}},
+#ifndef NO_METHANE
     { "id" : "ch4_ebullition",   "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_ebullition"}},
     { "id" : "ch4_plant_gas",    "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_plant_gas"}},
     { "id" : "ch4_emissions",    "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_emissions"}},
@@ -369,9 +375,10 @@ ID                               Fmt                        filename
     { "id" : "ch4_agr",     "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_agr"}},
     { "id" : "ch4_grassland",     "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_grassland"}},
     { "id" : "meansoilo2",       "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilo2"}},
+    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilch4"}},
+#endif
     { "id" : "gw_storage",       "file" : { "timestep" : "annual", "name" : "output_pnv/gw_store"}},
     { "id" : "gw_outflux",       "file" : { "timestep" : "monthly", "name" : "output_pnv/gw_outflux"}},
-    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilch4"}},
     { "id" : "napplied_mg",      "file" : { "name" : "output_pnv/napplied_mg"}},
     { "id" : "bnf_mg",           "file" : { "name" : "output_pnv/bnf_mg"}},
     { "id" : "flux_estabn_mg",   "file" : { "name" : "output_pnv/flux_estabn_mg"}},
