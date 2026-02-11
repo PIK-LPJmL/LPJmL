@@ -42,6 +42,7 @@ of `major.minor.patch` with
 - Fixed FPE in `allocation_grass.c`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
 - `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`. 
+- Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
 
 ### Removed
 
