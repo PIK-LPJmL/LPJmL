@@ -64,6 +64,7 @@
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
+  "delta_year" : 100,       /* time step in anomalies (yrs) */
   "with_methane" : true,    /* simulation with methane and oxygen dynamics */
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
