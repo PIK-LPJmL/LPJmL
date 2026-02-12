@@ -29,6 +29,8 @@ of `major.minor.patch` with
 
 - Added benchmark folder with R scripts (`simulate_default.R`, `benchmark_default.R`, `benchmark_utils.R`) to simulate default scenarios and run benchmarks.
 - Added support for separate methane/no_methane output configurations in benchmark scripts.
+- Limits for carbon/nitrogen/water balance errors within lpjml functions can be set in `lpjparam.cjson`.
+- Option `-check_balance` added to `configure.sh` to enable balance checks on function level.
 
 ### Changed
 
@@ -42,6 +44,7 @@ of `major.minor.patch` with
 - Fixed FPE in `allocation_grass.c`.
 - Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fc"`, `"nitrogen_fcn`, and `"w_fcn"`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
+- Compile flag `-NO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
 
 ### Removed
 
@@ -59,10 +62,9 @@ of `major.minor.patch` with
 - Balance error messages corrected in `cultivate.c`.
 - Carbon balance closed in `update_wetland.c`.
 - Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
-<<<<<<< HEAD
-=======
 - Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
->>>>>>> 7d33681b02df1c35c7db826692eb5e2d411cc884
+- Check for negative `vm` added in `photosynthesis.c` to avoid nitrogane balance errors.
+- `tillage()` function changed to avoid carbon balance errors.
 
 
 ## [6.0.2] - 2026-01-17
