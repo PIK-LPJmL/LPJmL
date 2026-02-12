@@ -43,8 +43,8 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
   Stocks flux_in={0,0},flux_save;
   Stocks start={0,0};
   int s;
-  flux_in.carbon=cell->balance.anpp-cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon;
-  flux_in.nitrogen= -cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen;
+  flux_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon;
+  flux_in.nitrogen= cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen;
   flux_save=flux_in;
   foreachstand(stand,s,cell->standlist)
   {
@@ -67,14 +67,14 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
     }
 #ifdef CHECK_BALANCE
   end=0;
-  flux_in.carbon=(cell->balance.anpp-cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon)-flux_in.carbon;
-  flux_in.nitrogen=( -cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen)-flux_in.nitrogen;
+  flux_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon)-flux_in.carbon;
+  flux_in.nitrogen=( cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen)-flux_in.nitrogen;
   foreachstand(stand,s,cell->standlist)
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
 
   if (fabs(end-start.carbon-flux_in.carbon)>param.error_limit.stocks_fcn.carbon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE, 
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid carbon balance in %s after allocation in cell (%s): year=%d: day: %d CFT: %d error: %g start: %.3f end: %.3f\n"
          "=====001: flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %gn",
          __FUNCTION__,sprintcoord(line,&cell->coord),year,day,cft,end-start.carbon-flux_in.carbon,start.carbon,
@@ -86,7 +86,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.nitrogen-flux_in.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE, 
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid nitrogen balance in %s after allocation in cell(%s): day: %d CFT: %d error: %g start: %.3f end: %.3f\n"
          "=====001: flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %gn",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen,
@@ -106,14 +106,14 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
   }//if check lu
 #ifdef CHECK_BALANCE
   end=0;
-  flux_in.carbon=(cell->balance.anpp-cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon)-flux_save.carbon;
-  flux_in.nitrogen=(-cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen)-flux_save.nitrogen;
+  flux_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon-cell->balance.neg_fluxes.carbon-cell->balance.timber_harvest.carbon-cell->balance.deforest_emissions.carbon)-flux_save.carbon;
+  flux_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen-cell->balance.timber_harvest.nitrogen-cell->balance.deforest_emissions.nitrogen)-flux_save.nitrogen;
   foreachstand(stand,s,cell->standlist)
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
 
   if (fabs(end-start.carbon-flux_in.carbon)>param.error_limit.stocks_fcn.carbon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE, 
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid carbon balance in %s at the end in cell (%s): year: %d day: %d CFT: %d error: %g start: %.3f end: %.3f\n"
          "=====001: flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),year,day,cft,end-start.carbon-flux_in.carbon,start.carbon,
@@ -125,7 +125,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.nitrogen-flux_in.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE, 
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid nitrogen balance in %s at the end in cell(%s): day: %d CFT: %d %g start: %.3f end: %.3f\n"
          "=====001: flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen,

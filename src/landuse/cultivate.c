@@ -111,14 +111,14 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   end+=cell->balance.timber_harvest.carbon+cell->balance.deforest_emissions.carbon;
   if (fabs(end-start.carbon)>param.error_limit.stocks_fcn.carbon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d error: %.4f start: %.4f  end: %.3f\n"
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid carbon balance in %s: day: %d error: %.4f start: %.4f end: %.3f\n"
          "=====001: cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
          __FUNCTION__,day,end-start.carbon,start.carbon, end,
          cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
   }
   if(fabs(water_before-water_after)>param.error_limit.w_fcn)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) after reclaim land at day %d: error: %g water_after: %g water_before: %g",
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid water balance in %s in cell (%s) after reclaim land at day %d: error: %g water_after: %g water_before: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);
   }
 #endif
@@ -127,7 +127,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     tillage(&cropstand->soil,param.residue_frac);
     updatelitterproperties(cropstand,cropstand->frac);
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac,config->fail_on_balance);
   }
   data=cropstand->data;
   data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
@@ -188,7 +188,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   end+=cell->balance.timber_harvest.carbon+cell->balance.deforest_emissions.carbon;
   if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>param.error_limit.stocks_fcn.carbon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d   %.4f start: %.4f  end: %.3f  bm_inc.carbon: %.4f manure: %.4f\n"
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid carbon balance in %s: day: %d error: %.4f start: %.4f end: %.3f  bm_inc.carbon: %.4f manure: %.4f\n"
          "=====001: cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
          __FUNCTION__,day,end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
          start.carbon, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
@@ -201,7 +201,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>param.error_limit.stocks_fcn.nitrogen)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n"
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid nitrogen balance in %s: day: %d cft: %d %.4f start: %.4f end: %.3f bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n"
          "=====001: cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g\n"
          "=====002: setasidestand.nitrogen: %g defores.nitrogen: %g timber_harvest.n: %g",
          __FUNCTION__,day,cft,end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac,
@@ -210,7 +210,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if(fabs(water_before-water_after)>param.error_limit.w_fcn)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s in cell (%s) at day %d: error: %g water_after: %g water_before: %g",
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid water balance in %s in cell (%s) at day %d: error: %g water_after: %g water_before: %g",
          __FUNCTION__,sprintcoord(line,&cell->coord),day,water_after-water_before,water_after,water_before);
   }
 #endif

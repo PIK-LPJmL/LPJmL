@@ -92,10 +92,10 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
         end.nitrogen+=st.nitrogen*stand->frac;
       }
       if(fabs(start.carbon-end.carbon)>param.error_limit.stocks_fcn.carbon)
-          fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: error=%g start : %g end : %g ",
+          fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid carbon balance in %s at the end: month=%d: error=%g start : %g end : %g ",
                __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
       if(fabs(start.nitrogen-end.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
-          fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: error=%g start : %g end : %g ",
+          fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: error=%g start : %g end : %g ",
                __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif
     } /* if(!grid[cell].skip) */

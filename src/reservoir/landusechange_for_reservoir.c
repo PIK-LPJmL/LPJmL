@@ -332,21 +332,21 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   balanceW=totw_before-totw_after;
   if(fabs(balanceW)>0.01)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,TRUE,
          "Invalid water balance in cell (%s) in from_setaside_for_reservoir, balanceW=%g dmass=%g year: %d",
          sprintcoord(line,&cell->coord),balanceW, cell->ml.resdata->dmass/cell->coord.area,year);
     fflush(stderr);
   }
   if(fabs(balance.nitrogen)>0.001)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,TRUE,
          "Invalid nitrogen balance in cell (%s) in from_setaside_for_reservoir, balanceN=%g year: %d",
          sprintcoord(line,&cell->coord),balance.nitrogen,year);
     fflush(stderr);
   }
   if(fabs(balance.carbon)>0.001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,TRUE,
          "Invalid carbon balance in cell (%s) stands: %d in from_setaside_for_reservoir, balanceC=%g total.carbon: %g resdata->pool.carbon: %g timber: %g deforest: %g carbon: %g year: %d",
          sprintcoord(line,&cell->coord),cell->standlist->n,balance.carbon,tot_after.carbon,cell->ml.resdata->pool.carbon,cell->balance.timber_harvest.carbon,cell->balance.deforest_emissions.carbon,carbon,year);
     fflush(stderr);
@@ -595,19 +595,19 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     String line;
     balanceW=totw_before-totw_after;
     if(fabs(balanceW)>0.01)
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+      fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,TRUE,
            "Invalid water balance in cell (%s) in the building of the reservoir, balanceW=%g dmass=%g  year: %d",
            sprintcoord(line,&cell->coord),balanceW, cell->ml.resdata->dmass/cell->coord.area,year);
     if(fabs(balance.nitrogen)>0.001)
     {
-      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
+      fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,TRUE,
            "Invalid nitrogen balance in cell (%s) in the building of the reservoir, balanceN=%g year: %d",
            sprintcoord(line,&cell->coord),balance.nitrogen,year);
       fflush(stderr);
     }
     if(fabs(balance.carbon)>0.001)
-      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,
-           "Invalid carbon balance in cell (%s) in the building of the reservoir, balanceC=%g year: %d after: %.5f before: %.5f resdata: %.5f timber: %.5f deforest: %.5f estab: %.5f ",
+      fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,TRUE,
+           "Invalid carbon balance in cell (%s) in the building of the reservoir, balanceC=%g year: %d after: %.5f before: %.5f resdata: %.5f timber: %.5f deforest: %.5f estab: %.5f",
            sprintcoord(line,&cell->coord),balance.carbon,year,tot_after.carbon,tot_before.carbon,cell->ml.resdata->pool.carbon,cell->balance.timber_harvest.carbon,cell->balance.deforest_emissions.carbon,cell->balance.flux_estab.carbon);
 #endif
 

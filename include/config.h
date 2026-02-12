@@ -153,6 +153,7 @@ struct config
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
   Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */
   Bool pedantic;          /**< enables pedantic mode, stops on some warnings (TRUE/FALSE) */
+  Bool fail_on_balance;   /**< fail on balance error (TRUE/FALSE) */
   char *sim_name;         /**< Desciption of LPJ simulation */
   char *coupled_model;    /**< name of coupled model or NULL */
   int sim_id;             /**< Simulation type */
