@@ -37,7 +37,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks flux = {0,0};
 #ifndef DAILY_ESTABLISHMENT
   Stocks flux_estab={0,0};
-  Stocks fluxes_out_save,fluxes_in_save;
 #endif
 
 #ifdef CHECK_BALANCE
@@ -47,6 +46,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks bm_inc={0,0};
   Stocks fluxes_out={0,0};
   Stocks fluxes_in={0,0};
+  Stocks fluxes_out_save,fluxes_in_save;
   start.carbon = (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   start.nitrogen = standstocks(stand).nitrogen*stand->frac;
 
