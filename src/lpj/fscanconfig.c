@@ -759,12 +759,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->inputdir=strdup(name);
     checkptr(config->inputdir);
   }
-  input=fscanstruct(file,"input",verbose);
-  if(input==NULL)
-    return TRUE;
-  if (config->isanomaly)
+  if(config->isanomaly)
   {
-    fscanint2(input, &config->delta_year, "delta_year");
+    fscanint2(file, &config->delta_year, "delta_year");
     if(config->delta_year<1)
     {
       if(isroot(*config))
@@ -775,6 +772,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->delta_year = 1;
+  input=fscanstruct(file,"input",verbose);
+  if(input==NULL)
+    return TRUE;
   for(i=0;i<N_IN;i++)
     def[i]=FALSE;
   scanclimatefilename(input,&config->soil_filename,FALSE,FALSE,"soil");

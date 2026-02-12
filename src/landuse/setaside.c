@@ -20,7 +20,9 @@
 void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config *config)
 {
   int l,index,i;
+#ifdef SAFE
   String line;
+#endif
   Real water1,water2;
 #ifdef CHECK_BALANCE
   Real water_before,water_after;

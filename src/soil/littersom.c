@@ -86,9 +86,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real F_NO3=0;     /* soil nitrification rate gN *m-2*d-1*/
   Real F_N2O=0;     /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral,F_Nmineral_all;  /* net mineralization flux gN *m-2*d-1*/
-#ifdef SAFE
   String line;
-#endif
   Pft *pft;
   Pftcrop *crop;
   Irrigation *data;
@@ -100,7 +98,9 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real oxidation_stand=0;    //oxidation of methane with in the soil column
   Real h2o_mt;   /* methane production */
   Real O2_need;
+#ifdef SAFE
   Real epsilon_O2 = 0;
+#endif
   Real NH4_mineral=0;
   soil=&stand->soil;
   *methaneflux_litter=*runoff=*MT_water=*ch4_sink=0;

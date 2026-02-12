@@ -85,7 +85,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real q_perch_max, k_drai_perch, k_perch, wtsub, drain_perched, drain_perched_out, drain_perched_layer;
   Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water;
   //Real sat_lev = 0.9;
+#if defined SAFE || defined CHECK_BALANCE
   Real prec=infil;
+#endif
   Bool isrice=FALSE;
   Bool enth=TRUE;
   Real dprec=dprec1;

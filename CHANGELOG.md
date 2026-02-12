@@ -45,6 +45,8 @@ of `major.minor.patch` with
 - Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fc"`, `"nitrogen_fcn`, and `"w_fcn"`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
 - Compile flag `-NO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
+- `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`. 
+- Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
 
 ### Removed
 
@@ -65,6 +67,7 @@ of `major.minor.patch` with
 - Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
 - Check for negative `vm` added in `photosynthesis.c` to avoid nitrogane balance errors.
 - `tillage()` function changed to avoid carbon balance errors.
+- Utility `regridclm` corrected to avoid SEGV if file size does not match header.
 
 
 ## [6.0.2] - 2026-01-17

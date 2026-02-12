@@ -238,9 +238,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
 
 #ifdef CHECK_BALANCE
-#ifndef SAFE
-    String line;
-#endif
     w_after=soilwater(&stand->soil)+excess;
     if(fabs(w_before-w_after)>param.error_limit.w_fcn)
       fail(INVALID_WATER_BALANCE_ERR,fail_on_balance,FALSE,"Invalid water balance in pedotransfer() in cell (%s): water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
