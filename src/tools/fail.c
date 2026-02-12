@@ -64,9 +64,20 @@ void fail(int errcode,     /**< Error code (0...999) */
          )
 {
   va_list ap;
-  va_start(ap,msg);
-  printfailerr2(errcode,stop,msg,ap);
-  va_end(ap);
+  if(msg==NULL)
+  {
+    if(stop)
+    {
+      fprintf(stderr,"Program terminated unsuccessfully.\n");
+      fflush(stderr);
+    }
+  }
+  else
+  {
+    va_start(ap,msg);
+    printfailerr2(errcode,stop,msg,ap);
+    va_end(ap);
+  }
   if(stop && core)
     abort(); /* generate core file for post-mortem analysis */
   if(stop)
