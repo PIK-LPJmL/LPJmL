@@ -66,11 +66,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Stocks fluxes_prod= {0,0};
   Stocks fluxes_harvest={0,0};
   Stocks balance= {0,0};
-  //Real start_w = cell->balance.excess_water;
   Real end_w = 0;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
- start_w+=cell->balance.excess_water+cell->lateral_water;
+  start_w+=cell->balance.excess_water+cell->lateral_water;
 
   foreachstand(checkstand, s, cell->standlist)
   {
@@ -346,10 +345,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks balance={0,0};
-  //Real start_w=cell->balance.excess_water;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
- start_w+=cell->balance.excess_water+cell->lateral_water;
+  start_w+=cell->balance.excess_water+cell->lateral_water;
   Real end_w=0;
   foreachstand(checkstand, s, cell->standlist)
   {
@@ -538,10 +536,9 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks balance= {0,0};
-  //Real start_w = cell->balance.excess_water;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
- start_w+=cell->balance.excess_water+cell->lateral_water;
+  start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);
@@ -581,6 +578,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         mixstand->type=&kill_stand;
         reclaim_land(setasidestand,mixstand,cell,config->luc_timber,npft+ncft,config);
         setasidestand->frac+=difffrac;
+      }
 #else
       setasidestand=getstand(cell->standlist,s);
       if(setasidestand->frac<=epsilon-difffrac)
@@ -924,12 +922,11 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks balance= {0,0};
-  //Real start_w = cell->balance.excess_water;
   Real end_w = 0;
   int sn;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
- start_w+=cell->balance.excess_water+cell->lateral_water;
+  start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, sn, cell->standlist)
   {
     st=standstocks(checkstand);
