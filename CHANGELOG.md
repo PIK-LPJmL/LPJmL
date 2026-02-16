@@ -43,7 +43,7 @@ of `major.minor.patch` with
 - Fixed FPE in `allocation_grass.c`.
 - Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fcn"`, `"nitrogen_fcn`, and `"w_fcn"`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
-- Compile flag `-NO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
+- Compile flag `-DNO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
 - `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`. 
 - Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
 
