@@ -59,7 +59,6 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     reprod=pft->bm_inc.carbon*treepar->reprod_cost;
     pft->bm_inc.carbon-=reprod;
     reprod_out=reprod;
-    //printf("turnover establish=%g\n",pft->establish.carbon);
     if(pft->establish.carbon<reprod)
     {
       reprod-=pft->establish.carbon;
