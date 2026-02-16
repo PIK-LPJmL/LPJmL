@@ -125,9 +125,9 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"harvest date biomass grass NH:\t%d\n",param.bmgr_harvest_day_nh);
     fprintf(file,"harvest date biomass grass SH:\t%d\n",param.bmgr_harvest_day_sh);
     fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
+    fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
     if(config->luc_timber)
     {
-      fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
       fprintf(file,"timber fraction:\t%g\n",param.ftimber);
       fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
