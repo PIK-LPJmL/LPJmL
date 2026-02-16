@@ -107,7 +107,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux+stand->cell->NO3_lateral;
 #endif
 
-#if defined SAFE || defined CHECK_BALANCR
+#if defined SAFE || defined CHECK_BALANCE
   String line;
 #endif
 
