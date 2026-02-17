@@ -68,6 +68,7 @@ of `major.minor.patch` with
 - `tillage()` function changed to avoid carbon balance errors.
 - Utility `regridclm` corrected to avoid SEGV if file size does not match header.
 - Parameter `"fburnt"` in `lpjparam.cjson` is always read, was always zero if `"luc_timber"` was set to false.
+- Help text corrected in `printclm.c`.
 
 
 ## [6.0.2] - 2026-01-17
