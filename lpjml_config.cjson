@@ -243,7 +243,7 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-  "inpath" : "/p/projects/lpjml/input/historical",
+  "inpath" : "/p/projects/lpjml/inputs/public_standard",
 
   /* Input files */
   "input" :
