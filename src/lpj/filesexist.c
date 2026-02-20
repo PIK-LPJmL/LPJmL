@@ -264,7 +264,7 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
   return 0;
 } /* of 'checkdatafile' */
 
-static int checklandusefile(Config *config,const Filename *filename,const char *name,Bool cftonly,int **cftmap,int *cftmapsize,const char *unit,int npft,int ncft)
+static int checklandusefile(Config *config,const Filename *filename,const char *name,Bool cftonly,Bool check_title,int **cftmap,int *cftmapsize,const char *unit,int npft,int ncft)
 {
   FILE *file;
   Header header;
@@ -289,7 +289,8 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
       return 1;
     fclose(file);
   }
-  checktitle(attrs,n_attr,name,&config->landuse,TRUE);
+  if(check_title)
+    checktitle(attrs,n_attr,name,&config->landuse,TRUE);
   freeattrs(attrs,n_attr);
   getmap(map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
   if(*cftmap==NULL)
@@ -626,14 +627,14 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkinputfile(config,&config->landcover_filename,"1",LPJ_SHORT,config->npft[GRASS]+config->npft[TREE]-config->nbiomass);
   if(config->withlanduse!=NO_LANDUSE)
   {
-    if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,
+    if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,TRUE,
                           &config->landusemap,&config->landusemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
       bad++;
     else
       bad+=checklanduse(config);
     if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,
+      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,TRUE,
                           &config->sdatemap,&config->sdatemap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -648,7 +649,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
-      if(checklandusefile(config,&config->crop_phu_filename,"crop_phumap",TRUE,
+      if(checklandusefile(config,&config->crop_phu_filename,"crop_phumap",TRUE,FALSE,
                           &config->crop_phumap,&config->crop_phumap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else if(checkdatafile(config,&config->crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config->crop_phumap_size,TRUE))
@@ -708,7 +709,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,
                           &config->fertilizermap,&config->fertilizermap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -716,7 +717,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,
                           &config->manuremap,&config->manuremap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -724,7 +725,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->residue_treatment==READ_RESIDUE_DATA)
     {
-      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,
+      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,TRUE,
                           &config->residuemap,&config->residuemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
