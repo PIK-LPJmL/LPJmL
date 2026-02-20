@@ -572,7 +572,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE);
   }
   if(config->wateruse)
-    bad+=checkdatafile(config,&config->wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1,FALSE);
+    bad+=checkdatafile(config,&config->wateruse_filename,"wateruse","dm3/day",LPJ_INT,1,FALSE);
   bad+=checkclmfile(config,"temp",&config->temp_filename,"celsius",LPJ_SHORT,TRUE,TRUE);
   bad+=checkclmfile(config,"precipitation",&config->prec_filename,"kg/m2/day",LPJ_SHORT,TRUE,TRUE);
   if(config->isanomaly)
@@ -586,7 +586,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   }
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
-    bad += checkdatafile(config, &config->wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1,FALSE);
+    bad += checkdatafile(config, &config->wateruse_wd_filename,"wateruse_wd","dm3/day",LPJ_INT,1,FALSE);
 #endif
   if(config->with_radiation)
   {
