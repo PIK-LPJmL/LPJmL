@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   i  n  p  u  t  .  h                                          \n**/
+/**               g e t i n t a r r a y f r o m j s o n . c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function reads int array from JSON file                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,29 +14,28 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifndef INPUT_H
-#define INPUT_H
+#include "lpj.h"
 
-/* Definition of datatypes */
-
-typedef struct
+int *getintarrayfromjson(const char *filename, /**< name of JSON file */
+                         int *size,            /**< size of int array */
+                         const char *key,      /**< name of int array in JSON file */
+                         Verbosity verb        /**< verbosity level (NO_ERR,ERR,VERB) */
+                        )                      /** int array read or NULL on error */
 {
-  Climate *climate;
-  Landuse landuse;
-  Wateruse wateruse;
-  Icefrac icefrac;
-#ifdef IMAGE
-  Wateruse wateruse_wd;
-#endif
-  Popdens popdens;
-  Human_ignition human_ignition;
-  Extflow extflow;
-  Landcover landcover;
-} Input;
-
-/* Declaration of functions */
-
-extern Bool initinput(Input *,const Cell *,int,int,Config *);
-extern void freeinput(Input,const Config *);
-
-#endif
+  FILE *file;
+  int *array;
+  LPJfile *lpjfile;
+  if((file=fopen(filename,"r"))==NULL)
+  {
+    if(verb)
+      printfopenerr(filename);
+    return NULL;
+  }
+  lpjfile=parse_json(file,verb);
+  fclose(file);
+  if(lpjfile==NULL)
+    return NULL;
+  array=fscanvarintarray(lpjfile,size,key,verb);
+  closeconfig(lpjfile);
+  return array;
+} /* of 'getintarrayfromjson' */

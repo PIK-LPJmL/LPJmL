@@ -54,7 +54,7 @@
 #define LPJ_LANDCOVER_HEADER "LPJLCOV"
 #define LPJ_LANDCOVER_VERSION 3
 #define LPJ_FERTILIZER_HEADER "LPJFERT"
-#define LPJ_FERTILIZZER_VERSION 3
+#define LPJ_FERTILIZER_VERSION 3
 #define LPJ_SOILPH_HEADER "LPJ_SPH"
 #define LPJ_SOILPH_VERSION 3
 #define LPJ_TILLAGE_HEADER "LPJTILL"
@@ -150,7 +150,7 @@ extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *,Bool);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);
-extern FILE *openinputfile(Header *, Bool *,const Filename *,
+extern FILE *openinputfile(Header *,Map **,Attr **,int *, Bool *,const Filename *,
                            String,const char *,Type,int *,size_t *,Bool,const Config *);
 extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);

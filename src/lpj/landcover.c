@@ -23,10 +23,11 @@ struct landcover
   int size;
 };
 
-Landcover initlandcover(int npft,            /**< number of natural PFTs */
-                        const Config *config /**< LPJmL configuration */
-                       )                     /** \return landcover data or NULL */
+Landcover initlandcover(int npft,      /**< number of natural PFTs */
+                        Config *config /**< LPJmL configuration */
+                       )               /** \return landcover data or NULL */
 {
+  Map *map=NULL;
   Landcover landcover;
   int i;
   
@@ -36,8 +37,23 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     printallocerr("landcover");
     return NULL;
   }
-  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,config->landcovermap_size,TRUE,config))
+  if(opendata(&landcover->file,&map,NULL,NULL,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
   {
+    free(landcover);
+    return NULL;
+  }
+  if(getmap(map,config->landcover_filename.name,"landusemap",FALSE,
+            &config->landcovermap,&config->landcovermap_size,getnnat(npft,config),0,config))
+  {
+    free(landcover);
+    return NULL;
+  }
+  if(landcover->file.var_len!=config->landcovermap_size)
+  {
+    if(isroot(*config))
+      fprintf(stderr,
+              "ERROR147: Invalid number of bands=%zu in landcover data file, must be %d\n",
+              landcover->file.var_len,config->landcovermap_size);
     free(landcover);
     return NULL;
   }

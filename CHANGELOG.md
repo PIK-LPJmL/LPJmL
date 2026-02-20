@@ -20,6 +20,34 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Added
+
+ - Base temp and hlimit values are read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
+ - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` or `"hlimit"` data.
+ - Band names for mapping are read from JSON metafiles and NetCDF input files.
+ - Globale attribute `"title"` is read from climate and land-use input files and checked for matching titles.
+ - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
+ - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
+
+### Changed
+
+- JSON metafiles instead of CLM files used in `input.cjson` for land-use, fertilizer, manure, sowing data and crop PHU input in order to read CFT maps.
+- JSON metafiles are read for climate input to get title.
+- Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
+- The global attributes in JSON metafiles are printed on separate lines.
+- If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
+
+### Fixed
+
+- Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
+- Typos in help text in `regridclm.c` corrected.
+
+
 ## [6.0.2] - 2026-01-17
 
 ### Contributors
@@ -87,6 +115,7 @@ of `major.minor.patch` with
 - Unused functions `snow.old()`, `soiltemp()` and related functions removed.
 - Setting without permafrost removed
 - Soil variables `state[]`, `alag`, `amp`, and `meanw1` removed.
+>>>>>>> eac2d8b8f3cd7bcdadfe8c86e75783f5280a7d6b
 
 
 ## [6.0.0] - 2025-11-25

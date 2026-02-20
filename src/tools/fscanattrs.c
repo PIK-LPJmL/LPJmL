@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads global attributes from a text file                          \n**/
+/**     Function reads global attributes from a JSON file                          \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -58,6 +58,18 @@ Bool fscanattrs(LPJfile *file,    /**< pointer to a LPJ file */
   }
   return FALSE;
 } /* of 'fscanattrs' */
+
+char *getattr(const Attr *attrs, /**< array of attributes */
+              int n,             /**< size of attribute array */
+              const char *name   /**< name of attribute */
+             )                   /** \return value of attribute name or NULL */
+{
+  int i;
+  for(i=0;i<n;i++)
+    if(!strcmp(attrs[i].name,name))
+      return strdup(attrs[i].value);
+  return NULL;
+} /* of 'getattr' */
 
 void freeattrs(Attr *attrs, /**< array of attributes */
                int n        /**< size of attribute array */

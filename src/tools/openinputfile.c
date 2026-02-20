@@ -17,6 +17,9 @@
 #include "lpj.h"
 
 FILE *openinputfile(Header *header,           /**< [out] pointer to file header */
+                    Map **map,                /**< map array or NULL */
+                    Attr **attrs,             /**< pointer to array of attributes or NULL */
+                    int *n_attr,              /**< size of array attribute */
                     Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
                     const Filename *filename, /**< [in]  file name */
                     String headername,        /**< [out] clm file header string */
@@ -48,7 +51,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&var_unit,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,map,NULL,attrs,n_attr,NULL,NULL,NULL,&var_unit,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
@@ -92,6 +95,12 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     }
     return file;
   }
+  if(map!=NULL)
+    *map=NULL;
+  if(attrs!=NULL)
+    *attrs=NULL;
+  if(n_attr!=NULL)
+    *n_attr=0;
   *offset=0; /* no additional offset in CLM file */
   if((file=fopen(filename->name,"rb"))==NULL)
   {

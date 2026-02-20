@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   i  n  p  u  t  .  h                                          \n**/
+/**                 n  e  w  i  r  r  i  g  s  y  s  t  e  m  .  c                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** Function allocates and initializes irrigation system struct                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -11,30 +13,21 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
+#include "lpj.h"
 
-#ifndef INPUT_H
-#define INPUT_H
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
-/* Definition of datatypes */
-
-typedef struct
+Irrig_system *newirrigsystem(int ncft,   /**< number of crop PFTs */
+                             int nagtree /**< number of agricultural trees */
+                            )            /** \return pointer to allocated irrigation system or NULL */
 {
-  Climate *climate;
-  Landuse landuse;
-  Wateruse wateruse;
-  Icefrac icefrac;
-#ifdef IMAGE
-  Wateruse wateruse_wd;
-#endif
-  Popdens popdens;
-  Human_ignition human_ignition;
-  Extflow extflow;
-  Landcover landcover;
-} Input;
-
-/* Declaration of functions */
-
-extern Bool initinput(Input *,const Cell *,int,int,Config *);
-extern void freeinput(Input,const Config *);
-
-#endif
+  Irrig_system *irrig_system;
+  irrig_system=new(Irrig_system);
+  checkptr(irrig_system);
+  irrig_system->crop=newvec(IrrigationType,ncft);
+  checkptr(irrig_system->crop);
+  irrig_system->ag_tree=newvec(IrrigationType,nagtree);
+  checkptr(irrig_system->ag_tree);
+  initirrigsystem(irrig_system,NOIRRIG,ncft,nagtree);
+  return irrig_system;
+} /* of 'newirrigsystem' */

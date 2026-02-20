@@ -55,7 +55,8 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   celldata->soil_fmt=config->soil_filename.fmt;
   if(config->soil_filename.fmt==CDF)
   {
-    celldata->soil.cdf=opencoord_netcdf(config->soil_filename.name,
+    celldata->soil.cdf=opencoord_netcdf(config->soil_filename.name,&map,
+                                        config->soil_filename.map,
                                         config->soil_filename.var,
                                         &config->netcdf,
                                         isroot(*config));
@@ -99,24 +100,24 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       free(celldata);
       return NULL;
     }
-    if(map!=NULL)
+  }
+  if(map!=NULL)
+  {
+    soilmap=getsoilmap(map,config);
+    if(soilmap==NULL)
     {
-      soilmap=getsoilmap(map,config);
-      if(soilmap==NULL)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR250: Invalid soilmap in '%s'.\n",config->soil_filename.name);
-      }
-      else
-      {
-        if(isroot(*config) && config->soilmap!=NULL)
-           cmpsoilmap(soilmap,getmapsize(map),config);
-        free(config->soilmap);
-        config->soilmap=soilmap;
-        config->soilmap_size=getmapsize(map);
-      }
-      freemap(map);
+      if(isroot(*config))
+        fprintf(stderr,"ERROR250: Invalid soilmap in '%s'.\n",config->soil_filename.name);
     }
+    else
+    {
+      if(isroot(*config) && config->soilmap!=NULL)
+         cmpsoilmap(soilmap,getmapsize(map),config);
+      free(config->soilmap);
+      config->soilmap=soilmap;
+      config->soilmap_size=getmapsize(map);
+    }
+    freemap(map);
   }
   if(config->soilmap==NULL)
   {

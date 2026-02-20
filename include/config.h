@@ -150,6 +150,8 @@ struct config
   int image_outport;      /**< port number for outgoing data */
 #endif
 #endif
+  char *climate;          /**< climatology used */
+  char *landuse;          /**< landuse dataset used */
   int wait;               /**< time to wait for connection (sec) */
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
   Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */
@@ -303,13 +305,19 @@ struct config
   int *landcovermap;        /**< landcover map */
   int landcovermap_size;    /**< size landcover map */
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
-  int landusemap_size;      /**< size of landusmap */
-  int *fertilizermap;
-  int fertilizermap_size;
-  int *cftmap;
-  int cftmap_size;
-  int *soilmap;
-  int soilmap_size;
+  int landusemap_size;      /**< size of landuse map */
+  int *fertilizermap;       /**< mapping of bands in fertilizer file to CFTs */
+  int fertilizermap_size;   /**< size of fertilizer map */
+  int *manuremap;           /**< mapping of bands in manure file to CFTs */
+  int manuremap_size;       /**< size of manure map */
+  int *residuemap;          /**< mapping of bands in residue file to CFTs */
+  int residuemap_size;      /**< size of residue map */
+  int *sdatemap;            /**< mapping of bands in sowing data file to CFTs */
+  int sdatemap_size;        /**< size of sowing date map */
+  int *crop_phumap;         /**< mapping of bands in crop PHU file to CFTs */
+  int crop_phumap_size;     /**< size of crop PHU map */
+  int *soilmap;             /**< mapping of soil codes to soil types */
+  int soilmap_size;         /**< size of soil map */
   int grazing;
   int grazing_others;
   int rice_pft;             /**< PFT index of rice */
@@ -364,7 +372,7 @@ extern void initconfig(Config *);
 extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,int,int,const Config *);
-extern Bool filesexist(Config,Bool);
+extern Bool filesexist(Config *,Bool);
 extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
 extern Bool fscanpftpar(LPJfile *,const Pfttype [],Config *);

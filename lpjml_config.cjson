@@ -200,23 +200,44 @@
                     "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
                     "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
 
+/* The following maps will override the maps defined in the JSON input files if enabled */
+
+#if 0
+
   /* the following array describes the order of the bands in the land use file */
   "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                   "temperate roots", "tropical roots", "oil crops sunflower",
                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                   "sugarcane","others","grassland","biomass grass","biomass tree"],
 
-  /* the following array describes the order of the bands in the fertilizer and manure file */
+  /* the following array describes the order of the bands in the fertilizer file */
   "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                     "temperate roots", "tropical roots", "oil crops sunflower",
                     "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                     "sugarcane","others","grassland","biomass grass","biomass tree"],
 
-  /* the following array describes the order of the CFTs in the sowing date and crop PHU file */
-  "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-              "temperate roots", "tropical roots", "oil crops sunflower",
-              "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-              "sugarcane"],
+  /* the following array describes the order of the bands in the manure file */
+  "manuremap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                 "temperate roots", "tropical roots", "oil crops sunflower",
+                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                 "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+  "sdatemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                "temperate roots", "tropical roots", "oil crops sunflower",
+                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                "sugarcane"],
+
+  "residuemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                  "temperate roots", "tropical roots", "oil crops sunflower",
+                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                  "sugarcane"],
+
+  "cropphumap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                  "temperate roots", "tropical roots", "oil crops sunflower",
+                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                  "sugarcane"],
+
+#endif
 
 /*===================================================================*/
 /*  III. Input data section                                          */
