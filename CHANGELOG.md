@@ -22,7 +22,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 - code review:
 
 ### Added
@@ -41,6 +41,7 @@ of `major.minor.patch` with
 - Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
 - The global attributes in JSON metafiles are printed on separate lines.
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
+- Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable
 
 ### Fixed
 

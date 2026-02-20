@@ -634,7 +634,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
       bad+=checklanduse(config);
     if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,TRUE,
+      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,FALSE,
                           &config->sdatemap,&config->sdatemap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -709,7 +709,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,FALSE,
                           &config->fertilizermap,&config->fertilizermap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -717,7 +717,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,FALSE,
                           &config->manuremap,&config->manuremap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -725,7 +725,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->residue_treatment==READ_RESIDUE_DATA)
     {
-      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,TRUE,
+      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,FALSE,
                           &config->residuemap,&config->residuemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
