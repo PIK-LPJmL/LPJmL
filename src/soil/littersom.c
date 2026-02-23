@@ -723,9 +723,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
          "=====001: oxidation: %.8f decom_litter: %.8f soil_cflux: %.8f stand->frac: %g decay_litter: %g ch4_sink: %g",
          __FUNCTION__,soil->iswetland,stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4,
          oxidation_stand,decom_litter.carbon*param.atmfrac,soil_cflux,stand->frac,decay_litter,*ch4_sink*WC/WCH4);
-    //fprintsoil(stderr,&stand->soil,config->pftpar,npft+ncft);
-    //forrootsoillayer(l) fprintf(stderr,"socfracion: %g ",soil->socfraction[l][stand->soil.litter.item[p].pft->id]);
-    //fprintf(stderr,"\n");
   }
   if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.0001)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start: %.8f  end: %.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g",
