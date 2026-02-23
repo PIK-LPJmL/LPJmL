@@ -717,20 +717,20 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil)*WC/WCH4;
   water_after=soilwater(soil);
-  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4))>0.0001)
+  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4))>param.error_limit.stocks_fcn.carbon)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s at the end: iswetland: %d type: %s %.8f start: %.8f  end: %.8f decomCO2: %.8f methane_em: %.8f\n"
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid carbon balance in %s at the end: iswetland: %d type: %s %.8f start: %.8f  end: %.8f decomCO2: %.8f methane_em: %.8f\n"
          "=====001: oxidation: %.8f decom_litter: %.8f soil_cflux: %.8f stand->frac: %g decay_litter: %g ch4_sink: %g",
          __FUNCTION__,soil->iswetland,stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4 + *ch4_sink*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4,
          oxidation_stand,decom_litter.carbon*param.atmfrac,soil_cflux,stand->frac,decay_litter,*ch4_sink*WC/WCH4);
   }
-  if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.0001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start: %.8f  end: %.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g",
+  if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start: %.8f  end: %.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g",
          __FUNCTION__,soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
          start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
   balanceW=water_after-water_before-*MT_water+*runoff;
-  if(fabs(balanceW)>epsilon)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: balanceW: %g  water_after: %.5f water_before: %.5f\n"
+  if(fabs(balanceW)>param.error_limit.w_fcn)
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid water balance in %s at the end: balanceW: %g  water_after: %.5f water_before: %.5f\n"
          "=====001: balance_stocks: %.5f w1: %g w2: %g stand->frac: %g MT_water_local: %g runoff_local: %g",
          __FUNCTION__,balanceW,water_after,water_before,water_after-water_before,soil->w[0],soil->w[1],*MT_water,*runoff,stand->frac);
 #endif

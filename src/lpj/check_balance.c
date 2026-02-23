@@ -37,7 +37,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
     startyear=config->firstyear+1;
   if(year>startyear && fabs(balance)>param.error_limit.w_global)
   {
-    fail(GLOBAL_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(GLOBAL_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Global water balance not closed in year %d: diff=%.5g(%.5g), prec=%.5g, wd_unsustainable=%.5g, vapour_flux=%.5g, discharge=%.5g, delta_storage=%.5g, excess_water=%.5g",
          year,balance*flux.area,balance,flux.prec,flux.wd_unsustainable,
          (flux.evap+flux.transp+flux.interc+flux.evap_lake+flux.evap_res+flux.conv_loss_evap),

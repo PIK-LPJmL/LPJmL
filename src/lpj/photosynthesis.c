@@ -85,7 +85,11 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
       /* Calculation of V_max (Rubisco activity) in gC/d/m2*/
 
       if(comp_vm)
+      {
         *vm=(1.0/b)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*WC*cq;
+        if(*vm<0)
+          *vm=0;
+      }
 
       pi=lambda*co2;
 
@@ -103,7 +107,11 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
       if(comp_vm)
+      {
         *vm=(1.0/b)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*WC*cq;
+        if(*vm<0)
+          *vm=0;
+      }
 
       /*
        *       Parameter accounting for effect of reduced intercellular CO2

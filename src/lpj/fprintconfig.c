@@ -278,6 +278,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
+  if(!config->fail_on_balance)
+    len=printsim(file,len,&count,"no fail on balance error");
   if(config->landfrac_from_file)
     len=printsim(file,len,&count,"land fraction read from file");
 #if defined IMAGE && defined COUPLED

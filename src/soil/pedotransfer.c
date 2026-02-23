@@ -22,7 +22,8 @@
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
                   Real *absimm,
-                  Real standfrac /**< stand fraction (0..1) */
+                  Real standfrac, /**< stand fraction (0..1) */
+                  Bool fail_on_balance
                  )
 {
   int l;
@@ -237,8 +238,8 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 
 #ifdef CHECK_BALANCE
     w_after=soilwater(&stand->soil)+excess;
-    if(fabs(w_before-w_after)>epsilon)
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in pedotransfer() in cell (%s): water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
+    if(fabs(w_before-w_after)>param.error_limit.w_fcn)
+      fail(INVALID_WATER_BALANCE_ERR,fail_on_balance,FALSE,"Invalid water balance in pedotransfer() in cell (%s): water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
            sprintcoord(line,&stand->cell->coord),fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */

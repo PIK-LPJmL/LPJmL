@@ -72,6 +72,10 @@
 #define WRITE_OUTPUT_ERR 52
 #define NEGATIVE_SOIL_CARBON_ERR 53
 
+/* Global variables */
+
+extern int error_count; /* number of calls to fail() */
+
 /* Definition of macros */
 
 #define printfopenerr(filename) fprintf(stderr,"ERROR100: Cannot open file '%s' in %s(): %s.\n",filename,__FUNCTION__,strerror(errno))

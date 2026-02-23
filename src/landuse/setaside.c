@@ -193,7 +193,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   updatelitterproperties(stand1,stand1->frac+stand2->frac);
 
   if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-    pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
+    pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac,config->fail_on_balance);
 
   /* bedrock needs to be mixed seperately */
 
@@ -226,9 +226,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     water_f+=(stand1->soil.w[l] * stand1->soil.whcs[l])*(stand1->frac+stand2->frac);
   }
  water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
-  if(fabs(water_before-water_after)>0.001)
+  if(fabs(water_before-water_after)>param.error_limit.w_fcn)
   {
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid water balance in %s: e=%g water_before=%g water_after=%g balance.excess_water: %g excess_water: %g stand1: %s stand2: %s water_f: %g wa1: %g  wa2: %g  in mixsoil()",
          __FUNCTION__,fabs(water_before-water_after),water_before,water_after,stand1->cell->balance.excess_water,excess_water, stand1->type->name,stand2->type->name,water_f,water_w1,water_w2);
     fflush(stderr);
@@ -385,14 +385,14 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
     end.nitrogen+=st.nitrogen*stand->frac;
     end_w+= soilwater(&stand->soil)*stand->frac;
   }
-  if(fabs(start.carbon-end.carbon)>0.01)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: error=%g start : %g end : %g",
+  if(fabs(start.carbon-end.carbon)>param.error_limit.stocks_fcn.carbon)
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid carbon balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__,start.carbon-end.carbon,start.carbon,end.carbon);
-  if (fabs(start_w - end_w)>0.001)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: error=%g start : %g end : %g",
+  if (fabs(start_w - end_w)>param.error_limit.w_fcn)
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid water balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__,start_w - end_w, start_w, end_w);
-  if (fabs(start.nitrogen-end.nitrogen)>0.001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: error=%g start : %g end : %g",
+  if (fabs(start.nitrogen-end.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid nitrogen balance in %s at the end: error=%g start : %g end : %g",
          __FUNCTION__, start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif
 } /* of 'mixsetaside' */
@@ -547,15 +547,16 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.01){
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: error=%g start : %g end : %g balance.carbon: %g flux_estab.carbon: %g stocks.carbon: %g",
+  if(fabs(start.carbon-end.carbon+balance.carbon)>param.error_limit.stocks_fcn.carbon)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid carbon balance in %s at the end: year=%d: error=%g start : %g end : %g balance.carbon: %g flux_estab.carbon: %g stocks.carbon: %g",
          __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon,flux_estab.carbon,stocks.carbon);
   }
-  if (fabs(start_w - end_w)>0.001)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: year=%d: error=%g start : %g end : %g",
+  if (fabs(start_w - end_w)>param.error_limit.w_fcn)
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE, "Invalid water balance in %s at the end: year=%d: error=%g start : %g end : %g",
          __FUNCTION__,year, start_w - end_w, start_w, end_w);
-  if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g flux_estab.nitrogen: %g",
+  if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid nitrogen balance in %s at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g flux_estab.nitrogen: %g",
          __FUNCTION__,year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen,flux_estab.nitrogen);
 #endif
   return FALSE;

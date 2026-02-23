@@ -229,6 +229,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->socket=NULL;
   if (verbose>=VERB) puts("// I. type section");
   config->coupled_model=NULL;
+  config->fail_on_balance=TRUE;
+  if(fscanbool(file,&config->fail_on_balance,"fail_on_balance",!config->pedantic,verbose))
+    return TRUE;
   if(iskeydefined(file,"coupled_model"))
   {
     if(!isnull(file,"coupled_model"))

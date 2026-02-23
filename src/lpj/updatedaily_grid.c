@@ -118,7 +118,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
     /* Fail if daily balance error exceeds threshold (same threshold as annual check) */
     if(fabs(balance_per_area) > param.error_limit.w_global)
     {
-      fail(GLOBAL_WATER_BALANCE_ERR, FAIL_ON_BALANCE, FALSE,
+      fail(GLOBAL_WATER_BALANCE_ERR, config->fail_on_balance, FALSE,
            "Global water balance not closed in year %d day %d: diff=%.5g (%.5g mm), "
            "prec=%.5g, conv_loss=%.5g, delta_surface=%.5g, delta_soil=%.5g",
            year, day, running_balance, balance_per_area,

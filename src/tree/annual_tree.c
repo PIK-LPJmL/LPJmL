@@ -46,12 +46,12 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
   }
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
-  if (fabs(end-start.carbon)>0.001)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in annual_tree: %.4f start : %.4f end : %.4f bm_inc.carbon: %g bm_inc.carbon.start: %g estab: %g flux_estab.carbon: %g  stand.frac:%g type:%s PFT:%s nind: %g",
+  if (fabs(end-start.carbon)>param.error_limit.stocks_fcn.carbon)
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,TRUE,"Invalid carbon balance in annual_tree: %.4f start : %.4f end : %.4f bm_inc.carbon: %g bm_inc.carbon.start: %g estab: %g flux_estab.carbon: %g  stand.frac:%g type:%s PFT:%s nind: %g",
         end-start.carbon, start.carbon, end,pft->bm_inc.carbon,bm_inc.carbon, estab,pft->establish.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
   end = standstocks(stand).nitrogen-pft->establish.nitrogen;
-  if (fabs(end-start.nitrogen)>0.001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in annual_tree: %.4f start : %.4f end : %.4f bm_inc.nitrogen: %g bm_inc.nitrogen.start: %g estab: %g flux_estab.nitrogen: %g stand.frac:%g type:%s PFT:%s nind: %g",
+  if (fabs(end-start.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,TRUE,"Invalid nitrogen balance in annual_tree: %.4f start : %.4f end : %.4f bm_inc.nitrogen: %g bm_inc.nitrogen.start: %g estab: %g flux_estab.nitrogen: %g stand.frac:%g type:%s PFT:%s nind: %g",
         end-start.nitrogen, start.nitrogen, end,pft->bm_inc.nitrogen,bm_inc.nitrogen, estab,pft->establish.nitrogen,stand->frac,stand->type->name,pft->par->name,pft->nind);
 #endif
   return isdead;

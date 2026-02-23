@@ -29,6 +29,7 @@ of `major.minor.patch` with
 
 - Added benchmark folder with R scripts (`simulate_default.R`, `benchmark_default.R`, `benchmark_utils.R`) to simulate default scenarios and run benchmarks.
 - Added support for separate methane/no_methane output configurations in benchmark scripts.
+- Option `-check_balance` added to `configure.sh` to enable balance checks on function level.
 
 ### Changed
 
@@ -40,7 +41,9 @@ of `major.minor.patch` with
 - Check balance error messages reformatted.
 - Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
 - Fixed FPE in `allocation_grass.c`.
+- Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fcn"`, `"nitrogen_fcn`, and `"w_fcn"`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
+- Compile flag `-DNO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
 - `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`. 
 - Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
 
@@ -61,6 +64,8 @@ of `major.minor.patch` with
 - Carbon balance closed in `update_wetland.c`.
 - Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
 - Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
+- Check for negative `vm` added in `photosynthesis.c` to avoid nitrogen balance errors.
+- `tillage()` function changed to avoid carbon balance errors.
 - Utility `regridclm` corrected to avoid SEGV if file size does not match header.
 - Parameter `"fburnt"` in `lpjparam.cjson` is always read, was always zero if `"luc_timber"` was set to false.
 - Help text corrected in `printclm.c`.

@@ -92,7 +92,7 @@ int main(int argc,char **argv)
 {
   Outputfile *output; /* Output file array */
   const char *progname;
-  int year,rc;
+  int year,rc,error_count_total;
   Cell *grid;         /* cell array */
   Input input;        /* input data */
   time_t tstart,tend,tinvoke;   /* variables for timing */
@@ -331,12 +331,19 @@ int main(int argc,char **argv)
   /* free memory */
   freeinput(input,&config);
   freegrid(grid,config.npft[GRASS]+config.npft[TREE],&config);
+#ifdef USE_MPI
+  MPI_Reduce(&error_count,&error_count_total,1,MPI_INT,MPI_SUM,0,config.comm);
+#else
+  error_count_total=error_count;
+#endif
   if(isroot(config))
   {
-    printf( (year>config.lastyear) ? "%s successfully" : "%s errorneously",progname);
-    printf(" terminated, %d grid cells processed.\n"
-           "Wall clock time:\t%d sec, %.2g sec/cell/year.\n",
-           config.total,(int)(tend-tstart),
+    printf( (year>config.lastyear && !error_count_total) ? "%s successfully" : "%s errorneously",progname);
+    printf(" terminated, %d grid cells processed",config.total);
+    if(error_count_total)
+      printf(" with %d balance errors",error_count_total);
+    printf(".\nWall clock time:\t%d sec, %.2g sec/cell/year.\n",
+           (int)(tend-tstart),
            (double)(tend-tstart)/config.total/max(year-config.firstyear+
                                                    config.nspinup,1));
   }
