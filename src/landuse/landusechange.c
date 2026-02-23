@@ -1049,7 +1049,6 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   }
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
