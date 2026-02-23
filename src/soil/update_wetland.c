@@ -89,9 +89,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   Poolpar kmean_pft, cshift;
   Real crop_wetland;
   Real frac;
-#ifdef CHECK_BALANCE2
-  Stand *checkstand;
-#endif
 #ifdef CHECK_BALANCE
   Stocks st;
   Stocks start={0,0};
@@ -133,15 +130,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
   //  modify this to use wtable wanted -> wtable_mean
   wtable_use = cell->hydrotopes.wtable_mean;
-  if (wtable_use>0) wtable_use = 0;
-#ifdef CHECK_BALANCE2
-  if(year==1846)
-  {
-    foreachstand(stand,s,cell->standlist)
-      fprintf(stderr,"%s: year= %d standfrac: %g standtype: %s iswetland: %d \n",
-               __FUNCTION__,year,stand->frac, stand->type->name,stand->soil.iswetland);
-  }
-#endif
+  if (wtable_use>0)
+     wtable_use = 0;
 
   if ((!cell->hydrotopes.skip_cell && wtable_use >= (-(layerbound[LASTLAYER-1]+layerbound[0])/1000) && natstandnum!=NOT_FOUND) ||
       (!cell->hydrotopes.skip_cell && wetlandstandnum!=NOT_FOUND && wtable_use < (-(layerbound[LASTLAYER-1]+layerbound[1])/1000) && natstandnum!=NOT_FOUND))
@@ -237,15 +227,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         //      currently no wetland stand
         if (wetlandstandnum == NOT_FOUND)
         {
-#ifdef CHECK_BALANCE2
-          if(year==1846)
-          {
-            fprintf(stderr,"XXX update_wetland.c wetland not exist .\n");
-            foreachstand(checkstand,s,cell->standlist)
-              fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandnew: %g wetlandarea_new: %g crop_wetland: %g\n",
-                      checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_new-crop_wetland,wetlandarea_new,crop_wetland);
-          }
-#endif
           pos = addstand(&wetland_stand, cell) - 1;
           wetlandstandnum = pos;
           wetstand = getstand(cell->standlist, pos);
@@ -286,12 +267,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             delstand(cell->standlist,natstandnum);
             natstandnum = NOT_FOUND;
           }
-#ifdef CHECK_BALANCE2
-          if(year==1846)
-            foreachstand(checkstand,s,cell->standlist)
-              fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
-                      checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
-#endif
         }
         else
         {
@@ -334,12 +309,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
           natstand->frac=frac-delta_wetland;
           wetstand->frac+=delta_wetland;
-#ifdef CHECK_BALANCE2
-          if(year==1846)
-            foreachstand(checkstand,s,cell->standlist)
-              fprintf(stderr,"1 wetland exists and grows type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
-                      checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
-#endif
 #ifdef CHECK_BALANCE
           checkbalance(cell,start,water_before);
 #endif
@@ -369,12 +338,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
       else if (delta_wetland < 0.)
       {
-#ifdef CHECK_BALANCE2
-        if(year==1846)
-          foreachstand(checkstand,s,cell->standlist)
-            fprintf(stderr,"2 wetland exists and shrinks type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
-                    checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
-#endif
         if (wetlandstandnum == NOT_FOUND)
         {
           //printf("XXX update_wetland.c wants to shrink non-existent wetland.\n");
