@@ -534,7 +534,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(runoff_neg<-epsilon && outflux>=-runoff_neg)
   {
     outflux+=runoff_neg;
-    fprintf(stderr,"HIER runoff_neg: %g\n",runoff_neg);
+    fprintf(stderr,"ERROR267: runoff_neg in line %d of %s() less than zero: %g\n",
+            __LINE__,__FUNCTION__,runoff_neg);
 
     runoff_neg=0;
   }

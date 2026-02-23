@@ -83,8 +83,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand=setasidestand;
     cropstand->soil.iswetland=setasidestand->soil.iswetland;
 #ifdef DEBUG3
-    printf("cultivate HIER day: %d cft: %d type: %s landfrac: %g  setasidefrac: %g isother: %d defores.nitrogen: %g timber_harvest.n: %g iswetland: %d \n",day,cft,
-            setasidestand->type->name,landfrac,setasidestand->frac,isother,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen,cropstand->soil.iswetland);
+    printf("cultivate at line: %d day: %d cft: %d type: %s landfrac: %g  setasidefrac: %g isother: %d defores.nitrogen: %g timber_harvest.n: %g iswetland: %d \n",day,cft,
+           __LINE__,setasidestand->type->name,landfrac,setasidestand->frac,isother,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen,cropstand->soil.iswetland);
 #endif
   }
   else
@@ -94,8 +94,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
 #ifdef DEBUG3
-    printf("cultivate HIER2 day: %d cft: %d type: %s landfrac: %g setasidefrac: %g  isother: %d iswetland: %d \n",day,cft,
-           setasidestand->type->name,landfrac,setasidestand->frac,isother,setasidestand->soil.iswetland);
+    printf("cultivate at line: %d day: %d cft: %d type: %s landfrac: %g setasidefrac: %g  isother: %d iswetland: %d \n",day,cft,
+           __LINE__,setasidestand->type->name,landfrac,setasidestand->frac,isother,setasidestand->soil.iswetland);
 #endif
 
     setasidestand->frac-=landfrac;
