@@ -22,7 +22,7 @@ struct wateruse
 };               /* definition of opaque datatype Wateruse */
 
 Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file */
-                      const Config *config      /**< LPJmL configuration */
+                      Config *config            /**< LPJmL configuration */
                      )
 {
   Wateruse wateruse;
@@ -32,8 +32,15 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     printallocerr("wateruse");
     return NULL;
   }
-  if(opendata(&wateruse->file,NULL,NULL,NULL,filename,"wateruse",NULL,LPJ_FLOAT,LPJ_INT,1000.0,1,TRUE,config))
+  if(openclimate(&wateruse->file,filename,NULL,LPJ_INT,1,1000.0,config))
   {
+    free(wateruse);
+    return NULL;
+  }
+  if(wateruse->file.time_step==DAY)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR147: Invalid daily time step in '%s', must be 1 or 12.\n",filename->name);
     free(wateruse);
     return NULL;
   }
@@ -48,9 +55,19 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 {
   int cell;
   Real *data;
+  data=newvec(Real,wateruse->file.n);
+  if(data==NULL)
+  {
+    printallocerr("data");
+    return NULL;
+  }
   if(iscoupled(*config) && wateruse->file.issocket && year>=config->start_coupling)
   {
-    data=readdata(&wateruse->file,NULL,grid,"wateruse",year,config);
+    if(readclimate(&wateruse->file,data,0,wateruse->file.scalar,grid,year,1,config))
+    {
+      free(data);
+      data=NULL;
+    }
     return data;
   }
   if(config->wateruse==ALL_WATERUSE)
@@ -62,17 +79,17 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
       year=wateruse->file.firstyear+wateruse->file.nyear-1;
   }
   if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
-    data=readdata(&wateruse->file,NULL,grid,"wateruse",year,config);
+  {
+    if(readclimate(&wateruse->file,data,0,wateruse->file.scalar,grid,year,1,config))
+    {
+      free(data);
+      data=NULL;
+    }
+  }
   else
   {
-    data=newvec(Real,config->ngridcell);
-    if(data==NULL)
-    {
-      printallocerr("data");
-      return NULL;
-    }
     /* no wateruse data available for year, set all to zero */
-    for(cell=0;cell<config->ngridcell;cell++)
+    for(cell=0;cell<wateruse->file.n;cell++)
       data[cell]=0;
   }
   return data;
@@ -84,13 +101,19 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  int cell;
+  int cell,m;
   Real *data;
   data=readwateruse(wateruse,grid,year,config);
   if(data==NULL)
     return TRUE;
-  for (cell=0;cell<config->ngridcell;cell++)
-    grid[cell].discharge.wateruse=data[cell];
+  if(wateruse->file.time_step==YEAR)
+    for (cell=0;cell<config->ngridcell;cell++)
+      for (m=0;m<NMONTH;m++)
+        grid[cell].discharge.wateruse[m]=data[cell];
+  else
+    for (cell=0;cell<config->ngridcell;cell++)
+      for (m=0;m<NMONTH;m++)
+        grid[cell].discharge.wateruse[m]=data[cell*NMONTH+m];
   free(data);
   return FALSE;
 } /* of 'getwateruse' */
@@ -107,22 +130,26 @@ void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
 } /* of 'freewateruse' */
 
 #ifdef IMAGE
-
 Bool getwateruse_wd(Wateruse wateruse,   /**< Pointer to wateruse data */
                     Cell grid[],         /**< cell grid */
                     int year,            /**< year of wateruse data (AD) */
                     const Config *config /**< LPJ configuration */
                    )                     /** \return TRUE on error */
 {
-  int cell;
+  int cell,m;
   Real *data;
   data=readwateruse(wateruse,grid,year,config);
   if(data==NULL)
     return TRUE;
-  for (cell=0;cell<config->ngridcell;cell++)
-    grid[cell].discharge.wateruse_wd=data[cell];
+  if(wateruse->file.time_step==YEAR)
+    for (cell=0;cell<config->ngridcell;cell++)
+      for (m=0;m<NMONTH;m++)
+        grid[cell].discharge.wateruse_wd[m]=data[cell];
+  else
+    for (cell=0;cell<config->ngridcell;cell++)
+      for (m=0;m<NMONTH;m++)
+        grid[cell].discharge.wateruse_wd[m]=data[cell*NMONTH+m];
   free(data);
   return FALSE;
 } /* of 'getwateruse_wd' */
-
 #endif

@@ -82,7 +82,7 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< Grid configuration */
                       )                     /** \return TRUE on error */
 {
-  int i;
+  int i,m;
   Real cropsum;
 #ifdef DEBUG_IMAGE_CELL
   int j;
@@ -208,9 +208,12 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
     if (!grid[i].skip)
     {
       grid[i].ml.image_data->totwatcons = (Real)image_data[i];
-      grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
-      grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
-      getoutput(&grid[i].output,WATERUSECONS,config) = grid[i].discharge.wateruse*NDAYYEAR;
+      for(m=0;m<NMONTH;m++)
+      {
+        grid[i].discharge.wateruse[m] = grid[i].ml.image_data->totwatcons; // TODO: check for nececssary unit conversion
+        grid[i].discharge.wateruse[m] *= 1000;
+      }
+      getoutput(&grid[i].output,WATERUSECONS,config) = grid[i].discharge.wateruse[0]*NDAYYEAR;
     }
 #ifdef DEBUG_IMAGE
     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
@@ -246,9 +249,12 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
     if (!grid[i].skip)
     {
       grid[i].ml.image_data->totwatdem = (Real)image_data[i];
-      grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
-      grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
-      getoutput(&grid[i].output,WATERUSEDEM,config) = grid[i].discharge.wateruse_wd*NDAYYEAR;
+      for(m=0;m<NMONTH;m++)
+      {
+        grid[i].discharge.wateruse_wd[m] = grid[i].ml.image_data->totwatdem;
+        grid[i].discharge.wateruse_wd[m] *= 1000;
+      }
+      getoutput(&grid[i].output,WATERUSEDEM,config) = grid[i].discharge.wateruse_wd[0]*NDAYYEAR;
     }
 #ifdef DEBUG_IMAGE
     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
