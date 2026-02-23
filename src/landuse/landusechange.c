@@ -1029,7 +1029,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
   end_w=cell->balance.excess_water;
-  foreachstand(checkstand, s, cell->standlist)
+  foreachstand(checkstand, sn, cell->standlist)
   {
     st=standstocks(checkstand);
     end.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
