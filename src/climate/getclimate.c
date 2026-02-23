@@ -31,11 +31,27 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
 {
   int rc;
   long long index;
+  int len;
   if(file->fmt==FMS)
     return FALSE;
   if(iscoupled(*config) && file->issocket && year>=config->start_coupling)
   {
-    if(receive_real_coupler(file->id,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
+    switch(file->time_step)
+    {
+      case YEAR:
+        len=1;
+        break;
+      case MONTH:
+        len=NMONTH;
+        break;
+      case DAY:
+        len=NDAYYEAR;
+        break;
+      default:
+        len=1;
+        break;
+    }
+    if(receive_real_coupler(file->id,data,len,year,config))
     {
       if(isroot(*config))
       {
