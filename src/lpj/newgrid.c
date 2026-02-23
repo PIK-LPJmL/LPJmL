@@ -283,11 +283,18 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.surface_storage_last=grid[i].balance.soil_storage_last=0.0;
     grid[i].balance.ricefrac=0.0;
     grid[i].discharge.waterdeficit=0.0;
-    grid[i].discharge.wateruse=0.0;
 #ifdef IMAGE
-    grid[i].discharge.wateruse_wd=0.0;
+    grid[i].discharge.wateruse_wd=newvec(Real,NMONTH);
+    checkptr(grid[i].discharge.wateruse_wd);
     grid[i].discharge.wateruse_fraction = 0.0;
 #endif
+    if(config->wateruse)
+    {
+       grid[i].discharge.wateruse=newvec(Real,NMONTH);
+       checkptr(grid[i].discharge.wateruse);
+    }
+    else
+      grid[i].discharge.wateruse=NULL;
     grid[i].balance.excess_water=0;
     grid[i].discharge.dmass_lake_max=grid[i].lakefrac*H*grid[i].coord.area*1000;
     grid[i].discharge.dmass_lake=grid[i].discharge.dmass_river=0.0;
