@@ -223,7 +223,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
     } /* end of forrootsoillayer */
 
     stand->cell->balance.excess_water+=excess*standfrac;
-    //stand->cell->discharge.drunoff+=excess*standfrac;
 #ifdef DEBUG_WB
     foreachsoillayer(l)
       if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
