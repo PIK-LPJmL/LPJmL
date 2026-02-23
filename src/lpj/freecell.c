@@ -35,6 +35,7 @@ void freecell(Cell *cell,          /**< cell */
     free(cell->ml.irrig_system->ag_tree);
     free(cell->ml.irrig_system);
   }
+  free(cell->discharge.wateruse);
   if(config->reservoir)
   {
     if(cell->ml.resdata!=NULL)
@@ -66,6 +67,7 @@ void freecell(Cell *cell,          /**< cell */
       free(cell->ml.crop_phu_fixed);
 
 #if defined IMAGE && defined COUPLED
+    free(cell->discharge.wateruse_wd);
     free(cell->ml.image_data);
     free(cell->pft_harvest);
 #endif

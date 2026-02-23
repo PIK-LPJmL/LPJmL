@@ -66,6 +66,22 @@ of `major.minor.patch` with
 - Help text corrected in `printclm.c`.
 
 
+## [6.0.3] - 2026-02-23
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de)
+
+### Added
+
+- Model can be run with monthly water use for household, industry and livestock which is available from [Zenodo](https://zenodo.org/records/897933), reading in annual input is still possible.
+
+### Fixed
+
+- Pointers to IMAGE related data initialized to `NULL` in `lpjprint.c`.
+
+
 ## [6.0.2] - 2026-01-17
 
 ### Contributors
@@ -136,6 +152,8 @@ of `major.minor.patch` with
 
 
 ## [6.0.0] - 2025-11-25
+
+### Contributors
 
 - author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), David Hötten (cmueller@pik-potsdam.de)
