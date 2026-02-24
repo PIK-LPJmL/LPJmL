@@ -44,6 +44,7 @@ of `major.minor.patch` with
 - The global attributes in JSON metafiles are printed on separate lines.
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
 - Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable
+- The `regridlpj` utility uses now JSON metafiles for regridding the input data.
 
 ### Fixed
 
