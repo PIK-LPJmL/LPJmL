@@ -18,6 +18,12 @@
 #   under_test_sim_paths : Comma-separated test paths (required)
 #   runs_subset          : Comma-separated sim names (auto-detect mode only)
 #   output_dir           : Directory for PDF reports (default: current directory)
+#
+# (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+# authors, and contributors see AUTHORS file
+# This file is part of LPJmL and licensed under GNU AGPL Version 3
+# or later. See LICENSE file or go to http://www.gnu.org/licenses/
+# Contact: https://github.com/PIK-LPJmL/LPJmL
 
 library(lpjmlkit)
 library(lpjmlstats)

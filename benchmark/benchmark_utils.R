@@ -3,6 +3,12 @@
 # This file is sourced by:
 #   - simulate_default.R
 #   - benchmark_default.R
+#
+# (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+# authors, and contributors see AUTHORS file
+# This file is part of LPJmL and licensed under GNU AGPL Version 3
+# or later. See LICENSE file or go to http://www.gnu.org/licenses/
+# Contact: https://github.com/PIK-LPJmL/LPJmL
 
 # =============================================================================
 # Output variable definitions

@@ -19,6 +19,14 @@
 #   runs_subset : Comma-separated list of simulation names or
 #                 indices (default: all)
 #   wtime       : Wall time for all runs (default: NULL, uses lpjmlkit defaults)
+#
+# (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+# authors, and contributors see AUTHORS file
+# This file is part of LPJmL and licensed under GNU AGPL Version 3
+# or later. See LICENSE file or go to http://www.gnu.org/licenses/
+# Contact: https://github.com/PIK-LPJmL/LPJmL
+#
+# =============================================================================
 
 library(lpjmlkit)
 
