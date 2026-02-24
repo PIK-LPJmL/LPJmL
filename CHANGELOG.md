@@ -33,6 +33,7 @@ of `major.minor.patch` with
  - Globale attribute `"title"` is read from climate and land-use input files and checked for matching titles.
  - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
  - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
+ - Arrays `"hlimit"` and `"basetemp"` copied from JSON metafile to NetCDF file in `clm2cdf`.
 
 ### Changed
 
@@ -47,6 +48,7 @@ of `major.minor.patch` with
 
 - Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
 - Typos in help text in `regridclm.c` corrected.
+- Unit for fertilizer and manure input fixed in `filesexist.c`.
 
 
 ## [6.0.3] - 2026-02-23

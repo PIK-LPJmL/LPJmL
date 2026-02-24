@@ -719,18 +719,18 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
       if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,FALSE,
-                          &config->fertilizermap,&config->fertilizermap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
-        bad++;
+                          &config->fertilizermap,&config->fertilizermap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+       bad++;
       else
        bad+=checkdatafile(config,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config->fertilizermap_size,FALSE);
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
       if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,FALSE,
-                          &config->manuremap,&config->manuremap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
+                          &config->manuremap,&config->manuremap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
-       bad+=checkdatafile(config,&config->manure_nr_filename,"manure","g/m2",LPJ_SHORT,2*config->manuremap_size,FALSE);
+        bad+=checkdatafile(config,&config->manure_nr_filename,"manure","g/m2",LPJ_SHORT,2*config->manuremap_size,FALSE);
     }
     if(config->residue_treatment==READ_RESIDUE_DATA)
     {
