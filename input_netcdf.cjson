@@ -54,5 +54,5 @@
   "height_reservoir" : { "fmt" : "cdf", "var" : "height", "name" : "reservoir_stn_30arcmin_par1.nc"},
   "purpose_reservoir" : { "fmt" : "cdf", "var" : "purpose", "name" : "reservoir_stn_30arcmin_par1.nc"},
   "co2" :          { "id" : 5, "fmt" : "txt", "name" : "global_co2_ann_1700_2022.txt"},
-  "wateruse" :     { "id" : 20, "fmt" : "cdf", "var" : "wateruse", "name" : "wateruse_isimip3a_histsoc_1850-2021.nc" } /* water consumption for industry,household and livestock */
+  "wateruse" :     { "id" : 20, "fmt" : "cdf", "var" : "water use", "name" : "wateruse_isimip3a_histsoc_1850-2021.nc" } /* water consumption for industry,household and livestock */
 }

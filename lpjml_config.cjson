@@ -21,9 +21,7 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-//#define CRU_MONTHLY /* Set macro for climate input selection. If no makro is provided the default (GSWP3-W5E5) is used.*/
 //#define NETCDF_INPUT /* use NetCDF files as input */
-//#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 //#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
@@ -49,13 +47,8 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  #ifdef CRU_MONTHLY
-    "random_prec" : true,     /* Random weather generator for precipitation enabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  #else
-    "random_prec" : false,     /* Random weather generator for precipitation disabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  #endif
+  "random_prec" : false,     /* Random weather generator for precipitation disabled */
+  "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "random_seed" : 2,        /* seed for random number generator */
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
@@ -187,11 +180,6 @@
 
   /* the following array describes the order of the agricultural trees in the k_est array */
   "treemap" : ["oil palm","tea","cotton"],
-
-  /* the following array describes the order of the soil types in the soil file */
-  "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
-              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
-              "loamy sand", "sand", "rock and ice"],
 
   /* The following array is used for mapping prescribed FPC */
   "landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
@@ -475,11 +463,7 @@ ID                               Fmt                        filename
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-#ifdef CRU_MONTHLY
-  "lastyear" : 2011, /* last year of simulation */
-#else
   "lastyear" : 2019, /* last year of simulation */
-#endif
   "outputyear": 1901, /* first year output is written  */
   "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */
