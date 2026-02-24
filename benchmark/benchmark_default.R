@@ -44,18 +44,20 @@ source(file.path(script_dir, "benchmark_utils.R"))
 parsed_args <- parse_args(
   commandArgs(trailingOnly = TRUE),
   list(baseline_sim_path = NULL, under_test_sim_paths = NULL,
-       runs_subset = NULL, output_dir = getwd())
+       runs_subset = NULL, output_dir = getwd(), time_avg_map = "false"),
+  type_converters = list(time_avg_map = function(x) tolower(x) == "true")
 )
 
 if (is.null(parsed_args$baseline_sim_path) ||
     is.null(parsed_args$under_test_sim_paths)) {
   stop(paste(
     "Usage: Rscript benchmark_default.R baseline_sim_path=<path>",
-    "under_test_sim_paths=<paths> [runs_subset=<names>] [output_dir=<path>]\n",
+    "under_test_sim_paths=<paths> [options]\n",
     "  baseline_sim_path    : Path to baseline simulation (required)\n",
     "  under_test_sim_paths : Comma-separated test paths (required)\n",
     "  runs_subset          : Comma-separated sim names (auto-detect only)\n",
-    "  output_dir           : Directory for PDF reports (default: .)\n"
+    "  output_dir           : Directory for PDF reports (default: .)\n",
+    "  time_avg_map         : Add TimeAvgMapWithAbs metric (true/false, default: false)\n"
   ))
 }
 
@@ -63,6 +65,7 @@ baseline_sim_path <- parsed_args$baseline_sim_path
 under_test_sim_paths <- strsplit(parsed_args$under_test_sim_paths, ",", fixed = TRUE)[[1]]
 runs_subset <- parsed_args$runs_subset
 output_dir <- parsed_args$output_dir
+time_avg_map <- parsed_args$time_avg_map
 
 # Create output directory if needed
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
@@ -71,7 +74,20 @@ if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 # Helper functions
 # =============================================================================
 
-extract_version <- function(path) basename(sub("/$", "", path))
+# Extract version from path like "/path/to/6.0.3/output" -> "6.0.3"
+# Looks for version pattern (vX.Y.Z or X.Y.Z) in path components
+extract_version <- function(path) {
+  path <- sub("/$", "", path)
+  parts <- strsplit(path, "/")[[1]]
+  # Look for version pattern like 6.0.3 or v6.0.3
+  version_pattern <- "^v?[0-9]+\\.[0-9]+\\.[0-9]+$"
+  version_parts <- grep(version_pattern, parts, value = TRUE)
+  if (length(version_parts) > 0) {
+    return(version_parts[length(version_parts)])  # Use last match
+  }
+  # Fallback to basename
+  basename(path)
+}
 
 get_transient_sims <- function(path) {
  dirs <- list.dirs(path, full.names = FALSE, recursive = FALSE)
@@ -174,27 +190,43 @@ for (sim_name in transient_sims) {
 
   description <- paste("Benchmark:", baseline_version, "vs",
                        paste(under_test_versions, collapse = ", "), "-", sim_name)
+  # Replace dots with underscores in version strings for PDF filename
+  baseline_ver_safe <- gsub("\\.", "_", baseline_version)
+  under_test_ver_safe <- gsub("\\.", "_", under_test_versions)
   output_file <- file.path(output_dir, paste0(
-    "benchmark_", sim_name, "_", baseline_version, "_vs_",
-    if (length(under_test_versions) == 1) under_test_versions[1] else "multiple",
+    "benchmark_", sim_name, "_", baseline_ver_safe, "_vs_",
+    if (length(under_test_ver_safe) == 1) under_test_ver_safe[1] else "multiple",
     ".pdf"
   ))
 
   run_type <- get_run_type(sim_name)
-  bm_settings <- get_bm_settings(default_settings, run_type)
+  bm_settings <- get_bm_settings(default_settings, run_type,
+                                  time_avg_map = time_avg_map)
 
   cat("  Run type:", run_type, "\n")
   cat("  Output:  ", output_file, "\n\n")
 
+  # Create named lists for custom names in benchmark report
+  baseline_list <- setNames(list(baseline_dir), baseline_version)
+  under_test_list <- setNames(as.list(under_test_dirs), under_test_versions)
+
+  # Set metric options for TimeAvgMapWithAbs if enabled
+  metric_opts <- if (time_avg_map) {
+    list(TimeAvgMapWithAbs = list(n_breaks = 5))
+  } else {
+    NULL
+  }
+
   tryCatch({
     benchmark_results[[sim_name]] <- benchmark(
-      baseline_dir = baseline_dir,
-      under_test_dirs = under_test_dirs,
+      baseline_list,
+      under_test_list,
       author = author,
       description = description,
       output_file = output_file,
       pdf_report = TRUE,
-      settings = bm_settings
+      settings = bm_settings,
+      metric_options = metric_opts
     )
     cat("SUCCESS:", sim_name, "\n\n")
   }, error = function(e) {

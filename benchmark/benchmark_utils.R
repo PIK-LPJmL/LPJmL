@@ -123,8 +123,9 @@ create_bm_settings <- function(base_settings, name_mapping) {
 #' @param base_settings The default_settings from lpjmlstats
 #' @param run_type One of: "pnv_no_methane", "pnv_methane",
 #'                         "lu_no_methane", "lu_methane"
+#' @param time_avg_map If TRUE, add TimeAvgMapWithAbs metric to all variables
 #' @return Settings list appropriate for the run type
-get_bm_settings <- function(base_settings, run_type) {
+get_bm_settings <- function(base_settings, run_type, time_avg_map = FALSE) {
   # Create base settings with mapped names
   bm_settings <- create_bm_settings(base_settings, name_mapping)
 
@@ -135,8 +136,8 @@ get_bm_settings <- function(base_settings, run_type) {
     bm_settings <- bm_settings[!names(bm_settings) %in% pft_harvest_vars]
   }
 
-  # Add methane-specific settings for methane runs
-  if (grepl("methane$", run_type)) {
+  # Add methane-specific settings for methane runs (not no_methane)
+  if (grepl("_methane$", run_type) && !grepl("no_methane", run_type)) {
     # Use firec as template for methane variables
     template <- bm_settings$firec
     bm_settings$ch4_emissions <- template
@@ -146,6 +147,11 @@ get_bm_settings <- function(base_settings, run_type) {
     if (grepl("^lu", run_type)) {
       bm_settings$ch4_rice_em <- template
     }
+  }
+
+  # Add TimeAvgMapWithAbs metric to all variables if requested
+  if (time_avg_map) {
+    bm_settings <- lapply(bm_settings, function(x) c(x, "TimeAvgMapWithAbs"))
   }
 
   bm_settings
