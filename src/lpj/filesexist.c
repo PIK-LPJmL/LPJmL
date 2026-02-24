@@ -298,7 +298,7 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
   return 0;
 } /* of 'checklandusefile' */
 
-static int checkclmfile(Config *config,const char *data_name,const Filename *filename,const char *unit,Type datatype,Bool isclimate,Bool check)
+static int checkclmfile(Config *config,const char *data_name,const Filename *filename,const char *unit,Type datatype,Bool isclimate,Bool check, Bool check_title)
 {
   FILE *file;
   Header header;
@@ -343,7 +343,10 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         }
         else
         {
-          checktitle(attrs,n_attr,name,&config->climate,TRUE);
+          if(check_title)
+          {
+            checktitle(attrs,n_attr,name,&config->climate,TRUE);
+          }
           freeattrs(attrs,n_attr);
           closeclimate_netcdf(&input,TRUE);
         }
@@ -356,7 +359,10 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     {
       if(openclimate_netcdf(&input,NULL,(isclimate) ? &attrs : NULL,&n_attr,filename->name,filename,unit,config))
         return 1;
-      checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+      if(check_title)
+      {
+        checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+      }
       freeattrs(attrs,n_attr);
       closeclimate_netcdf(&input,TRUE);
       if(check)
@@ -387,7 +393,10 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     if(file==NULL)
       return 1;
     fclose(file);
-    checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+    if(check_title)
+    {
+      checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+    }
     freeattrs(attrs,n_attr);
     if(check)
     {
@@ -536,7 +545,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   if(config->river_routing)
   {
     if(config->extflow)
-      bad+=checkclmfile(config,"extflow",&config->extflow_filename,NULL,LPJ_FLOAT,FALSE,FALSE);
+      bad+=checkclmfile(config,"extflow",&config->extflow_filename,NULL,LPJ_FLOAT,FALSE,FALSE,TRUE);
     bad+=checkinputfile(config,&config->drainage_filename,NULL,LPJ_INT,(config->drainage_filename.fmt==CDF) ? 0 : 2);
     if(config->withlanduse!=NO_LANDUSE)
       bad+=checkinputdata(config,&config->neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
@@ -545,44 +554,44 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkdatafile(config,&config->popdens_filename,"popdens","km-2",LPJ_SHORT,1,FALSE);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    bad+=checkclmfile(config,"NO3 deposition",&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE,FALSE);
-    bad+=checkclmfile(config,"NH4 deposition",&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE,FALSE);
+    bad+=checkclmfile(config,"NO3 deposition",&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE,FALSE,FALSE);
+    bad+=checkclmfile(config,"NH4 deposition",&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE,FALSE,FALSE);
   }
   bad+=checkinputdata(config,&config->soilph_filename,"soilPH",NULL,LPJ_SHORT,0);
   if(config->grassharvest_filename.name!=NULL)
     bad+=checkinputdata(config,&config->grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
-  bad+=checkclmfile(config,"wind speed",&config->wind_filename,"m/s",LPJ_SHORT,TRUE,TRUE);
+  bad+=checkclmfile(config,"wind speed",&config->wind_filename,"m/s",LPJ_SHORT,TRUE,TRUE,TRUE);
   bad+=checkinputdata(config,&config->hydrotopes_filename,"hydrotopes",NULL,LPJ_SHORT,CTI_DATA_LENGTH);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      bad+=checkclmfile(config,"humidity",&config->humid_filename,NULL,LPJ_SHORT,TRUE,TRUE);
+      bad+=checkclmfile(config,"humidity",&config->humid_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE);
     if(config->prescribe_burntarea)
-      bad+=checkclmfile(config,"burnt area",&config->burntarea_filename,"hectare",LPJ_SHORT,FALSE,TRUE);
+      bad+=checkclmfile(config,"burnt area",&config->burntarea_filename,"hectare",LPJ_SHORT,FALSE,TRUE,FALSE);
     bad+=checkdatafile(config,&config->lightning_filename,"lightning",NULL,LPJ_INT,12,FALSE);
-    bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,TRUE);
+    bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,TRUE,FALSE);
   }
   if(config->fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(config,"tmin",&config->tmin_filename,"celsius",LPJ_SHORT,TRUE,TRUE);
-    bad+=checkclmfile(config,"tmax",&config->tmax_filename,"celsius",LPJ_SHORT,TRUE,TRUE);
+    bad+=checkclmfile(config,"tmin",&config->tmin_filename,"celsius",LPJ_SHORT,TRUE,TRUE,TRUE);
+    bad+=checkclmfile(config,"tmax",&config->tmax_filename,"celsius",LPJ_SHORT,TRUE,TRUE,TRUE);
   }
   if(config->fire==SPITFIRE)
   {
-    bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE);
+    bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE);
   }
   if(config->wateruse)
-    bad+=checkclmfile(config,"wateruse",&config->wateruse_filename,"dm3/day",LPJ_INT,FALSE,FALSE);
-  bad+=checkclmfile(config,"temp",&config->temp_filename,"celsius",LPJ_SHORT,TRUE,TRUE);
-  bad+=checkclmfile(config,"precipitation",&config->prec_filename,"kg/m2/day",LPJ_SHORT,TRUE,TRUE);
+    bad+=checkclmfile(config,"wateruse",&config->wateruse_filename,"dm3/day",LPJ_INT,FALSE,FALSE,FALSE);
+  bad+=checkclmfile(config,"temp",&config->temp_filename,"celsius",LPJ_SHORT,TRUE,TRUE,TRUE);
+  bad+=checkclmfile(config,"precipitation",&config->prec_filename,"kg/m2/day",LPJ_SHORT,TRUE,TRUE,TRUE);
   if(config->isanomaly)
   {
-    bad+=checkclmfile(config,"temp anomaly",&config->delta_temp_filename,"celsius",LPJ_SHORT,FALSE,FALSE);
-    bad+=checkclmfile(config,"precipitation anomaly",&config->delta_prec_filename,"kg/m2/day",LPJ_SHORT,FALSE,TRUE);
-    bad+=checkclmfile(config,"lwnet anomaly",&config->delta_lwnet_filename,"W/m2",LPJ_SHORT,FALSE,TRUE);
-    bad+=checkclmfile(config,"swdown anomaly",&config->delta_swdown_filename,"W/m2",LPJ_SHORT,FALSE,TRUE);
+    bad+=checkclmfile(config,"temp anomaly",&config->delta_temp_filename,"celsius",LPJ_SHORT,FALSE,FALSE,TRUE);
+    bad+=checkclmfile(config,"precipitation anomaly",&config->delta_prec_filename,"kg/m2/day",LPJ_SHORT,FALSE,TRUE,TRUE);
+    bad+=checkclmfile(config,"lwnet anomaly",&config->delta_lwnet_filename,"W/m2",LPJ_SHORT,FALSE,TRUE,TRUE);
+    bad+=checkclmfile(config,"swdown anomaly",&config->delta_swdown_filename,"W/m2",LPJ_SHORT,FALSE,TRUE,TRUE);
     if(config->with_glaciers)
-      bad+=checkclmfile(config,"icefrac",&config->icefrac_filename,NULL,LPJ_SHORT,FALSE,TRUE);
+      bad+=checkclmfile(config,"icefrac",&config->icefrac_filename,NULL,LPJ_SHORT,FALSE,TRUE,FALSE);
   }
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
@@ -591,22 +600,22 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(config,"lwnet",&config->lwnet_filename,"W/m2",LPJ_SHORT,TRUE,TRUE);
-    bad+=checkclmfile(config,"swdown",&config->swdown_filename,"W/m2",LPJ_SHORT,TRUE,TRUE);
+      bad+=checkclmfile(config,"lwnet",&config->lwnet_filename,"W/m2",LPJ_SHORT,TRUE,TRUE,TRUE);
+    bad+=checkclmfile(config,"swdown",&config->swdown_filename,"W/m2",LPJ_SHORT,TRUE,TRUE,TRUE);
   }
   else
-    bad+=checkclmfile(config,"cloudiness",&config->cloud_filename,"%",LPJ_SHORT,TRUE,TRUE);
+    bad+=checkclmfile(config,"cloudiness",&config->cloud_filename,"%",LPJ_SHORT,TRUE,TRUE,TRUE);
   bad+=checkfile(config,"co2",&config->co2_filename);
   if(config->wet_filename.name!=NULL)
-    bad+=checkclmfile(config,"wet days",&config->wet_filename,"day",LPJ_SHORT,TRUE,FALSE);
+    bad+=checkclmfile(config,"wet days",&config->wet_filename,"day",LPJ_SHORT,TRUE,FALSE,TRUE);
   if(config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
     bad+=checkfile(config,"ch4",&config->ch4_filename);
 #ifdef IMAGE
   if(config->sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(config,"temp var",&config->temp_var_filename,NULL,LPJ_SHORT,FALSE);
-    bad+=checkclmfile(config,"prec var",&config->prec_var_filename,NULL,LPJ_SHORT,FALSE);
-    bad+=checkclmfile(config,"prodpool",&config->prodpool_init_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(config,"temp var",&config->temp_var_filename,NULL,LPJ_SHORT,FALSE,TRUE,TRUE);
+    bad+=checkclmfile(config,"prec var",&config->prec_var_filename,NULL,LPJ_SHORT,FALSE,TRUE,TRUE);
+    bad+=checkclmfile(config,"prodpool",&config->prodpool_init_filename,NULL,LPJ_SHORT,FALSE,TRUE,FALSE);
   }
 #endif
   if(ischeckpointrestart(config) && getfilesize(config->checkpoint_restart_filename)!=-1)
@@ -634,7 +643,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
       bad+=checklanduse(config);
     if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,TRUE,
+      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,FALSE,
                           &config->sdatemap,&config->sdatemap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -709,7 +718,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,FALSE,
                           &config->fertilizermap,&config->fertilizermap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -717,7 +726,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,FALSE,
                           &config->manuremap,&config->manuremap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -725,7 +734,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->residue_treatment==READ_RESIDUE_DATA)
     {
-      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,TRUE,
+      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,FALSE,
                           &config->residuemap,&config->residuemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
