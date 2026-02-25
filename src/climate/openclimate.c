@@ -22,6 +22,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  Type datatype,            /**< data type in binary file */
                  int delta_year,           /**< time step (yrs) */
                  Real scalar,              /**< scaling factor */
+                 Bool check,               /**< check title (TRUE/FALSE) */
                  Config *config            /**< LPJ configuration */
                 )                          /** \return TRUE on error */
 {
@@ -131,7 +132,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     {
       if(mpi_openclimate_netcdf(file,NULL,&attrs,&n_attr,filename,units,config))
         return TRUE;
-      checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
+      if(check)
+        checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
       freeattrs(attrs,n_attr);
       if(file->time_step==MISSING_TIME)
       {
@@ -154,7 +156,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                                headername,units,datatype,
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
-  checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
+  if(check)
+    checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
   freeattrs(attrs,n_attr);
   if (header.order!=CELLYEAR)
   {

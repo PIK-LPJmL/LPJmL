@@ -32,7 +32,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     printallocerr("wateruse");
     return NULL;
   }
-  if(openclimate(&wateruse->file,filename,NULL,LPJ_INT,1,1000.0,config))
+  if(openclimate(&wateruse->file,filename,NULL,LPJ_INT,1,1000.0,FALSE,config))
   {
     free(wateruse);
     return NULL;

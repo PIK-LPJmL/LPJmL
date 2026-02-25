@@ -127,7 +127,7 @@ extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
 extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
 extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,int,Real,
-                        Config *);
+                        Bool,Config *);
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
