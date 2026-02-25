@@ -35,6 +35,7 @@ of `major.minor.patch` with
  - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
  - Arrays `"hlimit"` and `"basetemp"` copied from JSON metafile to NetCDF file in `clm2cdf`.
  - Options `-metafile` and `-json` added to `regriddrain` and `regridirrig` to use JSON metafiles for input and write JSON metafiles for output.
+ - Support for float and double datatype added to `readintdata_netcdf.c.`
 
 ### Changed
 
@@ -43,7 +44,7 @@ of `major.minor.patch` with
 - Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
 - The global attributes in JSON metafiles are printed on separate lines.
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
-- Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable
+- Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable.
 - The `regridlpj` utility uses now JSON metafiles for regridding the input data.
 
 ### Fixed
