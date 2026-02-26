@@ -17,8 +17,13 @@
 # Purge all modules to start from clean environment
 module purge
 
+# Add piam module path if not present
+if [[ ":$MODULEPATH:" != *":/p/system/lenovo/ctt/modulefiles/defaults:"* ]]; then
+    export MODULEPATH="$MODULEPATH:/p/system/lenovo/ctt/modulefiles/defaults"
+fi
+
 # Load required modules
-source /p/system/modulefiles/defaults/piam/module_load_piam
+module load piam/1.27
 module load intel/oneAPI/2024.2.1
 
 # Run the R script with all forwarded arguments
