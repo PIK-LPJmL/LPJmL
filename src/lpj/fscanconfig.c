@@ -319,6 +319,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_ignition=FALSE;
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
+  config->ispopulation=FALSE;
   config->gsilivefuel=FALSE;
   if(isspitfire(config))
   {
@@ -342,9 +343,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",!config->pedantic,verbose))
         return TRUE;
+      if(!config->ishuman_ign_prob)
+      {
+        fscanbool2(file,&config->ispopulation,"population");
+      }
     }
   }
-  fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,!config->pedantic,verbose))
     return TRUE;
@@ -994,8 +998,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     else
     {
       scanclimatefilename(input,&config->lightning_filename,FALSE,TRUE,"lightning");
-      scanclimatefilename(input,&config->human_ignition_filename,
-                          FALSE,TRUE,"human_ignition");
       if(config->ishuman_ign_prob)
       {
         scanclimatefilename(input,&config->human_ign_prob_filename,
@@ -1006,10 +1008,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(input,&config->max_firesize_filename,FALSE,FALSE,"maxfiresize");
     }
-  }
-  if(config->ispopulation)
-  {
-    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
+    if(config->ispopulation)
+    {
+      scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
+      scanclimatefilename(input,&config->human_ignition_filename,
+                          FALSE,TRUE,"human_ignition");
+    }
   }
   if(config->prescribe_burntarea)
   {

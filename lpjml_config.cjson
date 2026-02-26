@@ -69,7 +69,7 @@
 #endif
     "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
 #endif /* CRU_MONTHLY */
-  "gsilivefuel" : true,
+  "gsilivefuel" : true,       /* livefuel calculated from growing season index (true/false) */
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [120,480] ,"ndayfire" : 1},
@@ -114,11 +114,7 @@
 #ifdef FROM_RESTART
   "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
-#ifdef GLOBFIRM
-  "population" : false,     /* population input not needed for globfirm fire model */
-#else
   "population" : true,      /* use population input (for spitfire) */
-#endif
   "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2100, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : true,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
@@ -356,8 +352,6 @@ ID                               Fmt                        filename
     { "id" : "n2_emis",          "file" : { "name" : "output/mn2_emis"}},
     { "id" : "n_immo",           "file" : { "name" : "output/mn_immo"}},
     { "id" : "pft_ndemand",      "file" : { "name" : "output/pft_ndemand"}},
-    { "id" : "nfert_agr",        "file" : { "name" : "output/nfert_agr"}},
-    { "id" : "firen",            "file" : { "name" : "output/firen"}},
     { "id" : "n_mineralization", "file" : { "name" : "output/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output/mn_volatilization"}},
     { "id" : "pft_nlimit",       "file" : { "name" : "output/pft_nlimit"}},
@@ -371,7 +365,6 @@ ID                               Fmt                        filename
     { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},
     { "id" : "pft_water_demand", "file" : { "name" : "output/pft_water_demand"}},
-    { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
     { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
     { "id" : "wtab",             "file" : { "name" : "output/wtab"}},
     { "id" : "mwater",           "file" : { "name" : "output/mwater"}},

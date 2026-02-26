@@ -134,8 +134,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->landcovermap);
   free(config->soilmap);
   free(config->npft);
-  if(config->ispopulation)
-    freefilename(&config->popdens_filename);
   if(config->ishuman_ign_prob)
     freefilename(&config->human_ign_prob_filename);
   if(config->grassharvest_filename.name!=NULL)
@@ -152,10 +150,14 @@ void freeconfig(Config *config /**< LPJmL configuration */
     else
     {
       freefilename(&config->lightning_filename);
-      freefilename(&config->human_ignition_filename);
     }
     if(config->prescribe_burntarea)
       freefilename(&config->burntarea_filename);
+    if(config->ispopulation)
+    {
+      freefilename(&config->popdens_filename);
+      freefilename(&config->human_ignition_filename);
+    }
   }
   if(config->fire==SPITFIRE_TMAX)
   {

@@ -458,7 +458,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
   }
   if(config.ispopulation)
+  {
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
+    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,FALSE);
+  }
   if(config.ishuman_ign_prob)
     bad+=checkdatafile(&config,&config.human_ign_prob_filename,"human ign prob",NULL,LPJ_SHORT,1);
   if(!config.unlim_nitrogen && !config.no_ndeposition)
@@ -482,7 +485,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     else
     {
       bad+=checkclmfile(&config,"lightning",&config.lightning_filename,NULL,LPJ_INT,FALSE);
-      bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,FALSE);
     }
     if(config.prescribe_burntarea)
       bad+=checkclmfile(&config,"burnt area",&config.burntarea_filename,"hectare",LPJ_SHORT,TRUE);

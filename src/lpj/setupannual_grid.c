@@ -142,7 +142,7 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
       return TRUE; /* leave time loop */
     }
   }
-  if(!config->prescribe_ignition && isspitfire(config))
+  if(config->ispopulation)
   {
     rc=gethumanignition(input->human_ignition,year,grid,config);
     if(iserror(rc,config))

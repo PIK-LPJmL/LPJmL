@@ -108,6 +108,7 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+  "relative_humidity" : false,
 #ifdef FROM_RESTART
   "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
@@ -346,7 +347,6 @@ ID                               Fmt                        filename
     { "id" : "n2_emis",          "file" : { "name" : "output_pnv/mn2_emis"}},
     { "id" : "n_immo",           "file" : { "name" : "output_pnv/mn_immo"}},
     { "id" : "pft_ndemand",      "file" : { "name" : "output_pnv/pft_ndemand"}},
-    { "id" : "firen",            "file" : { "name" : "output_pnv/firen"}},
     { "id" : "n_mineralization", "file" : { "name" : "output_pnv/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output_pnv/mn_volatilization"}},
     { "id" : "pft_nlimit",       "file" : { "name" : "output_pnv/pft_nlimit"}},
