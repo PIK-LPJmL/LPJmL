@@ -30,6 +30,7 @@
 #define neighbour_irrigation TRUE
 
 void withdrawal_demand(Cell *grid,          /**< LPJ grid */
+                       int m,               /**< month (0..11) */
                        const Config *config /**< LPJ configuration */
                       )
 {
@@ -71,20 +72,22 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
 
       /* wateruse for industry, household and livestock */
 #ifdef IMAGE
-      grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse_wd;
+      grid[cell].discharge.waterdeficit+=grid[cell].discharge.wateruse_wd[m];
 
       /* constrain build up of deficit */
-      grid[cell].discharge.waterdeficit=min(grid[cell].discharge.waterdeficit,30*grid[cell].discharge.wateruse_wd);
+      grid[cell].discharge.waterdeficit=min(grid[cell].discharge.waterdeficit,30*grid[cell].discharge.wateruse_wd[m]);
 
       if (grid[cell].discharge.wateruse_wd >0)
-        grid[cell].discharge.wateruse_fraction = grid[cell].discharge.wateruse / grid[cell].discharge.wateruse_wd;
+        grid[cell].discharge.wateruse_fraction = grid[cell].discharge.wateruse[m] / grid[cell].discharge.wateruse_wd[m];
       if (!(grid[cell].discharge.wateruse_fraction <= 1 || grid[cell].discharge.wateruse_fraction >= 0))
         printf("ERROR: waterusefraction incorrect in cell lat %f lon %f, waterusefraction %f", grid[cell].coord.lat, grid[cell].coord.lon, grid[cell].discharge.wateruse_fraction);
 #else
-      grid[cell].discharge.waterdeficit += grid[cell].discharge.wateruse;
+      if(config->wateruse)
+        grid[cell].discharge.waterdeficit += grid[cell].discharge.wateruse[m];
 
       /* constrain build up of deficit */
-      grid[cell].discharge.waterdeficit = min(grid[cell].discharge.waterdeficit, 30 * grid[cell].discharge.wateruse);
+      if(config->wateruse)
+       grid[cell].discharge.waterdeficit = min(grid[cell].discharge.waterdeficit, ndaymonth[m] * grid[cell].discharge.wateruse[m]);
 #endif
 
       grid[cell].discharge.wd_demand=grid[cell].discharge.waterdeficit+grid[cell].discharge.gir;
