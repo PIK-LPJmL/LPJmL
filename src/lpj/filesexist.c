@@ -458,7 +458,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
   }
   if(config.ispopulation)
+  {
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
+    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,FALSE);
+  }
   if(config.ishuman_ign_prob)
     bad+=checkdatafile(&config,&config.human_ign_prob_filename,"human ign prob",NULL,LPJ_SHORT,1);
   if(!config.unlim_nitrogen && !config.no_ndeposition)
@@ -474,7 +477,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(isspitfire(&config))
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,LPJ_SHORT,TRUE);
+      bad+=checkclmfile(&config,"humidity",&config.humid_filename,(config.relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,TRUE);
     if(config.max_firesize)
       bad+=checkinputfile(&config,&config.max_firesize_filename,NULL,LPJ_SHORT,0);
     if(config.prescribe_ignition)
@@ -482,7 +485,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     else
     {
       bad+=checkclmfile(&config,"lightning",&config.lightning_filename,NULL,LPJ_INT,FALSE);
-      bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,FALSE);
     }
     if(config.prescribe_burntarea)
       bad+=checkclmfile(&config,"burnt area",&config.burntarea_filename,"hectare",LPJ_SHORT,TRUE);
@@ -497,7 +499,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkclmfile(&config,"tamp",&config.tamp_filename,NULL,LPJ_SHORT,TRUE);
   }
   if(config.wateruse)
-    bad+=checkdatafile(&config,&config.wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
+    bad+=checkclmfile(&config,"wateruse",&config.wateruse_filename,"dm3/day",LPJ_INT,FALSE);
   bad+=checkclmfile(&config,"temp",&config.temp_filename,"celsius",LPJ_SHORT,TRUE);
   bad+=checkclmfile(&config,"precipitation",&config.prec_filename,"kg/m2/day",LPJ_SHORT,TRUE);
   if(config.isanomaly)
@@ -511,7 +513,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
-    bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
+    bad+=checkclmfile(&config,"wateruse_wd",&config.wateruse_wd_filename,"dm3/day",LPJ_INT,FALSE);
 #endif
   bad+=checkclmfile(&config,(config.radiation_lwdown) ? "lwdown" : "lwnet",&config.lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
   bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",LPJ_SHORT,TRUE);

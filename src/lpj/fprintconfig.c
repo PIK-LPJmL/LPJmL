@@ -110,8 +110,6 @@ static size_t isnetcdfinput(const Config *config)
     {
       if(config->lightning_filename.fmt==CDF)
         width=max(width,strlen(config->lightning_filename.var));
-      if(config->human_ignition_filename.fmt==CDF)
-        width=max(width,strlen(config->human_ignition_filename.var));
     }
     if(config->max_firesize)
     {
@@ -119,8 +117,13 @@ static size_t isnetcdfinput(const Config *config)
         width=max(width,strlen(config->max_firesize_filename.var));
     }
   }
-  if(config->ispopulation && config->popdens_filename.fmt==CDF)
-    width=max(width,strlen(config->popdens_filename.var));
+  if(config->ispopulation)
+  {
+    if(config->popdens_filename.fmt==CDF)
+      width=max(width,strlen(config->popdens_filename.var));
+    if(config->human_ignition_filename.fmt==CDF)
+      width=max(width,strlen(config->human_ignition_filename.var));
+  }
   if(config->ishuman_ign_prob && config->human_ign_prob_filename.fmt==CDF)
     width=max(width,strlen(config->human_ign_prob_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
@@ -659,7 +662,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     else
     {
       printinputfile(file,"lightning",&config->lightning_filename,width,config);
-      printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
     }
     if(config->max_firesize)
       printinputfile(file,"maxfire",&config->max_firesize_filename,width,config);
@@ -674,7 +676,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file, "delta swdown", &config->delta_swdown_filename, width,config);
   }
   if(config->ispopulation)
+  {
     printinputfile(file,"pop. dens",&config->popdens_filename,width,config);
+    printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
+  }
   if(config->ishuman_ign_prob)
     printinputfile(file,"h ign prob",&config->human_ign_prob_filename,width,config);
   if(config->prescribe_burntarea)

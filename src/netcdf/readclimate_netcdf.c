@@ -111,7 +111,21 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
   size_t offsets[3];
   size_t counts[3];
   String line;
-  size=isdaily(*file) ? NDAYYEAR : NMONTH;
+  switch(file->time_step)
+  {
+    case YEAR:
+      size=1;
+      break;
+    case MONTH:
+      size=NMONTH;
+      break;
+    case DAY:
+      size=NDAYYEAR;
+      break;
+    default:
+      size=1;
+      break;
+  }
   if(file->oneyear)
   {
     if(openfile(file,year,config))

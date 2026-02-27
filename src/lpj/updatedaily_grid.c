@@ -33,7 +33,7 @@ void updatedaily_grid(Outputfile *output,  /**< Output file data */
   if(config->river_routing)
   {
     if(config->withlanduse)
-      withdrawal_demand(grid,config);
+      withdrawal_demand(grid,month,config);
     if(config->extflow)
     {
       if(getextflow(extflow,grid,day-1,year))

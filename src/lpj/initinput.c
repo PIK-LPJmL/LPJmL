@@ -64,9 +64,14 @@ Bool initinput(Input *input,        /**< Input data */
   {
     if((input->popdens=initpopdens(config))==NULL)
       return TRUE;
+    if((input->human_ignition=inithumanignition(config))==NULL)
+      return TRUE;
   }
   else
+  {
+    input->human_ignition=NULL;
     input->popdens=NULL;
+  }
   if(config->ishuman_ign_prob)
   {
     if((input->human_ign_prob=inithuman_ign_prob(config))==NULL)
@@ -74,13 +79,6 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->human_ign_prob=NULL;
-  if(!config->prescribe_ignition && isspitfire(config))
-  {
-    if((input->human_ignition=inithumanignition(config))==NULL)
-      return TRUE;
-  }
-  else
-    input->human_ignition=NULL;
   if(config->prescribe_landcover != NO_LANDCOVER)
   {
     if((input->landcover=initlandcover(npft,config))==NULL)

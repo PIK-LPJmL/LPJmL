@@ -28,7 +28,6 @@ of `major.minor.patch` with
 ### Added
 
 - Option `-inpath` added to `configure.sh` to set path for input files.
-- Boolean flag `"isswnet"` added in `lpjml_config.cjson` to use net shortwave radiation instead of downward shortwave radiation as input.
 - Function `fprintclimbuf()` added in `climbuf.c` to print variables and is called in `fprintcell.c`.
 - Function `fprintbuffer()` added in `buffer.c` to print variables and is called in `fprintclimbuf.c`.
 - Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
@@ -37,7 +36,7 @@ of `major.minor.patch` with
 - Boolean `"relative_humidity"` added to lpjml configuration to use relative instead of absolutte humidity for input.
 - Fire related outputs and settings added:
 ```java
-  "gsilivefuel" : true,
+  "gsilivefuel" : true, /* livefuel calculated from growing season index (true/false) */
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
@@ -53,11 +52,11 @@ of `major.minor.patch` with
 
 - SPITFIRE fire model updated, multi-day fire implemented ([Oberhagemann et al. 2025](https://doi.org/10.5194/gmd-18-2021-2025)).
 - The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
-- Keyword `"fire"` renamed to `"globfirm"`.
+- Keyword `"fire"` renamed to `"globfirm"`, `"no_fire"` to `"no"`.
 - Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
 
 
-## [6.0.3] - 2026-02-17
+## [6.0.4] - 2026-02-17
 
 ### Contributors
 
@@ -108,6 +107,22 @@ of `major.minor.patch` with
 - Utility `regridclm` corrected to avoid SEGV if file size does not match header.
 - Parameter `"fburnt"` in `lpjparam.cjson` is always read, was always zero if `"luc_timber"` was set to false.
 - Help text corrected in `printclm.c`.
+
+
+## [6.0.3] - 2026-02-23
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (marie.hemmen@pik-potsdam.de)
+
+### Added
+
+- Model can be run with monthly water use for household, industry and livestock which is available from [Zenodo](https://zenodo.org/records/897933), reading in annual input is still possible.
+
+### Fixed
+
+- Pointers to IMAGE related data initialized to `NULL` in `lpjprint.c`.
 
 
 ## [6.0.2] - 2026-01-17
@@ -180,6 +195,8 @@ of `major.minor.patch` with
 
 
 ## [6.0.0] - 2025-11-25
+
+### Contributors
 
 - author: Sibyll Schaphoff (sibylls@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), David Hötten (cmueller@pik-potsdam.de)

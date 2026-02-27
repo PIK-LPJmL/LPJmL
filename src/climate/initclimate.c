@@ -66,8 +66,29 @@ static void initdata(Climate *climate)
   }
 } /* of 'initdata' */
 
+static Bool openclimate2(Climatefile *file,const Filename *filename,const char *name,
+                         const char *unit,Type type,int delta_year,Real scalar,const Config *config)
+{
+  if(openclimate(file,filename,unit,type,delta_year,scalar,config))
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
+    return TRUE;
+  }
+  if(file->time_step==YEAR)
+  {
+    if(isroot(*config))
+    {
+      fprintf(stderr,"ERROR438: Yearly time step not allowed in '%s'.\n",filename->name);
+      fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
+    }
+    return TRUE;
+  }
+  return FALSE;
+} /* of openclimate2' */
+
 Climate *initclimate(Config *config /**< pointer to LPJ configuration */
-                    )                     /** \return allocated climate data struct or NULL on error */
+                    )               /** \return allocated climate data struct or NULL on error */
 {
   int i, ndata; 
   int lastyear;
@@ -79,7 +100,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     return NULL;
   }
   initdata(climate);
-  if(openclimate(&climate->file_temp,&config->temp_filename,"celsius",LPJ_SHORT,1,0.1,config))
+  if(openclimate2(&climate->file_temp,&config->temp_filename,"temp","celsius",LPJ_SHORT,1,0.1,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open temp data file.\n");
@@ -91,27 +112,27 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   if (config->isanomaly)
   {
     ndata++;
-    if (openclimate(&climate->file_delta_temp, &config->delta_temp_filename, "celsius", LPJ_SHORT,config->delta_year,0.1,config))
+    if (openclimate2(&climate->file_delta_temp, &config->delta_temp_filename,"delta_temp","celsius", LPJ_SHORT,config->delta_year,0.1,config))
     {
       closeclimatefile(&climate->file_temp, isroot(*config));
       free(climate);
       return NULL;
     }
-    if (openclimate(&climate->file_delta_prec, &config->delta_prec_filename, "kg/m2/day" /* "mm" */, LPJ_SHORT,config->delta_year,1.0,config))
+    if (openclimate2(&climate->file_delta_prec, &config->delta_prec_filename,"delta_prec", "kg/m2/day" /* "mm" */, LPJ_SHORT,config->delta_year,1.0,config))
     {
       closeclimatefile(&climate->file_temp, isroot(*config));
       closeclimatefile(&climate->file_delta_temp, isroot(*config));
       free(climate);
       return NULL;
     }
-    if (openclimate(&climate->file_delta_lwnet, &config->delta_lwnet_filename, "W/m2", LPJ_SHORT,config->delta_year, 0.1,config))
+    if (openclimate2(&climate->file_delta_lwnet, &config->delta_lwnet_filename, "delta_lwnet", "W/m2", LPJ_SHORT,config->delta_year, 0.1,config))
     {
       closeclimatefile(&climate->file_temp, isroot(*config));
       closeclimatefile(&climate->file_prec, isroot(*config));
       free(climate);
       return NULL;
     }
-    if (openclimate(&climate->file_delta_swdown, &config->delta_swdown_filename, "W/m2", LPJ_SHORT,config->delta_year,0.1,config))
+    if (openclimate2(&climate->file_delta_swdown, &config->delta_swdown_filename, "delta_swdown","W/m2", LPJ_SHORT,config->delta_year,0.1,config))
     {
       closeclimatefile(&climate->file_temp, isroot(*config));
       closeclimatefile(&climate->file_prec, isroot(*config));
@@ -120,7 +141,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-  if(openclimate(&climate->file_prec,&config->prec_filename,"kg/m2/day" /* "mm" */,LPJ_SHORT,1,1.0,config))
+  if(openclimate2(&climate->file_prec,&config->prec_filename,"prec","kg/m2/day" /* "mm" */,LPJ_SHORT,1,1.0,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open prec data file.\n");
@@ -129,7 +150,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(climate->firstyear<climate->file_prec.firstyear)
     climate->firstyear=climate->file_prec.firstyear;
-  if(openclimate(&climate->file_lwnet,&config->lwnet_filename,"W/m2",LPJ_SHORT,1,0.1,config))
+  if(openclimate2(&climate->file_lwnet,&config->lwnet_filename,(config->radiation_lwdown) ? "lwdown" : "lwnet","W/m2",LPJ_SHORT,1,0.1,config))
   {
      if(isroot(*config))
        fprintf(stderr,"ERROR236: Cannot open %s data file.\n",(config->radiation_lwdown) ? "lwdown" : "lwnet");
@@ -138,7 +159,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(climate->firstyear<climate->file_lwnet.firstyear)
     climate->firstyear=climate->file_lwnet.firstyear;
-  if(openclimate(&climate->file_swdown,&config->swdown_filename,"W/m2",LPJ_SHORT,1,0.1,config))
+  if(openclimate2(&climate->file_swdown,&config->swdown_filename,"swdown","W/m2",LPJ_SHORT,1,0.1,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open swdown data file.\n");
@@ -156,7 +177,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     }
     else
     {
-      if(openclimate(&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,1,1.0,config))
+      if(openclimate2(&climate->file_wet,&config->wet_filename,"wet","day",LPJ_SHORT,1,1.0,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open wet data file.\n");
@@ -170,14 +191,14 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    if(openclimate(&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,1,1.0,config))
+    if(openclimate2(&climate->file_no3deposition,&config->no3deposition_filename,"NO3_depo","g/m2/day",LPJ_FLOAT,1,1.0,config))
     {
       freeclimate(climate,isroot(*config));
       return NULL;
     }
     if(climate->firstyear<climate->file_no3deposition.firstyear)
       climate->firstyear=climate->file_no3deposition.firstyear;
-    if(openclimate(&climate->file_nh4deposition,&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,1,1.0,config))
+    if(openclimate2(&climate->file_nh4deposition,&config->nh4deposition_filename,"NH4_depo","g/m2/day",LPJ_FLOAT,1,1.0,config))
     {
       freeclimate(climate,isroot(*config));
       return NULL;
@@ -193,7 +214,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
                 config->nh4deposition_filename.name,climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
     }
   }
-  if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,1,0.001,config))
+  if(openclimate2(&climate->file_wind,&config->wind_filename,"wind","m/s",LPJ_SHORT,1,0.001,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open wind data file.\n");
@@ -206,7 +227,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   {
     if(config->fdi==WVPD_INDEX)
     {
-      if(openclimate(&climate->file_humid,&config->humid_filename,"kg kg-1",LPJ_SHORT,1,1.0,config))
+      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,1,1.0,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open humid data file.\n");
@@ -217,12 +238,12 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(config->fire==SPITFIRE_TMAX)
   {
-    if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,1,0.1,config))
+    if(openclimate2(&climate->file_tmin,&config->tmin_filename,"tmin","celsius",LPJ_SHORT,1,0.1,config))
     {
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,1,0.1,config))
+    if(openclimate2(&climate->file_tmax,&config->tmax_filename,"tmax","celsius",LPJ_SHORT,1,0.1,config))
     {
       freeclimate(climate,isroot(*config));
       return NULL;
@@ -231,7 +252,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
 
   if(config->fire==SPITFIRE)
   {
-    if(openclimate(&climate->file_tamp,&config->tamp_filename,NULL,LPJ_SHORT,1,0.1,config))
+    if(openclimate2(&climate->file_tamp,&config->tamp_filename,"tamp",NULL,LPJ_SHORT,1,0.1,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open tamp data file.\n");
@@ -243,7 +264,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   {
     if(config->prescribe_ignition)
     {
-      if(openclimate(&climate->file_ignition,&config->ignition_filename,NULL,LPJ_SHORT,1,1.0,config))
+      if(openclimate2(&climate->file_ignition,&config->ignition_filename,"ignition",NULL,LPJ_SHORT,1,1.0,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open ignition data file.\n");
@@ -255,7 +276,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     }
     else
     {
-      if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,1,1.0e-7,config))
+      if(openclimate2(&climate->file_lightning,&config->lightning_filename,"lightning","1/day/hectare",LPJ_INT,1,1.0e-7,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open lightning data file.\n");
@@ -265,7 +286,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     }
     if (config->prescribe_burntarea)
     {
-      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,1,100.0,config))
+      if(openclimate2(&climate->file_burntarea,&config->burntarea_filename,"burntarea",(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,1,100.0,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open burntarea data file.\n");
@@ -278,14 +299,14 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    if(openclimate(&climate->file_temp_var,&config->temp_var_filename,NULL,LPJ_SHORT,1,0.1,config))
+    if(openclimate2(&climate->file_temp_var,&config->temp_var_filename,"tempvar",NULL,LPJ_SHORT,1,0.1,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open tempvar data file.\n");
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(openclimate(&climate->file_prec_var,&config->prec_var_filename,NULL,LPJ_SHORT,1,0.01,config))
+    if(openclimate2(&climate->file_prec_var,&config->prec_var_filename,"precvar",NULL,LPJ_SHORT,1,0.01,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open precvar data file.\n");
