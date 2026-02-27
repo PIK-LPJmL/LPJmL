@@ -303,7 +303,7 @@ ID                               Fmt                        filename
     { "id" : "rh",               "file" : { "name" : "output/mrh"}},
     { "id" : "ra",               "file" : { "name" : "output/mra"}},
     { "id" : "transp",           "file" : { "name" : "output/mtransp"}},
-    { "id" : "temp",             "file" : { "timestep" : "monthly", "name" : "output/tas"}},
+    { "id" : "temp",             "file" : { "name" : "output/tas"}},
     { "id" : "prec",             "file" : { "name" : "output/pr"}},
     { "id" : "runoff",           "file" : { "name" : "output/mrunoff"}},
     { "id" : "evap",             "file" : { "name" : "output/mevap"}},

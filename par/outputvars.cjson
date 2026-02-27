@@ -107,7 +107,7 @@
     { "id" : CFT_CONV_LOSS_EVAP, "name": "cft_conv_loss_evap", "timestep" : "annual", "var" : "conv_loss_evap", "long_name" : "CFT-specific evaporative conveyance losses", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_CONV_LOSS_DRAIN, "name": "cft_conv_loss_drain", "timestep" : "annual", "var" : "conv_loss_drain", "long_name" : "CFT-specific drainage conveyance losses", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_IRRIG_EVENTS, "name": "cft_irrig_events", "timestep" : "annual", "var" : "count", "long_name" : "number of days with irrigation events", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
-    { "id" : TEMP, "name": "temp", "timestep" : "daily", "var" : "temp", "long_name" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
+    { "id" : TEMP, "name": "temp", "timestep" : "monthly", "var" : "temp", "long_name" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
     { "id" : DAYLENGTH, "name": "daylength", "timestep" : "daily", "var" : "daylength", "long_name" :  "day length", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
     { "id" : EVAP_RES, "name": "evap_res", "timestep" : "monthly", "var" : "evap_res", "long_name" :  "evaporation from reservoirs", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : PREC_RES, "name": "prec_res", "timestep" : "monthly", "var" : "prec_res", "long_name" :  "reservoir precipitation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
