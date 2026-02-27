@@ -20,7 +20,9 @@ outputvars_base <- c(
   "litc", "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
   "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
   "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
-  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc"
+  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc",
+  "albedo", "ra", "agb", "soilc_1m", "prec", "temp", "maxthaw_depth",
+  "gw_storage", "harvestc"
 )
 
 # Additional outputs for landuse runs
@@ -28,7 +30,8 @@ outputvars_landuse <- c("cftfrac", "pft_harvestc")
 
 # Additional outputs for methane runs
 # TODO: Update once methane outputs are finalized
-outputvars_methane <- c("ch4_emissions", "ch4_rice_em", "ch4_sink", "wetfrac")
+outputvars_methane <- c("ch4_emissions", "ch4_rice_em", "ch4_sink", "wetfrac",
+                        "ch4_emissions_wet")
 
 # Combined output lists for each run type
 outputvars_pnv <- outputvars_base

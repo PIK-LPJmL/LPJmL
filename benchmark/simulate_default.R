@@ -156,7 +156,10 @@ runs_no_methane <- runs[grepl("no_methane", runs$sim_name), ]
 runs_methane <- runs[!grepl("no_methane", runs$sim_name), ]
 
 # Define which variables need monthly timestep
-monthly_vars <- c("gpp", "evap", "transp", "rh", "npp")
+monthly_vars <- c("gpp", "evap", "transp", "rh", "npp", "albedo", "ra", "agb",
+                  "firec", "flux_estabc", "harvestc", "soilc", "soilc_1m",
+                  "runoff", "interc", "temp", "prec", "maxthaw_depth",
+                  "gw_storage", "ch4_emissions_wet")
 
 # Create timestep vector for no_methane runs (LU output list)
 timesteps_lu <- ifelse(outputvars_lu %in% monthly_vars, "monthly", "annual")
