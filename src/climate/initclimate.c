@@ -247,7 +247,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   {
     if(config->fdi==WVPD_INDEX)
     {
-      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg kg-1",LPJ_SHORT,1,1.0,config))
+      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,1,1.0,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open humid data file.\n");

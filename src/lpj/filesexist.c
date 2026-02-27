@@ -477,7 +477,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(isspitfire(&config))
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,LPJ_SHORT,TRUE);
+      bad+=checkclmfile(&config,"humidity",&config.humid_filename,(config.relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,TRUE);
     if(config.max_firesize)
       bad+=checkinputfile(&config,&config.max_firesize_filename,NULL,LPJ_SHORT,0);
     if(config.prescribe_ignition)
