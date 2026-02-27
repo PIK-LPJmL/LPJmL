@@ -30,6 +30,12 @@ Bool fscanerrorlimit(LPJfile *file,      /**< pointer to LPJ file */
     return TRUE;
   if(fscanreal(f,&limit->stocks.nitrogen,"nitrogen",FALSE,verb))
     return TRUE;
+  if(fscanreal(f,&limit->stocks_fcn.carbon,"carbon_fcn",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&limit->stocks_fcn.nitrogen,"nitrogen_fcn",FALSE,verb))
+    return TRUE;
+  if(fscanreal(f,&limit->w_fcn,"water_fcn",FALSE,verb))
+    return TRUE;
   if(fscanreal(f,&limit->w_local,"water_local",FALSE,verb))
     return TRUE;
   if(fscanreal(f,&limit->w_global,"water_global",FALSE,verb))

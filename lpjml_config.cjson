@@ -76,6 +76,7 @@
                     {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 3},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
   "prescribe_ignition" : false, /* read ignitions from file */
+  "fail_on_balance" : false, /* fail on check balance error (true/false) */
   "random_seed" : 2,        /* seed for random number generator */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
@@ -84,6 +85,7 @@
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
+  "delta_year" : 100,       /* time step in anomalies (yrs) */
 #ifdef NO_METHANE
   "with_methane" : false,    /* simulation without methane and oxygen dynamics */
 #else

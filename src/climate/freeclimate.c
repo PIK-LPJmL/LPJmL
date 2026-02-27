@@ -27,7 +27,6 @@ static void freeclimatedata2(Climate *climate)
     free(climate->data[i].tmin);
     free(climate->data[i].prec);
     free(climate->data[i].temp);
-    free(climate->data[i].sun);
     free(climate->data[i].lwnet);
     free(climate->data[i].swdown);
     free(climate->data[i].wet);
@@ -49,7 +48,6 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->tmin);
   free(data->prec);
   free(data->temp);
-  free(data->sun);
   free(data->lwnet);
   free(data->swdown);
   free(data->wet);
@@ -73,7 +71,6 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_prec,isroot);
     closeclimatefile(&climate->file_tmax,isroot);
     closeclimatefile(&climate->file_tmin,isroot);
-    closeclimatefile(&climate->file_cloud,isroot);
     closeclimatefile(&climate->file_lwnet,isroot);
     closeclimatefile(&climate->file_swdown,isroot);
     closeclimatefile(&climate->file_humid,isroot);

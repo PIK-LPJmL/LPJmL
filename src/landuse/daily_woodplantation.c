@@ -211,7 +211,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap,config->rw_manage);
+               &frac_g_evap,config->rw_manage,config);
 
   if (data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand, &data->irrigation,gp_stand, wet, eeq,config);

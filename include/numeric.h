@@ -42,9 +42,7 @@ extern void setseed(Seed,int); /* set seed of random number generator */
 extern Bool freadseed(Bstruct,const char *,Seed);
 extern Bool fwriteseed(Bstruct,const char *,const Seed);
 extern Real randfrac(int *); /* random number generator */
-extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
-extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
-extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Real);
+extern void petpar(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
 extern int ivec_sum(const int[],int); /* vector sum of integers */
 extern Real gammq(Real,Real);
 extern void gcf(Real *, Real, Real, Real *);

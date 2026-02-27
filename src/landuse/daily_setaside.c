@@ -157,7 +157,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap,config->rw_manage);
+               &frac_g_evap,config->rw_manage,config);
   if(output->daily.cft==ALLSTAND)
   {
     output->daily.evap+=evap*stand->frac;
