@@ -259,18 +259,12 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     if(pft->par->type==TREE)
     {
       tree=pft->data;
-      if(isannual(PFT_VEGC,config))
-        getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
-      if(isannual(PFT_VEGN,config))
-        getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
-      if(isannual(PFT_CROOT,config))
-        getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
-      if(isannual(PFT_NROOT,config))
-        getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
-      if(isannual(PFT_CLEAF,config))
-        getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
-      if(isannual(PFT_NLEAF,config))
-        getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
     }
   }
   return FALSE;

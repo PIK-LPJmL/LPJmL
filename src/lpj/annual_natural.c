@@ -178,9 +178,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       if (pft->fpc > fpc_obs_cor)
         pft->fpc = fpc_obs_cor;
     }
-    if(isannual(WPC,config) && stand->type->landusetype == WETLAND)
+    if (stand->type->landusetype == WETLAND)
       getoutputindex(&stand->cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
-    if(isannual(FPC,config) && (stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND))
+    if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
       getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc*stand->frac/natfrac;
 #ifdef SAFE
     if(pft->fpc<0)

@@ -147,10 +147,8 @@ void update_annual_cell(Cell *cell,          /**< Pointer to cell */
   if (fabs(start.nitrogen - end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr, "N_ERROR update annual: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen - end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
-  if(isannual(FPC,config))
-    getoutputindex(&cell->output,FPC,0,config) += natfrac+wetlandfrac;
-  if(isannual(WPC,config))
-    getoutputindex(&cell->output,WPC,0,config) += wetlandfrac;
+  getoutputindex(&cell->output,FPC,0,config) += natfrac+wetlandfrac;
+  getoutputindex(&cell->output,WPC,0,config) += wetlandfrac;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
   if(cell->lakefrac<1 && year>(config->firstyear-config->nspinup+1000))
