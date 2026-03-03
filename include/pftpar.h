@@ -68,9 +68,8 @@
 #define TROPICAL_HERBACEOUS 9
 #define TEMPERATE_HERBACEOUS 10
 #define POLAR_HERBACEOUS 11
-#define C3_graminoid 12
-#define Sphagnum_moss 13
-
+#define C3_GRAMINOID_FLOOD 12
+#define SPHAGNUM_MOSS 13
 
 #define TEMPERATE_CEREALS 0
 #define RICE 1

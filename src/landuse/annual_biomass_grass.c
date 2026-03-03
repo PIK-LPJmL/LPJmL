@@ -84,7 +84,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
 
   for(p=0;p<npft;p++)
   {
-    if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss
+    if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && strcmp(config->pftpar[p].name,"Sphagnum moss")
        && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,getlandusetype(stand)==WETLAND || getlandusetype(stand)==SETASIDE_WETLAND))
     {
       if(!present[p])

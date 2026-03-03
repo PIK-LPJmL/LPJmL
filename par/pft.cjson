@@ -85,7 +85,7 @@
 #define FNPP_RECOVERY 0.05 /* fraction of NPP available for N recovery */
 
   [
-    /* first pft */
+    /* 1. pft */
     {
       "name" : "tropical broadleaved evergreen tree",
       "type" : "tree",
@@ -211,6 +211,7 @@
     },
 
   /*--------------------------------------------------------------------------*/
+  /* 2. pft */
     {
       "name" : "tropical broadleaved evergreen tree floodtolerant",
       "type" : "tree",
@@ -335,7 +336,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 2. pft */
+  /* 3. pft */
     {
       "name" : "tropical broadleaved raingreen tree",
       "type" : "tree",
@@ -462,7 +463,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*---------------------------------------------------------------------------------------------*/
-  /* 3. pft */
+  /* 4. pft */
     {
       "name": "temperate needleleaved evergreen tree",
       "type" : "tree",
@@ -587,7 +588,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
   },
   /*--------------------------------------------------------------------------*/
-  /* 4. pft */
+  /* 5. pft */
     {
       "name" : "temperate broadleaved evergreen tree",
       "type" : "tree",
@@ -713,7 +714,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 5. pft */
+  /* 6. pft */
     {
       "name" : "temperate broadleaved summergreen tree",
       "type" : "tree",
@@ -840,7 +841,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 6. pft */
+  /* 7. pft */
     {
       "name" : "boreal needleleaved evergreen tree",
       "type" : "tree",
@@ -965,7 +966,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 7. pft */
+  /* 8. pft */
     {
       "name" : "boreal broadleaved summergreen tree",
       "type" : "tree",
@@ -1092,7 +1093,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 8. pft */
+  /* 9. pft */
     {
       "name" : "boreal needleleaved summergreen tree",
       "type" : "tree",
@@ -1219,7 +1220,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
   },
   /*--------------------------------------------------------------------------*/
-  /* 9. pft */
+  /* 10. pft */
     {
       "name" : "Tropical C4 grass",
       "type" : "grass",
@@ -1324,7 +1325,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 10. pft */
+  /* 11. pft */
     {
       "name" : "Temperate C3 grass",
       "type" : "grass",
@@ -1429,7 +1430,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 11. pft */
+  /* 12. pft */
     {
       "name" : "Polar C3 grass",
       "type" : "grass",
@@ -1534,7 +1535,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 12. pft */
+  /* 13. pft */
     {
       "name" : "C3 graminoid flood tolerant",
       "type" : "grass",
@@ -1639,7 +1640,7 @@
       "fnpp_nrecovery" : FNPP_RECOVERY /* fraction of NPP available for N recovery */
     },
   /*--------------------------------------------------------------------------*/
-  /* 13. pft */
+  /* 14. pft */
     {
       "name" : "Sphagnum moss",
       "type" : "grass",
