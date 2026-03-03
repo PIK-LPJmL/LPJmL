@@ -114,12 +114,18 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
-    getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
-    getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=grass->ind.root.carbon;
-    getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=grass->ind.root.nitrogen;
-    getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=grass->ind.leaf.carbon;
-    getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=grass->ind.leaf.nitrogen;
+    if(isannual(PFT_VEGC,config))
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
+    if(isannual(PFT_VEGN,config))
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+    if(isannual(PFT_CROOT,config))
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=grass->ind.root.carbon;
+    if(isannual(PFT_NROOT,config))
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=grass->ind.root.nitrogen;
+    if(isannual(PFT_CLEAF,config))
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=grass->ind.leaf.carbon;
+    if(isannual(PFT_NLEAF,config))
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=grass->ind.leaf.nitrogen;
   }
 
   free(fpc_type);

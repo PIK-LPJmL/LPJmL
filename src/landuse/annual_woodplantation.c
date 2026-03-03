@@ -327,8 +327,10 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->growing_time++;
     foreachpft(pft,p,&stand->pftlist)
     {
-      getoutputindex(&stand->cell->output,PFT_VEGC,getnnat(npft,config)+index,config)+=vegc_sum(pft);
-      getoutputindex(&stand->cell->output,PFT_VEGN,getnnat(npft,config)+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      if(isannual(PFT_VEGC,config))
+        getoutputindex(&stand->cell->output,PFT_VEGC,getnnat(npft,config)+index,config)+=vegc_sum(pft);
+      if(isannual(PFT_VEGN,config))
+        getoutputindex(&stand->cell->output,PFT_VEGN,getnnat(npft,config)+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
     }
   }
   return FALSE;
