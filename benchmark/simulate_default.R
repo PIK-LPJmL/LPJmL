@@ -87,7 +87,7 @@ if (is.null(parsed_args$sim_path)) {
 sim_path <- parsed_args$sim_path
 ntasks <- parsed_args$ntasks
 blocking <- parsed_args$blocking
-model_path <- parsed_args$model_path
+model_path <- normalizePath(parsed_args$model_path, mustWork = TRUE)
 qos <- parsed_args$qos
 runs_subset <- parsed_args$runs_subset
 wtime <- parsed_args$wtime
