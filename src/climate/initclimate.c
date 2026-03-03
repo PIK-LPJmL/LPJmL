@@ -112,30 +112,22 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
     ndata++;
     if (openclimate2(&climate->file_delta_temp, &config->delta_temp_filename,"delta_temp","celsius", LPJ_SHORT,config->delta_year,0.1,config))
     {
-      closeclimatefile(&climate->file_temp, isroot(*config));
-      free(climate);
+      freeclimate(climate,isroot(*config));
       return NULL;
     }
     if (openclimate2(&climate->file_delta_prec, &config->delta_prec_filename,"delta_prec", "kg/m2/day" /* "mm" */, LPJ_SHORT,config->delta_year,1.0,config))
     {
-      closeclimatefile(&climate->file_temp, isroot(*config));
-      closeclimatefile(&climate->file_delta_temp, isroot(*config));
-      free(climate);
+      freeclimate(climate,isroot(*config));
       return NULL;
     }
     if (openclimate2(&climate->file_delta_lwnet, &config->delta_lwnet_filename, "delta_lwnet", "W/m2", LPJ_SHORT,config->delta_year, 0.1,config))
     {
-      closeclimatefile(&climate->file_temp, isroot(*config));
-      closeclimatefile(&climate->file_prec, isroot(*config));
-      free(climate);
+      freeclimate(climate,isroot(*config));
       return NULL;
     }
     if (openclimate2(&climate->file_delta_swdown, &config->delta_swdown_filename, "delta_swdown","W/m2", LPJ_SHORT,config->delta_year,0.1,config))
     {
-      closeclimatefile(&climate->file_temp, isroot(*config));
-      closeclimatefile(&climate->file_prec, isroot(*config));
-      closeclimatefile(&climate->file_lwnet, isroot(*config));
-      free(climate);
+      freeclimate(climate,isroot(*config));
       return NULL;
     }
   }
@@ -368,7 +360,6 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       {
         printallocerr("no3deposition");
         freeclimate(climate,isroot(*config));
-        free(climate);
         return NULL;
       }
     for (i = 0; i<ndata; i++)
