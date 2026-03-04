@@ -367,11 +367,9 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 {
   Real difffrac,difffrac2;
   Stand *stand;
-  Pft *pft;
-  Bool isrice=FALSE;
   Real sum[2],sum_wl;
   Real minnatfrac_res;
-  int s,p;
+  int s;
 #ifndef IMAGE
   Real totw_before,totw_after,balanceW;
   Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */
@@ -435,22 +433,18 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     }
 
     /* update the cropfactor to include the 'new' setaside */
-    isrice=FALSE;
     sum_wl=sum[0]=sum[1]=0;
     foreachstand(stand,s,cell->standlist)
     {
       if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
       {
         data=stand->data;
-        foreachpft(pft, p, &stand->pftlist)
-          if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
-        if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
+        if(stand->type->landusetype==SETASIDE_WETLAND || ispftinstand(&stand->pftlist,config->rice_pft))
           sum_wl+=stand->frac;
         else
           sum[data->irrigation]+=stand->frac;
 
       }
-      isrice=FALSE;
     }
     cell->ml.cropfrac_rf=sum[0];
     cell->ml.cropfrac_ir=sum[1];/* could be different from landusefraction input, due to not harvested winter cereals */
@@ -511,22 +505,18 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       }
 
       /* update the cropfactor to include the 'new' setaside */
-      isrice=FALSE;
       sum_wl=sum[0]=sum[1]=0;
       foreachstand(stand,s,cell->standlist)
       {
         if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
         {
           data=stand->data;
-          foreachpft(pft, p, &stand->pftlist)
-            if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
-          if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
+          if(stand->type->landusetype==SETASIDE_WETLAND || ispftinstand(&stand->pftlist,config->rice_pft))
             sum_wl+=stand->frac;
           else
             sum[data->irrigation]+=stand->frac;
 
         }
-        isrice=FALSE;
       }
       cell->ml.cropfrac_rf=sum[0];
       cell->ml.cropfrac_ir=sum[1];/* could be different from landusefraction input, due to not harvested winter cereals */
@@ -538,21 +528,17 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
                                             intercrop,npft,ncft,year,config);
 
       /* update the cropfactor */
-      isrice=FALSE;
       sum_wl=sum[0]=sum[1]=0;
       foreachstand(stand,s,cell->standlist)
       {
         if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
         {
           data=stand->data;
-          foreachpft(pft, p, &stand->pftlist)
-            if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
-          if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
+          if(stand->type->landusetype==SETASIDE_WETLAND || ispftinstand(&stand->pftlist,config->rice_pft))
             sum_wl+=stand->frac;
           else
             sum[data->irrigation]+=stand->frac;
         }
-        isrice=FALSE;
       }
       cell->ml.cropfrac_rf=sum[0];
       cell->ml.cropfrac_ir=sum[1];/* could be different from landusefraction input, due to not harvested winter cereals */
