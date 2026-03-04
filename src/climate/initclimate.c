@@ -247,7 +247,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   {
     if(config->fdi==WVPD_INDEX)
     {
-      if(openclimate2(&climate->file_humid,&config->humid_filename,"humid",NULL,LPJ_SHORT,1,1.0,TRUE,config))
+      if(openclimate2(&climate->file_humid,&config->humid_filename,"humid","kg/kg",LPJ_SHORT,1,1.0,TRUE,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open humid data file.\n");
