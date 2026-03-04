@@ -88,6 +88,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   int *pvec;
 #endif
   irrig_apply=0.0;
+  String line;
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
   nnat=getnnat(npft,config);
@@ -297,7 +298,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   else
   {
     if(rainmelt+rw_apply+irrig_apply < 0)
-      fprintf(stderr,"WARNING: negative water input to infiltration on day %d of year %d: rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",day,year,rainmelt, rw_apply, irrig_apply);
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
   }
 
