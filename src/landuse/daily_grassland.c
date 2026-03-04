@@ -266,7 +266,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(irrig_apply<0)
     intercep_stand_blue+=irrig_apply;
   irrig_apply=max(0,irrig_apply);
-  rainmelt-=intercep_stand;
+  rainmelt-=(intercep_stand-intercep_stand_blue);
 
   /* rain-water harvesting*/
   if(!data->irrigation.irrigation && config->rw_manage && rainmelt<5)
@@ -295,7 +295,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     stand->cell->lateral_water-=lateral_in*stand->frac;
   }
   else
+  {
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING: negative water input to infiltration on day %d of year %d: rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",day,year,rainmelt, rw_apply, irrig_apply);
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
+  }
+
 
   isphen = FALSE;
 #ifdef PERMUTE
