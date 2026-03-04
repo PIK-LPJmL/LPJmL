@@ -14,12 +14,52 @@
 
 #include "lpj.h"
 
+/* PFT indices for biome classification */
+enum
+{
+  TrBE,   /* tropical broadleaved evergreen tree */
+  TrBEfl, /* tropical broadleaved evergreen tree floodtolerant */
+  TrBR,   /* tropical broadleaved raingreen tree */
+  TeNE,   /* temperate needleleaved evergreen tree */
+  TeBE,   /* temperate broadleaved evergreen tree */
+  TeBS,   /* temperate broadleaved summergreen tree */
+  BoNE,   /* boreal needleleaved evergreen tree */
+  BoBS,   /* boreal broadleaved summergreen tree */
+  BoNS,   /* boreal needleleaved summergreen tree */
+  TrH,    /* tropical C4 grass */
+  TeH,    /* temperate C3 grass */
+  PoH,    /* polar C3 grass */
+  C3fl,   /* C3 graminoid flood tolerant */
+  Sph,    /* Sphagnum moss */
+  NPFT_BIOME /* number of PFTs used for biome classification */
+};
+
+/* PFT names corresponding to enum indices */
+static const char *pftnames[NPFT_BIOME]=
+{
+  "tropical broadleaved evergreen tree",
+  "tropical broadleaved evergreen tree floodtolerant",
+  "tropical broadleaved raingreen tree",
+  "temperate needleleaved evergreen tree",
+  "temperate broadleaved evergreen tree",
+  "temperate broadleaved summergreen tree",
+  "boreal needleleaved evergreen tree",
+  "boreal broadleaved summergreen tree",
+  "boreal needleleaved summergreen tree",
+  "Tropical C4 grass",
+  "Temperate C3 grass",
+  "Polar C3 grass",
+  "C3 graminoid flood tolerant",
+  "Sphagnum moss"
+};
+
 /* called for natural stands only */
 
 int biome_classification(Real atemp,            /**< Annual average temperature (deg C) */
                          Real npp,              /**< NPP of cell considered */
                          const Stand *stand,    /**< Pointer to stand */
-                         int npft               /**< number of natural PFTs */
+                         int npft,              /**< number of natural PFTs */
+                         const Config *config   /**< LPJmL configuration */
                         )                       /**< returns biome */
 {
   int bclass=MANAGED_LAND;
@@ -29,6 +69,11 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
   Real maxshare=0;
   int p;
   const Pft *pft;
+  int pftid[NPFT_BIOME]; /* PFT indices looked up by name */
+
+  /* Look up PFT indices by name */
+  for(p=0;p<NPFT_BIOME;p++)
+    pftid[p]=findpftname(pftnames[p],config->pftpar,npft);
 
   fpc=newvec(Real,npft);
   check(fpc);
@@ -41,20 +86,13 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
     maxshare=pft->fpc>maxshare ? pft->fpc : maxshare;
   }
 
-  fpctemperate=fpc[TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE]+
-    fpc[TEMPERATE_BROADLEAVED_EVERGREEN_TREE]+
-    fpc[TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE];
-  fpctropical=fpc[TROPICAL_BROADLEAVED_EVERGREEN_TREE]+
-    fpc[TROPICAL_BROADLEAVED_EVERGREEN_TREE_FLOODTOLERANT]+
-    fpc[TROPICAL_BROADLEAVED_RAINGREEN_TREE];
-  fpcboreal=fpc[BOREAL_NEEDLELEAVED_EVERGREEN_TREE]+
-    fpc[BOREAL_BROADLEAVED_SUMMERGREEN_TREE];
+  fpctemperate=fpc[pftid[TeNE]]+fpc[pftid[TeBE]]+fpc[pftid[TeBS]];
+  fpctropical=fpc[pftid[TrBE]]+fpc[pftid[TrBEfl]]+fpc[pftid[TrBR]];
+  fpcboreal=fpc[pftid[BoNE]]+fpc[pftid[BoBS]]+fpc[pftid[BoNS]];
   fpctreetotal=fpctemperate+fpctropical+fpcboreal;
-  fpcgrass=fpc[TEMPERATE_HERBACEOUS]+fpc[TROPICAL_HERBACEOUS];
+  fpcgrass=fpc[pftid[TeH]]+fpc[pftid[TrH]]+fpc[pftid[PoH]]+fpc[pftid[C3fl]]+fpc[pftid[Sph]];
   fpctotal=fpctreetotal+fpcgrass;
-  fpcneedleleaved=fpc[TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE]+
-    fpc[BOREAL_NEEDLELEAVED_EVERGREEN_TREE]+
-    fpc[BOREAL_BROADLEAVED_SUMMERGREEN_TREE];
+  fpcneedleleaved=fpc[pftid[TeNE]]+fpc[pftid[BoNE]]+fpc[pftid[BoNS]];
 
   if(fpctotal<=0.1)
   {
@@ -67,33 +105,26 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
   {
 
     /* boreal/temperate mixed forest needs to be tested before boreal types */
-    if(((fpc[BOREAL_BROADLEAVED_SUMMERGREEN_TREE]==maxshare ||               /* PFT7 dominant */
-      fpc[BOREAL_NEEDLELEAVED_EVERGREEN_TREE]==maxshare)&&       /* or PFT 6 dominant */
-      fpctemperate>0.1)                                          /* AND PFT 3,4,and 5 together > 0.1 */
-      ||                                                         /* OR */
-      (((fpc[TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE]==maxshare||  /* PFT 3 dominant */
-      fpc[TEMPERATE_BROADLEAVED_EVERGREEN_TREE]==maxshare||      /* or PFT 4 dominant */
-      fpc[TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE]==maxshare)&&   /* or PFT 5 dominant */
-      fpcboreal>0.1))                                            /* AND PFT 6 or 7 >0.1 */
-      )
+    if(((fpc[pftid[BoBS]]==maxshare || fpc[pftid[BoNE]]==maxshare) && fpctemperate>0.1)
+      || (((fpc[pftid[TeNE]]==maxshare || fpc[pftid[TeBE]]==maxshare ||
+            fpc[pftid[TeBS]]==maxshare) && fpcboreal>0.1)))
       bclass=TEMPERATE_MIXED_FOREST;
-    else if(fpc[BOREAL_BROADLEAVED_SUMMERGREEN_TREE]==maxshare)             /* PFT 7 dominant */
+    else if(fpc[pftid[BoBS]]==maxshare)
       bclass=BOREAL_FOREST;                            /* boreal deciduous forest */
-    else if(fpc[BOREAL_NEEDLELEAVED_EVERGREEN_TREE]==maxshare)  /* PFT 6 dominant */
-      bclass=COOL_CONIFER_FOREST;                        /* boreal evergreen forest */
-    else if(fpc[TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE]==maxshare)    /* PFT 3 dominant */
-      bclass=TEMPERATE_MIXED_FOREST;                    /* temperate coniferous forest */
-    else if(fpc[TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE]==maxshare)   /* PFT 5 dominant */
-      bclass=TEMPERATE_DECIDUOUS_FOREST;                     /* temperate deciduous forest */
-    else if(fpc[TEMPERATE_BROADLEAVED_EVERGREEN_TREE]==maxshare)     /* PFT 4 dominant */
-      bclass=WARM_MIXED_FOREST;         /*temperate broadleaved evergreen forest */
-    else if(fpctreetotal<0.9 && fpcboreal==0 && 
-      fpc[TROPICAL_BROADLEAVED_RAINGREEN_TREE]<0.6)             /* fpctreetotal>=0.8 anyway */
+    else if(fpc[pftid[BoNE]]==maxshare)
+      bclass=COOL_CONIFER_FOREST;                      /* boreal evergreen forest */
+    else if(fpc[pftid[TeNE]]==maxshare)
+      bclass=TEMPERATE_MIXED_FOREST;                   /* temperate coniferous forest */
+    else if(fpc[pftid[TeBS]]==maxshare)
+      bclass=TEMPERATE_DECIDUOUS_FOREST;               /* temperate deciduous forest */
+    else if(fpc[pftid[TeBE]]==maxshare)
+      bclass=WARM_MIXED_FOREST;                        /* temperate broadleaved evergreen forest */
+    else if(fpctreetotal<0.9 && fpcboreal==0 && fpc[pftid[TrBR]]<0.6)
       bclass=SAVANNAH;                                 /* moist savannah */
-    else if(fpc[TROPICAL_BROADLEAVED_EVERGREEN_TREE]==maxshare)        /* PFT 1 dominant */
-      bclass=TROPICAL_FOREST;                           /* tropical rain forest */
-    else if(fpc[TROPICAL_BROADLEAVED_RAINGREEN_TREE]==maxshare) /* PFT 2 dominant */
-      bclass=TROPICAL_WOODLAND;                      /* tropical deciduous forest */
+    else if(fpc[pftid[TrBE]]==maxshare)
+      bclass=TROPICAL_FOREST;                          /* tropical rain forest */
+    else if(fpc[pftid[TrBR]]==maxshare)
+      bclass=TROPICAL_WOODLAND;                        /* tropical deciduous forest */
   } /* end trees >=80% */
   else if(fpcboreal>0.4 && atemp<-2)
     bclass=WOODED_TUNDRA;
@@ -101,22 +132,21 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
     bclass=SCRUBLAND; /* xeric shrubs */
   else if(fpctropical>=0.3 && fpcboreal==0) /* tottree <0.8 anyway */
     bclass=SAVANNAH; /* moist savannah */
-  else if((fpcgrass>=0.2 && (fpctropical)>=0.05 && fpcneedleleaved<0.1)|| /* PFT 8 or 9 dominant */
-    fpc[TROPICAL_HERBACEOUS]>=0.9)
+  else if((fpcgrass>=0.2 && fpctropical>=0.05 && fpcneedleleaved<0.1) ||
+    fpc[pftid[TrH]]>=0.9)
     bclass=SAVANNAH; /* dry savannah */
-  else if(fpc[TEMPERATE_HERBACEOUS]>=0.8)             
+  else if(fpc[pftid[TeH]]>=0.8)
   {
     if(atemp<(-2))
       bclass=TUNDRA; /* arctic tundra */
     else
     {
-      if(fpc[TROPICAL_HERBACEOUS]>fpc[TEMPERATE_HERBACEOUS])
+      if(fpc[pftid[TrH]]>fpc[pftid[TeH]])
         bclass=GRASSLAND_STEPPE;
       else
         bclass=GRASSLAND_STEPPE;
     }
   }
-
   else if(fpctreetotal<=0.05)
   {
     if(atemp<(-2))
@@ -130,7 +160,7 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
       bclass=TUNDRA; /* arctic tundra */
     else
     {
-      if(fpc[TROPICAL_HERBACEOUS]>fpc[TEMPERATE_HERBACEOUS])
+      if(fpc[pftid[TrH]]>fpc[pftid[TeH]])
         bclass=SCRUBLAND;
       else
         bclass=SCRUBLAND;

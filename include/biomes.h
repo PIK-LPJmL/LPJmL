@@ -36,6 +36,6 @@
 
 /* Declaration of functions */
 
-extern int biome_classification(Real,Real,const  Stand *,int);
+extern int biome_classification(Real,Real,const Stand *,int,const Config *);
 
 #endif /*BIOMES_H*/
