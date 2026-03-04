@@ -163,19 +163,8 @@
 /*  II. Mapping section                                              */
 /*===================================================================*/
 
-  /* the following array describes the order of the CFTs in the laimax array */
-  "laimaxmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                 "temperate roots", "tropical roots", "oil crops sunflower",
-                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                 "sugarcane"],
-
   /* the following array describes the order of the agricultural trees in the k_est array */
   "treemap" : ["oil palm","tea","cotton"],
-
-  /* the following array describes the order of the soil types in the soil file */
-  "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
-              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
-              "loamy sand", "sand", "rock and ice"],
 
   /* The following array is used for mapping prescribed FPC */
   "landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
@@ -184,30 +173,12 @@
                     "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
                     "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
 
-  /* the following array describes the order of the bands in the land use file */
-  "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                  "temperate roots", "tropical roots", "oil crops sunflower",
-                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                  "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-  /* the following array describes the order of the bands in the fertilizer and manure file */
-  "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                    "temperate roots", "tropical roots", "oil crops sunflower",
-                    "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                    "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-  /* the following array describes the order of the CFTs in the sowing date and crop PHU file */
-  "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-              "temperate roots", "tropical roots", "oil crops sunflower",
-              "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-              "sugarcane"],
-
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
 
-  "inpath" : "/p/projects/lpjml/input/historical",
+  "inpath" : "/p/projects/lpjml/inputs/public_standard",
 
   /* Input files of CRU dataset */
   "input" :
