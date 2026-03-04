@@ -34,6 +34,9 @@ enum
   NPFT_BIOME /* number of PFTs used for biome classification */
 };
 
+/* Macro to safely get FPC value, returns 0 if PFT not found */
+#define getfpc(pftid) ((pftid)==NOT_FOUND ? 0 : fpc[pftid])
+
 /* PFT names corresponding to enum indices */
 static const char *pftnames[NPFT_BIOME]=
 {
@@ -73,7 +76,11 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
 
   /* Look up PFT indices by name */
   for(p=0;p<NPFT_BIOME;p++)
+  {
     pftid[p]=findpftname(pftnames[p],config->pftpar,npft);
+    if(pftid[p]==NOT_FOUND)
+      fprintf(stderr,"WARNING: PFT '%s' not found for biome classification, skipping.\n",pftnames[p]);
+  }
 
   fpc=newvec(Real,npft);
   check(fpc);
@@ -86,13 +93,13 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
     maxshare=pft->fpc>maxshare ? pft->fpc : maxshare;
   }
 
-  fpctemperate=fpc[pftid[TeNE]]+fpc[pftid[TeBE]]+fpc[pftid[TeBS]];
-  fpctropical=fpc[pftid[TrBE]]+fpc[pftid[TrBEfl]]+fpc[pftid[TrBR]];
-  fpcboreal=fpc[pftid[BoNE]]+fpc[pftid[BoBS]]+fpc[pftid[BoNS]];
+  fpctemperate=getfpc(pftid[TeNE])+getfpc(pftid[TeBE])+getfpc(pftid[TeBS]);
+  fpctropical=getfpc(pftid[TrBE])+getfpc(pftid[TrBEfl])+getfpc(pftid[TrBR]);
+  fpcboreal=getfpc(pftid[BoNE])+getfpc(pftid[BoBS])+getfpc(pftid[BoNS]);
   fpctreetotal=fpctemperate+fpctropical+fpcboreal;
-  fpcgrass=fpc[pftid[TeH]]+fpc[pftid[TrH]]+fpc[pftid[PoH]]+fpc[pftid[C3fl]]+fpc[pftid[Sph]];
+  fpcgrass=getfpc(pftid[TeH])+getfpc(pftid[TrH])+getfpc(pftid[PoH])+getfpc(pftid[C3fl])+getfpc(pftid[Sph]);
   fpctotal=fpctreetotal+fpcgrass;
-  fpcneedleleaved=fpc[pftid[TeNE]]+fpc[pftid[BoNE]]+fpc[pftid[BoNS]];
+  fpcneedleleaved=getfpc(pftid[TeNE])+getfpc(pftid[BoNE])+getfpc(pftid[BoNS]);
 
   if(fpctotal<=0.1)
   {
@@ -105,25 +112,25 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
   {
 
     /* boreal/temperate mixed forest needs to be tested before boreal types */
-    if(((fpc[pftid[BoBS]]==maxshare || fpc[pftid[BoNE]]==maxshare) && fpctemperate>0.1)
-      || (((fpc[pftid[TeNE]]==maxshare || fpc[pftid[TeBE]]==maxshare ||
-            fpc[pftid[TeBS]]==maxshare) && fpcboreal>0.1)))
+    if(((getfpc(pftid[BoBS])==maxshare || getfpc(pftid[BoNE])==maxshare) && fpctemperate>0.1)
+      || (((getfpc(pftid[TeNE])==maxshare || getfpc(pftid[TeBE])==maxshare ||
+            getfpc(pftid[TeBS])==maxshare) && fpcboreal>0.1)))
       bclass=TEMPERATE_MIXED_FOREST;
-    else if(fpc[pftid[BoBS]]==maxshare)
+    else if(getfpc(pftid[BoBS])==maxshare)
       bclass=BOREAL_FOREST;                            /* boreal deciduous forest */
-    else if(fpc[pftid[BoNE]]==maxshare)
+    else if(getfpc(pftid[BoNE])==maxshare)
       bclass=COOL_CONIFER_FOREST;                      /* boreal evergreen forest */
-    else if(fpc[pftid[TeNE]]==maxshare)
+    else if(getfpc(pftid[TeNE])==maxshare)
       bclass=TEMPERATE_MIXED_FOREST;                   /* temperate coniferous forest */
-    else if(fpc[pftid[TeBS]]==maxshare)
+    else if(getfpc(pftid[TeBS])==maxshare)
       bclass=TEMPERATE_DECIDUOUS_FOREST;               /* temperate deciduous forest */
-    else if(fpc[pftid[TeBE]]==maxshare)
+    else if(getfpc(pftid[TeBE])==maxshare)
       bclass=WARM_MIXED_FOREST;                        /* temperate broadleaved evergreen forest */
-    else if(fpctreetotal<0.9 && fpcboreal==0 && fpc[pftid[TrBR]]<0.6)
+    else if(fpctreetotal<0.9 && fpcboreal==0 && getfpc(pftid[TrBR])<0.6)
       bclass=SAVANNAH;                                 /* moist savannah */
-    else if(fpc[pftid[TrBE]]==maxshare)
+    else if(getfpc(pftid[TrBE])==maxshare)
       bclass=TROPICAL_FOREST;                          /* tropical rain forest */
-    else if(fpc[pftid[TrBR]]==maxshare)
+    else if(getfpc(pftid[TrBR])==maxshare)
       bclass=TROPICAL_WOODLAND;                        /* tropical deciduous forest */
   } /* end trees >=80% */
   else if(fpcboreal>0.4 && atemp<-2)
@@ -133,15 +140,15 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
   else if(fpctropical>=0.3 && fpcboreal==0) /* tottree <0.8 anyway */
     bclass=SAVANNAH; /* moist savannah */
   else if((fpcgrass>=0.2 && fpctropical>=0.05 && fpcneedleleaved<0.1) ||
-    fpc[pftid[TrH]]>=0.9)
+    getfpc(pftid[TrH])>=0.9)
     bclass=SAVANNAH; /* dry savannah */
-  else if(fpc[pftid[TeH]]>=0.8)
+  else if(getfpc(pftid[TeH])>=0.8)
   {
     if(atemp<(-2))
       bclass=TUNDRA; /* arctic tundra */
     else
     {
-      if(fpc[pftid[TrH]]>fpc[pftid[TeH]])
+      if(getfpc(pftid[TrH])>getfpc(pftid[TeH]))
         bclass=GRASSLAND_STEPPE;
       else
         bclass=GRASSLAND_STEPPE;
@@ -160,7 +167,7 @@ int biome_classification(Real atemp,            /**< Annual average temperature 
       bclass=TUNDRA; /* arctic tundra */
     else
     {
-      if(fpc[pftid[TrH]]>fpc[pftid[TeH]])
+      if(getfpc(pftid[TrH])>getfpc(pftid[TeH]))
         bclass=SCRUBLAND;
       else
         bclass=SCRUBLAND;
