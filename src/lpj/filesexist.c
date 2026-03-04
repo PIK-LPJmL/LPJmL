@@ -290,7 +290,7 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
     fclose(file);
   }
   if(check_title)
-    checktitle(attrs,n_attr,name,&config->landuse,TRUE);
+    checktitle(attrs,n_attr,filename->name,&config->landuse,TRUE);
   freeattrs(attrs,n_attr);
   getmap(map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
   if(*cftmap==NULL)
@@ -565,7 +565,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      bad+=checkclmfile(config,"humidity",&config->humid_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE);
+      bad+=checkclmfile(config,"humidity",&config->humid_filename,"kg/kg",LPJ_SHORT,TRUE,TRUE,TRUE);
     if(config->prescribe_burntarea)
       bad+=checkclmfile(config,"burnt area",&config->burntarea_filename,"hectare",LPJ_SHORT,FALSE,TRUE,FALSE);
     bad+=checkdatafile(config,&config->lightning_filename,"lightning",NULL,LPJ_INT,12,FALSE);
@@ -718,7 +718,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,FALSE,
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,
                           &config->fertilizermap,&config->fertilizermap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
        bad++;
       else
@@ -726,7 +726,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,FALSE,
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,
                           &config->manuremap,&config->manuremap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -793,7 +793,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   else
     fprintf(stderr,"%d output directories do not exist.\n",badout);
   if(bad)
-    fprintf(stderr,"%d input files do not exist.\n",bad);
+    fprintf(stderr,"%d input files do not exist or have errors.\n",bad);
   else if(isout)
     puts("All input files exist.");
   return bad>0 || badout>0;
