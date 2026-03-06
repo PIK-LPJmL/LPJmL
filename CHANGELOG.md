@@ -20,6 +20,62 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+
+## [6.0.4] - 2026-03-06
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Added benchmark folder with R scripts (`simulate_default.R`, `benchmark_default.R`, `benchmark_utils.R`) to simulate default scenarios and run benchmarks.
+- Added support for separate methane/no_methane output configurations in benchmark scripts.
+- Option `-check_balance` added to `configure.sh` to enable balance checks on function level.
+
+### Changed
+
+- Argument `-couple $(hostname)` added to call of lpjml in `slurm.jcf` if `-couple` option is set for `lpjsubmit`.
+- Wait for coupled program to finish added in slurm script.
+- Fixed several potential floating point exceptions in `nuptake_tree.c`, `nuptake_grass.c`, `nuptake_crop.c` and `littersom.c`
+- Printing of balance error messages replaced by call to `fail()` in `pedotransfer.c`, `allocation_grass.c`, `litter_update_grass.c`, `turnover_grass.c` and `update_annual_cell.c`
+- Function `fail.c` changed to print `"Program terminated unsucessfully"` on new line.
+- Check balance error messages reformatted.
+- Fixed global water balance error in `sowingcft.c` and `flux_sum.c`.
+- Fixed FPE in `allocation_grass.c`.
+- Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fcn"`, `"nitrogen_fcn`, and `"w_fcn"`.
+- Global balance check in `updatedaily_grid.c` only done if running on one task.
+- Compile flag `-DNO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
+- `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`.
+- Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
+- Time step of `"temp"` output changed from daily to monthly.
+
+### Removed
+
+- Support for cloudiness and short wave only setting for climate input removed, only `"radiation"` and `"radiation_lwdown"` allowed.
+- Output `"sun"` and `"sun_image"` removed.
+- Unused files `nooutput_gbw.c` and `update_monthly.c` removed.
+- Unused array `layer_exists` in soil struct removed.
+
+### Fixed
+
+- Function `openconfig.c` corrected to avoid segmentation violation if lpjml/lpjcheck is called with `-couple hostname` option.
+- Changed `nupsum==0` to `nupsum<epsilon` in `nuptake_crop.c`, `nuptake_grass.c` and `nuptake_tree.c` to avoid potential FPEs.
+- Function `cutpfts.c` corrected to close carbon balance.
+- Water balance check in `infil_perc.c` and `annual_grass.c` corrected to avoid false water balance errors.
+- Balance error messages corrected in `cultivate.c`.
+- Carbon balance closed in `update_wetland.c`.
+- Variable `s` renamed to `sn` in `grasslandreduction()` to avoid SEGV.
+- Misplaced reading of NO3 and NH4 depositions deleted in `getclimate.c`.
+- Check for negative `vm` added in `photosynthesis.c` to avoid nitrogen balance errors.
+- `tillage()` function changed to avoid carbon balance errors.
+- Utility `regridclm` corrected to avoid SEGV if file size does not match header.
+- Parameter `"fburnt"` in `lpjparam.cjson` is always read, was always zero if `"luc_timber"` was set to false.
+- Help text corrected in `printclm.c`.
+- Misplaced `free(climate)` causing double free corruption removed in `initclimate.c`.
+
+
 ## [6.0.3] - 2026-02-23
 
 ### Contributors
@@ -600,7 +656,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+- Missing dependency on `getbuild.c` for target `lpjml` added in `src/Makefile`.
 - `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
 - Typos in error messages in `filesexist.c` and `cdf2soil.c`fixed.
 - Missing check for open file added to `joingrid.c`.

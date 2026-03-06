@@ -209,7 +209,6 @@ EOF
   "prec"             : { "fmt" : "clm", "name" : "$dir/prec_$name.clm"},
   "lwnet"            : { "fmt" : "clm", "name" : "$dir/lwnet_$name.clm"},
   "swdown"           : { "fmt" : "clm", "name" : "$dir/swdown_$name.clm"},
-  "cloud"            : { "fmt" : "clm", "name" : "$dir/cld_$name.clm"},
   "wind"             : { "fmt" : "clm", "name" : "$dir/windspeed_$name.clm"},
   "tamp"             : { "fmt" : "clm", "name" : "$dir/tamp_$name.clm"},
   "tmin"             : { "fmt" : "clm", "name" : "$dir/tmin_$name.clm"},

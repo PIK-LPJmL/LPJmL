@@ -309,6 +309,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"File size of '%s' does not match header, set datatype to 2 byte size.\n",argv[index_datafile]);
         isint=FALSE;
         free(idata);
+        idata=NULL;
         data=newvec(short,(long long)header.ncell*header.nbands*header.nstep);
         if(data==NULL)
         {
@@ -357,11 +358,6 @@ int main(int argc,char **argv)
       printallocerr("data");
       return EXIT_FAILURE;
     }
-    if(data==NULL)
-    {
-      printallocerr("data");
-      return EXIT_FAILURE;
-    }
     if(size!=(long long)header.ncell*header.nyear*header.nbands*header.nstep*sizeof(short))
     {
       if((long long)header.ncell*header.nyear*header.nbands*header.nstep*sizeof(int)==size)
@@ -369,6 +365,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"File size of '%s' does not match header, set datatype to 4 byte size.\n",argv[index_datafile]);
         isint=TRUE;
         free(data);
+        data=NULL;
         idata=newvec(int,(long long)header.ncell*header.nbands*header.nstep);
         if(idata==NULL)
         {
