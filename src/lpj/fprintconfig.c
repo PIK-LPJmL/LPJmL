@@ -68,16 +68,10 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->prodpool_init_filename.var));
   }
 #endif
-  if(config->with_radiation)
-  {
-    if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-      if(config->lwnet_filename.fmt==CDF)
-        width=max(width,strlen(config->lwnet_filename.var));
-    if(config->swdown_filename.fmt==CDF)
-      width=max(width,strlen(config->swdown_filename.var));
-  }
-  else if(config->cloud_filename.fmt==CDF)
-    width=max(width,strlen(config->cloud_filename.var));
+  if(config->lwnet_filename.fmt==CDF)
+    width=max(width,strlen(config->lwnet_filename.var));
+  if(config->swdown_filename.fmt==CDF)
+    width=max(width,strlen(config->swdown_filename.var));
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     if(config->no3deposition_filename.fmt==CDF)
@@ -284,6 +278,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
+  if(!config->fail_on_balance)
+    len=printsim(file,len,&count,"no fail on balance error");
   if(config->landfrac_from_file)
     len=printsim(file,len,&count,"land fraction read from file");
 #if defined IMAGE && defined COUPLED
@@ -609,15 +605,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"prod pool",&config->prodpool_init_filename,width,config);
   }
 #endif
-  if(config->with_radiation)
-  {
-    if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-      printinputfile(file,(config->with_radiation==RADIATION) ? "lwnet" : "lwdown",
-                     &config->lwnet_filename,width,config);
-    printinputfile(file,"swdown",&config->swdown_filename,width,config);
-  }
-  else
-    printinputfile(file,"cloud",&config->cloud_filename,width,config);
+  printinputfile(file,(config->radiation_lwdown) ? "lwdown" : "lwnet",
+                 &config->lwnet_filename,width,config);
+  printinputfile(file,"swdown",&config->swdown_filename,width,config);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     printinputfile(file,"no3_depo",&config->no3deposition_filename,width,config);
@@ -874,11 +864,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
           config->firstyear,config->lastyear);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-    fprintf(file,"Start IMAGE coupling:        %6d\n",
+    fprintf(file,"Start IMAGE coupling:        %8d\n",
             config->start_coupling);
 #else
   if(iscoupled(*config))
-    fprintf(file,"Start coupling:              %6d\n",
+    fprintf(file,"Start coupling:              %8d\n",
             config->start_coupling);
 #endif
   if(config->nall==-1)

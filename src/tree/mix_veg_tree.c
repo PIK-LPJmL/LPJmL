@@ -90,8 +90,8 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
   }
   else
   {
-    litter_update(&pft1->stand->soil.litter,pft1,pft1->nind,config);
-    litter_update(&pft2->stand->soil.litter,pft2,pft2->nind,config);
+    litter_update(&pft1->stand->soil.litter,pft1,pft1->nind*frac1/(frac1+frac2),config);
+    litter_update(&pft1->stand->soil.litter,pft2,pft2->nind*frac2/(frac1+frac2),config);
     isdead=TRUE;
   }
   return isdead;

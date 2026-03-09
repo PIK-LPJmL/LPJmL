@@ -105,7 +105,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
       }
       else
-        fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
+        fprintf(stderr, "landuse== KILL in update_daily stand.C= %.3f  standfrac:%.3f\n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
       if(getlandusetype(stand)==GRASSLAND || getlandusetype(stand)==OTHERS ||
          getlandusetype(stand)==AGRICULTURE || getlandusetype(stand)==AGRICULTURE_GRASS || getlandusetype(stand)==AGRICULTURE_TREE ||
          getlandusetype(stand)==BIOMASS_TREE || getlandusetype(stand)==BIOMASS_GRASS || getlandusetype(stand)==WOODPLANTATION)
@@ -134,7 +134,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       popdensity=getpopdens(input->popdens,cell_id);
     cell->output.dcflux=0;
     initoutputdata(&cell->output,DAILY,year,config);
-    /* get daily values for temperature, precipitation and sunshine */
+    /* get daily values for temperature, precipitation, short and long wave radiation */
     dailyclimate(climate,input->climate,&cell->climbuf,cell_id,day,
                  month,dayofmonth);
     prec_save=climate->prec;
@@ -145,23 +145,11 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(climate->temp),cell_id+config->startgrid,day);
       climate->temp=-273.15;
     }
-    if(config->with_radiation)
-    {
-      if(climate->swdown<0)
-        fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",climate->swdown,cell_id+config->startgrid,day);
-    }
-    else
-    {
-      if(climate->sun<-1e-5 || climate->sun>100)
-        fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",climate->sun,cell_id+config->startgrid,day);
-      getoutput(&cell->output,SUN,config)+=climate->sun;
-    }
+    if(climate->swdown<0)
+      fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",climate->swdown,cell_id+config->startgrid,day);
     if(climate->windspeed<0)
       fail(INVALID_CLIMATE_ERR,FALSE,TRUE,"Wind speed=%g less than zero for cell %d at day %d",climate->windspeed,cell_id+config->startgrid,day);
 #endif
-    if(config->with_radiation==CLOUDINESS && climate->sun<0)
-      climate->sun=0;
-    /* get daily values for temperature, precipitation and sunshine */
     getoutput(&cell->output,TEMP,config)+=climate->temp;
     getoutput(&cell->output,PREC,config)+=climate->prec;
 
@@ -200,7 +188,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
 
       beta=albedo_stand(stand);
-      radiation(&daylength,&par,&eeq,cell->coord.lat,day,climate,beta,config->with_radiation);
+      petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,beta);
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
@@ -275,7 +263,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
       /* update soil and litter properties to account for all changes since last call of littersom */
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-        pedotransfer(stand,NULL,NULL,stand->frac);
+        pedotransfer(stand,NULL,NULL,stand->frac,config->fail_on_balance);
       updatelitterproperties(stand,stand->frac);
       if(isnatural(stand))
         for(l=0;l<stand->soil.litter.n;l++)
@@ -356,7 +344,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
       /* update soil and litter properties to account for all changes from littersom */
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-        pedotransfer(stand,NULL,NULL,stand->frac);
+        pedotransfer(stand,NULL,NULL,stand->frac,config->fail_on_balance);
       updatelitterproperties(stand,stand->frac);
 
       /*monthly rh for agricutural stands*/
@@ -512,9 +500,9 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
         if (p_s / R_gas / (climate->temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
         {
-          fprintf(stdout, "Cell lat %.2f lon %.2f CH4[%d]:%.8f\n", cell->coord.lat, cell->coord.lon, l, stand->soil.CH4[l]);
-          fprintf(stdout, "CH4[%d]:%.8f\n", l, stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000);
-          fprintf(stdout, "epsilon:%.8f day=%d\n\n\n", epsilon_gas, day);
+          printf("Cell lat %.2f lon %.2f CH4[%d]:%.8f\n", cell->coord.lat, cell->coord.lon, l, stand->soil.CH4[l]);
+          printf("CH4[%d]:%.8f\n", l, stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000);
+          printf("epsilon:%.8f day=%d\n\n\n", epsilon_gas, day);
         }
 #endif
       }
@@ -579,7 +567,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     cell->balance.awater_flux+=cell->discharge.drunoff;
     if(config->with_lakes)
     {
-      radiation(&daylength,&par,&eeq,cell->coord.lat,day,climate,c_albwater,config->with_radiation);
+      petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,c_albwater);
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
       cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
       getoutput(&cell->output,ALBEDO,config)+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);
@@ -662,6 +650,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     cell->balance.flux_estab.carbon+=flux_estab.carbon;
     cell->output.dcflux-=flux_estab.carbon;
 #ifdef CHECK_BALANCE
+    String line;
     fluxes_out.carbon=(cell->balance.arh+cell->balance.fire.carbon+cell->balance.neg_fluxes.carbon
                      +cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
     fluxes_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-fluxes_in.carbon;
@@ -686,7 +675,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         //end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
       }
       else
-        fprintf(stderr, "landuse==KILL ind update_daily_cell(), stand.C=%.3f, standfrac=%.3f\n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
+        fprintf(stderr, "landuse==KILL in update_daily_cell(), stand.C=%.3f, standfrac=%.3f\n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
     }
     //end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
     //     cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
@@ -723,16 +712,21 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 //         __FUNCTION__,day,end-start1.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start1.nitrogen, end,cell->balance.flux_estab.nitrogen,cell->balance.flux_harvest.nitrogen,
 //         fluxes_in.nitrogen,fluxes_out.nitrogen, cell->balance.neg_fluxes.nitrogen,cell->NO3_lateral);
 //  }
-    if(fabs(balanceW)>0.0001)
+    if(fabs(balanceW)>param.error_limit.w_fcn)
     {
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
-          "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
-          "  ground_st_am: %g ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
-          __FUNCTION__,day,balanceW,excess_old,cell->balance.excess_water,gw_outflux,
-          water_after,water_before,climate->prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
-          ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
-          cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
-          cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),groundwater,irrigstore_end-irrigstore);
+      fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
+           "Invalid water balance in %s cell (%s): day: %d balanceW: %g excess_old: %g balance.excess_water: %g\n"
+           "=====001: gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g\n"
+           "=====002: atransp: %g aevap %g ainterc %g aevap_lake %g aevap_res: %g airrig: %g aMT_water: %g\n"
+           "=====003: MT_water: %g flux_bal: %g runoff: %g awater_flux: %g lateral_water: %g\n"
+           "=====004: mfin-mfout: %g dmass_lake: %g dmass_river: %g\n"
+           "=====005: ground_st_am: %g ground_st: %g gw_balance: %g groundwater: %g irrigstore_bal: %g",
+           __FUNCTION__,sprintcoord(line,&cell->coord),day,balanceW,excess_old,cell->balance.excess_water,gw_outflux,
+           water_after,water_before,climate->prec,melt_all,cell->balance.atransp,cell->balance.aevap,
+           cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
+           ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+           cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
+           cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),groundwater,irrigstore_end-irrigstore);
     }
 #endif
 

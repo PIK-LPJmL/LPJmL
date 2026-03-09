@@ -20,6 +20,8 @@
 typedef struct
 {
   Stocks stocks; /**< maximum error in local stock flux balance (g/m2) */
+  Stocks stocks_fcn; /**< maximum error in function stock flux balance (g/m2) */
+  Real w_fcn;  /**< maximum error in function water balance (mm) */
   Real w_local;  /**< maximum error in local water balance (mm) */
   Real w_global; /**< maximum error in global water balance (mm) */
 } Error_limit;
