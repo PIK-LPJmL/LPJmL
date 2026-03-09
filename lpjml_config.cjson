@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 6.0.3                           \n**/
+/** Default configuration file for LPJmL C Version 6.0.4                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -47,6 +47,7 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
+  "fail_on_balance" : true, /* fail on check balance error (true/false) */
   "random_prec" : false,     /* Random weather generator for precipitation disabled */
   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "random_seed" : 2,        /* seed for random number generator */
@@ -60,6 +61,7 @@
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
+  "delta_year" : 100,       /* time step in anomalies (yrs) */
 #ifdef NO_METHANE
   "with_methane" : false,    /* simulation without methane and oxygen dynamics */
 #else
