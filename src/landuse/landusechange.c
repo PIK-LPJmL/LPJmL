@@ -740,7 +740,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case PASTURE:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -764,7 +764,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
                 n_est[config->pftpar[p].type]++;
@@ -808,7 +808,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && strcmp(config->pftpar[p].name,"Sphagnum moss"))
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
