@@ -427,7 +427,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     if(negbm)
     {
-      printf("harvest\n");
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)

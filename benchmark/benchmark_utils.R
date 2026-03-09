@@ -3,6 +3,12 @@
 # This file is sourced by:
 #   - simulate_default.R
 #   - benchmark_default.R
+#
+# (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+# authors, and contributors see AUTHORS file
+# This file is part of LPJmL and licensed under GNU AGPL Version 3
+# or later. See LICENSE file or go to http://www.gnu.org/licenses/
+# Contact: https://github.com/PIK-LPJmL/LPJmL
 
 # =============================================================================
 # Output variable definitions
@@ -14,7 +20,9 @@ outputvars_base <- c(
   "litc", "vegn", "soiln", "soilnh4", "soilno3", "leaching", "n_immo",
   "n_mineralization", "n_volatilization", "n2_emis", "n2o_denit",
   "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
-  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc"
+  "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc",
+  "albedo", "ra", "agb", "soilc_1m", "prec", "temp", "maxthaw_depth",
+  "gw_storage", "harvestc"
 )
 
 # Additional outputs for landuse runs
@@ -22,7 +30,8 @@ outputvars_landuse <- c("cftfrac", "pft_harvestc")
 
 # Additional outputs for methane runs
 # TODO: Update once methane outputs are finalized
-outputvars_methane <- c("ch4_emissions", "ch4_rice_em", "ch4_sink", "wetfrac")
+outputvars_methane <- c("ch4_emissions", "ch4_rice_em", "ch4_sink", "wetfrac",
+                        "ch4_emissions_wet")
 
 # Combined output lists for each run type
 outputvars_pnv <- outputvars_base
@@ -117,8 +126,9 @@ create_bm_settings <- function(base_settings, name_mapping) {
 #' @param base_settings The default_settings from lpjmlstats
 #' @param run_type One of: "pnv_no_methane", "pnv_methane",
 #'                         "lu_no_methane", "lu_methane"
+#' @param time_avg_map If TRUE, add TimeAvgMapWithAbs metric to all variables
 #' @return Settings list appropriate for the run type
-get_bm_settings <- function(base_settings, run_type) {
+get_bm_settings <- function(base_settings, run_type, time_avg_map = FALSE) {
   # Create base settings with mapped names
   bm_settings <- create_bm_settings(base_settings, name_mapping)
 
@@ -129,8 +139,8 @@ get_bm_settings <- function(base_settings, run_type) {
     bm_settings <- bm_settings[!names(bm_settings) %in% pft_harvest_vars]
   }
 
-  # Add methane-specific settings for methane runs
-  if (grepl("methane$", run_type)) {
+  # Add methane-specific settings for methane runs (not no_methane)
+  if (grepl("_methane$", run_type) && !grepl("no_methane", run_type)) {
     # Use firec as template for methane variables
     template <- bm_settings$firec
     bm_settings$ch4_emissions <- template
@@ -140,6 +150,11 @@ get_bm_settings <- function(base_settings, run_type) {
     if (grepl("^lu", run_type)) {
       bm_settings$ch4_rice_em <- template
     }
+  }
+
+  # Add TimeAvgMapWithAbs metric to all variables if requested
+  if (time_avg_map) {
+    bm_settings <- lapply(bm_settings, function(x) c(x, "TimeAvgMapWithAbs"))
   }
 
   bm_settings

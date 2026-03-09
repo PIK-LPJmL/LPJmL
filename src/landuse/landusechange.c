@@ -218,7 +218,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
     }
 #endif
-    fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %s lakefrac: %g reservoirfrac: %g \n",sprintcoord(line,&cell->coord),difffrac, bool2str(iswetland),cell->lakefrac,cell->ml.reservoirfrac);
+    fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %s lakefrac: %g reservoirfrac: %g\n",sprintcoord(line,&cell->coord),difffrac, bool2str(iswetland),cell->lakefrac,cell->ml.reservoirfrac);
 
 #ifdef DEBUG3
     for(j=0;j<ncft;j++)
@@ -231,7 +231,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
   }
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen =0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
@@ -475,7 +474,6 @@ static void regrowth(Cell *cell, /* pointer to cell */
 #ifdef CHECK_BALANCE
   pos=s;
   end.carbon=end.nitrogen=0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
@@ -915,7 +913,6 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   } /* if s or ws*/
 
 #ifdef CHECK_BALANCE
-  //Real end_w = cell->balance.excess_water;
   Real end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
@@ -1105,7 +1102,6 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   }
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
@@ -1466,7 +1462,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks balance= {0,0};
-  //Real start_w=cell->balance.excess_water;
   Real end_w = 0;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
@@ -1523,7 +1518,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft,config);
           irrigstand->frac-=movefrac;
-          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,FALSE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,FALSE,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -1572,7 +1567,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
   String line;
   end.carbon=end.nitrogen =0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;
@@ -1615,7 +1609,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   {
     foreachstand(stand, s, cell->standlist)
       fprintstand(stderr,stand,config->pftpar,npft+ncft);
-   }
+  }
 #endif
 
   difffrac_rice=(config->rice_pft==NOT_FOUND) ? 0.0 : cell->ml.landfrac[1].crop[config->rice_pft-npft]+cell->ml.landfrac[0].crop[config->rice_pft-npft]-sum_wl;
@@ -1902,7 +1896,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen=0;
-  //end_w=cell->balance.excess_water;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
   end_w+=cell->balance.excess_water+cell->lateral_water;

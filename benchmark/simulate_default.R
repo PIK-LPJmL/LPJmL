@@ -19,6 +19,14 @@
 #   runs_subset : Comma-separated list of simulation names or
 #                 indices (default: all)
 #   wtime       : Wall time for all runs (default: NULL, uses lpjmlkit defaults)
+#
+# (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+# authors, and contributors see AUTHORS file
+# This file is part of LPJmL and licensed under GNU AGPL Version 3
+# or later. See LICENSE file or go to http://www.gnu.org/licenses/
+# Contact: https://github.com/PIK-LPJmL/LPJmL
+#
+# =============================================================================
 
 library(lpjmlkit)
 
@@ -148,7 +156,10 @@ runs_no_methane <- runs[grepl("no_methane", runs$sim_name), ]
 runs_methane <- runs[!grepl("no_methane", runs$sim_name), ]
 
 # Define which variables need monthly timestep
-monthly_vars <- c("gpp", "evap", "transp", "rh", "npp", "vegc")
+monthly_vars <- c("gpp", "evap", "transp", "rh", "npp", "albedo", "ra", "agb",
+                  "firec", "flux_estabc", "harvestc", "soilc", "soilc_1m",
+                  "runoff", "interc", "temp", "prec", "maxthaw_depth",
+                  "gw_storage", "ch4_emissions_wet")
 
 # Create timestep vector for no_methane runs (LU output list)
 timesteps_lu <- ifelse(outputvars_lu %in% monthly_vars, "monthly", "annual")
