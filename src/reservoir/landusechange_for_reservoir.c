@@ -330,7 +330,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   balance.carbon=tot_before.carbon-tot_after.carbon;
   balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
   balanceW=totw_before-totw_after;
-  if(fabs(balanceW)>0.01)
+  if(fabs(balanceW)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,TRUE,
          "Invalid water balance in cell (%s) in from_setaside_for_reservoir, balanceW=%g dmass=%g year: %d",
