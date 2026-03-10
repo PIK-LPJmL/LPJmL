@@ -1540,7 +1540,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand->frac=movefrac;
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft,config);
           stand->frac-=movefrac;
-          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,stand->soil.iswetland,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -1554,6 +1554,10 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       data=stand->data;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
+      if (stand->type->landusetype == SETASIDE_IR)
+        data->irrigation = TRUE;
+      if (stand->type->landusetype == SETASIDE_RF)
+        data->irrigation = FALSE;
       if(isrice || getlandusetype(stand)==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
@@ -1844,6 +1848,10 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       data=stand->data;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
+      if (stand->type->landusetype == SETASIDE_IR)
+        data->irrigation = TRUE;
+      if (stand->type->landusetype == SETASIDE_RF)
+        data->irrigation = FALSE;
       if(isrice||stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else

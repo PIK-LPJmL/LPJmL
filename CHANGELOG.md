@@ -56,9 +56,7 @@ of `major.minor.patch` with
 - Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
 
 
-## [6.0.4] - 2026-02-17
-
-### Contributors
+## [6.0.4] - 2026-03-06
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
@@ -82,8 +80,9 @@ of `major.minor.patch` with
 - Hard-coded error limits for balance checks in functions replaced by global parameter `"carbon_fcn"`, `"nitrogen_fcn`, and `"w_fcn"`.
 - Global balance check in `updatedaily_grid.c` only done if running on one task.
 - Compile flag `-DNO_FAIL_BALANCE` replaced by configuration flag `"fail_on_balance"` in `lpjml_config.cjson`.
-- `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`. 
+- `"delta_year"` keyword moved from `input.cjson` to `lpjml_config.cjson`.
 - Missing `-DNO_METHANE` flag added to `lpjml_config_pnv.cjson`.
+- Time step of `"temp"` output changed from daily to monthly.
 
 ### Removed
 
@@ -107,6 +106,7 @@ of `major.minor.patch` with
 - Utility `regridclm` corrected to avoid SEGV if file size does not match header.
 - Parameter `"fburnt"` in `lpjparam.cjson` is always read, was always zero if `"luc_timber"` was set to false.
 - Help text corrected in `printclm.c`.
+- Misplaced `free(climate)` causing double free corruption removed in `initclimate.c`.
 
 
 ## [6.0.3] - 2026-02-23
