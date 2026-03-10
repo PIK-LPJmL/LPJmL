@@ -177,6 +177,7 @@ bin/cdf2grid
 bin/restart2yaml
 bin/json2restart
 bin/splitclm
+bin/cmprestart
 
 # test build folder
 src/test/build

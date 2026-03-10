@@ -1,0 +1,41 @@
+.TH cmprestart 1  "USER COMMANDS"
+.SH NAME
+cmprestart \- Compare 2 restart files for LPJmL and check for identity.
+.SH SYNOPSIS
+.B cmprestart
+[\-q] \fIrestartfile1\fP \fIrestartfile2\fP
+
+.SH DESCRIPTION
+Program compares the numerical data of two LPJmL restart files and checks for identity. In case of a difference the variable name and the two values are printed.
+.SH OPTIONS
+.TP
+\-q
+Print only the number of different values.
+.TP
+.I restartfile1
+Name of restart file.
+.TP
+.I restartfile2
+Name of restart file to compare.
+.SH EXAMPLE
+.TP
+Compare two restart files:
+.B cmprestart
+restart1.lpj restart2.lpj
+.PP
+.SH EXIT STATUS
+.B
+cmprestart
+returns a zero exit status if the 2 restart file have been compared.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+json2restart(1), restart2yaml(1), lpjprint(1), lpjml(1), lpjcheck(1), lpjfiles(1)
