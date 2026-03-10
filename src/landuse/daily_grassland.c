@@ -621,7 +621,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
 #ifdef CHECK_BALANCE
-  String line;
   transp=0;
   water_after=0;
   wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
