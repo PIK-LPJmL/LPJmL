@@ -20,6 +20,26 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Added
+
+- Utility `cmprestart` added to compare two restart files and check for identity.
+- Function `bstruct_skiparray()` added and corresponding test `test_skiparray.c` in `bstruct` library to skip arrary elements.
+
+### Changed
+
+- Index array object is always skipped in `bstruct_findobject.c`, test `test_indexarray.c` updated to test for reading array without seeking to an index array.
+- Check for seeking to position within file added to `bstruct_findobject.c`, `bstruct_open.c`, `bstruct_wopen.c` and `bstruct_seekindexarray.c`.
+- Constant `MAXLEVEL` renamed to `BSTRUCT_MAXLEVEL`.
+- Macros `getname()` and `isinvalidtoken()` renamed to `bstruct_getname()` and `bstruct_isinvalidtoken()`.
+- String comparison in `bstruct_fprintdata` replaced by call to `isnan()` and `isinf()`.
+- New token `bstruct_fzero` defined for restart flles, version of bstruct files changed to 2.
+
+
 ## [6.0.2] - 2026-01-17
 
 ### Contributors
