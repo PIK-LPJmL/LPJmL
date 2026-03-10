@@ -27,7 +27,7 @@ Bool bstruct_readdouble(Bstruct bstr,     /**< pointer to restart file */
   if(bstruct_findobject(bstr,&token,BSTRUCT_DOUBLE,name))
     return TRUE;
   token&=63; /* strip top 2 bits in token */
-  if(token==BSTRUCT_FZERO)
+  if(token==BSTRUCT_DZERO)
   {
     *value=0;
     return FALSE;
@@ -35,15 +35,18 @@ Bool bstruct_readdouble(Bstruct bstr,     /**< pointer to restart file */
   if(token!=BSTRUCT_DOUBLE)
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not double.\n",
-              getname(name),bstruct_typenames[token]);
+              bstruct_getname(name),bstruct_typenames[token]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
   if(freaddouble(value,1,bstr->swap,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading double '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   return FALSE;

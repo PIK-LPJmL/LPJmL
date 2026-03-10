@@ -29,7 +29,7 @@ void bstruct_fprintnamestack(FILE *file,        /**< pointer to text file */
   {
     fprintf(stderr,"=====%03d:   %-6s %-20s %4d ",bstr->level-i+2,
             (bstr->namestack[i].type==BSTRUCT_BEGINSTRUCT) ? "struct" : "array",
-            getname(bstr->namestack[i].name),
+            bstruct_getname(bstr->namestack[i].name),
             bstr->namestack[i].nr);
     if(bstr->namestack[i].varnames!=NULL)
     {

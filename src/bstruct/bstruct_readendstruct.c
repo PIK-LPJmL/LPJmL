@@ -29,7 +29,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading token for endstruct of '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   while(token!=BSTRUCT_ENDSTRUCT)
@@ -37,8 +37,11 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     if(token==BSTRUCT_END)
     {
       if(bstr->isout)
+      {
         fprintf(stderr,"ERROR508: Unexpected end token for endstruct of '%s'.\n",
-                getname(name));
+                bstruct_getname(name));
+        bstruct_printnamestack(bstr);
+      }
     }
 #ifdef DEBUG_BSTRUCT
     printf("skip token %s in readendstruct\n",bstruct_typenames[token & 63]);
@@ -63,7 +66,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
           bstr->skipped++;
           if(bstr->isout && bstr->print_noread)
             fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
-                    bstr->names2[id].key,getname(bstr->namestack[bstr->level-1].name));
+                    bstr->names2[id].key,bstruct_getname(bstr->namestack[bstr->level-1].name));
         }
       }
       else
@@ -71,7 +74,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
         if(bstr->isout)
         {
           fprintf(stderr,"ERROR504: Expected object name for %s, but no name found in struct '%s'.\n",
-                  bstruct_typenames[token & 63],getname(name));
+                  bstruct_typenames[token & 63],bstruct_getname(name));
           bstruct_printnamestack(bstr);
         }
         return TRUE;
@@ -81,8 +84,11 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(fread(&token,1,1,bstr->file)!=1)
       {
         if(bstr->isout)
+        {
           fprintf(stderr,"ERROR508: Unexpected end of file reading token for endstruct of '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
+          bstruct_printnamestack(bstr);
+        }
         return TRUE;
       }
     }
@@ -91,7 +97,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(bstr->isout)
       {
         fprintf(stderr,"ERROR503: End of array found, endstruct of '%s' expected.\n",
-                getname(name));
+                bstruct_getname(name));
         bstruct_printnamestack(bstr);
       }
       return TRUE;
@@ -105,8 +111,11 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(bstr->namestack[bstr->level-1].name!=NULL)
       {
         if(bstr->isout)
+        {
           fprintf(stderr,"ERROR520: Endstruct of '%s' found, but unnamed expected.\n",
                   bstr->namestack[bstr->level-1].name);
+          bstruct_printnamestack(bstr);
+        }
         return TRUE;
       }
     }
@@ -115,15 +124,21 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(bstr->namestack[bstr->level-1].name==NULL)
       {
         if(bstr->isout)
+        {
           fprintf(stderr,"ERROR520: Unnamed endstruct found, but '%s' expected.\n",
                   name);
+          bstruct_printnamestack(bstr);
+        }
         return TRUE;
       }
       else if(strcmp(name,bstr->namestack[bstr->level-1].name))
       {
         if(bstr->isout)
+        {
           fprintf(stderr,"ERROR520: Endstruct of '%s' found, but '%s' expected.\n",
                   bstr->namestack[bstr->level-1].name,name);
+          bstruct_printnamestack(bstr);
+        }
         return TRUE;
       }
     }
@@ -136,7 +151,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
         bstr->skipped++;
         if(bstr->isout && bstr->print_noread)
           fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
-                  bstr->names2[var->id].key,getname(bstr->namestack[bstr->level-1].name));
+                  bstr->names2[var->id].key,bstruct_getname(bstr->namestack[bstr->level-1].name));
       }
       free(var);
     }

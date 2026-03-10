@@ -24,7 +24,7 @@ Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
   if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINSTRUCT)
   {
     fprintf(stderr,"ERROR521: Endarray not allowed in struct '%s'.\n",
-            getname(bstr->namestack[bstr->level-1].name));
+            bstruct_getname(bstr->namestack[bstr->level-1].name));
     bstruct_printnamestack(bstr);
   }
   if(bstr->level==1 && bstr->namestack[0].type!=BSTRUCT_BEGINARRAY)
@@ -36,7 +36,7 @@ Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
   /* Check for correct number of array items */
   if(bstr->namestack[bstr->level-1].nr!=bstr->namestack[bstr->level-1].size)
     fprintf(stderr,"ERROR522: Size of array '%s'=%d not equal of number of objects written=%d\n",
-            getname(bstr->namestack[bstr->level-1].name),
+            bstruct_getname(bstr->namestack[bstr->level-1].name),
             bstr->namestack[bstr->level-1].size,
             bstr->namestack[bstr->level-1].nr);
   /* remove array object from name stack */

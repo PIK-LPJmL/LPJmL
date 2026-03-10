@@ -16,12 +16,12 @@
 
 #include "bstruct_intern.h"
 
-const size_t bstruct_typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),
-                                  sizeof(double),0,0,sizeof(unsigned short),0,0,0};
+const size_t bstruct_typesizes[BSTRUCT_MAXTOKEN+1]={1,sizeof(short),sizeof(int),sizeof(float),
+                                  sizeof(double),0,0,sizeof(unsigned short)};
 
 char *bstruct_typenames[]={"byte","short","int","float","double","bool","bool","ushort",
-                           "zero","fzero","null","string","string1","array","array1",
-                           "struct","indexarray","endstruct","endarray","end"};
+                           "zero","dzero","null","string","string1","array","array1",
+                           "struct","indexarray","endstruct","endarray","end","fzero"};
 
 int bstruct_gethashkey(const char *key,int size)
 {

@@ -18,13 +18,17 @@
 
 #define BSTRUCT_H
 
+/* Definition of constants */
+
+#define BSTRUCT_VERSION "1.0.1"
+
 /* Definition of datatypes */
 
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
-              BSTRUCT_FALSE,BSTRUCT_TRUE,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_FZERO,
+              BSTRUCT_FALSE,BSTRUCT_TRUE,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_DZERO,
               BSTRUCT_NULL,BSTRUCT_STRING,BSTRUCT_STRING1,BSTRUCT_BEGINARRAY,BSTRUCT_BEGINARRAY1,
               BSTRUCT_BEGINSTRUCT, BSTRUCT_INDEXARRAY,BSTRUCT_ENDSTRUCT,BSTRUCT_ENDARRAY,
-              BSTRUCT_END} Bstruct_token;
+              BSTRUCT_END,BSTRUCT_FZERO} Bstruct_token;
 
 typedef struct
 {
@@ -58,7 +62,7 @@ extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
-extern Bool bstruct_writearrayindex(Bstruct,long long,const long long vec[],int,int);
+extern Bool bstruct_writearrayindex(Bstruct,long long,const long long [],int,int);
 extern Bool bstruct_finish(Bstruct);
 extern void bstruct_sync(Bstruct);
 extern void bstruct_setout(Bstruct,Bool);
@@ -115,6 +119,7 @@ extern Bool bstruct_isnull(Bstruct,const char *);
 extern void bstruct_printnoread(Bstruct,Bool);
 extern Bool bstruct_writedata(Bstruct,const Bstruct_data *);
 extern int bstruct_getlevel(const Bstruct);
+extern Bool bstruct_skiparray(Bstruct);
 
 /* Definition of macros */
 

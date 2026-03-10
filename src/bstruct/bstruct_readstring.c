@@ -35,14 +35,14 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
       if(freadint(&len,1,bstr->swap,bstr->file)!=1)
       {
         if(bstr->isout)
-          fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",getname(name));
+          fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",bstruct_getname(name));
         return NULL;
       }
       if(len<0)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR526: Invalid string length %d of '%s'.\n",
-                  len,getname(name));
+                  len,bstruct_getname(name));
         return NULL;
       }
       break;
@@ -50,15 +50,18 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
       if(fread(&len1,1,1,bstr->file)!=1)
       {
         if(bstr->isout)
-          fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",getname(name));
+          fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",bstruct_getname(name));
         return NULL;
       }
       len=len1;
       break;
     default:
       if(bstr->isout)
+      {
         fprintf(stderr,"ERROR509: Type of '%s'=%s is not string.\n",
-                getname(name),bstruct_typenames[token]);
+                bstruct_getname(name),bstruct_typenames[token]);
+        bstruct_printnamestack(bstr);
+      }
       return NULL;
   }
   s=malloc(len+1);
@@ -71,7 +74,7 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR512: Cannot read string '%s' of length %d.\n",
-              getname(name),len);
+              bstruct_getname(name),len);
     free(s);
     return NULL;
   }

@@ -31,7 +31,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       fprintf(stderr,"ERROR508: Unexpected end of file reading token.\n");
     return TRUE;
   }
-  if(isinvalidtoken(data->token))
+  if(bstruct_isinvalidtoken(data->token))
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR502: Invalid token %d.\n",data->token);
@@ -60,14 +60,14 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       data->data.b=FALSE;
       return FALSE;
     case BSTRUCT_TRUE:
-       data->data.b=TRUE;
+      data->data.b=TRUE;
       return FALSE;
     case BSTRUCT_BYTE:
       if(fread(&data->data.b,1,1,bstr->file)!=1)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -76,7 +76,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -85,7 +85,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -94,7 +94,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -103,7 +103,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -112,7 +112,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading %s '%s'.\n",
-                  bstruct_typenames[data->token & 63],getname(data->name));
+                  bstruct_typenames[data->token & 63],bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;
@@ -123,7 +123,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR508: Unexpected end of file reading string length of '%s'.\n",
-                    getname(data->name));
+                    bstruct_getname(data->name));
           return TRUE;
         }
         string_length=len;
@@ -134,7 +134,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR508: Unexpected end of file reading string length of '%s'.\n",
-                    getname(data->name));
+                    bstruct_getname(data->name));
           return TRUE;
         }
       }
@@ -142,7 +142,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR526: Invalid string length %d of '%s'.\n",
-                  string_length,getname(data->name));
+                  string_length,bstruct_getname(data->name));
         return TRUE;
       }
       data->data.string=malloc(string_length+1);
@@ -155,7 +155,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading string '%s' of size %d.\n",
-                  getname(data->name),string_length);
+                  bstruct_getname(data->name),string_length);
         free(data->data.string);
         data->data.string=NULL;
         return TRUE;
@@ -167,7 +167,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading array size of '%s'.\n",
-                  getname(data->name));
+                  bstruct_getname(data->name));
         return TRUE;
       }
       data->size=len;
@@ -177,14 +177,14 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading array size of '%s'.\n",
-                  getname(data->name));
+                  bstruct_getname(data->name));
         return TRUE;
       }
       if(data->size<0)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR526: Invalid length %d of array '%s'.\n",
-                  data->size,getname(data->name));
+                  data->size,bstruct_getname(data->name));
         return TRUE;
       }
       return FALSE;

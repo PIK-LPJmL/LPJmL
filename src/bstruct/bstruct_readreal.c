@@ -27,23 +27,34 @@ Bool bstruct_readreal(Bstruct bstr,     /**< pointer to restart file */
   if(bstruct_findobject(bstr,&token,(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT,name))
     return TRUE;
   token&=63; /* strip top 3 bits in token */
-  if(token==BSTRUCT_FZERO)
+  if(sizeof(Real)==sizeof(double) && token==BSTRUCT_DZERO)
   {
     *value=0;
     return FALSE;
   }
+  else if(sizeof(Real)==sizeof(float))
+  {
+    if(token==BSTRUCT_FZERO || (bstr->version==1 && token==BSTRUCT_DZERO))
+    {
+      *value=0;
+      return FALSE;
+    }
+  }
   if(token!=((sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT))
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not real.\n",
-              getname(name),bstruct_typenames[token]);
+              bstruct_getname(name),bstruct_typenames[token]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
   if(freadreal(value,1,bstr->swap,bstr->file)!=1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR508: Unexpected end of file reading double '%s'.\n",
-              getname(name));
+      fprintf(stderr,"ERROR508: Unexpected end of file reading real '%s'.\n",
+              bstruct_getname(name));
     return TRUE;
   }
   return FALSE;

@@ -37,7 +37,7 @@ Bool bstruct_readshort(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading short '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       *value=token;
@@ -47,14 +47,17 @@ Bool bstruct_readshort(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading short '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       return FALSE;
     default:
       if(bstr->isout)
+      {
         fprintf(stderr,"ERROR509: Type of '%s'=%s is not short.\n",
-                getname(name),bstruct_typenames[token]);
+                bstruct_getname(name),bstruct_typenames[token]);
+        bstruct_printnamestack(bstr);
+      }
       return TRUE;
   }
   return FALSE;

@@ -21,9 +21,9 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
                      )              /** \return TRUE on error */
 {
   /* Function skips one object in restart file */
-  int string_len;
+  int string_len,size;
   Byte len,b;
-  if(isinvalidtoken(token))
+  if(bstruct_isinvalidtoken(token))
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",token);
@@ -31,6 +31,15 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
   }
   switch(token & 63) /* strip top 2 bits */
   {
+    case BSTRUCT_INDEXARRAY:
+      if(freadint(&size,1,bstr->swap,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR512: Cannot read length of index array skippping data.\n");
+        return TRUE;
+      }
+      fseek(bstr->file,size*sizeof(long long),SEEK_CUR);
+      break;
     case BSTRUCT_BEGINSTRUCT: /* object is a struct */
       do
       {
@@ -41,7 +50,7 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
             fprintf(stderr,"ERROR508: Unexpected end of file reading token in struct.\n");
           return TRUE;
         }
-        if(isinvalidtoken(b))
+        if(bstruct_isinvalidtoken(b))
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",b);
@@ -97,7 +106,7 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
             fprintf(stderr,"ERROR508: Unexpected end of file reading token in array.\n");
           return TRUE;
         }
-        if(isinvalidtoken(b))
+        if(bstruct_isinvalidtoken(b))
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",b);

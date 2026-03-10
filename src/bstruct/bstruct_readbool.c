@@ -37,9 +37,12 @@ Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
       return FALSE;
     default:
       if(bstr->isout)
+      {
         fprintf(stderr,"ERROR509: Type of '%s'=%s is not bool.\n",
-                getname(name),bstruct_typenames[token & 63]);
-    return TRUE;
+                bstruct_getname(name),bstruct_typenames[token & 63]);
+        bstruct_printnamestack(bstr);
+      }
+      return TRUE;
   }
   return FALSE;
 } /* of 'bstruct_readbool' */

@@ -52,6 +52,8 @@ Bool bstruct_writedata(Bstruct bstr,            /**< pointer to restart file */
       return bstruct_writeint(bstr,data->name,0);
     case BSTRUCT_FZERO:
       return bstruct_writefloat(bstr,data->name,0);
+    case BSTRUCT_DZERO:
+      return bstruct_writedouble(bstr,data->name,0);
     case BSTRUCT_NULL:
       return bstruct_writenull(bstr,data->name);
     case BSTRUCT_INDEXARRAY:

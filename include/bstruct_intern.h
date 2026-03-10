@@ -31,15 +31,15 @@
 #include "bstruct.h"
 
 #define BSTRUCT_HEADER "BSTRUCT"
-#define BSTRUCT_VERSION 1
-#define BSTRUCT_MAXTOKEN BSTRUCT_END /* valid tokens are in the range of [0,BSTRUCT_MAXTOKEN] */
+#define BSTRUCT_FILE_VERSION 2
+#define BSTRUCT_MAXTOKEN BSTRUCT_FZERO /* valid tokens are in the range of [0,BSTRUCT_MAXTOKEN] */
 #define BSTRUCT_HASHSIZE 1023
-#define MAXLEVEL 15 /**< maximum number of nested structs */
+#define BSTRUCT_MAXLEVEL 15 /**< maximum number of nested structs */
 
 extern const size_t bstruct_typesizes[];
 
-#define getname(name) (name==NULL) ? "unnamed" : name
-#define isinvalidtoken(token) (((token) & 63)>BSTRUCT_MAXTOKEN)
+#define bstruct_getname(name) (name==NULL) ? "unnamed" : name
+#define bstruct_isinvalidtoken(token) (((token) & 63)>BSTRUCT_MAXTOKEN)
 #define bstruct_printnamestack(bstr) bstruct_fprintnamestack(stderr,bstr)
 #define bstruct_hasname(token) (((token) & 128)==128) /* check for top bit set in token */
 
@@ -49,6 +49,7 @@ struct bstruct
   Bool swap;  /**< byte order has to be changed at reading */
   Bool isout; /**< error output on stderr enabled */
   Bool print_noread; /**< print variable names not read from file */
+  int version; /**<  file version */
   int level;  /**< number of nested structs/arrays */
   int imiss;  /**< number of objects not in right order */
   int skipped; /** number of objects not read */
@@ -59,7 +60,7 @@ struct bstruct
     Byte type;           /**< type of object (BSTRUCT_BEGINARRAY, BSTRUCT_BEGINSTRUCT) */
     char *name;          /**< name of struct */
     List *varnames;      /**< list of objects in struct or NULL for empty list */
-  } namestack[MAXLEVEL]; /**< list of objects names for each nested level */
+  } namestack[BSTRUCT_MAXLEVEL]; /**< list of objects names for each nested level */
   Hash hash;             /**< hash for object names used for writing restart files */
   int count;             /**< size of name table */
   Hashitem *names;       /**< name table used for reading restart files */

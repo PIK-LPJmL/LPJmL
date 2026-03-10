@@ -78,7 +78,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       if(bstr->isout)
       {
         fprintf(stderr,"ERROR521: Object name for %s must be specified in struct '%s'.\n",
-               bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+               bstruct_typenames[token_expected],bstruct_getname(bstr->namestack[bstr->level-1].name));
         bstruct_printnamestack(bstr);
       }
       return TRUE;
@@ -121,7 +121,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       if(bstr->isout)
       {
         fprintf(stderr,"ERROR521: Object name '%s' for %s not allowed in array '%s'.\n",name,
-                bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+                bstruct_typenames[token_expected],bstruct_getname(bstr->namestack[bstr->level-1].name));
         bstruct_printnamestack(bstr);
       }
       return TRUE;
@@ -141,7 +141,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       if(bstr->isout)
       {
         fprintf(stderr,"ERROR506: Object name '%s' for %s in struct '%s' not found in name table.\n",
-                name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+                name,bstruct_typenames[token_expected],bstruct_getname(bstr->namestack[bstr->level-1].name));
         bstruct_printnamestack(bstr);
       }
       /* undo last read */
@@ -162,7 +162,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
          if(bstr->isout)
          {
            fprintf(stderr,"ERROR506: Object '%s' for %s not found in struct '%s'.\n",
-                   name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+                   name,bstruct_typenames[token_expected],bstruct_getname(bstr->namestack[bstr->level-1].name));
            bstruct_printnamestack(bstr);
          }
          /* undo last read */
@@ -175,7 +175,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
          if(bstr->isout)
          {
            fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s'.\n",
-                   name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
+                   name,bstruct_typenames[token_expected],bstruct_getname(bstr->namestack[bstr->level-1].name));
            bstruct_printnamestack(bstr);
          }
          return TRUE;
@@ -260,7 +260,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           }
           return TRUE;
         }
-        if(isinvalidtoken(*token))
+        if(bstruct_isinvalidtoken(*token))
         {
           if(bstr->isout)
           {
@@ -281,7 +281,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
             {
               fprintf(stderr,"ERROR506: Object '%s' for %s not found in struct '%s'.\n",
                       name,bstruct_typenames[token_expected],
-                      getname(bstr->namestack[bstr->level-1].name));
+                      bstruct_getname(bstr->namestack[bstr->level-1].name));
               bstruct_printnamestack(bstr);
             }
             /* undo last read */
@@ -295,7 +295,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
             {
               fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s'.\n",
                       name,bstruct_typenames[token_expected],
-                      getname(bstr->namestack[bstr->level-1].name));
+                      bstruct_getname(bstr->namestack[bstr->level-1].name));
               bstruct_printnamestack(bstr);
             }
             return TRUE;

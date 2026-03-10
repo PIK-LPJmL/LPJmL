@@ -92,7 +92,7 @@ Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
           bstruct->skipped++;
           if(bstruct->isout && bstruct->print_noread)
             fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
-                    bstruct->names2[var->id].key,getname(bstruct->namestack[bstruct->level-1].name));
+                    bstruct->names2[var->id].key,bstruct_getname(bstruct->namestack[bstruct->level-1].name));
         }
       }
     }
