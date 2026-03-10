@@ -26,7 +26,6 @@ typedef struct
 {
   Real *temp; /**< temperature data (deg C) */
   Real *prec; /**< precipitation data (mm) */
-  Real *sun;  /**< sunshine data (%) */
   Real *wet;  /**< number of wet days in a month */
   Real *wind; /**< wind speed (m/min) */
   Real *tamp; /**< temperature amplitude */
@@ -45,7 +44,6 @@ typedef struct Dailyclimate
 {
   Real temp;       /**< temperature (deg C) */
   Real prec;       /**< precipitation (mm) */
-  Real sun;        /**< sunshine (%) */
   Real windspeed;  /**< windspeed (m/min) */
   Real tmin;       /**< minimum temperature (deg C) */
   Real tmax;       /**< maximum temperature (deg C) */
@@ -73,7 +71,7 @@ typedef struct
   Tracedata co2;      /**< CO2 data */
   Tracedata ch4;      /* CH4 data */
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
-  Climatefile file_cloud,file_lwnet,file_swdown;
+  Climatefile file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
@@ -89,7 +87,6 @@ typedef struct
 
 #define getcelltemp(climate,cell) climate->data[0].temp+(cell)*NMONTH
 #define getcellprec(climate,cell) climate->data[0].prec+(cell)*NMONTH
-#define getcellsun(climate,cell) climate->data[0].sun+(cell)*NMONTH
 #define getcelllwnet(climate,cell) climate->data[0].lwnet+(cell)*NMONTH
 #define getcellswdown(climate,cell) climate->data[0].swdown+(cell)*NMONTH
 #define getcellwet(climate,cell) climate->data[0].wet+(cell)*NMONTH

@@ -97,20 +97,12 @@ void freeconfig(Config *config /**< LPJmL configuration */
 #endif
   freefilename(&config->temp_filename);
   freefilename(&config->prec_filename);
-  if(config->with_radiation)
-  {
-    if(config->with_radiation!=RADIATION_SWONLY)
-    {
-      freefilename(&config->lwnet_filename);
-      if(config->isanomaly)
-        freefilename(&config->delta_lwnet_filename);
-    }
-    freefilename(&config->swdown_filename);
-    if(config->isanomaly)
-      freefilename(&config->delta_swdown_filename);
-  }
-  else
-    freefilename(&config->cloud_filename);
+  freefilename(&config->lwnet_filename);
+  freefilename(&config->swdown_filename);
+  if(config->isanomaly)
+    freefilename(&config->delta_lwnet_filename);
+  if(config->isanomaly)
+    freefilename(&config->delta_swdown_filename);
   if(config->isanomaly)
   {
     freefilename(&config->delta_temp_filename);

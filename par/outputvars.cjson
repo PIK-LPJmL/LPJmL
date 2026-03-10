@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 6.0.3                             \n**/
+/**  Defines array of output variables for LPJmL 6.0.4                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -107,8 +107,7 @@
     { "id" : CFT_CONV_LOSS_EVAP, "name": "cft_conv_loss_evap", "timestep" : "annual", "var" : "conv_loss_evap", "long_name" : "CFT-specific evaporative conveyance losses", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_CONV_LOSS_DRAIN, "name": "cft_conv_loss_drain", "timestep" : "annual", "var" : "conv_loss_drain", "long_name" : "CFT-specific drainage conveyance losses", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_IRRIG_EVENTS, "name": "cft_irrig_events", "timestep" : "annual", "var" : "count", "long_name" : "number of days with irrigation events", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
-    { "id" : TEMP, "name": "temp", "timestep" : "daily", "var" : "temp", "long_name" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SUN, "name": "sun", "timestep" : "daily", "var" : "cloud", "long_name" :  "cloudiness", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
+    { "id" : TEMP, "name": "temp", "timestep" : "monthly", "var" : "temp", "long_name" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
     { "id" : DAYLENGTH, "name": "daylength", "timestep" : "daily", "var" : "daylength", "long_name" :  "day length", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
     { "id" : EVAP_RES, "name": "evap_res", "timestep" : "monthly", "var" : "evap_res", "long_name" :  "evaporation from reservoirs", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : PREC_RES, "name": "prec_res", "timestep" : "monthly", "var" : "prec_res", "long_name" :  "reservoir precipitation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
@@ -124,7 +123,6 @@
     { "id" : RHARVEST_BURNT_IN_FIELDC, "name": "rharvest_burnt_in_fieldc", "timestep" : "annual", "var" :  "rharvest_burntinfield", "long_name" :  "", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : TEMP_IMAGE, "name": "temp_image", "timestep" : "monthly", "var" :  "temp", "long_name" :  "temperature received from IMAGE", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
     { "id" : PREC_IMAGE, "name": "prec_image", "timestep" : "monthly", "var" :  "prec", "long_name" :  "precipitation received from IMAGE", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SUN_IMAGE, "name": "sun_image", "timestep" : "monthly", "var" :  "sun", "long_name" :  "sunshine received from IMAGE", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
     { "id" : WET_IMAGE, "name": "wet_image", "timestep" : "monthly", "var" :  "wet", "long_name" :  "wet days received from IMAGE", "unit" : "day", "scale" : 1.0, "offset" : 0.0},
     { "id" : FBURN, "name": "fburn", "timestep" : "annual", "var" :  "fburn", "long_name" :  "fraction of deforested wood burnt", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : FTIMBER, "name": "ftimber", "timestep" : "annual", "var" :  "ftimber", "long_name" :  "fraction of deforested wood harvested as timber", "unit" : "", "scale" : 1.0, "offset" : 0.0},

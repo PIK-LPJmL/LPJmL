@@ -29,7 +29,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
                   Real eeq,                 /**< equilibrium evapotranspiration (mm) */
                   Real cover,
                   Real *frac_g_evap,        /**< green water share of soil evaporation */
-                  Bool rw_manage            /**< do rain water management? (TRUE/FALSE) */
+                  Bool rw_manage,           /**< do rain water management? (TRUE/FALSE) */
+                  const Config *config      /**< LPJmL configuration */
                  )                          /* \return water runoff (mm) */
 {
   String line;
@@ -333,7 +334,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before+marginal+aet+*evap;
-  if(fabs(balancew)>epsilon)
+  if(fabs(balancew)>param.error_limit.w_fcn)
   {
     fputs("\nWater                 ",stderr);
     foreachsoillayer(l)
@@ -367,7 +368,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       fprintf(stderr," %12.2f",    aet_stand[l]);
     fputs("\n---------------------\n",stderr);
 
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g"
+    fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g"
          " evap_ratio: %g agtop_moist: %g evap_litter: %g evap_soil: %g w_evap: %g tmpwater: %g evap_energy: %g Pot_evap: %g wtable: %g\n",
          __FUNCTION__,balancew,water_before,water_after,marginal,aet,*evap,evap_test,soil->rw_buffer,soil->wa,evap_ratio,soil->litter.agtop_moist,evap_litter,evap_soil,
          w_evap,tmpwater,evap_energy,(eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet),soil->wtable);

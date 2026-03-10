@@ -9,7 +9,7 @@
 /**     The model simulates vegetation dynamics, hydrology and soil                \n**/
 /**     organic matter dynamics on an area-averaged grid cell basis using          \n**/
 /**     one-year time step. Input parameters are monthly mean air                  \n**/
-/**     temperature, total precipitation and percentage of full sunshine,          \n**/
+/**     temperature, total precipitation, short and longwave radiation,            \n**/
 /**     annual atmospheric CO2 concentration and soil texture class. The           \n**/
 /**     simulation for each grid cell begins from "bare ground",                   \n**/
 /**     requiring a "spin up" (under non-transient climate) of c. 1000             \n**/
@@ -150,11 +150,6 @@ extern void receivehash(Hash,int,MPI_Comm);
 
 /* Definition of macros */
 
-#ifdef NO_FAIL_BALANCE
-#define FAIL_ON_BALANCE FALSE
-#else
-#define FAIL_ON_BALANCE TRUE
-#endif
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
 #define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
 #define printtiming(total,config) fprinttiming(stdout,total,config)

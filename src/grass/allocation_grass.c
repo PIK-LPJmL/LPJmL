@@ -92,8 +92,17 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     else
     {
       /* negative bm_inc reduces leaves and roots proportionally */
-      inc_ind.leaf.carbon=bm_inc_ind.carbon*grass->ind.leaf.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
-      inc_ind.root.carbon=bm_inc_ind.carbon*grass->ind.root.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+      if(grass->ind.root.carbon+grass->ind.leaf.carbon > epsilon)
+      {
+        inc_ind.leaf.carbon=bm_inc_ind.carbon*grass->ind.leaf.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+        inc_ind.root.carbon=bm_inc_ind.carbon*grass->ind.root.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
+      }
+      else
+      {
+        /* Plant has no carbon - split equally */
+        inc_ind.leaf.carbon=bm_inc_ind.carbon*0.5;
+        inc_ind.root.carbon=bm_inc_ind.carbon*0.5;
+      }
     }
     output->bm_inc=pft->bm_inc.carbon;
     pft->bm_inc.carbon-=(inc_ind.leaf.carbon+inc_ind.root.carbon)*pft->nind;
@@ -142,7 +151,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
 
   grass->ind.leaf.carbon+=inc_ind.leaf.carbon;
   grass->ind.root.carbon+=inc_ind.root.carbon;
-  if(grass->ind.root.carbon<0){
+  if(grass->ind.root.carbon<0)
+  {
     litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon;
     grass->ind.root.carbon=0;
     if(litter->item[pft->litter].bg.carbon<0)
@@ -157,17 +167,15 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   if(grass->ind.leaf.carbon<0){
     litter->item[pft->litter].bg.carbon+=grass->ind.leaf.carbon;
     grass->ind.leaf.carbon=0;
-    if(litter->item[pft->litter].agtop.leaf.carbon<0)
+    if(litter->item[pft->litter].bg.carbon<0)
     {
 #ifdef CHECK_BALANCE
-      neg_flux+=litter->item[pft->litter].agtop.leaf.carbon;
+      neg_flux+=litter->item[pft->litter].bg.carbon;
 #endif
-      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].agtop.leaf.carbon*pft->stand->frac;
-      litter->item[pft->litter].agtop.leaf.carbon=0;
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].bg.carbon*pft->stand->frac;
+      litter->item[pft->litter].bg.carbon=0;
     }
   }
-
-
 
   lastday.leaf.nitrogen = grass->ind.leaf.nitrogen;
   lastday.root.nitrogen = grass->ind.root.nitrogen;
@@ -254,15 +262,15 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+stocks.carbon+neg_flux;
 
-  if(fabs(end-start.carbon)>0.0001)
-    fprintf(stderr, "C_ERROR allocation_grass: %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g .neg_fluxes.carbon: %g\n",
+  if(fabs(end-start.carbon)>param.error_limit.stocks_fcn.carbon)
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,TRUE,"Invalid carbon balance in allocation_grass(): %g start : %g end : %g bm_inc.carbon: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g leaf_turn: %g neg_fluxes.carbon: %g",
         end-start.carbon, start.carbon,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon,neg_flux);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
 
-  if(fabs(end-start.nitrogen)>epsilon)
-    fprintf(stderr, "N_ERROR allocation_grass: %g start : %g end : %g  bm_inc.nitrogen: %g   PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g \n",
-        end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,grass->turn.root.nitrogen,grass->turn.leaf.nitrogen);
+  if(fabs(end-start.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,TRUE,"Invalid nitrogen balance in allocation_grass(): %g start : %g end : %g bm_inc.nitrogen: %g PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g root_turn: %g leaf_turn: %g",
+         end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,grass->turn.root.nitrogen,grass->turn.leaf.nitrogen);
 #endif
 
 #ifdef DEBUG

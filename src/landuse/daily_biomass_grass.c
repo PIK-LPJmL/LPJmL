@@ -238,7 +238,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   /* calculate water balance */
   free(gp_pft);
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap,config->rw_manage);
+               &frac_g_evap,config->rw_manage,config);
 
   /* allocation, turnover and harvest AFTER photosynthesis */
   if(n_pft>0)

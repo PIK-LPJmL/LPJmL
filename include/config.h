@@ -78,7 +78,6 @@ struct config
   Filename delta_temp_filename;
   Filename prec_filename;
   Filename delta_prec_filename;
-  Filename cloud_filename;
   Filename wet_filename;
   Filename wind_filename;
   Filename tamp_filename;
@@ -156,6 +155,7 @@ struct config
   Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
   Bool print_noread;      /**< print variable names not read from restart file (TRUE/FALSE) */
   Bool pedantic;          /**< enables pedantic mode, stops on some warnings (TRUE/FALSE) */
+  Bool fail_on_balance;   /**< fail on balance error (TRUE/FALSE) */
   char *sim_name;         /**< Desciption of LPJ simulation */
   char *coupled_model;    /**< name of coupled model or NULL */
   int sim_id;             /**< Simulation type */
@@ -329,7 +329,7 @@ struct config
   Bool rw_manage;           /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled;   /**< PFT output grid scaled */
   char *json_suffix;        /**< suffix for JSON metafiles */
-  int with_radiation;       /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
+  Bool radiation_lwdown;    /**< LW radiation is downward */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */

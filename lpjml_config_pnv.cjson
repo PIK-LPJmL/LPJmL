@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g   _  p  n  v  .  c  j  s  o n     \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 6.0.3                           \n**/
+/** Default configuration file for LPJmL C Version 6.0.4                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -21,6 +21,7 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
+//#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -57,7 +58,12 @@
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "anomaly" : false,        /* simulation with climate anomalies (true/false) */
   "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
+  "delta_year" : 100,       /* time step in anomalies (yrs) */
+#ifdef NO_METHANE
+  "with_methane" : false,    /* simulation without methane and oxygen dynamics */
+#else
   "with_methane" : true,    /* simulation with methane and oxygen dynamics */
+#endif
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
@@ -246,20 +252,20 @@ ID                               Fmt                        filename
     { "id" : "lake_area",        "file" : { "name" : "output_pnv/lake_area" }},
     { "id" : "fpc",              "file" : { "name" : "output_pnv/fpc"}},
     { "id" : "wpc",              "file" : { "name" : "output_pnv/wpc"}},
-    { "id" : "albedo",           "file" : { "timestep" : "monthly", "name" : "output_pnv/malbedo"}},
-    { "id" : "npp",              "file" : { "timestep" : "monthly", "name" : "output_pnv/mnpp"}},
-    { "id" : "gpp",              "file" : { "timestep" : "monthly", "name" : "output_pnv/mgpp"}},
-    { "id" : "nbp",              "file" : { "timestep" : "annual", "name" : "output_pnv/anbp"}},
-    { "id" : "rh",               "file" : { "timestep" : "monthly", "name" : "output_pnv/mrh"}},
-    { "id" : "ra",               "file" : { "timestep" : "monthly", "name" : "output_pnv/mra"}},
-    { "id" : "transp",           "file" : { "timestep" : "monthly", "name" : "output_pnv/mtransp"}},
-    { "id" : "temp",             "file" : { "timestep" : "monthly", "name" : "output_pnv/tas"}},
-    { "id" : "prec",             "file" : { "timestep" : "monthly", "name" : "output_pnv/pr"}},
-    { "id" : "runoff",           "file" : { "timestep" : "monthly", "name" : "output_pnv/mrunoff"}},
-    { "id" : "evap",             "file" : { "timestep" : "monthly", "name" : "output_pnv/mevap"}},
-    { "id" : "interc",           "file" : { "timestep" : "monthly", "name" : "output_pnv/minterc"}},
-    { "id" : "swc1",             "file" : { "timestep" : "monthly", "name" : "output_pnv/mswc1"}},
-    { "id" : "swc2",             "file" : { "timestep" : "monthly", "name" : "output_pnv/mswc2"}},
+    { "id" : "albedo",           "file" : { "name" : "output_pnv/malbedo"}},
+    { "id" : "npp",              "file" : { "name" : "output_pnv/mnpp"}},
+    { "id" : "gpp",              "file" : { "name" : "output_pnv/mgpp"}},
+    { "id" : "nbp",              "file" : { "name" : "output_pnv/anbp"}},
+    { "id" : "rh",               "file" : { "name" : "output_pnv/mrh"}},
+    { "id" : "ra",               "file" : { "name" : "output_pnv/mra"}},
+    { "id" : "transp",           "file" : { "name" : "output_pnv/mtransp"}},
+    { "id" : "temp",             "file" : { "name" : "output_pnv/tas"}},
+    { "id" : "prec",             "file" : { "name" : "output_pnv/pr"}},
+    { "id" : "runoff",           "file" : { "name" : "output_pnv/mrunoff"}},
+    { "id" : "evap",             "file" : { "name" : "output_pnv/mevap"}},
+    { "id" : "interc",           "file" : { "name" : "output_pnv/minterc"}},
+    { "id" : "swc1",             "file" : { "name" : "output_pnv/mswc1"}},
+    { "id" : "swc2",             "file" : { "name" : "output_pnv/mswc2"}},
     { "id" : "vegc",             "file" : { "name" : "output_pnv/vegc"}},
     { "id" : "soilc",            "file" : { "name" : "output_pnv/soilc"}},
     { "id" : "soilc_1m",         "file" : { "name" : "output_pnv/soilc_1m"}},
@@ -320,6 +326,7 @@ ID                               Fmt                        filename
     { "id" : "agb",              "file" : { "name" : "output_pnv/agb"}},
     { "id" : "agb_tree",         "file" : { "name" : "output_pnv/agb_tree"}},
     { "id" : "soilc_slow",       "file" : { "name" : "output_pnv/soilc_slow"}},
+#ifndef NO_METHANE
     { "id" : "ch4_ebullition",   "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_ebullition"}},
     { "id" : "ch4_plant_gas",    "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_plant_gas"}},
     { "id" : "ch4_emissions",    "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_emissions"}},
@@ -332,9 +339,10 @@ ID                               Fmt                        filename
     { "id" : "ch4_agr",     "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_agr"}},
     { "id" : "ch4_grassland",     "file" : { "timestep" : "monthly", "name" : "output_pnv/ch4_grassland"}},
     { "id" : "meansoilo2",       "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilo2"}},
+    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilch4"}},
+#endif
     { "id" : "gw_storage",       "file" : { "timestep" : "annual", "name" : "output_pnv/gw_store"}},
     { "id" : "gw_outflux",       "file" : { "timestep" : "monthly", "name" : "output_pnv/gw_outflux"}},
-    { "id" : "meansoilch4",      "file" : { "timestep" : "annual", "name" : "output_pnv/meansoilch4"}},
     { "id" : "napplied_mg",      "file" : { "name" : "output_pnv/napplied_mg"}},
     { "id" : "bnf_mg",           "file" : { "name" : "output_pnv/bnf_mg"}},
     { "id" : "flux_estabn_mg",   "file" : { "name" : "output_pnv/flux_estabn_mg"}},
