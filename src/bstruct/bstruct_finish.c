@@ -82,7 +82,7 @@ Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
         rc=TRUE;
       }
     }
-    else if(bstruct->namestack[bstruct->level-1].varnames!=NULL)
+    else if(bstruct->level>0 && bstruct->namestack[bstruct->level-1].varnames!=NULL)
     {
       foreachlistitem(i,bstruct->namestack[bstruct->level-1].varnames)
       {
