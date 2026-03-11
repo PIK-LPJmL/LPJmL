@@ -46,6 +46,7 @@ of `major.minor.patch` with
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
 - Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable.
 - The `regridlpj` utility uses now JSON metafiles for regridding the input data.
+- Population input for SPITFIRE can be read units of total number or density, boolean type for `"population"` replaced by strings `"no"`, `"number"` and `"density"`.
 
 ### Fixed
 
