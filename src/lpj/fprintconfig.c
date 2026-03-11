@@ -642,7 +642,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file, "delta swdown", &config->delta_swdown_filename, width,config);
   }
   if(config->ispopulation)
-    printinputfile(file,"pop. dens",&config->popdens_filename,width,config);
+    printinputfile(file,(config->ispopulation==DENS_POPULATION) ? "pop. dens" : "pop. num",&config->popdens_filename,width,config);
   if(config->prescribe_burntarea)
     printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)

@@ -126,9 +126,9 @@ then
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/glwd_lakes_and_rivers_30arcmin.clm.json $dir/lakes_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/kbf.clm.json $dir/kbf_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/wateruse_isimip3a_histsoc_1850-2021.clm.json $dir/wateruse_$name.clm
-  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/mlightning.clm.json $dir/lightning_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/lightning_fixed.clm.json $dir/lightning_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/human_ignition.clm.json $dir/human_ignition_$name.clm
-  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/popdens_HYDE_1901_2010_bi.clm.json $dir/popdens_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/population_histsoc_0p5deg_annual_1861-2005.clm.json $dir/popnum_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/cow_full_2018.clm.json $dir/country_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/no3-deposition_isimip3a_histsoc_1850-2021.clm.json $dir/no3_deposition_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/nh4-deposition_isimip3a_histsoc_1850-2021.clm.json $dir/nh4_deposition_$name.clm
@@ -198,7 +198,7 @@ EOF
   "humid"            : { "fmt" : "meta", "name" : "$dir/humid_$name.clm.json"},
   "lightning"        : { "fmt" : "meta", "name" : "$dir/lightning_$name.clm.json"},
   "human_ignition"   : { "fmt" : "meta", "name" : "$dir/human_ignition_$name.clm.json"},
-  "popdens"          : { "fmt" : "meta", "name" : "$dir/popdens_$name.clm.json"},
+  "popnum"           : { "fmt" : "meta", "name" : "$dir/popnun_$name.clm.json"},
   "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "$LPJINPATH/global_co2_ann_1700_2022.txt"},
   "ch4"              : { "fmt" : "txt", "name" : "$LPJINPATH/CH4_concentration_1841-2022.dat"},
   "wetdays"          : { "fmt" : "meta", "name" : "$dir/wet_$name.clm.json"},

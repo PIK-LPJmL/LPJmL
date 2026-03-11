@@ -87,7 +87,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
        config->nall+config->firstgrid>header->ncell+header->firstcell)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
+        fprintf(stderr,"ERROR155: Grid cells [%d,%d] in '%s' not in [%d,%d].\n",
                 header->firstcell,header->ncell+header->firstcell-1,filename->name,
                 config->firstgrid,config->nall+config->firstgrid-1);
       fclose(file);  
@@ -170,7 +170,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
          config->nall+config->firstgrid>header->ncell+header->firstcell)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
+          fprintf(stderr,"ERROR155: Grid cells [%d,%d] in '%s' not in [%d,%d].\n",
                   header->firstcell,header->ncell+header->firstcell-1,filename->name,
                   config->firstgrid,config->nall+config->firstgrid-1);
         fclose(file);

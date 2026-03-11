@@ -52,7 +52,7 @@ int *fscanvarintarray(LPJfile *file,    /**< pointer to LPJ file */
   }
   if (verb >= VERB)
     printf("\"%s\" : [",key);
-  
+
   for(i=0;i<*size;i++)
   {
     item =json_object_array_get_idx(array,i);
@@ -74,4 +74,4 @@ int *fscanvarintarray(LPJfile *file,    /**< pointer to LPJ file */
   if (verb >= VERB)
     printf("]\n");
   return vec;
-} /* of 'fscanvarintarray' */ 
+} /* of 'fscanvarintarray' */

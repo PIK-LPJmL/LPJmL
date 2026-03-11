@@ -21,6 +21,7 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
+//#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -88,7 +89,7 @@
 #ifdef FROM_RESTART
   "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : "no",      /* use population input (for spitfire), other values: "no", "density", "number" */
   "landuse" : "no",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2100, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
@@ -97,7 +98,7 @@
 #else
   "methane" : "fixed",      /* methane value prescribed, other values: "fixed", "prescribed", "dynamic" */
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : "no",      /* use population input (for spitfire), other values: "no", "density", "number" */
   "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
   "wateruse" : "no",        /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */

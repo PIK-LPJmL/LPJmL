@@ -37,7 +37,9 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     printallocerr("popdens");
     return NULL;
   }
-  if(opendata(&popdens->file,NULL,NULL,NULL,&config->popdens_filename,"population density","km-2",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
+  if(opendata(&popdens->file,NULL,NULL,NULL,&config->popdens_filename,
+              (config->ispopulation==DENS_POPULATION) ? "population density" : "population number",
+              (config->ispopulation==DENS_POPULATION) ? "km-2" : "1",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
   {
     free(popdens);
     return NULL;
@@ -71,7 +73,15 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  return (readdata(&popdens->file,popdens->npopdens,grid,"population density",year,config)==NULL);
+  int cell;
+  if(readdata(&popdens->file,popdens->npopdens,grid,
+              (config->ispopulation==DENS_POPULATION) ? "population density" : "population number",
+              year,config)==NULL)
+    return TRUE;
+  if(config->ispopulation==NUM_POPULATION)
+    for(cell=0;cell<config->ngridcell;cell++)
+      popdens->npopdens[cell]/=grid[cell].coord.area*1e-6;
+  return FALSE; 
 } /* of 'readpopdens' */
 
 Real getpopdens(const Popdens popdens,int cell)
