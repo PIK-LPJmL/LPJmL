@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Utility compares restart files                                             \n**/
+/**     Utility compares twp restart files                                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -26,6 +26,7 @@
 #include "bstruct.h"
 
 #define USAGE "%s: [-q] restart1.lpj restart2.lpj\n"
+#define printstack(stack,level) fprintstack(stdout,stack,level)
 
 typedef struct
 {
@@ -170,7 +171,7 @@ int main(int argc,char **argv)
       {
         if(!bstruct_readint(file2,"firstcell",&firstcell2))
         {
-          if(npft1!=npft2)
+          if(firstcell1!=firstcell2)
             fprintf(stderr,"First cell %d in '%s' differs from %d in '%s'.\n",
                     firstcell1,argv[iarg],firstcell2,argv[iarg+1]);
         }
@@ -252,7 +253,6 @@ int main(int argc,char **argv)
       bstruct_finish(file2);
       return EXIT_FAILURE;
     }
-    //printf("token=%s,name=%s\n",bstruct_typenames[data1.token],data1.name);
     switch(data1.token)
     {
       case BSTRUCT_BEGINSTRUCT:
@@ -272,7 +272,12 @@ int main(int argc,char **argv)
             ilevel++;
           }
           else
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            puts("not found");
+          }
         }
         level++;
         break;
@@ -294,24 +299,26 @@ int main(int argc,char **argv)
             }
             if(size!=data1.size)
             {
-              if(data1.name==NULL)
-                fprintf(stderr,"Size of unnamed array=%d in '%s' is different from %d in '%s', array is skipped.\n",
-                        data1.size,argv[iarg],size,argv[iarg+1]);
-              else
-                fprintf(stderr,"Size of array '%s'=%d in '%s' is different from %d in '%s', array is skipped.\n",
-                        data1.name,data1.size,argv[iarg],size,argv[iarg+1]);
+                printstack(stack,level);
+                if(data1.name!=NULL)
+                  fputs(data1.name,stdout);
+                printf(".size=%d<>%d\n",data1.size,size);
               if(bstruct_skiparray(file1))
                 return EXIT_FAILURE;
               if(bstruct_skiparray(file2))
                 return EXIT_FAILURE;
               break;
-              //fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
-              //return EXIT_FAILURE;
             }
             ilevel++;
           }
           else
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            puts("not found");
+            count++;
+          }
         }
         level++;
         break;
@@ -349,7 +356,12 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%s<>not found\n",bool2str(data1.data.b));
+          }
           else
           {
             if(bstruct_readbool(file2,data1.name,&b))
@@ -358,10 +370,10 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%s<>%s\n",bool2str(data1.data.b),bool2str(b));
+                  fputs(data1.name,stdout);
+                printf(":%s<>%s\n",bool2str(data1.data.b),bool2str(b));
               }
             }
           }
@@ -373,7 +385,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":0<>not found\n");
+            count++;
+          }
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
@@ -385,15 +403,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":0<>%d\n",i);
+                  fputs(data1.name,stdout);
+                printf(":0<>%d\n",i);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_FZERO:
@@ -402,7 +420,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":0.0<>not found\n");
+            count++;
+          }
           else
           {
             if(bstruct_readfloat(file2,data1.name,&f))
@@ -414,15 +438,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":0<>%g\n",f);
+                  fputs(data1.name,stdout);
+                printf(":0<>%g\n",f);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_DZERO:
@@ -431,7 +455,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":0.0<>not found\n");
+            count++;
+          }
           else
           {
             if(bstruct_readdouble(file2,data1.name,&d))
@@ -443,15 +473,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":0<>%g\n",d);
+                  fputs(data1.name,stdout);
+                printf(":0<>%g\n",d);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_DOUBLE:
@@ -460,7 +490,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%g<>not found\n",data1.data.d);
+            count++;
+          }
           else
           {
             if(bstruct_readdouble(file2,data1.name,&d))
@@ -472,15 +508,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%g<>%g\n",data1.data.d,d);
+                  fputs(data1.name,stdout);
+                printf(":%g<>%g\n",data1.data.d,d);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_FLOAT:
@@ -489,7 +525,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%g<>not found\n",data1.data.f);
+            count++;
+          }
           else
           {
             if(bstruct_readfloat(file2,data1.name,&f))
@@ -501,15 +543,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%g<>%g\n",data1.data.f,f);
+                  fputs(data1.name,stdout);
+                printf(":%g<>%g\n",data1.data.f,f);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_INT:
@@ -518,7 +560,14 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%d<>not found\n",data1.data.i);
+            count++;
+          }
+          //  fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
@@ -530,15 +579,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%d<>%d\n",data1.data.i,i);
+                  fputs(data1.name,stdout);
+                printf(":%d<>%d\n",data1.data.i,i);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_SHORT:
@@ -547,7 +596,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%d<>not found\n",data1.data.s);
+            count++;
+          }
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
@@ -559,10 +614,10 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%d<>%d\n",data1.data.i,i);
+                  fputs(data1.name,stdout);
+                printf(":%d<>%d\n",data1.data.s,i);
               }
               count++;
             }
@@ -576,7 +631,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%d<>not found\n",data1.data.us);
+            count++;
+          }
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
@@ -588,15 +649,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
-              if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%d<>%d\n",data1.data.us,i);
+                printstack(stack,level);
+                if(data1.name!=NULL)
+                  fputs(data1.name,stdout);
+                printf(":%d<>%d\n",data1.data.us,i);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_BYTE:
@@ -605,7 +666,13 @@ int main(int argc,char **argv)
         if(level==ilevel)
         {
           if(!bstruct_isdefined(file2,data1.name))
-            fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
+          {
+            printstack(stack,level);
+            if(data1.name!=NULL)
+              fputs(data1.name,stdout);
+            printf(":%d<>not found\n",data1.data.b);
+            count++;
+          }
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
@@ -617,15 +684,15 @@ int main(int argc,char **argv)
             {
               if(verb)
               {
-                fprintstack(stderr,stack,level);
+                printstack(stack,level);
                 if(data1.name!=NULL)
-                  fputs(data1.name,stderr);
-                fprintf(stderr,":%d<>%d\n",data1.data.b,i);
+                  fputs(data1.name,stdout);
+                printf(":%d<>%d\n",data1.data.b,i);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       default:
