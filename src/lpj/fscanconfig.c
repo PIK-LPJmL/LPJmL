@@ -219,6 +219,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *methane[]={"fixed","prescribed","dynamic"};
   char *tillage[]={"no","all","read"};
   char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  char *population[]={"no","density","number"};
   Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
@@ -316,6 +317,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   }
 #endif
+  config->ispopulation=NO_POPULATION;
   if(fscankeywords(file,&config->fire,"fire",fire,4,FALSE,verbose))
     return TRUE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
@@ -324,8 +326,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(config->fdi==WVPD_INDEX && verbose)
       fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+    if(fscankeywords(file,&config->ispopulation,"population",population,3,FALSE,verbose))
+      return TRUE;
   }
-  fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
@@ -962,7 +965,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
+    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,(config->ispopulation==DENS_POPULATION) ? "popdens" : "popnum");
   }
   if(config->prescribe_burntarea)
   {

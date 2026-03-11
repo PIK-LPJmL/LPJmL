@@ -256,7 +256,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(openclimate2(&climate->file_lightning,&config->lightning_filename,"lightning","1/day/hectare",LPJ_INT,1,1.0e-7,FALSE,config))
+    if(openclimate2(&climate->file_lightning,&config->lightning_filename,"lightning","hectare-1 d-1",LPJ_INT,1,1.0e-7,FALSE,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open lightning data file.\n");

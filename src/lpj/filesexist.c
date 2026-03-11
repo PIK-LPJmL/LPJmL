@@ -550,8 +550,10 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     if(config->withlanduse!=NO_LANDUSE)
       bad+=checkinputdata(config,&config->neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
   }
-  if(config->ispopulation)
+  if(config->ispopulation==DENS_POPULATION)
     bad+=checkdatafile(config,&config->popdens_filename,"popdens","km-2",LPJ_SHORT,1,FALSE);
+  else if(config->ispopulation==NUM_POPULATION)
+    bad+=checkdatafile(config,&config->popdens_filename,"popnum","1",LPJ_SHORT,1,FALSE);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     bad+=checkclmfile(config,"NO3 deposition",&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE,FALSE,FALSE);
@@ -568,7 +570,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
       bad+=checkclmfile(config,"humidity",&config->humid_filename,"kg/kg",LPJ_SHORT,TRUE,TRUE,TRUE);
     if(config->prescribe_burntarea)
       bad+=checkclmfile(config,"burnt area",&config->burntarea_filename,"hectare",LPJ_SHORT,FALSE,TRUE,FALSE);
-    bad+=checkdatafile(config,&config->lightning_filename,"lightning",NULL,LPJ_INT,12,FALSE);
+    bad+=checkclmfile(config,"lightning",&config->lightning_filename,"hectare-1 d-1",LPJ_INT,FALSE,TRUE,FALSE);
     bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,TRUE,FALSE);
   }
   if(config->fire==SPITFIRE_TMAX)
