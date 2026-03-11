@@ -52,10 +52,8 @@
 #define READ_RESIDUE_DATA 2
 #define BMGR_GREEN 0
 #define BMGR_BROWN 1
-#define RADIATION_LWDOWN 3
-#define RADIATION_SWONLY 2
-#define RADIATION 1
-#define CLOUDINESS 0
+#define RADIATION 0
+#define RADIATION_LWDOWN 1
 #define FIXED_CH4 0
 #define PRESCRIBED_CH4 1
 #define DYNAMIC_CH4 2
@@ -85,7 +83,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 361
+#define NOUT 359
 /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -149,7 +147,7 @@
 #define WD_AQ 53
 #define YDISCHARGE 54
 #define TEMP 55
-#define SUN 56
+#define TWS 56
 #define DAYLENGTH 57
 #define EVAP_RES 58
 #define PREC_RES 59
@@ -164,7 +162,7 @@
 #define RHARVEST_BURNT_IN_FIELDC 68
 #define TEMP_IMAGE 69
 #define PREC_IMAGE 70
-#define SUN_IMAGE 71
+#define CH4_GRASSLAND 71
 #define WET_IMAGE 72
 #define FBURN 73
 #define FTIMBER 74
@@ -445,15 +443,13 @@
 #define BNF_MG 349
 #define NDEPO_MG 350
 #define LITTERTEMP 351
-#define TWS 352
-#define HARVESTC 353
-#define IRRIG 354
-#define RA 355
-#define SOILC_1m 356
-#define CH4_EMISSIONS_WET 357
-#define METHANOGENESIS 358
-#define CH4_LITTER 359
-#define CH4_GRASSLAND 360
+#define HARVESTC 352
+#define IRRIG 353
+#define RA 354
+#define SOILC_1m 355
+#define CH4_EMISSIONS_WET 356
+#define METHANOGENESIS 357
+#define CH4_LITTER 358
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

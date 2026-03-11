@@ -180,7 +180,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->b[l]=soil->par->b;
         soil->psi_sat[l]=soil->par->psi_sat;
       }
-      pedotransfer(stand,NULL,NULL,stand->frac);
+      pedotransfer(stand,NULL,NULL,stand->frac,config->fail_on_balance);
     }
   }
   /*assume last layer is bedrock in 6-layer version */

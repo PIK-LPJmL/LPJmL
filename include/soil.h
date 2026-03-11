@@ -273,7 +273,6 @@ typedef struct
   Real maxthaw_depth;
   Real mean_maxthaw;
   Real fastfrac;
-  Real layer_exists[LASTLAYER]; /* allows variable soil depth */
   Stocks decomp_litter_mean;
   Stocks *decomp_litter_pft;
   int count;
@@ -385,7 +384,7 @@ extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
 extern Real calc_litter_dm_sum(const Soil *);
-extern void pedotransfer(Stand *, Real *, Real *,Real);
+extern void pedotransfer(Stand *, Real *, Real *,Real,Bool);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);
 extern void cmpsoilmap(const int*,int,const Config *);

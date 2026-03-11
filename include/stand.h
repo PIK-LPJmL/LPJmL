@@ -83,7 +83,7 @@ extern Stocks standstocks(const Stand *);
 extern void cutpfts(Stand *,const Config *);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
-                         Real,Real *,Bool);
+                         Real,Real *,Bool,const Config *);
 extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real *,Real *,Real *,Real,Real,
                            Real,Real,Real,Real *,int,int,int,const Config *);

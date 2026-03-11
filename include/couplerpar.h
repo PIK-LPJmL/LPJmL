@@ -18,34 +18,33 @@
 
 /* List of input data streams */
 
-#define N_IN 27         /* Number of available input data streams */
+#define N_IN 26         /* Number of available input data streams */
 
-#define CLOUD_DATA 0
-#define TEMP_DATA 1
-#define PREC_DATA 2
-#define SWDOWN_DATA 3
-#define LWNET_DATA 4
-#define CO2_DATA 5
-#define LANDUSE_DATA 6
-#define TILLAGE_DATA 7
-#define RESIDUE_DATA 8
-#define TMIN_DATA 9
-#define TMAX_DATA 10
-#define TAMP_DATA 11
-#define WET_DATA 12
-#define BURNTAREA_DATA 13
-#define HUMID_DATA 14
-#define WIND_DATA 15
-#define NH4_DATA 16
-#define NO3_DATA 17
-#define FERTILIZER_DATA 18
-#define MANURE_DATA 19
-#define WATERUSE_DATA 20
-#define POPDENS_DATA 21
-#define HUMAN_IGNITION_DATA 22
-#define LIGHTNING_DATA 23
-#define GRASSLAND_LSUHA 24
-#define SDATE_DATA 25
-#define CROP_PHU_DATA 26
+#define TEMP_DATA 0
+#define PREC_DATA 1
+#define SWDOWN_DATA 2
+#define LWNET_DATA 3
+#define CO2_DATA 4
+#define LANDUSE_DATA 5
+#define TILLAGE_DATA 6
+#define RESIDUE_DATA 7
+#define TMIN_DATA 8
+#define TMAX_DATA 9
+#define TAMP_DATA 10
+#define WET_DATA 11
+#define BURNTAREA_DATA 12
+#define HUMID_DATA 13
+#define WIND_DATA 14
+#define NH4_DATA 15
+#define NO3_DATA 16
+#define FERTILIZER_DATA 17
+#define MANURE_DATA 18
+#define WATERUSE_DATA 19
+#define POPDENS_DATA 20
+#define HUMAN_IGNITION_DATA 21
+#define LIGHTNING_DATA 22
+#define GRASSLAND_LSUHA 23
+#define SDATE_DATA 24
+#define CROP_PHU_DATA 25
 
 #endif /* COUPLERPAR_H */

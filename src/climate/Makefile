@@ -19,7 +19,7 @@ OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           prdaily.$O getco2.$O storeclimate.$O dailyclimate.$O\
           getmtemp.$O initclimate_monthly.$O openclimate.$O\
           getmprec.$O checkvalidclimate.$O readtracegas.$O opendata.$O\
-          closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
+          closeclimate.$O getch4.$O interpolate_climate.$O\
           addanomaly_climate.$O readdata.$O readintdata.$O\
           openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O\
           opendata_seq.$O openclmdata.$O
@@ -42,9 +42,9 @@ $(LIBDIR)/$(LIB): $(OBJS)
 
 $(OBJS): $(HDRS)
 
-.c.$O: 
+.c.$O:
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
-clean: 
+clean:
 	$(RM) $(RMFLAGS) $(OBJS)
 	(cd $(LIBDIR) && $(RM) $(RMFLAGS)  $(LIB))

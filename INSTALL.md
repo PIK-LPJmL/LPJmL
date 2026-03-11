@@ -1,4 +1,4 @@
-# Installation of LPJmL C Version 6.0.2
+# Installation of LPJmL C Version 6.0.4
 
 ## Overview
 
@@ -58,7 +58,7 @@ After extracting the source files, the directory structure will look like this:
 ```bash
 mkdir lpjml
 cd lpjml
-gzip -cd lpjml-6.0.2.tar.gz | tar -xf -
+gzip -cd lpjml-6.0.4.tar.gz | tar -xf -
 ```
 
 ---
@@ -215,7 +215,6 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 |`IMAGE`              |include coupler to IMAGE model                               |
 |`LINEAR_DECAY`       |use linearized functions for litter decay                    |
 |`MICRO_HEATING`      |enable microbial heating                                     |
-|`NO_FAIL_BALANCE`    |lpjml does not terminate on balance errors                   |
 |`NRECOVERY_COST`     |costs for N recovery enabled                                 |
 |`PERMUTE`            |random permutation of PFT list                               |
 |`SAFE`               |code is compiled with additional checks                      |

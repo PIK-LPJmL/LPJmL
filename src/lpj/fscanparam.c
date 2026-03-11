@@ -210,9 +210,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal01(f,&param.nfert_no3_frac,"nfert_no3_frac");
     fscanparamreal01(f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
     fscanparamreal01(f,&param.ftimber_wp,"ftimber_wp");
+    fscanparamreal01(f,&param.fburnt,"fburnt");
     if(config->luc_timber)
     {
-      fscanparamreal01(f,&param.fburnt,"fburnt");
       fscanparamreal01(f,&param.ftimber,"ftimber");
       fscanparamreal01(f,&param.harvest_fast_frac,"harvest_fast_frac");
       fscanparampoolpar(f,&param.product_turnover,"product_turnover");
