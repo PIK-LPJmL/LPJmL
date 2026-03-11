@@ -93,7 +93,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
 #ifdef DEBUG_N
   printf("TREE nupsum=%g, nplant_demand=%g vegn=%g\n",nupsum,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
 #endif
-    if(nupsum==0)
+    if(nupsum<epsilon)
       n_uptake=0;
     else
     {

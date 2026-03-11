@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+
 #define maxSOM_dens 130000 //g*m-3
 #define psi_som 10.3 /**> saturated suction (mm) for organic matter (Letts, 2000)*/
 #define b_som   2.7   /**> ! Clapp Hornberger paramater for oragnic soil (Letts, 2000)*/
@@ -21,7 +22,8 @@
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
                   Real *absimm,
-                  Real standfrac /**< stand fraction (0..1) */
+                  Real standfrac, /**< stand fraction (0..1) */
+                  Bool fail_on_balance
                  )
 {
   int l;
@@ -48,7 +50,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   soil=&stand->soil;
   soilpar = soil->par;
-#ifdef SAFE
+#if defined SAFE || defined CHECK_BALANCE
   String line;
 #endif
 #ifdef CHECK_BALANCE
@@ -79,7 +81,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
         om_layer = 8;
       if (om_layer < 0)
         om_layer = 0;
-      
+
       /* pedotransfer function following Saxton&Rawls 2006: */
       wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;
       soil->wpwp[l] = wpwpt + (0.14 * wpwpt - 0.02);
@@ -222,23 +224,23 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
     } /* end of forrootsoillayer */
 
     stand->cell->balance.excess_water+=excess*standfrac;
-    //stand->cell->discharge.drunoff+=excess*standfrac;
 #ifdef DEBUG_WB
     foreachsoillayer(l)
-    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-    {   fprintf(stderr,"\n\npedotransfer Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
-          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
-      fflush(stderr);
-      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
-          l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
-    }
+      if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+      {
+        fprintf(stderr,"\n\npedotransfer Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+                sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
+        fflush(stderr);
+        fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
+                l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
+      }
 #endif
 
 #ifdef CHECK_BALANCE
     w_after=soilwater(&stand->soil)+excess;
-    if(fabs(w_before-w_after)>epsilon)
-      fprintf(stderr,"ERROR pedotransfer: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",
-              stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
+    if(fabs(w_before-w_after)>param.error_limit.w_fcn)
+      fail(INVALID_WATER_BALANCE_ERR,fail_on_balance,FALSE,"Invalid water balance in pedotransfer() in cell (%s): water balance=%.10f=%.10f-%.10f (excess is %.10f) wmm %.10f imm %.10f",
+           sprintcoord(line,&stand->cell->coord),fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */
 #ifdef USE_TIMING

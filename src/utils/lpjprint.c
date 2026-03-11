@@ -149,6 +149,12 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.ml.product.fast.carbon=grid.ml.product.slow.carbon=grid.ml.product.fast.nitrogen=grid.ml.product.slow.nitrogen=0;
     grid.discharge.dmass_lake=0.0;
     grid.discharge.next=0;
+    grid.discharge.wateruse=NULL;
+#if defined IMAGE && defined COUPLED
+    grid.discharge.wateruse_wd=NULL;
+    grid.ml.image_data=NULL;
+    grid.pft_harvest=NULL;
+#endif
     grid.ml.fraction=NULL;
     grid.ml.resdata=NULL;
     grid.discharge.tfunct=NULL;

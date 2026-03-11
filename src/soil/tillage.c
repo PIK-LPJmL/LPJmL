@@ -26,23 +26,15 @@ void tillage(Soil *soil, /**< pointer to soil data */
     {
       soil->litter.item[l].agsub.leaf.carbon += soil->litter.item[l].agtop.leaf.carbon*frac;
       soil->litter.item[l].agtop.leaf.carbon *= (1-frac);
-      if (soil->litter.item[l].agtop.leaf.carbon < epsilon)
-        soil->litter.item[l].agtop.leaf.carbon = 0;
       soil->litter.item[l].agsub.leaf.nitrogen += soil->litter.item[l].agtop.leaf.nitrogen*frac;
       soil->litter.item[l].agtop.leaf.nitrogen *= (1 - frac);
-      if (soil->litter.item[l].agtop.leaf.nitrogen < epsilon)
-        soil->litter.item[l].agtop.leaf.nitrogen = 0;
 
       for (i = 0; i < NFUELCLASS; i++)
       {
         soil->litter.item[l].agsub.wood[i].carbon += soil->litter.item[l].agtop.wood[i].carbon*frac;
         soil->litter.item[l].agtop.wood[i].carbon *= (1 - frac);
-        if (soil->litter.item[l].agtop.wood[i].carbon < epsilon)
-          soil->litter.item[l].agtop.wood[i].carbon = 0;
         soil->litter.item[l].agsub.wood[i].nitrogen += soil->litter.item[l].agtop.wood[i].nitrogen*frac;
         soil->litter.item[l].agtop.wood[i].nitrogen *= (1 - frac);
-        if (soil->litter.item[l].agtop.wood[i].nitrogen < epsilon)
-          soil->litter.item[l].agtop.wood[i].nitrogen = 0;
       }
     }
 

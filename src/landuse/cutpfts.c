@@ -24,6 +24,10 @@ void cutpfts(Stand *stand, /**< Pointer to stand */
   Pft *pft;
   foreachpft(pft,p,&stand->pftlist)
   {
+    if(stand->type->landusetype!=AGRICULTURE && !(stand->type->landusetype==OTHERS && pft->par->type==CROP))
+    {
+      stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon;
+    }
     litter_update(&stand->soil.litter,pft,pft->nind,config);
   }
   freepftlist(&stand->pftlist);

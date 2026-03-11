@@ -103,7 +103,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                  p,pft->par->name,vegc_sum(pft));
         fflush(stdout);
       } /* of 'foreachstand' */
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f "
          "trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f c_influx %.2f totalfrac: %.5f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
@@ -113,7 +113,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,
          cell->ml.image_data->timber_f.fast,cell->ml.image_data->fburnt,cell->balance.influx.carbon,fraction);
 #else
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,
          "Invalid carbon balance in year %d in cell %d (%s) of %.10f\n"
          "=====001: anpp: %.2f rh: %.2f\n"
          "=====002: firec: %.2f flux_estab: %.2f flux_harvest: %.2f\n"
@@ -138,7 +138,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #endif
   if(year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,
       "Invalid nitrogen balance in year %d in cell %d (%s) of %.10f\n"
       "=====001: n_influx %g n_outflux %g\n"
       "=====002: delta_tot=%g total nitrogen=%g n_harvest %g n_biomass_yield %g n_estab %g NO3_lateral %g\n"
@@ -178,7 +178,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
   balanceW=totw-cell->balance.totw-cell->balance.aprec-cell->balance.aMT_water+cell->balance.awater_flux+cell->balance.excess_water;
   if(year>startyear && fabs(balanceW)>param.error_limit.w_local)
-      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+      fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
            "Invalid water balance in year %d in cell %d (%s) of %.2f\n"
            "=====001: cell->totw: %.2f totw: %.2f lateral_water: %.2f\n"
            "=====002: awater_flux:%.2f awater_flux_before:%.2f\n"

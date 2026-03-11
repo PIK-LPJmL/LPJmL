@@ -40,23 +40,18 @@ void initmonthly_grid(Cell grid[],         /**< cell array */
 #endif
 
 #ifdef DEBUG
-     printf("temp = %.2f prec = %.2f wet = %.2f",
-           (getcelltemp(climate,cell))[month],
-           (getcellprec(climate,cell))[month],
-           (israndomprec(climate)) ? (getcellwet(climate,cell))[month] : 0);
-     if(config->with_radiation)
-     {
-       if(config->with_radiation==RADIATION)
-         printf("lwnet = %.2f ",(getcelllwnet(climate,cell))[month]);
-       else if(config->with_radiation==RADIATION_LWDOWN)
-         printf("lwdown = %.2f ",(getcelllwnet(climate,cell))[month]);
-       printf("swdown = %.2f\n",(getcellswdown(climate,cell))[month]);
-     }
-     else
-       printf("sun = %.2f\n",(getcellsun(climate,cell))[month]);
-     if(config->prescribe_burntarea)
-       printf("burntarea = %.2f \n",
-              (getcellburntarea(climate,cell))[month]);
+      printf("temp = %.2f prec = %.2f wet = %.2f",
+            (getcelltemp(climate,cell))[month],
+            (getcellprec(climate,cell))[month],
+            (israndomprec(climate)) ? (getcellwet(climate,cell))[month] : 0);
+      if(config->radiation_lwdown)
+        printf("lwdown = %.2f ",(getcelllwnet(climate,cell))[month]);
+      else
+        printf("lwnet = %.2f ",(getcelllwnet(climate,cell))[month]);
+      printf("swdown = %.2f\n",(getcellswdown(climate,cell))[month]);
+      if(config->prescribe_burntarea)
+        printf("burntarea = %.2f \n",
+               (getcellburntarea(climate,cell))[month]);
 #endif
     } /* if(!grid[cell].skip) */
   } /* of 'for(cell=...)' */

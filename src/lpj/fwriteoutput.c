@@ -622,7 +622,6 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(TWS,ndate1);
   writeoutputvar(DAYLENGTH,ndate1);
   writeoutputvar(TEMP,ndate1);
-  writeoutputvar(SUN,ndate1);
   writeoutputvar(NPP_AGR,1);
   writeoutputvar(RH,1);
   writeoutputvar(RA,1);
@@ -1195,7 +1194,6 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(BURNTAREA,1);
   writeoutputvar(TEMP_IMAGE,ndate1);
   writeoutputvar(PREC_IMAGE,1);
-  writeoutputvar(SUN_IMAGE,ndate1);
   writeoutputvar(WET_IMAGE,1);
   writeoutputarray(PERC,1);
   writeoutputarray(SOILTEMP,ndate1);

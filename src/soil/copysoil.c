@@ -32,7 +32,6 @@ void copysoil(Soil *dst,       /**< destination */
     dst->NH4[l]=src->NH4[l];
     dst->CH4[l] = src->CH4[l];
     dst->O2[l] = src->O2[l];
-    dst->layer_exists[l] = src->layer_exists[l];
     dst->decay_rate[l].slow=src->decay_rate[l].slow;
     dst->decay_rate[l].fast=src->decay_rate[l].fast;
     for(p=0;p<ntotpft;p++)

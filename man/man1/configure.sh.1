@@ -3,7 +3,7 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-with_timing] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]
+[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-with_timing] [-nompi] [-check] [-check_balance] [-noerror] [-Dmacro[=value] ...]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created.
 If configure script exits with message "Unsupported operating system",
@@ -38,6 +38,9 @@ Enable timing functions for performance analysis.
 .TP
 -check
 Enable run-time checking of memory leaks and access out of bounds.
+.TP
+-check_balance
+Enable balance checking in lpj functions.
 .TP
 -nompi
 Do not build the MPI version of the code.
@@ -88,9 +91,6 @@ Use linearized functions for litter decay
 .TP
 MICRO_HEATING
 Enable microbial heating
-.TP
-NO_FAIL_BALANCE
-lpjml does not terminate on balance errors
 .TP
 NRECOVEY_COST
 Costs for N recovery enabled
