@@ -44,8 +44,9 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
+  "fail_on_balance" : true, /* fail on check balance error (true/false) */
   "random_prec" : false,     /* Random weather generator for precipitation disabled */
-  "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
   "random_seed" : 2,        /* seed for random number generator */
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */

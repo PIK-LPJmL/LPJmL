@@ -55,7 +55,6 @@ of `major.minor.patch` with
 - Unit for fertilizer and manure input fixed in `filesexist.c`.
 - `opencoord()` function fixed to set file format for metafiles correctly.
 
-
 ## [6.0.4] - 2026-03-06
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
