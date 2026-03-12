@@ -53,6 +53,7 @@ of `major.minor.patch` with
 - Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
 - Typos in help text in `regridclm.c` corrected.
 - Unit for fertilizer and manure input fixed in `filesexist.c`.
+- `opencoord()` function fixed to set file format for metafiles correctly.
 
 
 ## [6.0.4] - 2026-03-06
