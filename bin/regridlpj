@@ -136,7 +136,7 @@ then
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tillage_1973_1974-2010_1973_as_till_everywhere.clm.json $dir/tillage_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/grassland_lsuha_gswp3_2000-2000.clm.json $dir/grassland_lsuha_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/residues_madrat_1850-2015_16bands.clm.json $dir/residue_$name.clm
-  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/sdate_24_bands.clm.json $dir/sdate_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/sdate_24_bands_int.clm.json $dir/sdate_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm.json $dir/crop_phu_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/GloSlope-30as_mean.clm.json $dir/slope_mean_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/GloSlope-30as_min.clm.json $dir/slope_min_$name.clm
