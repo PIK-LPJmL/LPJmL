@@ -926,7 +926,10 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Real end_w = 0;
   int sn;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  /* aconv_loss_evap/drain not included: the irrig_stor payback below reverses them, but their
+   * counterparts (charging from distribute_water/drain) occurred earlier in the year outside
+   * this function, so including them would cause a local imbalance. */
+  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, sn, cell->standlist)
   {
@@ -1051,7 +1054,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   end_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, sn, cell->standlist)
   {
@@ -1412,7 +1415,10 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stocks balance= {0,0};
   Real end_w = 0;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  /* aconv_loss_evap/drain not included: irrig_stor paybacks in grasslandreduction() reverse these
+   * accumulators, but the original charges occurred earlier in the year outside this function,
+   * so including them causes a local imbalance. */
+  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(stand, s, cell->standlist)
   {
@@ -1833,7 +1839,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen=0;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   end_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(stand, s, cell->standlist)
   {
