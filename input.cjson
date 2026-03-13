@@ -42,7 +42,7 @@
   "manure_nr" :    { "id" : 19, "fmt" : "meta", "name" : "manure_N_default_cft_aggregation_30min_1860-2017.clm.json"},
   "with_tillage" : { "id" : 7, "fmt" : "meta", "name" : "tillage_1973_1974-2010_1973_as_till_everywhere.clm.json"},
   "residue_on_field" : { "id" : 8, "fmt" : "meta", "name" : "residues_madrat_1850-2015_16bands.clm.json"},
-  "sdate" : { "id" : 25,"fmt" : "meta", "name" : "sdate_24_bands_int.clm.json"},
+  "sdate" : { "id" : 25,"fmt" : "meta", "name" : "sdate_24_bands.clm.json"},
   "crop_phu" : {"id": 26,"fmt" : "meta", "name" : "phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm.json"},
   "grassland_lsuha" : { "id" : 24, "fmt" : "meta",  "name" : "grassland_lsuha_gswp3_2000-2000.clm.json"},
   "lakes" :        { "id" : 36, "fmt" : "meta", "name" : "glwd_lakes_and_rivers_30arcmin.clm.json"},
