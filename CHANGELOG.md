@@ -46,7 +46,8 @@ of `major.minor.patch` with
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
 - Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable.
 - The `regridlpj` utility uses now JSON metafiles for regridding the input data.
-- Population input for SPITFIRE can be read units of total number or density, boolean type for `"population"` replaced by strings `"no"`, `"number"` and `"density"`.
+- Population input for SPITFIRE can be read in units of total number or density, boolean type for `"population"` replaced by strings `"no"`, `"number"` and `"density"`.
+- Default map name changed to `"map"` in utility `mathclm`.
 
 ### Fixed
 
@@ -54,6 +55,8 @@ of `major.minor.patch` with
 - Typos in help text in `regridclm.c` corrected.
 - Unit for fertilizer and manure input fixed in `filesexist.c`.
 - `opencoord()` function fixed to set file format for metafiles correctly.
+- Check for successfull opening of second file corrected for metafiles in `mathclm.c`.
+
 
 ## [6.0.4] - 2026-03-06
 
