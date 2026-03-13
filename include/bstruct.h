@@ -22,6 +22,13 @@
 
 #define BSTRUCT_VERSION "1.0.1"
 
+/* Return values for bstruct_gettype function */
+
+#define BSTRUCT_NOTFOUND -1
+#define BSTRUCT_STRUCT BSTRUCT_BEGINSTRUCT
+#define BSTRUCT_ARRAY BSTRUCT_BEGINARRAY
+#define BSTRUCT_BOOL BSTRUCT_TRUE
+
 /* Definition of datatypes */
 
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
@@ -62,6 +69,7 @@ extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
+extern int bstruct_gettype(Bstruct,const char *);
 extern Bool bstruct_writearrayindex(Bstruct,long long,const long long [],int,int);
 extern Bool bstruct_finish(Bstruct);
 extern void bstruct_sync(Bstruct);

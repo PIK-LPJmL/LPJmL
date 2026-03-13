@@ -28,8 +28,9 @@ of `major.minor.patch` with
 ### Added
 
 - Utility `cmprestart` added to compare two restart files and check for identity.
-- Function `bstruct_skiparray()` added and corresponding test `test_skiparray.c` in `bstruct` library to skip arrary elements.
-- Comparison of restart file with `cmprestart` added to merge request template.
+- Function `bstruct_skiparray()` and corresponding test `test_skiparray.c` added in `bstruct` library to skip arrary elements.
+- Function `bstruct_gettype()` added to `bstruct` library to get datatype of object in restart file.
+- Comparison of restart files with `cmprestart` added to merge request template.
 
 ### Changed
 
@@ -42,6 +43,8 @@ of `major.minor.patch` with
 
 
 ## [6.0.4] - 2026-03-06
+
+### Contributors
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
