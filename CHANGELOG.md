@@ -56,6 +56,7 @@ of `major.minor.patch` with
 - Unit for fertilizer and manure input fixed in `filesexist.c`.
 - `opencoord()` function fixed to set file format for metafiles correctly.
 - Check for successfull opening of second file corrected for metafiles in `mathclm.c`.
+- Header file `support_pedotransfer_stub.h` updated to allow successfull compilation of tests.
 
 
 ## [6.0.4] - 2026-03-06
