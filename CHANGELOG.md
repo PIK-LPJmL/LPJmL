@@ -34,6 +34,7 @@ of `major.minor.patch` with
  - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
  - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
  - Arrays `"hlimit"` and `"basetemp"` copied from JSON metafile to NetCDF file in `clm2cdf`.
+ - Option `-drainage` added to script `regridlpj` to regrid drainage, elevation, reservoir and neighbour irrigation file.
  - Options `-metafile` and `-json` added to `regriddrain` and `regridirrig` to use JSON metafiles for input and write JSON metafiles for output.
  - Support for float and double datatype added to `readintdata_netcdf.c.`
 
