@@ -29,7 +29,7 @@ Bool checkhlimit(const int hlimit[],  /**< array of hlimit to check */
   if(size!=config->crop_phumap_size)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR267: Size of basetemp array=%d in crop PHU file '%s' is not %d.\n",
+      fprintf(stderr,"ERROR267: Size of hlimit array=%d in crop PHU file '%s' is not %d.\n",
               size,config->crop_phu_filename.name,config->crop_phumap_size);
     return TRUE;
   }
