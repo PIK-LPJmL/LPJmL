@@ -19,6 +19,30 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- Replace hardcoded Sphagnum_moss index (13) with `strcmp(config->pftpar[p].name,"Sphagnum moss")` in 5 landuse files
+- Fix PFT numbering comments in pft.cjson to reflect actual positions (1-14)
+- Updated `biome_classification.c` to use `findpftname()` instead of hard-coded macros
+- Removed macros from `pftpar.h`
+- Added missing PFTs to `biome_classification.c`
+- String comparison in `landusechange_for_reservoir.c` replaced by call to `ispftinstand()`.
+
+### Removed
+
+- Removed boreal broadleaved summergreen tree from needleleaved fpc sum in `biome_classification.c`
+
+### Fixed
+
+- Double accounting of irrigation water interception in daily_grassland.c
+- C balance error in `deforest()`
+- Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
+
 
 ## [6.0.4] - 2026-03-06
 
