@@ -125,7 +125,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  soil=opencoord_netcdf(argv[iarg],var,&nc_config,TRUE);
+  soil=opencoord_netcdf(argv[iarg],NULL,NULL,var,&nc_config,TRUE);
   if(soil==NULL)
     return EXIT_FAILURE;
   getresolution_netcdf(soil,&resolution);

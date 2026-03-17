@@ -60,8 +60,15 @@ int iterate(Outputfile *output, /**< Output file data */
   index=0;
 
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
-  if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
-    printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
+  if(isroot(*config))
+  {
+    if(config->climate!=NULL)
+      printf("Climate input: %s.\n",config->climate);
+    if(config->landuse!=NULL)
+      printf("Land-use input: %s.\n",config->landuse);
+    if(config->nspinup && !config->isfirstspinupyear)
+      printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
+  }
   if((config->storeclimate && config->nspinup) || (config->storeclimate && config->isanomaly))
   {
     /* climate for the first nspinyear years is stored in memory

@@ -69,10 +69,19 @@ static void checkyear(const char *name,const Climatefile *file,const Config *con
   }
 } /* of 'checkyear' */
 
-Landuse initlanduse(const Config *config /**< LPJ configuration */
-                   )                     /** \return allocated landuse or NULL */
+Landuse initlanduse(int npft,      /**< number of natural PFTs */
+                    int ncft,      /**< number of crop PFTs */
+                    Config *config /**< LPJ configuration */
+                   )               /** \return allocated landuse or NULL */
 {
   Landuse landuse;
+  Limit *basetemp;
+  int *hlimit;
+  int basetemp_size,hlimit_size;
+  Map *map=NULL;
+  Attr *attrs=NULL;
+  char *climate;
+  int n_attr;
   landuse=new(struct landuse);
   if(landuse==NULL)
   {
@@ -82,11 +91,21 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata(&landuse->landuse,&map,&attrs,&n_attr,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     freelanduse(landuse,config);
     return NULL;
   }
+  checktitle(attrs,n_attr,config->landuse_filename.name,&config->landuse,isroot(*config));
+  freeattrs(attrs,n_attr);
+  if(getmap(map,config->landuse_filename.name,"landusemap",FALSE,
+            &config->landusemap,&config->landusemap_size,npft,ncft,config))
+  {
+    freelanduse(landuse,config);
+    return NULL;
+  }
+  if(config->landusemap==NULL)
+    config->landusemap=defaultcftmap(&config->landusemap_size,"landusemap",FALSE,npft,ncft,config);
   if(landuse->landuse.var_len!=2*config->landusemap_size && landuse->landuse.var_len!=4*config->landusemap_size)
   {
     if(isroot(*config))
@@ -103,8 +122,25 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->sdate_option>=PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->sdate,&map,NULL,NULL,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->sdatemap_size,FALSE,config))
     {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(getmap(map,config->sdate_filename.name,"sdatemap",TRUE,
+              &config->sdatemap,&config->sdatemap_size,npft,ncft,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->sdatemap==NULL)
+      config->sdatemap=defaultcftmap(&config->sdatemap_size,"sdatemap",TRUE,npft,ncft,config);
+    if(landuse->sdate.var_len!=2*config->sdatemap_size)
+    {
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%zu in sowing date data file, must be %d.\n",
+                landuse->sdate.var_len,2*config->sdatemap_size);
       freelanduse(landuse,config);
       return NULL;
     }
@@ -115,10 +151,104 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->crop_phu,&map,&attrs,&n_attr,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->crop_phumap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
+    }
+    if(attrs!=NULL)
+    {
+      climate=getattr(attrs,n_attr,"climate");
+      if(climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in crop PHU file.\n");
+      }
+      else if(config->climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in climate input.\n");
+      }
+      else if(strcmp(config->climate,climate))
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR269: Climate source %s in crop PHU file differs from %s in climate input.\n",
+                  climate,config->climate);
+        free(climate);
+        freeattrs(attrs,n_attr);
+        freelanduse(landuse,config);
+        return NULL;
+      }
+      free(climate);
+      freeattrs(attrs,n_attr);
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"WARNING044: No climate source defined in crop PHU file.\n");
+    }
+    if(getmap(map,config->crop_phu_filename.name,"crop_phumap",TRUE,
+              &config->crop_phumap,&config->crop_phumap_size,npft,ncft,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->crop_phumap==NULL)
+      config->crop_phumap=defaultcftmap(&config->crop_phumap_size,"crop_phumap",TRUE,npft,ncft,config);
+    if(landuse->crop_phu.var_len!=2*config->crop_phumap_size)
+    {
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%zu in crop PHU date data file, must be %d.\n",
+                landuse->crop_phu.var_len,2*config->crop_phumap_size);
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->crop_phu_filename.fmt==META  || config->crop_phu_filename.fmt==CDF)
+    {
+      basetemp=(config->crop_phu_filename.fmt==META) ?
+                 getlimitarrayfromjson(config->crop_phu_filename.name,&basetemp_size,"basetemp",isroot(*config)) :
+                 getlimitarray_netcdf(config->crop_phu_filename.name,&basetemp_size,"basetemp",isroot(*config));
+      if(basetemp==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
+                  config->crop_phu_filename.name);
+      }
+      else
+      {
+        if(checkbasetemp(basetemp,basetemp_size,npft,config))
+        {
+          free(basetemp);
+          freelanduse(landuse,config);
+          return NULL;
+        }
+        free(basetemp);
+      }
+      hlimit=(config->crop_phu_filename.fmt==META) ?
+                 getintarrayfromjson(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config)) :
+                 getintarray_netcdf(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config));
+      if(hlimit==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
+                  config->crop_phu_filename.name);
+      }
+      else
+      {
+        if(checkhlimit(hlimit,hlimit_size,npft,config))
+        {
+          free(hlimit);
+          freelanduse(landuse,config);
+          return NULL;
+        }
+        free(hlimit);
+      }
+    }
+    else if(isroot(*config))
+    {
+      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON or NetCDF file, no basetemp and hlimit array found.\n",
+              config->crop_phu_filename.name);
     }
     checkyear("crop phu",&landuse->crop_phu,config);
   } /* End crop_phu */
@@ -126,20 +256,58 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->fertilizer_nr,&map,&attrs,&n_attr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
+    checktitle(attrs,n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config));
+    freeattrs(attrs,n_attr);
+    if(getmap(map,config->fertilizer_nr_filename.name,"fertilizermap",FALSE,
+              &config->fertilizermap,&config->fertilizermap_size,npft,ncft,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->fertilizermap==NULL)
+      config->fertilizermap=defaultcftmap(&config->fertilizermap_size,"fertilizermap",FALSE,npft,ncft,config);
     if(config->fertilizer_nr_filename.fmt!=SOCK)
       checkyear("fertilizer",&landuse->fertilizer_nr,config);
+    if(landuse->fertilizer_nr.var_len!=2*config->fertilizermap_size)
+    {
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%zu in fertilizer data file, must be %d.\n",
+                landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
+      freelanduse(landuse,config);
+      return NULL;
+    }
   }
 
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->manure_nr,&map,&attrs,&n_attr,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
     {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    checktitle(attrs,n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config));
+    freeattrs(attrs,n_attr);
+    if(getmap(map,config->manure_nr_filename.name,"manuremap",FALSE,
+              &config->manuremap,&config->manuremap_size,npft,ncft,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->manuremap==NULL)
+      config->manuremap=defaultcftmap(&config->manuremap_size,"manuremap",FALSE,npft,ncft,config);
+    if(landuse->manure_nr.var_len!=2*config->manuremap_size)
+    {
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%zu in manure data file, must be %d.\n",
+                landuse->manure_nr.var_len,2*config->manuremap_size);
       freelanduse(landuse,config);
       return NULL;
     }
@@ -149,7 +317,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->tillage_type==READ_TILLAGE)
   {
-    if(opendata(&landuse->with_tillage,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->with_tillage,NULL,NULL,NULL,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -161,8 +329,25 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* open residue data */
-    if(opendata(&landuse->residue_on_field,&config->residue_data_filename,"residue extraction",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->residue_on_field,&map,NULL,NULL,&config->residue_data_filename,"residue extraction","1",LPJ_FLOAT,LPJ_SHORT,1.0,config->residuemap_size,FALSE,config))
     {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(getmap(map,config->residue_data_filename.name,"residuemap",FALSE,
+              &config->residuemap,&config->residuemap_size,npft,ncft,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(config->residuemap==NULL)
+      config->residuemap=defaultcftmap(&config->residuemap_size,"residuemap",FALSE,npft,ncft,config);
+    if(landuse->residue_on_field.var_len!=config->residuemap_size)
+    {
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%zu in residue extraction file, must be %d.\n",
+                landuse->residue_on_field.var_len,config->residuemap_size);
       freelanduse(landuse,config);
       return NULL;
     }
@@ -172,12 +357,43 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
+    if(opendata(&landuse->grassland_lsuha,NULL,&attrs,&n_attr,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("livestock density",&landuse->grassland_lsuha,config);
+    if(attrs!=NULL)
+    {
+      climate=getattr(attrs,n_attr,"climate");
+      if(climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in livestock density file.\n");
+      }
+      else if(config->climate==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING044: No climate source defined in climate input.\n");
+      }
+      else if(strcmp(config->climate,climate))
+      {
+        fprintf(stderr,"ERROR269: Climate source %s in livestock density file differs from %s in climate input.\n",
+                climate,config->climate);
+        free(climate);
+        freeattrs(attrs,n_attr);
+        freelanduse(landuse,config);
+        return NULL;
+      }
+      free(climate);
+      freeattrs(attrs,n_attr);
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"WARNING044: No climate source defined in livestock density file.\n");
+    }
+    if(config->lsuha_filename.fmt!=SOCK)
+      checkyear("livestock density",&landuse->grassland_lsuha,config);
   }
 
   landuse->intercrop=config->intercrop;
@@ -303,27 +519,27 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(j=0;j<2*ncft;j++)
           grid[cell].ml.sdate_fixed[j]=0;
-        for(j=0;j<config->cftmap_size;j++)
-          if(config->cftmap[j]==NOT_FOUND)
+        for(j=0;j<config->sdatemap_size;j++)
+          if(config->sdatemap[j]==NOT_FOUND)
             count++; /* ignore data */
           else
-            grid[cell].ml.sdate_fixed[config->cftmap[j]]=dates[count++];
-        for(j=0;j<config->cftmap_size;j++)
-          if(config->cftmap[j]==NOT_FOUND)
+            grid[cell].ml.sdate_fixed[config->sdatemap[j]]=dates[count++];
+        for(j=0;j<config->sdatemap_size;j++)
+          if(config->sdatemap[j]==NOT_FOUND)
             count++; /* ignore data */
           else
-            grid[cell].ml.sdate_fixed[config->cftmap[j]+ncft]=dates[count++];
+            grid[cell].ml.sdate_fixed[config->sdatemap[j]+ncft]=dates[count++];
         if(config->sdate_option==PRESCRIBED_SDATE_ALL_IRRIG)
         {
-          for(j=0;j<config->cftmap_size;j++)
-            if(config->cftmap[j]!=NOT_FOUND)
-              grid[cell].ml.sdate_fixed[config->cftmap[j]]=grid[cell].ml.sdate_fixed[config->cftmap[j]+ncft];
+          for(j=0;j<config->sdatemap_size;j++)
+            if(config->sdatemap[j]!=NOT_FOUND)
+              grid[cell].ml.sdate_fixed[config->sdatemap[j]]=grid[cell].ml.sdate_fixed[config->sdatemap[j]+ncft];
         }
         else if(config->sdate_option==PRESCRIBED_SDATE_ALL_RAINFED)
         {
-          for(j=0;j<config->cftmap_size;j++)
-            if(config->cftmap[j]!=NOT_FOUND)
-              grid[cell].ml.sdate_fixed[config->cftmap[j]+ncft]=grid[cell].ml.sdate_fixed[config->cftmap[j]];
+          for(j=0;j<config->sdatemap_size;j++)
+            if(config->sdatemap[j]!=NOT_FOUND)
+              grid[cell].ml.sdate_fixed[config->sdatemap[j]+ncft]=grid[cell].ml.sdate_fixed[config->sdatemap[j]];
         }
       }
       else
@@ -342,27 +558,27 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(j=0; j<2*ncft; j++)
           grid[cell].ml.crop_phu_fixed[j]=0;
-        for(j=0;j<config->cftmap_size;j++)
-          if(config->cftmap[j]==NOT_FOUND)
+        for(j=0;j<config->crop_phumap_size;j++)
+          if(config->crop_phumap[j]==NOT_FOUND)
             count++; /* ignore data */
           else
-            grid[cell].ml.crop_phu_fixed[config->cftmap[j]]=data[count++];
-        for(j=0;j<config->cftmap_size;j++)
-          if(config->cftmap[j]==NOT_FOUND)
+            grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]]=data[count++];
+        for(j=0;j<config->crop_phumap_size;j++)
+          if(config->crop_phumap[j]==NOT_FOUND)
             count++; /* ignore data */
           else
-            grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft]=data[count++];
+            grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]+ncft]=data[count++];
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU_ALL_IRRIG)
         {
-          for(j=0;j<config->cftmap_size;j++)
-            if(config->cftmap[j]!=NOT_FOUND)
-              grid[cell].ml.crop_phu_fixed[config->cftmap[j]]=grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft];
+          for(j=0;j<config->crop_phumap_size;j++)
+            if(config->crop_phumap[j]!=NOT_FOUND)
+              grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]]=grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]+ncft];
         }
         else if(config->crop_phu_option==PRESCRIBED_CROP_PHU_ALL_RAINFED)
         {
-          for(j=0;j<config->cftmap_size;j++)
-            if(config->cftmap[j]!=NOT_FOUND)
-              grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft]=grid[cell].ml.crop_phu_fixed[config->cftmap[j]];
+          for(j=0;j<config->crop_phumap_size;j++)
+            if(config->crop_phumap[j]!=NOT_FOUND)
+              grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]+ncft]=grid[cell].ml.crop_phu_fixed[config->crop_phumap[j]];
         }
       }
       else
@@ -419,20 +635,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       soiltype=-1;
     for(i=0;i<WIRRIG;i++)
     {
-      initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
+      initlandfracitem(grid[cell].ml.landfrac+i,0,ncft,config->nagtree);
       /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
       if(landuse->landuse.var_len!=4*config->landusemap_size || i<1)
       {
         if(i>0 && !grid[cell].skip)
         {
-          for(j=0;j<ncft;j++)
-            grid[cell].ml.irrig_system->crop[j]=grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
-          for(j=0;j<NGRASS;j++)
-            grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
-          for(j=0;j<config->nagtree;j++)
-            grid[cell].ml.irrig_system->ag_tree[j]=grid[cell].ml.manage.par->default_irrig_system;
-          grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
-          grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
+          /*default national irrigation system (Rohwer & Gerten 2007)*/
+          initirrigsystem(grid[cell].ml.irrig_system,grid[cell].ml.manage.par->default_irrig_system,ncft,config->nagtree);
         }
         if(readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
                         config->landusemap_size,data,&count,ncft,config->nwptype))
@@ -600,6 +810,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].biomass_grass=grid[cell].ml.landfrac[1].biomass_grass=
       grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
       grid[cell].ml.landfrac[0].woodplantation=grid[cell].ml.landfrac[1].woodplantation=0;
+
     }
 
     /* force tinyfrac for all crops only on pixels with valid soil */
@@ -660,27 +871,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* set landuse to zero if no valid soil */
     if ((grid[cell].skip || soiltype==ROCK || soiltype==ICE || soiltype < 0) && sum>0)
     {
-      for(j=0; j<ncft; j++)
-      {
-        grid[cell].ml.landfrac[0].crop[j]=0;
-        grid[cell].ml.landfrac[1].crop[j]=0;
-      }
-      for(j=0; j<config->nagtree; j++)
-      {
-        grid[cell].ml.landfrac[0].ag_tree[j]=0;
-        grid[cell].ml.landfrac[1].ag_tree[j]=0;
-      }
-      for(j=0; j<NGRASS; j++)
-      {
-        grid[cell].ml.landfrac[0].grass[j]=0;
-        grid[cell].ml.landfrac[1].grass[j]=0;
-      }
-      grid[cell].ml.landfrac[0].biomass_grass=0;
-      grid[cell].ml.landfrac[1].biomass_grass=0;
-      grid[cell].ml.landfrac[0].biomass_tree=0;
-      grid[cell].ml.landfrac[1].biomass_tree=0;
-      grid[cell].ml.landfrac[0].woodplantation=0;
-      grid[cell].ml.landfrac[1].woodplantation=0;
+      initlandfrac(grid[cell].ml.landfrac,0,ncft,config->nagtree);
     }
     /* recommpute sum after scaling fraction */
     sum=landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,TRUE);
@@ -756,8 +947,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   free(data);
   for(cell=0; cell<config->ngridcell; cell++)
   {
-    initlandfrac(grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
-    initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
+    initlandfrac(grid[cell].ml.fertilizer_nr,0,ncft,config->nagtree);
+    initlandfrac(grid[cell].ml.manure_nr,0,ncft,config->nagtree);
   }
 
   if(config->fertilizer_input==FERTILIZER)
@@ -799,8 +990,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       for(i=0; i<WIRRIG; i++)
       {
-        if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
-                           config->fertilizermap_size,data,&count,ncft,config->nwptype))
+        if(readlandfracmap(grid[cell].ml.manure_nr+i,config->manuremap,
+                           config->manuremap_size,data,&count,ncft,config->nwptype))
         {
           fprintf(stderr,"ERROR149: Manure input=%g for band %zu less than zero for cell %d (%s) in year %d.\n",
                   data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
@@ -818,27 +1009,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       for(i=0; i<WIRRIG; i++)
       {
-        for(j=0; j<ncft; j++)
-       {
-          grid[cell].ml.fertilizer_nr[i].crop[j]=param.fertilizer_rate;
-          grid[cell].ml.manure_nr[i].crop[j]=param.manure_rate;
-        }
-        for(j=0; j<NGRASS; j++)
-        {
-          grid[cell].ml.fertilizer_nr[i].grass[j]=param.fertilizer_rate;
-          grid[cell].ml.manure_nr[i].grass[j]=param.manure_rate;
-        }
-        for(j=0; j<config->nagtree; j++)
-        {
-          grid[cell].ml.fertilizer_nr[i].ag_tree[j]=param.fertilizer_rate;
-          grid[cell].ml.manure_nr[i].ag_tree[j]=param.manure_rate;
-        }
-        grid[cell].ml.fertilizer_nr[i].biomass_grass=param.fertilizer_rate;
-        grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
-        grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
-        grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
-        grid[cell].ml.fertilizer_nr[i].woodplantation=param.fertilizer_rate;
-        grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
+        initlandfrac(grid[cell].ml.fertilizer_nr,param.fertilizer_rate,ncft,config->nagtree);
+        initlandfrac(grid[cell].ml.manure_nr,param.manure_rate,ncft,config->nagtree);
       }
     }
   }
@@ -874,18 +1046,18 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* do changes for residue rate left on field*/
     for(cell=0; cell<config->ngridcell; cell++)
     {
-      initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
-      if(readlandfracmap(grid[cell].ml.residue_on_field,config->fertilizermap,
-                         config->fertilizermap_size,data,&count,ncft,config->nwptype))
+      initlandfrac(grid[cell].ml.residue_on_field,0,ncft,config->nagtree);
+      if(readlandfracmap(grid[cell].ml.residue_on_field,config->residuemap,
+                         config->residuemap_size,data,&count,ncft,config->nwptype))
       {
         fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                 data[count],count % config->fertilizermap_size,
                 cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearr);
         return TRUE;
       }
-      count-=config->fertilizermap_size;
-      readlandfracmap(grid[cell].ml.residue_on_field+1,config->fertilizermap,
-                      config->fertilizermap_size,data,&count,ncft,config->nwptype);
+      count-=config->residuemap_size;
+      readlandfracmap(grid[cell].ml.residue_on_field+1,config->residuemap,
+                      config->residuemap_size,data,&count,ncft,config->nwptype);
     }
     free(data);
   }

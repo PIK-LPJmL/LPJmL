@@ -29,7 +29,7 @@ int main(int argc,char **argv)
   int iarg,ivalue,setversion;
   char *endptr;
   size_t size;
-  char *map_name=BAND_NAMES;
+  char *map_name=MAP_NAME;
   char *arglist;
   char *out_json;
   size_t offset;
@@ -246,7 +246,7 @@ int main(int argc,char **argv)
         header2.nyear=1;
         grid_type2=LPJ_SHORT;
         in2=openmetafile(&header2,&map2,map_name,NULL,NULL,NULL,NULL,NULL,&units2,NULL,NULL,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
-        if(in1==NULL)
+        if(in2==NULL)
           return EXIT_FAILURE;
         fseek(in2,offset,SEEK_SET);
         if(units!=NULL && units2!=NULL && strcmp(units,units2))
