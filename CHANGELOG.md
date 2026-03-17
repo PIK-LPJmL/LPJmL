@@ -47,7 +47,7 @@ of `major.minor.patch` with
 - Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
 - The global attributes in JSON metafiles are printed on separate lines.
 - If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
-- Updated standard input data set to citable and publishable data sets, making use of JSON file metadata where applicable.
+- Updated standard input data set to citable and publishable data sets (https://doi.org/10.5281/zenodo.19064225), making use of JSON file metadata where applicable.
 - The `regridlpj` utility uses now JSON metafiles for regridding the input data.
 - Population input for SPITFIRE can be read in units of total number or density, boolean type for `"population"` replaced by strings `"no"`, `"number"` and `"density"`.
 - Default map name changed to `"map"` in utility `mathclm`.
