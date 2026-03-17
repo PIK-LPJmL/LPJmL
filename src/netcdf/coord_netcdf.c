@@ -511,7 +511,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
   return TRUE;
 } /* of 'readcoord_netcdf' */
 
-Coord_netcdf opencoord_netcdf(const char *filename,const char *var,const Netcdf_config *nc_config,Bool isout)
+Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_name,const char *var,const Netcdf_config *nc_config,Bool isout)
 {
 #ifdef USE_NETCDF
   Coord_netcdf coord;
@@ -586,6 +586,12 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,const Netcdf_
     nc_close(coord->ncid);
     free(coord);
     return NULL;
+  }
+  if(map!=NULL)
+  {
+    *map=readmap_netcdf(coord->ncid,(map_name==NULL) ? MAP_NAME : map_name);
+     if(*map==NULL && map_name!=NULL)
+       fprintf(stderr,"WARNING409: Missing or invalid map '%s' in '%s'.\n",map_name,filename);
   }
   nc_inq_vardimid(coord->ncid,coord->varid,dimids);
   nc_inq_dimname(coord->ncid,dimids[ndims-1],name);

@@ -44,29 +44,31 @@ Landfrac *newlandfrac(int ncft,   /**< number of crop PFTs */
 } /* of 'newlandfrac' */
 
 void initlandfracitem(Landfrac *landfrac, /**< land fractions */
+                      Real value,         /**< value to initialize with */
                       int ncft,           /**< number of crop PFTs */
                       int nagtree         /**< number of agriculture tree PFTs */
                      )
 {
   int j;
   for(j=0;j<ncft;j++)
-    landfrac->crop[j]=0;
+    landfrac->crop[j]=value;
   for(j=0;j<nagtree;j++)
-    landfrac->ag_tree[j]=0;
+    landfrac->ag_tree[j]=value;
   for(j=0;j<NGRASS;j++)
-    landfrac->grass[j]=0;
-  landfrac->biomass_grass=landfrac->biomass_tree=0;
-  landfrac->woodplantation=0;
+    landfrac->grass[j]=value;
+  landfrac->biomass_grass=landfrac->biomass_tree=value;
+  landfrac->woodplantation=value;
 } /* of 'initlandfracitem' */
 
 void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
+                  Real value,           /**< value to initialize with */
                   int ncft,             /**< number of crop PFTs */
                   int nagtree           /**< number of agriculture tree PFTs */
                  )
 {
   int i;
   for(i=0;i<2;i++)
-    initlandfracitem(landfrac+i,ncft,nagtree);
+    initlandfracitem(landfrac+i,value,ncft,nagtree);
 } /* of 'initlandfrac' */
 
 void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */

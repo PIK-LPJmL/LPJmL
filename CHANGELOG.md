@@ -20,7 +20,46 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.0.5] - 2026-03-17
+
 ### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+ - Base temp and hlimit values are read from crop PHU JSON or NetCDF file and compared to values read from the PFT JSON file. `lpjml` stops in case of different values.
+ - Warning is printed if no JSON or NetCDF file is read for crop PHU input or file contains no `"basetemp"` or `"hlimit"` data.
+ - Band names for mapping are read from JSON metafiles and NetCDF input files.
+ - Globale attribute `"title"` is read from climate and land-use input files and checked for matching titles.
+ - Global attribute `"climate"` is read for crop PHU and livestock density output and compared to title of climate input.
+ - File `magic` added to support LPJmL clm and restart files for the `file` command. Content of the magic file has to copied to the `~/.magic` file.
+ - Arrays `"hlimit"` and `"basetemp"` copied from JSON metafile to NetCDF file in `clm2cdf`.
+ - Option `-drainage` added to script `regridlpj` to regrid drainage, elevation, reservoir and neighbour irrigation file.
+ - Options `-metafile` and `-json` added to `regriddrain` and `regridirrig` to use JSON metafiles for input and write JSON metafiles for output.
+ - Support for float and double datatype added to `readintdata_netcdf.c.`
+
+### Changed
+
+- JSON metafiles instead of CLM files used in `input.cjson` for land-use, fertilizer, manure, sowing data and crop PHU input in order to read CFT maps.
+- JSON metafiles are read for climate input to get title.
+- Maps in `lpjml_config.cjson` are commented out. If defined they are used instead of the maps defined in the input files.
+- The global attributes in JSON metafiles are printed on separate lines.
+- If unit string is identical scaling is set to 1 for NetCDF files and udunits is not called.
+- Updated standard input data set to citable and publishable data sets (https://doi.org/10.5281/zenodo.19064225), making use of JSON file metadata where applicable.
+- The `regridlpj` utility uses now JSON metafiles for regridding the input data.
+- Population input for SPITFIRE can be read in units of total number or density, boolean type for `"population"` replaced by strings `"no"`, `"number"` and `"density"`.
+- Default map name changed to `"map"` in utility `mathclm`.
+
+### Fixed
+
+- Datatype `Config` is called by reference in `filesexist()` function to avoid pointer error in `lpjcheck`.
+- Typos in help text in `regridclm.c` corrected.
+- Unit for fertilizer and manure input fixed in `filesexist.c`.
+- `opencoord()` function fixed to set file format for metafiles correctly.
+- Check for successfull opening of second file corrected for metafiles in `mathclm.c`.
+- Header file `support_pedotransfer_stub.h` updated to allow successfull compilation of tests.
 
 
 ## [6.0.4] - 2026-03-06

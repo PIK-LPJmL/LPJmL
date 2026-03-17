@@ -32,6 +32,8 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
   size_t i;
   int *f;
   short *s;
+  float *r;
+  double *d;
   size_t offsets[4];
   size_t counts[4];
   String line;
@@ -153,6 +155,110 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
         }
       }
       free(s);
+      break;
+    case LPJ_FLOAT:
+      r=newvec(float,file->nlon*file->nlat*file->var_len);
+      if(r==NULL)
+      {
+        printallocerr("data");
+        rc=TRUE;
+      }
+      else if(isroot(*config))
+      {
+        if((rc=nc_get_vara_float(file->ncid,file->varid,offsets,counts,r)))
+          fprintf(stderr,"ERROR421: Cannot read int data: %s.\n",
+                  nc_strerror(rc)); 
+      }
+      else
+        rc=FALSE;
+      if(iserror(rc,config))
+      {
+        free(r);
+        return TRUE;
+      }
+#ifdef USE_MPI
+      MPI_Bcast(r,file->nlon*file->nlat*file->var_len,MPI_FLOAT,0,config->comm);
+#endif
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(file->offset)
+          offsets[start]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+        else
+          offsets[start]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+        if(file->is360 && grid[cell].coord.lon<0)
+          offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        else
+          offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
+        {
+          free(r);
+          return TRUE;
+        }
+        for(i=0;i<file->var_len;i++)
+        {
+          if(!grid[cell].skip && r[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]]==file->missing_value.f)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (%s).\n",
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+            free(r);
+            return TRUE;
+          }
+          data[cell*file->var_len+i]=r[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]];
+        }
+      }
+      free(r);
+      break;
+    case LPJ_DOUBLE:
+      d=newvec(double,file->nlon*file->nlat*file->var_len);
+      if(d==NULL)
+      {
+        printallocerr("data");
+        rc=TRUE;
+      }
+      else if(isroot(*config))
+      {
+        if((rc=nc_get_vara_double(file->ncid,file->varid,offsets,counts,d)))
+          fprintf(stderr,"ERROR421: Cannot read int data: %s.\n",
+                  nc_strerror(rc)); 
+      }
+      else
+        rc=FALSE;
+      if(iserror(rc,config))
+      {
+        free(d);
+        return TRUE;
+      }
+#ifdef USE_MPI
+      MPI_Bcast(d,file->nlon*file->nlat*file->var_len,MPI_DOUBLE,0,config->comm);
+#endif
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(file->offset)
+          offsets[start]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+        else
+          offsets[start]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+        if(file->is360 && grid[cell].coord.lon<0)
+          offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        else
+          offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
+        {
+          free(d);
+          return TRUE;
+        }
+        for(i=0;i<file->var_len;i++)
+        {
+          if(!grid[cell].skip && d[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]]==file->missing_value.d)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (%s).\n",
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+            free(d);
+            return TRUE;
+          }
+          data[cell*file->var_len+i]=d[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]];
+        }
+      }
+      free(d);
       break;
     default:
       if(isroot(*config))

@@ -22,13 +22,16 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  Type datatype,            /**< data type in binary file */
                  int delta_year,           /**< time step (yrs) */
                  Real scalar,              /**< scaling factor */
-                 const Config *config      /**< LPJ configuration */
+                 Bool check,               /**< check title (TRUE/FALSE) */
+                 Config *config            /**< LPJ configuration */
                 )                          /** \return TRUE on error */
 {
   Header header;
   String headername;
   int last,version,nbands,rc;
   char *s;
+  Attr *attrs=NULL;
+  int n_attr;
   size_t offset,filesize;
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
@@ -91,7 +94,9 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       {
         s=getsprintf(file->filename,file->firstyear);
         check(s);
-        rc=openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
+        rc=openclimate_netcdf(file,NULL,&attrs,&n_attr,s,filename,units,config);
+        checktitle(attrs,n_attr,s,&config->climate,isroot(*config));
+        freeattrs(attrs,n_attr);
         free(s);
       }
 #ifdef USE_MPI
@@ -125,8 +130,11 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     }
     else
     {
-      if(mpi_openclimate_netcdf(file,filename,units,config))
+      if(mpi_openclimate_netcdf(file,NULL,&attrs,&n_attr,filename,units,config))
         return TRUE;
+      if(check)
+        checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
+      freeattrs(attrs,n_attr);
       if(file->time_step==MISSING_TIME)
       {
         if(isroot(*config))
@@ -143,11 +151,14 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       return FALSE;
     }
   }
-  if((file->file=openinputfile(&header,&file->swap,
+  if((file->file=openinputfile(&header,NULL,&attrs,&n_attr,&file->swap,
                                filename,
                                headername,units,datatype,
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
+  if(check)
+    checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
+  freeattrs(attrs,n_attr);
   if (header.order!=CELLYEAR)
   {
     if(isroot(*config))

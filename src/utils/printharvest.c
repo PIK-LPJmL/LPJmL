@@ -67,6 +67,7 @@ int main(int argc,char **argv)
   if(config.soil_filename.fmt==CDF)
   {
     cdf=opencoord_netcdf(config.soil_filename.name,
+                         NULL,NULL,
                          config.soil_filename.var,
                          &config.netcdf,
                          TRUE);

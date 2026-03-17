@@ -3,11 +3,14 @@
 regridlpj \- regrid input data set for selected countries or specified grid file
 .SH SYNOPSIS
 .B regridlpj
-[\-dir path] [\-inpath path] [-crumontly] [-oldlu] [-madrat] [-search] [-zero]
+[\-h] [\-dir path] [\-inpath path] [-search] [-zero] [-drainage]
 .I filesuffix  [countrycode ...]
 .SH DESCRIPTION
-Program regrids input files for selected countries if country codes are provided. If country code is missing grid file \fIgrid_filesuffix.clm\fP is used for regridding. Configuration file \fIinput_filesuffix.cjson\fP is created in the current directory.
+Program regrids input files for selected countries if country codes are provided. If country code is missing grid file \fIgrid_filesuffix.clm\fP is used for regridding. Configuration file \fIinput_filesuffix.cjson\fP is created in the current directory. The utility uses the \fI*.json\fP metafiles for regridding.
 .SH OPTIONS
+.TP
+\-h,\--help
+Print a short help text.
 .TP
 \-dir path
 Set directory for regridded input files.
@@ -15,20 +18,14 @@ Set directory for regridded input files.
 \-inpath path
 Set directory for input files to regrid. By default path defined in environmental variable LPJINPATH is used.
 .TP
-\-crumonthly
-Instead of GSWP3-W5E5 climate data monthly CRU data is used.
-.TP
-\-oldlu
-Instead of LandInG land-use data old data is used.
-.TP
-\-madrat
-Instead of LandInG land-use data MADRAT data is used.
-.TP
 \-search
 If grid coordinate cannot be found in old grid nearest grid cell is used.
 .TP
 \-zero
 If grid coordinate cannot be found in old grid values are set to zero.
+.TP
+\-drainage
+Drainage, elevation, reservoir and neighbour irrigation file will be regridded.
 .TP
 .I filesuffix
 File suffix for regridded input files and configuration file.
@@ -47,7 +44,7 @@ usa USA
 .TP
 Create input file for amazon basin:
 .B regridlpj
-amazon
+-drainage amazon
 .PP
 grid file \fIgrid_amazon.clm\fP in the current directory is used for regridding.
 .SH EXIT STATUS
