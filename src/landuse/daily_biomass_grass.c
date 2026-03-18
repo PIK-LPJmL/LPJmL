@@ -69,9 +69,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real *fpc_inc;
   int index;
   irrig_apply=0.0;
-#ifdef DEBUG
-  String line;
-#endif
 
   soil = &stand->soil;
   data=stand->data;

@@ -62,9 +62,6 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   int n_est;
   Bool *present;
   Soil *soil;
-#ifdef DEBUG
-  String line;
-#endif
 
   soil = &stand->soil;
   output=&stand->cell->output;

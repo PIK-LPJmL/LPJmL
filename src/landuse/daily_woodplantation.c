@@ -62,9 +62,6 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   Biomass_tree *data;
   Soil *soil;
   irrig_apply = 0;
-#ifdef DEBUG
-  String line;
-#endif
 
   soil = &stand->soil;
   data=stand->data;
