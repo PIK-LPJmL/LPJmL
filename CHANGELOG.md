@@ -23,6 +23,10 @@ of `major.minor.patch` with
 author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
+### Added 
+
+- DEBUG print statements for negative input to infiltration in `daily_agriculture()`, `daily_agriculture_grass()`, `daily_agriculture_tree()`, `daily_biomass_grass()`, `daily_biomass_tree()`, `daily_woodplantation()`, and `daily_natural()`
+
 ### Changed
 
 - Replace hardcoded Sphagnum_moss index (13) with `strcmp(config->pftpar[p].name,"Sphagnum moss")` in 5 landuse files
@@ -35,12 +39,14 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 ### Removed
 
 - Removed boreal broadleaved summergreen tree from needleleaved fpc sum in `biome_classification.c`
+- Removed `daily_setaside.c` which was unused
 
 ### Fixed
 
 - Double accounting of irrigation water interception in daily_grassland.c
 - C balance error in `deforest()`
 - Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
+- DEBUG print statement in `restart2yaml.c`
 
 
 ## [6.0.5] - 2026-03-17
