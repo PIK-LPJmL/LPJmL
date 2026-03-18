@@ -62,6 +62,9 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Biomass_tree *data;
   Soil *soil;
   irrig_apply=0.0;
+#ifdef DEBUG
+  String line;
+#endif
 
   soil = &stand->soil;
   data=stand->data;

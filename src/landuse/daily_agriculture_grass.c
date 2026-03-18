@@ -69,6 +69,9 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   Irrigation* data;
   Pftgrass* grass;
   irrig_apply = 0.0;
+#ifdef DEBUG
+  String line;
+#endif
 
   soil = &stand->soil;
   data = stand->data;
