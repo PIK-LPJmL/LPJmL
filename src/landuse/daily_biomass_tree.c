@@ -159,6 +159,11 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
+#ifdef DEBUG
+  if(rainmelt+rw_apply+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
   runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)

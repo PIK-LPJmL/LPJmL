@@ -294,14 +294,22 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
 
+#ifdef DEBUG
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
+
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
     stand->cell->lateral_water-=lateral_in*stand->frac;
   }
   else
   {
+#ifdef DEBUG
     if(rainmelt+rw_apply+irrig_apply < 0)
       fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
               day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
   }
 

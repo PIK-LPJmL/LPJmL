@@ -111,6 +111,11 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
+#ifdef DEBUG
+  if(rainmelt+rw_apply+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
   runoff+=infil_perc(stand,rainmelt-intercep_stand,climate->prec,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)

@@ -156,6 +156,12 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   /* soil inflow: infiltration and percolation */
   if ((stand->type->landusetype!=WETLAND || stand->frac<0.001))
   {
+#ifdef DEBUG
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
+
     runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
     if (stand->type->landusetype==WETLAND)     //if stand frac is very small
     {
@@ -169,6 +175,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       lateral_in=300;
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
+#ifdef DEBUG
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
 
     runoff+= infil_perc(stand,climate->prec+lateral_in+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
     stand->cell->lateral_water-=lateral_in*stand->frac;

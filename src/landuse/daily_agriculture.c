@@ -346,7 +346,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     vol_water_enth = climate->temp*c_water*(climate->prec+rw_apply+irrig_apply)/(climate->prec+rw_apply+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-
+#ifdef DEBUG
+  if(rainmelt+rw_apply+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
 
   runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
 
