@@ -66,6 +66,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Pftcrop *crop;
   irrig_apply=0.0;
   isrice=FALSE;
+#if defined(CHECK_BALANCE) || defined(DEBUG)
+  String line;
+#endif
   //Stocks flux_estab={0,0};
 
   data=stand->data;
@@ -537,7 +540,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   free(wet);
 
 #ifdef CHECK_BALANCE
-  String line;
   fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
                     +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)-fluxes_in.carbon;

@@ -78,6 +78,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Stocks start={0,0};
   Stocks fluxes_in,fluxes_out;
   int s;
+#ifdef DEBUG
+  String line;
+#endif
 
   start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//+stand->cell->output.dcflux;
   Real exess_old=(stand->cell->balance.excess_water+stand->cell->lateral_water);
