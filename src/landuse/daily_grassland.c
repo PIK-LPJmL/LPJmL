@@ -88,7 +88,9 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   int *pvec;
 #endif
   irrig_apply=0.0;
+#ifdef DEBUG
   String line;
+#endif
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
   nnat=getnnat(npft,config);

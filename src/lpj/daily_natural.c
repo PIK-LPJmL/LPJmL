@@ -66,6 +66,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Soil *soil;
   soil = &stand->soil;
   output=&stand->cell->output;
+#ifdef DEBUG
+  String line;
+#endif
 #ifdef CHECK_BALANCE
   Stand *checkstand;
   Real end = 0;
@@ -157,9 +160,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   if ((stand->type->landusetype!=WETLAND || stand->frac<0.001))
   {
 #ifdef DEBUG
-    if(rainmelt+rw_apply+irrig_apply < 0)
-      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
-              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+    if(climate->prec+melt < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rain=%g, melt=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),climate->prec, melt);
 #endif
 
     runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
@@ -176,9 +179,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
 #ifdef DEBUG
-    if(rainmelt+rw_apply+irrig_apply < 0)
-      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
-              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+    if(climate->prec+melt < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rain=%g, melt=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord), climate->prec, melt);
 #endif
 
     runoff+= infil_perc(stand,climate->prec+lateral_in+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);

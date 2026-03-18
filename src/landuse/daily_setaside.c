@@ -112,6 +112,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 #ifdef DEBUG
+  String line;
   if(rainmelt+rw_apply+irrig_apply < 0)
     fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
             day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);

@@ -33,7 +33,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
                              Real melt,                   /**< melting water (mm/day) */
                              int npft,                    /**< number of natural PFTs */
                              int ncft,                    /**< number of crop PFTs   */
-                             int UNUSED(year),            /**< simulation year (AD) */
+                             int year,                    /**< simulation year (AD) */
                              Bool UNUSED(intercrop),      /**< enabled intercropping */
                              Real UNUSED(agrfrac),        /**< [in] total agriculture fraction (0..1) */
                              const Config *config         /**< LPJ config */
@@ -184,9 +184,10 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   else
     vol_water_enth=0;
 #ifdef DEBUG
-  if(rainmelt+rw_apply+irrig_apply < 0)
-    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
-            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+  String line;
+  if(rainmelt+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, irrig_apply);
 #endif
   runoff+=infil_perc(stand,(rainmelt+irrig_apply), vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
