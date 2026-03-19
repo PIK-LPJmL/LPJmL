@@ -20,6 +20,8 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [6.0.6] - 2026-03-19
+
 author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
