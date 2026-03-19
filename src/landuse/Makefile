@@ -40,13 +40,15 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           new_grassland.$O fwrite_grassland.$O fread_grassland.$O\
           fprint_grassland.$O new_biomass_tree.$O fread_biomass_tree.$O\
           fwrite_biomass_tree.$O fprint_biomass_tree.$O init_irrigation.$O\
-          scancftmap.$O ispftinstand.$O\
+          scancftmap.$O ispftinstand.$O checkbasetemp.$O\
           fscanmowingdays.$O getnsoil_agr.$O agriculture_tree.$O agriculture_grass.$O\
           daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
           findstandpft.$O isirrigevent.$O\
           annual_agriculture_tree.$O annual_agriculture_grass.$O readcottondays.$O\
           update_irrig.$O update_separate_harvests.$O fscanagtreemap.$O sowingcft.$O\
-          fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O
+          fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O newirrigsystem.$O\
+          initirrigsystem.$O getcftmap.$O getcftname.$O cmplandusemap.$O\
+          defaultcftmap.$O getmap.$O checkhlimit.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

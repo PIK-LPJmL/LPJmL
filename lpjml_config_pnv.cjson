@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g   _  p  n  v  .  c  j  s  o n     \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 6.0.4                           \n**/
+/** Default configuration file for LPJmL C Version 6.0.5                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -21,8 +21,6 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-//#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
-//#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 //#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
@@ -47,13 +45,8 @@
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
   "fail_on_balance" : true, /* fail on check balance error (true/false) */
-  #if defined CRU_MONTHLY || defined CRU_NETCDF
-    "random_prec" : true,     /* Random weather generator for precipitation enabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
-  #else
-    "random_prec" : false,     /* Random weather generator for precipitation disabled */
-    "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
-  #endif
+  "random_prec" : false,     /* Random weather generator for precipitation disabled */
+  "radiation" : "radiation",/* type of radiation input to be used, options: "radiation", "radiation_lwdown" */
   "random_seed" : 2,        /* seed for random number generator */
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
@@ -96,7 +89,7 @@
 #ifdef FROM_RESTART
   "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : "no",      /* use population input (for spitfire), other values: "no", "density", "number" */
   "landuse" : "no",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2100, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
@@ -105,7 +98,7 @@
 #else
   "methane" : "fixed",      /* methane value prescribed, other values: "fixed", "prescribed", "dynamic" */
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : "no",      /* use population input (for spitfire), other values: "no", "density", "number" */
   "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
   "wateruse" : "no",        /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
@@ -177,19 +170,8 @@
 /*  II. Mapping section                                              */
 /*===================================================================*/
 
-  /* the following array describes the order of the CFTs in the laimax array */
-  "laimaxmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                 "temperate roots", "tropical roots", "oil crops sunflower",
-                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                 "sugarcane"],
-
   /* the following array describes the order of the agricultural trees in the k_est array */
   "treemap" : ["oil palm","tea","cotton"],
-
-  /* the following array describes the order of the soil types in the soil file */
-  "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
-              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
-              "loamy sand", "sand", "rock and ice"],
 
   /* The following array is used for mapping prescribed FPC */
   "landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
@@ -198,30 +180,12 @@
                     "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
                     "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
 
-  /* the following array describes the order of the bands in the land use file */
-  "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                  "temperate roots", "tropical roots", "oil crops sunflower",
-                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                  "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-  /* the following array describes the order of the bands in the fertilizer and manure file */
-  "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                    "temperate roots", "tropical roots", "oil crops sunflower",
-                    "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                    "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-  /* the following array describes the order of the CFTs in the sowing date and crop PHU file */
-  "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-              "temperate roots", "tropical roots", "oil crops sunflower",
-              "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-              "sugarcane"],
-
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
 
-  "inpath" : "/p/projects/lpjml/input/historical",
+  "inpath" : "/p/projects/lpjml/inputs/public_standard",
 
   /* Input files of CRU dataset */
   "input" :
@@ -475,11 +439,7 @@ ID                               Fmt                        filename
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-#if defined CRU_MONTHLY || defined CRU_NETCDF
-  "lastyear" : 2011, /* last year of simulation */
-#else
   "lastyear" : 2019, /* last year of simulation */
-#endif
   "outputyear": 1901, /* first year output is written  */
   "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */

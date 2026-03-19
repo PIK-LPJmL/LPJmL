@@ -42,7 +42,7 @@ Icefrac initicefrac(const Config *config /**< LPJ configuration */
   icefrac->file.fmt = config->icefrac_filename.fmt;
   if (config->icefrac_filename.fmt == CDF)
   {
-    if (opendata_netcdf(&icefrac->file,&config->icefrac_filename,"fraction",config))
+    if (opendata_netcdf(&icefrac->file,NULL,NULL,NULL,&config->icefrac_filename,"fraction",config))
     {
       free(icefrac);
       return NULL;
@@ -50,7 +50,7 @@ Icefrac initicefrac(const Config *config /**< LPJ configuration */
   }
   else
   {
-    if ((icefrac->file.file = openinputfile(&header, &icefrac->file.swap,
+    if ((icefrac->file.file = openinputfile(&header,NULL, NULL,NULL,&icefrac->file.swap,
                                             &config->icefrac_filename,
                                             headername,NULL,LPJ_SHORT,
                                             &version, &offset,TRUE, config)) == NULL)

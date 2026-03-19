@@ -71,6 +71,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
           $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libnum.$A $(LIBDIR)/libbstruct.$A $(LIBDIR)/libtools.$A\
+          $(LIBDIR)/liblpj.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\

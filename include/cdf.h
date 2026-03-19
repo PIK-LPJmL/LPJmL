@@ -112,9 +112,9 @@ typedef struct
 extern Bool create_netcdf(Netcdf *,const char *,const char *,const char *,
                           const char *,const char *,Type,int,int,
                           int,Bool,const Coord_array *,const Config *);
-extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,const char *,
-                               const char *,const char *,const Config *);
-extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
+extern Bool openclimate_netcdf(Climatefile *,Map **,Attr **,int *,const char *,const Filename *,const char *,
+                               const Config *);
+extern Bool mpi_openclimate_netcdf(Climatefile *,Map **,Attr **,int *,const Filename *,
                                    const char *,const Config *);
 extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,const char *,
                               const char *,const char *,Type,int,int,
@@ -134,9 +134,9 @@ extern Bool write_short_netcdf(const Netcdf *,const short[],int,int);
 extern Bool write_pft_float_netcdf(const Netcdf *,const float[],int,int,int);
 extern Bool write_pft_short_netcdf(const Netcdf *,const short[],int,int,int);
 extern void freecoordarray(Coord_array *);
-extern Bool openfile_netcdf(Climatefile *,const Filename *,
+extern Bool openfile_netcdf(Climatefile *,Map **,Attr **,int *,const Filename *,
                             const char *,const Config *);
-extern Bool opendata_netcdf(Climatefile *,const Filename *,
+extern Bool opendata_netcdf(Climatefile *,Map **,Attr **,int *,const Filename *,
                      const char *,const Config *);
 extern Bool readdata_netcdf(const Climatefile *,Real *,const Cell *,
                             int,const Config *);
@@ -144,7 +144,7 @@ extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,
                                int,const Config *);
 extern Bool readshortdata_netcdf(const Climatefile *,short *,const Cell *,
                                  int,const Config *);
-extern Coord_netcdf opencoord_netcdf(const char *,const char *,const Netcdf_config *,Bool);
+extern Coord_netcdf opencoord_netcdf(const char *,Map **,const char *,const char *,const Netcdf_config *,Bool);
 extern const double *getlon_netcdf(Coord_netcdf,int *);
 extern const double *getlat_netcdf(Coord_netcdf,int *);
 extern void closecoord_netcdf(Coord_netcdf);
@@ -173,11 +173,14 @@ extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern Map *readmap_netcdf(int,const char *);
 extern char *getattr_netcdf(int,int,const char *);
+extern Bool getglobalattrs_netcdf(int,Attr **,int *);
 extern char *getvarname_netcdf(const Climatefile *);
 extern void initsetting_netcdf(Netcdf_config *);
 extern Bool parse_config_netcdf(Netcdf_config *,const char *);
 extern Bool setlatlon(double **,double **,double **,double **,const Coord_array *);
 extern Bool settimeaxis(double **,double **,int,int,int,int,int,Bool,Bool,Bool,const char *);
+extern Limit *getlimitarray_netcdf(const char *,int *,const char *,Verbosity);
+extern int *getintarray_netcdf(const char *,int *,const char *,Verbosity);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

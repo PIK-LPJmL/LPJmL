@@ -41,6 +41,8 @@ static Cdf *create_cdf(const char *filename,
                        const char *args,
                        const Attr *global_attrs,
                        int n_global,
+                       const Limit *basetemp,
+                       const int *hlimit,
                        const Header *header,
                        int compress,
                        Bool landuse,
@@ -50,7 +52,7 @@ static Cdf *create_cdf(const char *filename,
                        Coord_array *array)
 {
   Cdf *cdf;
-  double *lon,*lat;
+  double *lon,*lat,*b;
   int *year,i,j,rc,dim[4],varid;
   char *s;
   const char *ptr;
@@ -59,7 +61,7 @@ static Cdf *create_cdf(const char *filename,
   int len_dim_id;
   size_t offset[2],count[2];
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id;
-  int landuse_dim_id;
+  int landuse_dim_id,n_dim_id,basetemp_id,hlimit_id;
   int index;
   int len;
   cdf=new(Cdf);
@@ -261,6 +263,20 @@ static Cdf *create_cdf(const char *filename,
       error(rc);
     }
   }
+  if(basetemp!=NULL)
+  {
+    rc=nc_def_dim(cdf->ncid,"n",2,&n_dim_id);
+    error(rc);
+    dim[0]=map_dim_id;
+    dim[1]=n_dim_id;
+    rc=nc_def_var(cdf->ncid,"basetemp",NC_DOUBLE,2,dim,&basetemp_id);
+    error(rc);
+  }
+  if(hlimit!=NULL)
+  {
+    rc=nc_def_var(cdf->ncid,"hlimit",NC_INT,1,&map_dim_id,&hlimit_id);
+    error(rc);
+  }
   if(notime)
     index=0;
   else
@@ -382,6 +398,23 @@ static Cdf *create_cdf(const char *filename,
         }
         error(rc);
     }
+  }
+  if(basetemp!=NULL)
+  {
+    b=newvec(double,2*getmapsize(map));
+    for(i=0;i<getmapsize(map);i++)
+    {
+      b[2*i]=basetemp[i].low;
+      b[2*i+1]=basetemp[i].high;
+    }
+    rc=nc_put_var_double(cdf->ncid,basetemp_id,b);
+    free(b);
+    error(rc);
+  }
+  if(hlimit!=NULL)
+  {
+    rc=nc_put_var_int(cdf->ncid,hlimit_id,hlimit);
+    error(rc);
   }
   free(lat);
   free(lon);
@@ -536,6 +569,10 @@ int main(int argc,char **argv)
   char *var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
   char *source=NULL,*history=NULL,*config_filename=NULL;
   Netcdf_config netcdf_config;
+  Limit *basetemp=NULL;
+  int basetemp_size;
+  int *hlimit=NULL;
+  int hlimit_size;
   units=long_name=NULL;
   scale=1.0;
   compress=0;
@@ -852,6 +889,46 @@ int main(int argc,char **argv)
       mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
       freeattrs(global_attrs2,n_global2);
     }
+    basetemp=getlimitarrayfromjson(filename,&basetemp_size,"basetemp",FALSE);
+    if(basetemp!=NULL)
+    {
+      if(map==NULL)
+      {
+        fprintf(stderr,"Map missing for basetemp array in '%s'.\n",filename);
+        free(basetemp);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+      if(getmapsize(map)!=basetemp_size)
+      {
+        fprintf(stderr,"Map size %d is not equal basetemp array size %d on '%s'.\n",
+                getmapsize(map),basetemp_size,filename);
+        free(basetemp);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+    }
+    hlimit=getintarrayfromjson(filename,&hlimit_size,"hlimit",FALSE);
+    if(hlimit!=NULL)
+    {
+      if(map==NULL)
+      {
+        fprintf(stderr,"Map missing for hlimit array in '%s'.\n",filename);
+        free(basetemp);
+        free(hlimit);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+      if(getmapsize(map)!=hlimit_size)
+      {
+        fprintf(stderr,"Map size %d is not equal hlimit array size %d on '%s'.\n",
+                getmapsize(map),hlimit_size,filename);
+        free(basetemp);
+        free(hlimit);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+    }
   }
   else
   {
@@ -1060,7 +1137,11 @@ int main(int argc,char **argv)
       }
     }
   }
-  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,&netcdf_config,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),isnetcdf4,index);
+  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,
+                 long_name,&netcdf_config,arglist,global_attrs,n_global,
+                 basetemp,hlimit,&header,compress,landuse,notime,
+                 isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),
+                 isnetcdf4,index);
   free(arglist);
   free(source);
   free(history);
@@ -1069,6 +1150,8 @@ int main(int argc,char **argv)
   free(var_standard_name);
   free(var_long_name);
   freemap(map);
+  free(basetemp);
+  free(hlimit);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;

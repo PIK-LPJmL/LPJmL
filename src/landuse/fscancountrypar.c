@@ -43,7 +43,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
   if (verb>=VERB) puts("// Country parameters");
   if(ncft)
   {
-    cftmap=scancftmap(file,&cftmap_size,"laimaxmap",TRUE,npft,ncft,config);
+    cftmap=scancftmap(file,&cftmap_size,"laimaxmap",TRUE,TRUE,npft,ncft,config);
     if(cftmap==NULL)
       return 0;
     if(cftmap_size!=ncft)

@@ -76,14 +76,14 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   }
   if(attrs!=NULL && n_attr>0)
   {
-    fprintf(file,"  \"global_attrs\" : {");
+    fprintf(file,"  \"global_attrs\" :\n  {\n");
     for(i=0;i<n_attr;i++)
     {
-      fprintf(file,"\"%s\" : \"%s\"",attrs[i].name,attrs[i].value);
+      fprintf(file,"    \"%s\" : \"%s\"",attrs[i].name,attrs[i].value);
       if(i<n_attr-1)
-        fprintf(file,", ");
+        fprintf(file,",\n");
     }
-    fprintf(file,"},\n");
+    fprintf(file,"\n  },\n");
   }
   if(variable!=NULL)
     fprintf(file,"  \"variable\" : \"%s\",\n",variable);

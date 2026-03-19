@@ -146,7 +146,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
            return TRUE;
          }
       }
-      if(!strcmp(fromstr,"-"))
+      if(!strcmp(fromstr,"-") || !strcmp(fromstr,units))
       {
         file->slope=1;
         file->intercept=0;
