@@ -90,6 +90,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     Real balanceW=0;
     Real wfluxes_old=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
     Real excess_old=cell->balance.excess_water;
+    /* CH4_fluxes = today's increment of (aCH4_em+aCH4_sink)*WC/WCH4 */
     Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
     Stocks fluxes_in,fluxes_out;
     fluxes_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
@@ -98,9 +99,12 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     fluxes_out.nitrogen=cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
         +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen; //outfluxes
     Real irrigstore=0;
+    Real ch4_stock_start=0;
     foreachstand(stand,s,cell->standlist)
     {
       water_before+=soilwater(&stand->soil)*stand->frac;
+      Real ch4_s=soilmethane(&stand->soil)*WC/WCH4*stand->frac;
+      ch4_stock_start+=ch4_s;
       start1.carbon+=(standstocks(stand).carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
       start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
       if(getlandusetype(stand)==GRASSLAND || getlandusetype(stand)==OTHERS ||
@@ -184,7 +188,6 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].agtop.leaf.nitrogen*param.bioturbate;
         stand->soil.litter.item[l].agtop.leaf.nitrogen *= (1 - param.bioturbate);
       }
-
       beta=albedo_stand(stand);
       petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,beta);
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
@@ -695,15 +698,20 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     balanceW=water_after-water_before-climate->prec*(standfrac_sum+cell->lakefrac+cell->ml.reservoirfrac)+
             ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
             +(cell->balance.excess_water-excess_old);
-    if(fabs(end1.carbon-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
+    Real ch4_stock_end=0;
+    foreachstand(stand,s,cell->standlist)
+      ch4_stock_end+=soilmethane(&stand->soil)*WC/WCH4*stand->frac;
+    if(fabs(end1.carbon-start1.carbon+CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
       fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,
            "Invalid carbon balance in %s cell (%s): day: %d balance: %g start: %g end: %g CH4_fluxes: %g\n"
            "=====001: anpp: %g arh: %g fire: %g neg_fluxes: %g\n"
-           "=====002: flux_harvest: %g biomass_yield: %g flux_estab: %g influx: %g",
+           "=====002: flux_harvest: %g biomass_yield: %g flux_estab: %g influx: %g\n"
+           "=====003: aCH4_em: %g aCH4_sink: %g ch4_stock_start: %g ch4_stock_end: %g delta_ch4: %g",
            __FUNCTION__,sprintcoord(line,&cell->coord),day,
-           end1.carbon-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon,start1.carbon,end1.carbon,CH4_fluxes,
+           end1.carbon-start1.carbon+CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon,start1.carbon,end1.carbon,CH4_fluxes,
            cell->balance.anpp,cell->balance.arh,cell->balance.fire.carbon,cell->balance.neg_fluxes.carbon,
-           cell->balance.flux_harvest.carbon,cell->balance.biomass_yield.carbon,cell->balance.flux_estab.carbon,cell->balance.influx.carbon);
+           cell->balance.flux_harvest.carbon,cell->balance.biomass_yield.carbon,cell->balance.flux_estab.carbon,cell->balance.influx.carbon,
+           cell->balance.aCH4_em,cell->balance.aCH4_sink,ch4_stock_start,ch4_stock_end,ch4_stock_end-ch4_stock_start);
     fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
                         +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
     fluxes_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
