@@ -31,7 +31,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 
 ### Changed
 
-- Replace hardcoded Sphagnum_moss index (13) with `strcmp(config->pftpar[p].name,"Sphagnum moss")` in 5 landuse files
+- Replace hardcoded `Sphagnum_moss` index (13) with `strcmp(config->pftpar[p].name,"Sphagnum moss")` in 5 landuse files
 - Fix PFT numbering comments in pft.cjson to reflect actual positions (1-14)
 - Updated `biome_classification.c` to use `findpftname()` instead of hard-coded macros
 - Removed macros from `pftpar.h`
@@ -45,7 +45,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 
 ### Fixed
 
-- Double accounting of irrigation water interception in daily_grassland.c
+- Double accounting of irrigation water interception in `daily_grassland.c`
 - C balance error in `deforest()`
 - Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
 - DEBUG print statement in `restart2yaml.c`
