@@ -88,7 +88,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   int *pvec;
 #endif
   irrig_apply=0.0;
-#ifdef DEBUG
+#if defined(DEBUG) || defined(CHECK_BALANCE)
   String line;
 #endif
 
