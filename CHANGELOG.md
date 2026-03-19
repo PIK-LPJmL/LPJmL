@@ -49,6 +49,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - C balance error in `deforest()`
 - Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
 - DEBUG print statement in `restart2yaml.c`
+- Sign error in daily carbon balance check in `update_daily_cell()`, `daily_grassland()`, and `daily_agriculture()` when methane is enabled: absorbed atmospheric CH4 oxidized within the same timestep was double-counted
 
 
 ## [6.0.5] - 2026-03-17
