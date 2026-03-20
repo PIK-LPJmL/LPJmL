@@ -36,7 +36,7 @@ while(( "$#" )); do
       echo "-drainage    drainage, elevation, reservoir and irrigation data is regridded"
       echo "filesuffix   file suffix fot regridded input files and configuration file"
       echo "countrycode  ISO 3166-1 alpha-3 abbreviation for country codes"
-      echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT fil"e
+      echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
       exit 0
       ;;
     -dir)
@@ -124,9 +124,15 @@ fi
 if  regridclm $opt -metafile $dir/grid_$name.clm  $LPJINPATH/soil_30arcmin_13_types.clm.json $dir/soil_$name.clm
 then
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tas_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmp_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tasmin_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmin_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tasmax_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmax_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/pr_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/prec_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/lwnet_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/lwnet_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/rsds_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/swdown_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/huss_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/humid_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/human_ignition.clm.json $dir/human_ignition_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/population_histsoc_0p5deg_annual_1861-2005.clm.json $dir/popnum_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/lightning_fixed.clm.json $dir/lightning_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/windspeed_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/glwd_lakes_and_rivers_30arcmin.clm.json $dir/lakes_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/landfrac_gadm36.clm.json $dir/landfrac_$name.clm
@@ -198,13 +204,12 @@ EOF
   "swdown"           : { "fmt" : "meta", "name" : "$dir/swdown_$name.clm.json"},
   "cloud"            : { "fmt" : "meta", "name" : "$dir/cld_$name.clm.json"},
   "wind"             : { "fmt" : "meta", "name" : "$dir/windspeed_$name.clm.json"},
-  "tamp"             : { "fmt" : "meta", "name" : "$dir/tamp_$name.clm.json"},
   "tmin"             : { "fmt" : "meta", "name" : "$dir/tmin_$name.clm.json"},
   "tmax"             : { "fmt" : "meta", "name" : "$dir/tmax_$name.clm.json"},
   "humid"            : { "fmt" : "meta", "name" : "$dir/humid_$name.clm.json"},
   "lightning"        : { "fmt" : "meta", "name" : "$dir/lightning_$name.clm.json"},
   "human_ignition"   : { "fmt" : "meta", "name" : "$dir/human_ignition_$name.clm.json"},
-  "popnum"           : { "fmt" : "meta", "name" : "$dir/popnun_$name.clm.json"},
+  "popnum"           : { "fmt" : "meta", "name" : "$dir/popnum_$name.clm.json"},
   "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "$LPJINPATH/global_co2_ann_1700_2022.txt"},
   "ch4"              : { "fmt" : "txt", "name" : "$LPJINPATH/CH4_concentration_1841-2022.dat"},
   "wetdays"          : { "fmt" : "meta", "name" : "$dir/wet_$name.clm.json"},
