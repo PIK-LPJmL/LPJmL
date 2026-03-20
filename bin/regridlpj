@@ -123,7 +123,13 @@ else
 fi
 if  regridclm $opt -metafile $dir/grid_$name.clm  $LPJINPATH/soil_30arcmin_13_types.clm.json $dir/soil_$name.clm
 then
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tas_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmp_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/pr_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/prec_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/lwnet_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/lwnet_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/rsds_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/swdown_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/windspeed_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/glwd_lakes_and_rivers_30arcmin.clm.json $dir/lakes_$name.clm
+  regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/landfrac_gadm36.clm.json $dir/landfrac_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/kbf.clm.json $dir/kbf_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/wateruse_isimip3a_histsoc_1850-2021.clm.json $dir/wateruse_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/lightning_fixed.clm.json $dir/lightning_$name.clm
