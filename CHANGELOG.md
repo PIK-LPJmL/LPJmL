@@ -25,9 +25,10 @@ of `major.minor.patch` with
 author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
-### Added 
+### Added
 
 - DEBUG print statements for negative input to infiltration in `daily_agriculture()`, `daily_agriculture_grass()`, `daily_agriculture_tree()`, `daily_biomass_grass()`, `daily_biomass_tree()`, `daily_woodplantation()`, and `daily_natural()`
+- Missing regridding of climate data added to the `regridlpj` utility
 
 ### Changed
 
@@ -36,7 +37,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Updated `biome_classification.c` to use `findpftname()` instead of hard-coded macros
 - Removed macros from `pftpar.h`
 - Added missing PFTs to `biome_classification.c`
-- String comparison in `landusechange_for_reservoir.c` replaced by call to `ispftinstand()`.
+- String comparison in `landusechange_for_reservoir.c` replaced by call to `ispftinstand()`
 
 ### Removed
 
@@ -50,6 +51,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
 - DEBUG print statement in `restart2yaml.c`
 - Sign error in daily carbon balance check in `update_daily_cell()`, `daily_grassland()`, and `daily_agriculture()` when methane is enabled: absorbed atmospheric CH4 oxidized within the same timestep was double-counted
+- Misplaced `printcell()` corrected in `update_monthly_grid.c` causing SEGV if '-DDEBUG` is set
 
 
 ## [6.0.5] - 2026-03-17
