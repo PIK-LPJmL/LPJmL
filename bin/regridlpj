@@ -34,7 +34,7 @@ while(( "$#" )); do
       echo "-search      nearest grid cell is used if cell cannot be found"
       echo "-zero        set data to zero if cell cannot be found"
       echo "-drainage    drainage, elevation, reservoir and irrigation data is regridded"
-      echo "filesuffix   file suffix fot regridded input files and configuration file"
+      echo "filesuffix   file suffix for regridded input files and configuration file"
       echo "countrycode  ISO 3166-1 alpha-3 abbreviation for country codes"
       echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
       exit 0
