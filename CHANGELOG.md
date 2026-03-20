@@ -52,6 +52,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - DEBUG print statement in `restart2yaml.c`
 - Sign error in daily carbon balance check in `update_daily_cell()`, `daily_grassland()`, and `daily_agriculture()` when methane is enabled: absorbed atmospheric CH4 oxidized within the same timestep was double-counted
 - Misplaced `printcell()` corrected in `update_monthly_grid.c` causing SEGV if '-DDEBUG` is set
+- Correct number of cells written in JSON metafile in `regridirrig`
 
 
 ## [6.0.5] - 2026-03-17
