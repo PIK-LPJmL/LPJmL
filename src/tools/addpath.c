@@ -25,10 +25,22 @@ char *addpath(const char *name, /**< filename */
   char *s;
   if(path!=NULL && !isabspath(name))
   {
-    s=malloc(strlen(path)+strlen(name)+2);
-    if(s==NULL)
-      return NULL;
-    return strcat(strcat(strcpy(s,path),"/"),name);
+    if(strlen(path)>1 && path[strlen(path)-1]=='/')
+    {
+      /* path ends with '/' */
+      s=malloc(strlen(path)+strlen(name)+1);
+      if(s==NULL)
+        return NULL;
+      return strcat(strcpy(s,path),name);
+    }
+    else
+    {
+      /* path does not end with '/', append '/' */
+      s=malloc(strlen(path)+strlen(name)+2);
+      if(s==NULL)
+        return NULL;
+      return strcat(strcat(strcpy(s,path),"/"),name);
+    }
   }
   else
     return strdup(name);

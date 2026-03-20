@@ -17,6 +17,9 @@
 #include "lpj.h"
 
 Bool opendata_seq(Climatefile *file,        /**< pointer to file */
+                  Map **map,                /**< pointer to map or NULL */
+                  Attr **attrs,             /**< pointer to array of attributes or NULL */
+                  int *n_attr,              /**< size of array attribute */
                   const Filename *filename, /**< filename */
                   const char *name,         /**< name of data */
                   const char *unit,         /**< unit or NULL */
@@ -30,7 +33,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
   file->fmt=filename->fmt;
   if(file->fmt==CDF)
   {
-    if(openclimate_netcdf(file,filename->name,filename->time,filename->var,filename->unit,unit,config))
+    if(openclimate_netcdf(file,map,attrs,n_attr,filename->name,filename,unit,config))
       return TRUE;
     file->oneyear=FALSE;
     if(file->time_step!=YEAR)
@@ -51,7 +54,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    if(openclmdata(file,filename,name,unit,datatype,scalar,nbands,config))
+    if(openclmdata(file,map,attrs,n_attr,filename,name,unit,datatype,scalar,nbands,config))
       return TRUE;
   }
   if(ischeck && file->var_len!=nbands)

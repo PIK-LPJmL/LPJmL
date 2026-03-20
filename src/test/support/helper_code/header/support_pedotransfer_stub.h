@@ -1,4 +1,4 @@
-void pedotransfer(Stand *stand, Real *abswmm, Real *absimm, Real standfrac)
+void pedotransfer(Stand *stand, Real *abswmm, Real *absimm, Real standfrac,Bool fail)
 {
 
 }

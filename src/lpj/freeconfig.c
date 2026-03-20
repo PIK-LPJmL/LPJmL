@@ -29,6 +29,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->climate);
+  free(config->landuse);
   freeconfig_netcdf(&config->netcdf);
   free(config->cmd);
   free(config->json_filename);
@@ -150,11 +152,32 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     free(config->landusemap);
-     if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
+    if(config->fertilizer_input==FERTILIZER)
+    {
       free(config->fertilizermap);
+      freefilename(&config->fertilizer_nr_filename);
+    }
+    if(config->manure_input)
+    {
+      free(config->manuremap);
+      freefilename(&config->manure_nr_filename);
+    }
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
+      free(config->residuemap);
+      freefilename(&config->residue_data_filename);
+    }
+    if(config->sdate_option>=PRESCRIBED_SDATE)
+    {
+      free(config->sdatemap);
+      freefilename(&config->sdate_filename);
+    }
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    {
+      free(config->crop_phumap);
+      freefilename(&config->crop_phu_filename);
+    }
     free(config->mowingdays);
-    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-      free(config->cftmap);
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
@@ -167,14 +190,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
     }
-    if(config->sdate_option>=PRESCRIBED_SDATE)
-      freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
-    if (config->residue_treatment == READ_RESIDUE_DATA)
-      freefilename(&config->residue_data_filename);
-    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-      freefilename(&config->crop_phu_filename);
   }
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
@@ -182,10 +199,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->nh4deposition_filename);
   }
   freefilename(&config->soilph_filename);
-  if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input==FERTILIZER)
-    freefilename(&config->fertilizer_nr_filename);
-  if(config->withlanduse!=NO_LANDUSE&&config->manure_input)
-    freefilename(&config->manure_nr_filename);
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(&config->landcover_filename);
 

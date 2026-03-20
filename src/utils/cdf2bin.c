@@ -226,9 +226,10 @@ int main(int argc,char **argv)
 #ifdef USE_NETCDF
   Coordfile coordfile;
   Filename coord_filename;
+  Filename filename;
   Climatefile data;
   Config config;
-  char *units,*var,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
+  char *units,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
   const char *progname;
   Coord *grid;
   Intcoord intcoord;
@@ -246,8 +247,11 @@ int main(int argc,char **argv)
   Filename grid_name;
   Type grid_type;
   isbyte=swap=verbose=isclm=isjson=FALSE;
+  filename.var=NULL;
+  filename.map=NULL;
+  filename.time=NULL;
+  filename.unit=NULL;
   units=NULL;
-  var=NULL;
   map_name=NULL;
   map=0;
   outname="out.bin"; /* default file name for output */
@@ -309,8 +313,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        var=strdup(argv[++iarg]);
-        check(var);
+        filename.var=strdup(argv[++iarg]);
+        check(filename.var);
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[iarg],"-units"))
@@ -443,7 +447,7 @@ int main(int argc,char **argv)
          config.ngridcell=getfilesizep(file)/sizeof(double)/2;
          break;
        default:
-         fprintf(stderr,"Invalid datatype %d in '%s'.\n",grid_type,argv[iarg]);
+         fprintf(stderr,"Invalid datatype %d in '%s'.\n",(int)grid_type,argv[iarg]);
          return TRUE;
     }
     if(config.ngridcell==0)
@@ -506,13 +510,13 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&data,argv[j],NULL,var,NULL,units,&config))
+    if(openclimate_netcdf(&data,NULL,NULL,NULL,argv[j],&filename,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
-    if(var==NULL)
-      var=getvarname_netcdf(&data);
+    if(filename.var==NULL)
+      filename.var=getvarname_netcdf(&data);
     if(units==NULL)
       units=getattr_netcdf(data.ncid,data.varid,"units");
     long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
@@ -642,13 +646,12 @@ int main(int argc,char **argv)
     }
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
-    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
-    freeattrs(attrs,n_attr);
+    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     free(out_json);
     free(arglist);
     fclose(file);
   }
-  free(var);
+  free(filename.var);
   free(units);
   free(long_name);
   free(standard_name);
