@@ -1,0 +1,20 @@
+{
+  "filename" : "grid_minimum.clm",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 0,
+  "lastyear" : 0,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 2,
+  "scalar" : 0.010000,
+  "datatype" : "short",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 3,
+  "offset" : 51,
+  "bigendian" : false
+}

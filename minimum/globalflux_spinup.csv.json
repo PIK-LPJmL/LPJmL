@@ -1,0 +1,35 @@
+{
+  "sim_name" : "LPJmL Run",
+  "source" : "LPJmL C Version 6.0.6",
+  "history" : "Fri Mar 20 16:12:13 2026: lpjml -DMINIMUM lpjml_config.cjson",
+  "global_attrs" :
+  {
+    "GIT_repo" : "git@gitlab.pik-potsdam.de:lpjml/LPJmL_internal.git",
+    "GIT_hash" : "82dc61b513a79896f2d68b46cbc86873a6c04d3e",
+    "institution" : "Potsdam Institute for Climate Impact Research",
+    "contact" : "",
+    "comment" : ""
+  },
+  "name" : "globalflux",
+  "variable" : "globalflux",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "standard_name" : "globalflux",
+  "long_name" : "global fluxes",
+  "unit" : "",
+  "firstyear" : -2099,
+  "lastyear" : 1700,
+  "nyear" : 3800,
+  "datatype" : "float",
+  "scalar" : 1.0,
+  "order" : "cellseq",
+  "bigendian" : false,
+  "delimiter" : ",",
+  "format" : "txt",
+  "filename" : "globalflux_spinup.csv"
+}

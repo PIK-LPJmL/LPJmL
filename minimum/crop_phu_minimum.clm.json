@@ -1,0 +1,38 @@
+{
+  "filename" : "crop_phu_minimum.clm",
+  "history" : "Fri Mar 20 14:14:21 2026: regridclm -metafile ./grid_minimum.clm /p/projects/lpjml/inputs/public_standard/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm.json ./crop_phu_minimum.clm",
+  "global_attrs" :
+  {
+    "title" : "Phenolgocial heat unit (phu) sum for maturity data",
+    "climate" : "GSWP3-W5E5 observational climate input data for ISIMIP3a",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "PHU sums for cropping seasons for the standard 12 crops of LPJmL for rainfed and irrigated systems based on the GGCMI Phase 3 crop calendar",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Jägermeyr et al. (2021a).  <https://doi.org/10.5281/zenodo.5062513>, Jägermeyr et al. (2021b). <https://dx.doi.org/10.1038/s43016-021-00400-y>"
+  },
+  "variable" : "phusum",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 2019,
+  "nyear" : 119,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 24,
+  "scalar" : 1.000000,
+  "datatype" : "short",
+  "map" : ["temperate cereals","rice","maize","tropical cereals","pulses","temperate roots",
+    "tropical roots","oil crops sunflower","oil crops soybean","oil crops groundnut",
+    "oil crops rapeseed","sugarcane"],
+  "unit" : "degree days",
+  "long_name" : "phenolgocial heat unit (phu) requirements to reach maturity",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 4,
+  "offset" : 59,
+  "grid" : {"filename" : "grid_minimum.clm", "format" : "clm", "datatype" : "short"},
+  "bigendian" : false
+}

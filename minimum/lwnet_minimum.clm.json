@@ -1,0 +1,35 @@
+{
+  "filename" : "lwnet_minimum.clm",
+  "history" : "created with <https://github.com/PIK-LPJmL/ISIMIP_climate_conversion>\nFri Mar 20 14:14:17 2026: regridclm -metafile ./grid_minimum.clm /p/projects/lpjml/inputs/public_standard/lwnet_gswp3-w5e5_obsclim_1901-2019.clm.json ./lwnet_minimum.clm",
+  "global_attrs" :
+  {
+    "title" : "GSWP3-W5E5 observational climate input data for ISIMIP3a",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "project" : "Inter-Sectoral Impact Model Intercomparison Project phase 3a (ISIMIP3a)",
+    "contact" : "ISIMIP cross-sectoral science team <info@isimip.org> <https://www.isimip.org>",
+    "summary" : "GSWP3 v1.09 bias-adjusted to W5E5 v2.0 with ISIMIP3BASD v2.5.0 (for 1901-1978) combined with W5E5 v2.0 (for 1979-2019)",
+    "license" : "Creative Commons Zero (CC0) 1.0",
+    "references" : "Kim (2017) <https://doi.org/10.20783/DIAS.501> for GSWP3; Cucchi et al. (2020) <https://doi.org/10.5194/essd-2020-28> and Lange et al. (2021) <https://doi.org/10.48364/ISIMIP.342217> for W5E5; Lange (2019) <https://doi.org/10.5194/gmd-12-3055-2019> and Lange (2021) <https://doi.org/10.5281/zenodo.4686991> for ISIMIP3BASD"
+  },
+  "variable" : "lwnet",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 2019,
+  "nyear" : 119,
+  "nstep" : 365,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 0.100000,
+  "datatype" : "short",
+  "unit" : "W/m2",
+  "long_name" : "longwave net radiation",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 4,
+  "offset" : 59,
+  "grid" : {"filename" : "grid_minimum.clm", "format" : "clm", "datatype" : "short"},
+  "bigendian" : false
+}
