@@ -130,8 +130,6 @@ bin/grd2bsq
 bin/grid2clm
 bin/joingrid
 bin/lpj
-bin/lpj_paths.csh
-bin/lpj_paths.sh
 bin/lpjcat
 bin/lpjcheck
 bin/lpjfiles
