@@ -38,7 +38,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Removed macros from `pftpar.h`
 - Added missing PFTs to `biome_classification.c`
 - String comparison in `landusechange_for_reservoir.c` replaced by call to `ispftinstand()`
-- Environment variable `LPJINPATH` set to `/p/projects/lpjml/inputs/public_standard` in `lpj_paths.sh` and `lpj_paths.csh`
+- Default value of `LPJINPATH` set to `/p/projects/lpjml/inputs/public_standard` in `configure.sh`
 
 ### Removed
 
