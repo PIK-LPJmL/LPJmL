@@ -180,3 +180,8 @@ bin/splitclm
 
 # test build folder
 src/test/build
+
+
+# Allow .clm files specifically in the minimum folder
+!minimum/
+!minimum/*.clm
