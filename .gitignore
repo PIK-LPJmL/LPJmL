@@ -183,6 +183,6 @@ src/test/build
 
 
 # Allow .clm and .dat files specifically in the minimum folder
-!minimum/
-!minimum/*.clm
-!minimum/*.dat
+!testcase_2cell/
+!testcase_2cell/*.clm
+!testcase_2cell/*.dat

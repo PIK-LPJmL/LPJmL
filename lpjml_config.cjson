@@ -232,8 +232,8 @@
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
-#ifdef MINIMUM
-  "inpath" : "./minimum",
+#ifdef TESTCASE_2CELL
+  "inpath" : "./testcase_2cell",
 #else
   "inpath" : "/p/projects/lpjml/inputs/public_standard",
 #endif
@@ -242,8 +242,8 @@
   "input" :
 #ifdef NETCDF_INPUT
     #include "input_netcdf.cjson"
-#elif defined MINIMUM
-     #include "minimum/input_minimum.cjson"
+#elif defined TESTCASE_2CELL
+     #include "testcase_2cell/input_testcase_2cell.cjson"
 #else
     #include "input.cjson"
 #endif
@@ -294,12 +294,12 @@
 #define xstr(s) #s
 
 #ifdef FROM_RESTART
-#ifdef MINIMUM
-  "json_config_filename" : "minimum/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+#ifdef TESTCASE_2CELL
+  "json_config_filename" : "testcase_2cell/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "minimum/globalflux.csv"}}
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "testcase_2cell/globalflux.csv"}}
   ],
 #else
   "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
@@ -454,12 +454,12 @@ ID                               Fmt                        filename
   ],
 #endif
 #else
-#ifdef MINIMUM
-  "json_config_filename" : "minimum/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+#ifdef TESTCASE_2CELL
+  "json_config_filename" : "testcase_2cell/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "minimum/globalflux_spinup.csv"}}
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "testcase_2cell/globalflux_spinup.csv"}}
   ],
 #else
   "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */

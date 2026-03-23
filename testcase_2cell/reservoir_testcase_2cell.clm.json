@@ -1,0 +1,34 @@
+{
+  "filename" : "reservoir_testcase_2cell.clm",
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/reservoirs_paper/`\nFri Mar 20 14:14:24 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/reservoir_stn_30arcmin_par1.clm.json ./reservoir_testcase_2cell.clm",
+  "global_attrs" :
+  {
+    "title" : "LandInG v1 land input data",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Sebastian Ostberg <ostberg@pik-potsdam.de>",
+    "summary" : "reservoirs data processed with LandInG, equally weighting distance and catchment area size (par1)",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention"
+  },
+  "variable" : "reservoir",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 10,
+  "scalar" : 1.000000,
+  "datatype" : "float",
+  "unit" : "1",
+  "long_name" : "multiple attributes for reservoirs",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 4,
+  "offset" : 59,
+  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
+  "bigendian" : false
+}

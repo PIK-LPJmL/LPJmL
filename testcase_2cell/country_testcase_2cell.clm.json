@@ -1,0 +1,34 @@
+{
+  "filename" : "country_testcase_2cell.clm",
+  "history" : "created based on GADM, unclear which version\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/cow_full_2018.clm.json ./country_testcase_2cell.clm",
+  "global_attrs" :
+  {
+    "title" : "country code file",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "country and region code; each grid cell is only assigned to one country, region codes are only assigned for large countries",
+    "license" : "Creative Commons Zero (CC0) 1.0",
+    "references" : "<https://gadm.org/>"
+  },
+  "variable" : "country_code",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 2,
+  "scalar" : 1.000000,
+  "datatype" : "short",
+  "unit" : "1",
+  "long_name" : "country and region codes",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 4,
+  "offset" : 59,
+  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
+  "bigendian" : false
+}

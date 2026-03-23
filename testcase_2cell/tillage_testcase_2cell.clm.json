@@ -1,0 +1,34 @@
+{
+  "filename" : "tillage_testcase_2cell.clm",
+  "history" : "copy of /p/projects/lpjml/input/historical/input_VERSION3/lpj_tillage_CA_1973-2010.clm; created 2023-09-21 by Fabian Stenzel with R script `/p/projects/lpjml/inputs/land_management/30min/Porwollik_2019/v1/create_tillage_file.R`\nFri Mar 20 14:14:21 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/tillage_1973_1974-2010_1973_as_till_everywhere.clm.json ./tillage_testcase_2cell.clm",
+  "global_attrs" :
+  {
+    "title" : "Porwollik et al. 2019 tillage data",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Fabian Stenzel <stenzel@pik-potsdam.de>",
+    "summary" : "Tillage data from Porwollik et al. 2019, assuming conventional tillage everywhere prior to 1974",
+    "license" : "Open Data Commons Open Database License (ODbL) v1.0 <https://opendatacommons.org/licenses/odbl/1-0/>",
+    "references" : "Porwollik et al. (2019) <http://dx.doi.org/10.5194/essd-11-823-2019>"
+  },
+  "variable" : "with_tillage",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1973,
+  "lastyear" : 2010,
+  "nyear" : 38,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 1.000000,
+  "datatype" : "short",
+  "unit" : "1",
+  "long_name" : "Historical binary tillage practice application value for each cell (written as integer 0/1 for no/yes). 1973 has all cells set to 1, which can be applied for all years before 1973 with tillage everywhere as a spinup. If no tillage for these years is needed, use other dataset.",
+  "format" : "clm",
+  "order" : "cellyear",
+  "version" : 4,
+  "offset" : 59,
+  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
+  "bigendian" : false
+}
