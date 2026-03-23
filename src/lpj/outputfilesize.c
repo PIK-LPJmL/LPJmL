@@ -42,7 +42,7 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
         {
            if(config->soil_filename.fmt==CDF)
            {
-             coord=opencoord_netcdf(config->soil_filename.name,
+             coord=opencoord_netcdf(config->soil_filename.name,NULL,NULL,
                                     config->soil_filename.var,&config->netcdf,isroot(*config));
              if(coord!=NULL)
              {

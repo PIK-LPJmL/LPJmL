@@ -677,7 +677,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->ispopulation)
   {
-    printinputfile(file,"pop. dens",&config->popdens_filename,width,config);
+    printinputfile(file,(config->ispopulation==DENS_POPULATION) ? "pop. dens" : "pop. num",&config->popdens_filename,width,config);
     printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
   }
   if(config->ishuman_ign_prob)

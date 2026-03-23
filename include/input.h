@@ -35,7 +35,7 @@ struct input
 
 /* Declaration of functions */
 
-extern Bool initinput(Input *,int,Config *);
+extern Bool initinput(Input *,int,int,Config *);
 extern void freeinput(Input,const Config *);
 
 #endif

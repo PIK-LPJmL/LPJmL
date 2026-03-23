@@ -34,7 +34,7 @@ Human_ign_prob inithuman_ign_prob(const Config *config /**< LPJ configuration */
   human_ign_prob=new(struct human_ign_prob);
   if(human_ign_prob==NULL)
     return NULL;
-  if(opendata(&human_ign_prob->file,&config->human_ign_prob_filename,"human ignition probability density",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
+  if(opendata(&human_ign_prob->file,NULL,NULL,NULL,&config->human_ign_prob_filename,"human ignition probability density",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
   {
     free(human_ign_prob);
     return NULL;

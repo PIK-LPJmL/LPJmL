@@ -70,6 +70,9 @@
 #define FIRE 1
 #define SPITFIRE 2
 #define SPITFIRE_TMAX 3
+#define NO_POPULATION 0
+#define DENS_POPULATION 1
+#define NUM_POPULATION 2
 #define NESTEROV_INDEX 0
 #define WVPD_INDEX 1
 #define NO_LANDCOVER 0

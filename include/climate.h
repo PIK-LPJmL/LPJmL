@@ -130,7 +130,7 @@ extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
 extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
 extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,int,Real,
-                        const Config *);
+                        Bool,Config *);
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
@@ -144,11 +144,11 @@ extern void addanomaly_climate(Climate *, int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
-extern Bool openclmdata(Climatefile *,const Filename *,const char *,const char *,
+extern Bool openclmdata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                      Type,Real,int,const Config *config);
-extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
+extern Bool opendata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                      Type,Type,Real,int,Bool,const Config *config);
-extern Bool opendata_seq(Climatefile *,const Filename *,const char *,const char *,
+extern Bool opendata_seq(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
                          Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,int,const Config *config);
@@ -158,5 +158,6 @@ extern Realdata initrealdata(const Filename *,const char *,const char *,const Co
 extern Bool readrealdata(Realdata,int,const Cell *,const Config *);
 extern Real getrealdata(const Realdata,int);
 extern void freerealdata(Realdata,Bool);
+extern Bool checktitle(const Attr *,int,const char *,char **,Bool);
 
 #endif

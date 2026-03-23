@@ -277,7 +277,7 @@ int main(int argc,char **argv)
 #ifdef USE_TIMING
   timing_start(t);
 #endif
-  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],&config);
+  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
 #ifdef USE_TIMING
   timing_stop(INITINPUT_FCN,t);
 #endif

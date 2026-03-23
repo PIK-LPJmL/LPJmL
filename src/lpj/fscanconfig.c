@@ -221,6 +221,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *methane[]={"fixed","prescribed","dynamic"};
   char *tillage[]={"no","all","read"};
   char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  char *population[]={"no","density","number"};
   Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
@@ -229,6 +230,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
   config->coupler_in=0;
   config->socket=NULL;
+  config->climate=NULL;
+  config->landuse=NULL;
   if (verbose>=VERB) puts("// I. type section");
   config->coupled_model=NULL;
   config->fail_on_balance=TRUE;
@@ -316,13 +319,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   }
 #endif
+  config->ispopulation=NO_POPULATION;
   if(fscankeywords(file,&config->fire,"fire",fire,4,FALSE,verbose))
     return TRUE;
   config->prescribe_burntarea=FALSE;
   config->prescribe_ignition=FALSE;
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
-  config->ispopulation=FALSE;
+  config->ispopulation=NO_POPULATION;
   config->gsilivefuel=FALSE;
   if(isspitfire(config))
   {
@@ -348,7 +352,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(!config->ishuman_ign_prob)
       {
-        fscanbool2(file,&config->ispopulation,"population");
+        if(fscankeywords(file,&config->ispopulation,"population",population,3,FALSE,verbose))
+          return TRUE;
       }
     }
   }
@@ -819,21 +824,39 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-    if(config->landusemap==NULL)
+    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    if(config->landusemap_size==-1)
       return TRUE;
     if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-      if(config->fertilizermap==NULL)
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->fertilizermap_size==-1)
         return TRUE;
     }
-    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    if(config->manure_input)
     {
-      config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-      if(config->cftmap==NULL)
+      config->manuremap=scancftmap(file,&config->manuremap_size,"manuremap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->manuremap_size==-1)
+        return TRUE;
+    }
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+    {
+      config->residuemap=scancftmap(file,&config->residuemap_size,"residuemap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->residuemap_size==-1)
+        return TRUE;
+    }
+    if(config->sdate_option>=PRESCRIBED_SDATE)
+    {
+      config->sdatemap=scancftmap(file,&config->sdatemap_size,"sdatemap",TRUE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->sdatemap_size==-1)
+        return TRUE;
+    }
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
+    {
+      config->crop_phumap=scancftmap(file,&config->crop_phumap_size,"crop_phumap",TRUE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      if(config->crop_phumap_size==-1)
         return TRUE;
     }
     scanclimatefilename(input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
@@ -985,14 +1008,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->ispopulation)
     {
-      scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
-      scanclimatefilename(input,&config->human_ignition_filename,
-                          FALSE,TRUE,"human_ignition");
+      scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,(config->ispopulation==DENS_POPULATION) ? "popdens" : "popnum");
+      scanclimatefilename(input,&config->human_ignition_filename,FALSE,TRUE,"human_ignition");
     }
-  }
-  if(config->prescribe_burntarea)
-  {
-    scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
+    if(config->prescribe_burntarea)
+    {
+      scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
+    }
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {

@@ -18,6 +18,7 @@
 
 Bool initinput(Input *input,        /**< Input data */
                int npft,            /**< number of natural PFTs */
+               int ncft,            /**< number of crop PFTs */
                Config *config       /**< LPJ configuration */
               )                     /** \return TRUE on error */
 {
@@ -32,7 +33,7 @@ Bool initinput(Input *input,        /**< Input data */
     input->extflow=NULL;
   if(config->withlanduse!=NO_LANDUSE)
   {
-    if((input->landuse=initlanduse(config))==NULL)
+    if((input->landuse=initlanduse(npft,ncft,config))==NULL)
       return TRUE;
   }
   else
