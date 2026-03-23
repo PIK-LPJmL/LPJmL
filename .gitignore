@@ -182,6 +182,7 @@ bin/splitclm
 src/test/build
 
 
-# Allow .clm files specifically in the minimum folder
+# Allow .clm and .dat files specifically in the minimum folder
 !minimum/
 !minimum/*.clm
+!minimum/*.dat
