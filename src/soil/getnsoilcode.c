@@ -80,6 +80,7 @@ int getnsoilcode(const Filename *filename,       /**< filename of soil code file
         fputs("ERROR165: Cannot get number of cells from soil code file.\n",stderr);
       return -1;
     }
+    fclose(file);
     return header.ncell; 
   }
   else /* file is in CLM/CLM2 format */

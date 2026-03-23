@@ -55,6 +55,8 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Misplaced `printcell()` corrected in `update_monthly_grid.c` causing SEGV if `-DDEBUG` is set
 - Correct number of cells written in JSON metafile in `regridirrig`
 - Error message corrected for nitrogen balance check in `daily_natural.c` to avoid SEGV without land use enabled
+- Missing `fclose(file)` added in `getnsoilcode.c`
+- Reading of landcovermap corrected in `landcover.c`
 
 
 ## [6.0.5] - 2026-03-17

@@ -27,9 +27,9 @@ Landcover initlandcover(int npft,      /**< number of natural PFTs */
                         Config *config /**< LPJmL configuration */
                        )               /** \return landcover data or NULL */
 {
+  int i;
   Map *map=NULL;
   Landcover landcover;
-  int i;
   
   landcover=new(struct landcover);
   if(landcover==NULL)
@@ -42,12 +42,29 @@ Landcover initlandcover(int npft,      /**< number of natural PFTs */
     free(landcover);
     return NULL;
   }
-  if(getmap(map,config->landcover_filename.name,"landusemap",FALSE,
-            &config->landcovermap,&config->landcovermap_size,getnnat(npft,config),0,config))
+  if(config->landcovermap==NULL)
   {
-    free(landcover);
-    return NULL;
+    /* No landcovermap defined in lpjml configuration file */
+    if(map==NULL)
+    {
+      /* no map found, set default 1:1 map */
+      config->landcovermap=defaultpftmap("landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getnnat(npft,config);
+    }
+    else
+    {
+      /* get landcovermap from input file */
+      config->landcovermap=getpftmap(map,"landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getmapsize(map);
+    }
+    if(config->landcovermap==NULL)
+    {
+      freemap(map);
+      free(landcover);
+      return NULL;
+    }
   }
+  freemap(map);
   if(landcover->file.var_len!=config->landcovermap_size)
   {
     if(isroot(*config))
