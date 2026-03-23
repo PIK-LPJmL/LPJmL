@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "agriculture.h"
 
 Bool setupannual_grid(Outputfile *output,  /**< Output file data */
                       Cell grid[],         /**< cell array */
@@ -207,6 +208,46 @@ Bool setupannual_grid(Outputfile *output,  /**< Output file data */
   } /* of for(cell=...) */
 #ifdef USE_TIMING
   timing_stop(SETUPANNUAL_GRID_FCN,t);
+#endif
+#ifdef CHECK_BALANCE
+  /* Recompute storage snapshots after land use change and annual setup so that
+   * the day-1 delta in updatedaily_grid is measured from the correct baseline. */
+  if(config->river_routing && config->ntask==1)
+  {
+    Real total_surface=0, total_soil=0;
+    Stand *stand;
+    int s;
+    for(cell=0;cell<config->ngridcell;cell++)
+    {
+      if(!grid[cell].skip)
+      {
+        foreachstand(stand,s,grid[cell].standlist)
+          total_soil+=soilwater(&stand->soil)*stand->frac*grid[cell].coord.area;
+      }
+      total_surface+=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river
+                    +grid[cell].discharge.dmass_gw+grid[cell].lateral_water*grid[cell].coord.area;
+      if(grid[cell].ml.dam)
+      {
+        int k;
+        total_surface+=grid[cell].ml.resdata->dmass;
+        for(k=0;k<NIRRIGDAYS;k++)
+          total_surface+=grid[cell].ml.resdata->dfout_irrigation_daily[k];
+      }
+      if(!grid[cell].skip)
+      {
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          if(stand->data!=NULL && isagriculture(stand))
+          {
+            Irrigation *irrig_data=stand->data;
+            total_surface+=(irrig_data->irrig_stor+irrig_data->irrig_amount)*stand->frac*grid[cell].coord.area;
+          }
+        }
+      }
+    }
+    grid[0].balance.daily_surface_prev=total_surface;
+    grid[0].balance.daily_soil_prev=total_soil;
+  }
 #endif
   return FALSE;
 } /* of 'setupannual_grid' */

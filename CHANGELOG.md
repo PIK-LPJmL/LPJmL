@@ -52,6 +52,7 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
 - DEBUG print statement in `restart2yaml.c`
 - Sign error in daily carbon balance check in `update_daily_cell()`, `daily_grassland()`, and `daily_agriculture()` when methane is enabled: absorbed atmospheric CH4 oxidized within the same timestep was double-counted
+- Global water balance check in `updatedaily_grid()` now uses daily increments of annual flux accumulators and per-cell daily storage snapshots instead of annual `_last` storage fields, eliminating errors when starting from a restart file; reservoir irrigation buffer (`dfout_irrigation_daily`) now included in surface storage accounting
 - Misplaced `printcell()` corrected in `update_monthly_grid.c` causing SEGV if `-DDEBUG` is set
 - Correct number of cells written in JSON metafile in `regridirrig`
 - Error message corrected for nitrogen balance check in `daily_natural.c` to avoid SEGV without land use enabled
