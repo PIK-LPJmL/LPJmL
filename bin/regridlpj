@@ -211,7 +211,7 @@ EOF
   "human_ignition"   : { "fmt" : "meta", "name" : "$dir/human_ignition_$name.clm.json"},
   "popnum"           : { "fmt" : "meta", "name" : "$dir/popnum_$name.clm.json"},
   "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "$LPJINPATH/global_co2_ann_1700_2022.txt"},
-  "ch4"              : { "fmt" : "txt", "name" : "$LPJINPATH/CH4_concentration_1841-2022.dat"},
+  "ch4"              : { "fmt" : "txt", "name" : "$LPJINPATH/CH4_concentration_1700-2022.dat"},
   "wetdays"          : { "fmt" : "meta", "name" : "$dir/wet_$name.clm.json"},
   "no3deposition"    : { "fmt" : "meta", "name" : "$dir/no3_deposition_$name.clm.json"},
   "nh4deposition"    : { "fmt" : "meta", "name" : "$dir/nh4_deposition_$name.clm.json"},
