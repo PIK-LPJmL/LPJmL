@@ -17,15 +17,13 @@
 #include "lpj.h"
 
 Bool openfile_netcdf(Climatefile *file,        /**< data file */
-                     Map **map,                /**< pointer to map or NULL */
-                     Attr **attrs,             /**< pointer to array of attributes or NULL */
-                     int *n_attr,              /**< size of array attribute */
+                     Metadata *metadata,
                      const Filename *filename, /**< filename */
                      const char *units,        /**< units or NULL */
                      const Config *config      /**< LPJ configuration */
                     )                          /** \return TRUE on error */
 {
-  if(openclimate_netcdf(file,map,attrs,n_attr,filename->name,filename,units,config))
+  if(openclimate_netcdf(file,metadata,filename->name,filename,units,config))
     return TRUE;
   file->oneyear=FALSE;
   if(file->time_step!=YEAR)

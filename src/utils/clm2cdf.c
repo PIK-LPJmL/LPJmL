@@ -546,33 +546,26 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
+  Metadata metadata;
   String headername;
   float *data;
   Type type;
   size_t offset;
-  Map *map=NULL;
   Attr *global_attrs=NULL;
-  Attr *global_attrs2=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
   Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,isnetcdf4;
-  int n_global,n_global2;
+  int n_global;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
   char *units,*long_name,*endptr,*arglist,*missing_value;
-  char *map_name,*pos;
+  char *pos;
   const char *progname;
   char *grid_filename,*path;
   Filename grid_name;
   char *filename,*outname,*variable;
-  char *var_name=NULL;
   size_t filesize;
-  char *var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL,*config_filename=NULL;
+  char *config_filename=NULL;
   Netcdf_config netcdf_config;
-  Limit *basetemp=NULL;
-  int basetemp_size;
-  int *hlimit=NULL;
-  int hlimit_size;
   units=long_name=NULL;
   scale=1.0;
   compress=0;
@@ -587,13 +580,13 @@ int main(int argc,char **argv)
   isnetcdf4=FALSE;
   nbands=1;
   setversion=READ_VERSION;
-  map_name=MAP_NAME;
   grid_name.fmt=CLM;
   n_global=0;
   missing_value=NULL;
   type=LPJ_SHORT;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -738,7 +731,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-config"))
       {
@@ -871,7 +864,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -880,51 +873,42 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(units==NULL && var_units!=NULL)
-      units=var_units;
-    if(long_name==NULL && var_long_name==NULL)
-      long_name=var_long_name;
-    if(global_attrs2!=NULL)
+    if(units==NULL && metadata.unit!=NULL)
+      units=metadata.unit;
+    if(long_name==NULL && metadata.long_name==NULL)
+      long_name=metadata.long_name;
+    if(metadata.attrs!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
-      freeattrs(global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,metadata.attrs,metadata.n_attr,FALSE);
     }
-    basetemp=getlimitarrayfromjson(filename,&basetemp_size,"basetemp",FALSE);
-    if(basetemp!=NULL)
+    if(metadata.basetemp!=NULL)
     {
-      if(map==NULL)
+      if(metadata.map==NULL)
       {
         fprintf(stderr,"Map missing for basetemp array in '%s'.\n",filename);
-        free(basetemp);
         fclose(file);
         return EXIT_FAILURE;
       }
-      if(getmapsize(map)!=basetemp_size)
+      if(getmapsize(metadata.map)!=metadata.basetemp_size)
       {
         fprintf(stderr,"Map size %d is not equal basetemp array size %d on '%s'.\n",
-                getmapsize(map),basetemp_size,filename);
-        free(basetemp);
+                getmapsize(metadata.map),metadata.basetemp_size,filename);
         fclose(file);
         return EXIT_FAILURE;
       }
     }
-    hlimit=getintarrayfromjson(filename,&hlimit_size,"hlimit",FALSE);
-    if(hlimit!=NULL)
+    if(metadata.hlimit!=NULL)
     {
-      if(map==NULL)
+      if(metadata.map==NULL)
       {
         fprintf(stderr,"Map missing for hlimit array in '%s'.\n",filename);
-        free(basetemp);
-        free(hlimit);
         fclose(file);
         return EXIT_FAILURE;
       }
-      if(getmapsize(map)!=hlimit_size)
+      if(getmapsize(metadata.map)!=metadata.hlimit_size)
       {
         fprintf(stderr,"Map size %d is not equal hlimit array size %d on '%s'.\n",
-                getmapsize(map),hlimit_size,filename);
-        free(basetemp);
-        free(hlimit);
+                getmapsize(metadata.map),metadata.hlimit_size,filename);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -947,7 +931,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    if(var_name==NULL)
+    if(metadata.variable==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
@@ -957,7 +941,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
-    variable=var_name;
+    variable=metadata.variable;
     path=getpath(filename);
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
@@ -1137,21 +1121,13 @@ int main(int argc,char **argv)
       }
     }
   }
-  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,
+  cdf=create_cdf(outname,metadata.map,metadata.source,metadata.history,variable,units,metadata.standard_name,
                  long_name,&netcdf_config,arglist,global_attrs,n_global,
-                 basetemp,hlimit,&header,compress,landuse,notime,
+                 metadata.basetemp,metadata.hlimit,&header,compress,landuse,notime,
                  isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),
                  isnetcdf4,index);
   free(arglist);
-  free(source);
-  free(history);
-  free(var_name);
-  free(var_units);
-  free(var_standard_name);
-  free(var_long_name);
-  freemap(map);
-  free(basetemp);
-  free(hlimit);
+  freemetadata(&metadata);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;

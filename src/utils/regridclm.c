@@ -40,16 +40,11 @@ int main(int argc,char **argv)
   String id;
   Filename filename,grid_name;
   Type grid_type;
-  Map *map=NULL;
-  Attr *global_attrs=NULL;
-  char *var_name=NULL,*var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL;
   char *path;
-  char *map_name;
-  map_name=MAP_NAME;
-  int n_global=0;
+  Metadata metadata;
   isint=issearch=iszero=isjson=ismeta=isbyte=FALSE;
   setversion=READ_VERSION;
+  initmetadata(&metadata,NULL);
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -130,7 +125,7 @@ int main(int argc,char **argv)
     header.datatype=LPJ_SHORT;
     header.order=CELLYEAR;
     data_version=CLM_MAX_VERSION;
-    data_file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
+    data_file=openmetafile(&header,&metadata,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
     if(data_file==NULL)
       return EXIT_FAILURE;
     if(format==CLM)
@@ -521,19 +516,12 @@ int main(int argc,char **argv)
     }
     if(data_version<4)
       header2.nbands/=header2.nstep;
-    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    fprintjson(file,argv[index_datafile+1],NULL,arglist,&header2,&metadata,&filename,grid_type,format,id,FALSE,data_version);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(filename.name);
-  freemap(map);
-  freeattrs(global_attrs,n_global);
-  free(var_name);
-  free(var_units);
-  free(var_long_name);
-  free(var_standard_name);
-  free(source);
-  free(history);
+  freemetadata(&metadata);
   return EXIT_SUCCESS;
 } /* of 'main' */

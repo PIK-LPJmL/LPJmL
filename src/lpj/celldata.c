@@ -46,16 +46,17 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
 {
   Celldata celldata;
-  Map *map;
+  Metadata metadata;
   int *soilmap;
   float lon,lat;
   celldata=new(struct celldata);
   if(celldata==NULL)
     return NULL;
   celldata->soil_fmt=config->soil_filename.fmt;
+  initmetadata(&metadata,config->soil_filename.map);
   if(config->soil_filename.fmt==CDF)
   {
-    celldata->soil.cdf=opencoord_netcdf(config->soil_filename.name,&map,
+    celldata->soil.cdf=opencoord_netcdf(config->soil_filename.name,&metadata.map,
                                         config->soil_filename.map,
                                         config->soil_filename.var,
                                         &config->netcdf,
@@ -89,7 +90,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
 
     /* Open soiltype file */
     celldata->soil.bin.file=fopensoilcode(&config->soil_filename,
-                                          &map,
+                                          &metadata,
                                           &celldata->soil.bin.swap,
                                           &celldata->soil.bin.offset,
                                           &celldata->soil.bin.type,config->nsoil,
@@ -101,9 +102,9 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  if(map!=NULL)
+  if(metadata.map!=NULL)
   {
-    soilmap=getsoilmap(map,config);
+    soilmap=getsoilmap(metadata.map,config);
     if(soilmap==NULL)
     {
       if(isroot(*config))
@@ -112,13 +113,13 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     else
     {
       if(isroot(*config) && config->soilmap!=NULL)
-         cmpsoilmap(soilmap,getmapsize(map),config);
+         cmpsoilmap(soilmap,getmapsize(metadata.map),config);
       free(config->soilmap);
       config->soilmap=soilmap;
-      config->soilmap_size=getmapsize(map);
+      config->soilmap_size=getmapsize(metadata.map);
     }
-    freemap(map);
   }
+  freemetadata(&metadata);
   if(config->soilmap==NULL)
   {
     config->soilmap=defaultsoilmap(&config->soilmap_size,config);

@@ -46,6 +46,7 @@ int main(int argc,char **argv)
   Coord grid;
   Type type;
   Header header;
+  Metadata metadata;
   char *head;
   int i,m,y;
   Bool force;
@@ -528,7 +529,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[argc-1],NULL,"asc2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,(gridfile==NULL) ? NULL : &coord_filename,coord_type,CLM,head,FALSE,version);
+    initmetadata(&metadata,NULL);
+    metadata.source="asc2clm";
+    fprintjson(out,argv[argc-1],NULL,arglist,&header,&metadata,(gridfile==NULL) ? NULL : &coord_filename,coord_type,CLM,head,FALSE,version);
     fclose(out);
   }
   return EXIT_SUCCESS;

@@ -298,6 +298,7 @@ int main(int argc,char **argv)
   char *out_json,*arglist;
   Intcoord coord;
   Header header,gridheader,outheader;
+  Metadata metadata;
   String headername;
   int code;
   Bool swap_country,swap_grid,rc,isregion,isjson;
@@ -474,7 +475,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+2],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,version);
+    initmetadata(&metadata,NULL);
+    metadata.source=argv[0];
+    metadata.variable="grid";
+    metadata.unit="degree";
+    metadata.long_name="cell coordinates";
+    fprintjson(out,argv[iarg+2],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,version);
     fclose(out);
   }
   if(header.ncell)

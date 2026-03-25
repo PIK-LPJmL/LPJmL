@@ -229,18 +229,15 @@ int main(int argc,char **argv)
   Filename filename;
   Climatefile data;
   Config config;
-  char *units,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
+  char *outname,*endptr,*out_json,*arglist,*title;
   const char *progname;
   Coord *grid;
   Intcoord intcoord;
   float fcoord[2];
   double dcoord[2];
   FILE *file;
-  Map *map=NULL;
+  Metadata metadata;
   int iarg,j,k;
-  Attr *attrs=NULL;
-  int n_attr=0,len;
-  char name[NC_MAX_NAME];
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
@@ -251,14 +248,12 @@ int main(int argc,char **argv)
   filename.map=NULL;
   filename.time=NULL;
   filename.unit=NULL;
-  units=NULL;
-  map_name=NULL;
-  map=0;
   outname="out.bin"; /* default file name for output */
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
+  initmetadata(&metadata,BAND_NAMES);
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
@@ -325,8 +320,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        units=strdup(argv[++iarg]);
-        check(units);
+        metadata.unit=strdup(argv[++iarg]);
+        check(metadata.unit);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -337,7 +332,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-o"))
       {
@@ -510,66 +505,34 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&data,NULL,NULL,NULL,argv[j],&filename,units,&config))
+    if(openclimate_netcdf(&data,(j==iarg+1) ? &metadata : NULL,argv[j],&filename,metadata.unit,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
     if(filename.var==NULL)
       filename.var=getvarname_netcdf(&data);
-    if(units==NULL)
-      units=getattr_netcdf(data.ncid,data.varid,"units");
-    long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
-    standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
-    history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
-    source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
-    title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
     if(j==iarg+1)
     {
-      if(isjson)
+      metadata.variable=strdup(filename.var);
+      if(metadata.unit==NULL)
+        metadata.unit=getattr_netcdf(data.ncid,data.varid,"units");
+      metadata.long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
+      metadata.standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
+      metadata.history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
+      metadata.source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
+      title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
+      for(k=0;k<metadata.n_attr;k++)
       {
-        if(map_name!=NULL)
+        if(!strcmp(metadata.attrs[k].name,"history") || !strcmp(metadata.attrs[k].name,"source") || !strcmp(metadata.attrs[k].name,"title"))
         {
-          map=readmap_netcdf(data.ncid,map_name);
-          if(map==NULL)
-          {
-            fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
-            map_name=NULL;
-          }
-          else
-            map_name=BAND_NAMES;
-        }
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
-          map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
-          map_name=BAND_NAMES;
-        if(nc_inq_natts(data.ncid,&len))
-          n_attr=0;
-        else
-        {
-          attrs=newvec(Attr,len);
-          if(attrs==NULL)
-          {
-            printallocerr("attrs");
-            return EXIT_FAILURE;
-          }
-          n_attr=0;
-          for(k=0;k<len;k++)
-          {
-            if(!nc_inq_attname(data.ncid,NC_GLOBAL,k,name))
-            {
-              if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
-              {
-                attrs[n_attr].value=getattr_netcdf(data.ncid,NC_GLOBAL,name);
-                if(attrs[n_attr].value!=NULL)
-                  attrs[n_attr++].name=strdup(name);
-              }
-            }
-          }
+          free(metadata.attrs[k].name);
+          free(metadata.attrs[k].value);
+          metadata.attrs[k]=metadata.attrs[metadata.n_attr-1];
+          k--;
+          metadata.n_attr--;
         }
       }
-      else
-        map_name=NULL;
     }
     if(isclm || isjson)
     {
@@ -646,18 +609,14 @@ int main(int argc,char **argv)
     }
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
-    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,title,arglist,&header,&metadata,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(filename.var);
-  free(units);
-  free(long_name);
-  free(standard_name);
-  free(history);
-  free(source);
-  freemap(map);
+  free(title);
+  freemetadata(&metadata);
   free(grid);
   return EXIT_SUCCESS;
 #else

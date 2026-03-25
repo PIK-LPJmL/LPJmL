@@ -107,6 +107,7 @@ int main(int argc,char **argv)
   Float_coord coord;
   Real dist_min;
   Header header;
+  Metadata metadata;
   char *endptr,*map_name;
   char *arglist,*out_json;
   Bool latlon,verbose,isjson;
@@ -379,7 +380,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(gridfile,argv[iarg+1],NULL,"txt2grid",NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    initmetadata(&metadata,NULL);
+    metadata.source="txt2grid";
+    metadata.variable="grid";
+    metadata.unit="degree";
+    metadata.long_name="cell coordinates";
+    fprintjson(gridfile,argv[iarg+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     fclose(gridfile);
   }
   if(map_name!=NULL)

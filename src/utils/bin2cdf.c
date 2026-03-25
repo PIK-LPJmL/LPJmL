@@ -604,10 +604,11 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
+  Metadata metadata;
   float *data=NULL;
   short *data_short=NULL;
   const char *progname;
-  int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear,cell;
+  int i,j,k,ngrid,iarg,compress,version,n_global,baseyear,cell;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear,isnetcdf4,notime;
   Type gridtype;
   float cellsize,fcoord[2];
@@ -617,13 +618,9 @@ int main(int argc,char **argv)
   float cellsize_lon,cellsize_lat,scalar;
   Netcdf_config netcdf_config;
   Coordfile coordfile;
-  Map *map=NULL;
   Attr *global_attrs=NULL;
-  Attr *global_attrs2=NULL;
   size_t offset;
-  char *map_name,*filename;
-  char *var_units=NULL,*var_long_name=NULL,*var_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL;
+  char *filename;
   Filename grid_name;
   char *variable,*grid_filename=NULL,*path,*config_filename=NULL;
   grid_name.fmt=RAW;
@@ -647,13 +644,13 @@ int main(int argc,char **argv)
   revlat=FALSE;
   withdays=FALSE;
   isnetcdf4=FALSE;
-  map_name=BAND_NAMES;
   scalar=0;
   n_global=0;
   missing_value=NULL;
   notime=FALSE;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -810,7 +807,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-config"))
       {
@@ -1010,7 +1007,7 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(header.datatype!=LPJ_SHORT && header.datatype!=LPJ_FLOAT)
@@ -1020,14 +1017,13 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     isshort=header.datatype==LPJ_SHORT;
-    if(units==NULL && var_units!=NULL)
-      units=var_units;
-    if(long_name==NULL && var_long_name!=NULL)
-      long_name=var_long_name;
-    if(global_attrs2!=NULL)
+    if(units==NULL && metadata.unit!=NULL)
+      units=metadata.unit;
+    if(long_name==NULL && metadata.long_name!=NULL)
+      long_name=metadata.long_name;
+    if(metadata.attrs!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
-      freeattrs(global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,metadata.attrs,metadata.n_attr,FALSE);
     }
   }
   else
@@ -1057,7 +1053,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    if(var_name==NULL)
+    if(metadata.variable==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
@@ -1067,7 +1063,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
-    variable=var_name;
+    variable=metadata.variable;
     path=getpath(filename);
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
@@ -1322,15 +1318,9 @@ int main(int argc,char **argv)
   }
   if(units==NULL || strlen(units)==0)
     units=nounit;
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,&netcdf_config,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
+  cdf=create_cdf(outname,metadata.map,metadata.map_name,cmdline,metadata.source,metadata.history,variable,units,metadata.standard_name,long_name,&netcdf_config,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
-  free(var_units);
-  free(var_long_name);
-  free(var_name);
-  free(var_standard_name);
-  free(source);
-  free(history);
-  freemap(map);
+  freemetadata(&metadata);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;

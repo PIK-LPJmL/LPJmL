@@ -3,7 +3,7 @@ void fail(int errcode, Bool stop, Bool core, const char *msg, ...)
 
 }
 
-Bool ispftinstand(const Pftlist *,int)
+Bool ispftinstand(const Pftlist *pftlist,int n)
 {
     return 0;
 }

@@ -28,11 +28,12 @@ static int checksoilcode(Config *config)
   int i;
   unsigned int soilcode;
   char *name;
-  Map *map;
+  Metadata metadata;
   int *soilmap;
+  initmetadata(&metadata,config->soil_filename.map);
   if(config->soil_filename.fmt!=CDF)
   {
-    file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
+    file=fopensoilcode(&config->soil_filename,&metadata,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
     if(fseek(file,offset,SEEK_SET))
@@ -42,19 +43,19 @@ static int checksoilcode(Config *config)
       return 1;
     }
     ncell=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,TRUE);
-    if(map!=NULL)
+    if(metadata.map!=NULL)
     {
-      soilmap=getsoilmap(map,config);
+      soilmap=getsoilmap(metadata.map,config);
       if(soilmap!=NULL)
       {
         if(config->soilmap!=NULL)
-          cmpsoilmap(soilmap,getmapsize(map),config);
+          cmpsoilmap(soilmap,getmapsize(metadata.map),config);
         free(config->soilmap);
         config->soilmap=soilmap;
-        config->soilmap_size=getmapsize(map);
+        config->soilmap_size=getmapsize(metadata.map);
       }
-      freemap(map);
     }
+    freemetadata(&metadata);
     if(config->soilmap==NULL)
     {
       config->soilmap=defaultsoilmap(&config->soilmap_size,config);
@@ -150,6 +151,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   Bool swap;
   Input_netcdf input;
   size_t offset;
+  Metadata metadata;
   if(filename->fmt==CDF)
   {
     input=openinput_netcdf(filename,unit,len,config);
@@ -159,7 +161,9 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   else
   {
-    file=openinputfile(&header,NULL,NULL,NULL,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
+    initmetadata(&metadata,NULL);
+    file=openinputfile(&header,&metadata,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
+    freemetadata(&metadata);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -192,7 +196,7 @@ static int checkcountryfile(const Config *config,const Filename *filename)
   }
   else
   {
-    file=openinputfile(&header,NULL,NULL,NULL,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    file=openinputfile(&header,NULL,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -208,6 +212,7 @@ static int checkcountryfile(const Config *config,const Filename *filename)
 static int checklanduse(const Config *config)
 {
   Climatefile landuse;
+  Metadata metadata;
   if(config->landuse_filename.fmt==SOCK)
   {
     if(config->start_coupling<=config->firstyear-config->nspinup)
@@ -217,10 +222,12 @@ static int checklanduse(const Config *config)
     return 1;
   }
  /* open landuse input data */
-  if(opendata_seq(&landuse,NULL,NULL,NULL,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  initmetadata(&metadata,NULL);
+  if(opendata_seq(&landuse,&metadata,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     return 1;
   }
+  freemetadata(&metadata);
   if(landuse.var_len!=2*config->landusemap_size && landuse.var_len!=4*config->landusemap_size)
   {
     fprintf(stderr,
@@ -238,7 +245,7 @@ static int checklanduse(const Config *config)
 static int checklandcover(int npft,Config *config)
 {
   Climatefile landcover;
-  Map *map=NULL;
+  Metadata metadata;
   if(config->landcover_filename.fmt==SOCK)
   {
     if(config->start_coupling<=config->firstyear-config->nspinup)
@@ -248,12 +255,13 @@ static int checklandcover(int npft,Config *config)
     return 1;
   }
   /* open landcover input data */
-  if(opendata_seq(&landcover,&map,NULL,NULL,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
+  initmetadata(&metadata,config->landcover_filename.map);
+  if(opendata_seq(&landcover,&metadata,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
     return 1;
   if(config->landcovermap==NULL)
   {
     /* No landcovermap defined in lpjml configuration file */
-    if(map==NULL)
+    if(metadata.map==NULL)
     {
       /* no map found, set default 1:1 map */
       config->landcovermap=defaultpftmap("landcovermap",getnnat(npft,config),config);
@@ -262,17 +270,17 @@ static int checklandcover(int npft,Config *config)
     else
     {
       /* get landcovermap from input file */
-      config->landcovermap=getpftmap(map,"landcovermap",getnnat(npft,config),config);
-      config->landcovermap_size=getmapsize(map);
+      config->landcovermap=getpftmap(metadata.map,"landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getmapsize(metadata.map);
     }
     if(config->landcovermap==NULL)
     {
-      freemap(map);
+      freemetadata(&metadata);
       closeclimatefile(&landcover,TRUE);
       return 1;
     }
   }
-  freemap(map);
+  freemetadata(&metadata);
   if(landcover.var_len!=config->landcovermap_size)
   {
     fprintf(stderr,
@@ -288,17 +296,17 @@ static int checklandcover(int npft,Config *config)
 static int checkdatafile(const Config *config,const Filename *filename,char *name,char *unit,Type datatype,int nbands,Bool checkclimate)
 {
   char *climate;
-  Attr *attrs=NULL;
-  int n_attr;
   Climatefile input;
+  Metadata metadata;
   /* open input data */
   if(filename->fmt==SOCK)
     return 0;
-  if(opendata_seq(&input,NULL,(checkclimate) ? &attrs : NULL,&n_attr,filename,name,unit,datatype,1,nbands,TRUE,config))
+  initmetadata(&metadata,filename->map);
+  if(opendata_seq(&input,&metadata,filename,name,unit,datatype,1,nbands,TRUE,config))
     return 1;
-  if(attrs!=NULL)
+  if(metadata.attrs!=NULL)
   {
-    climate=getattr(attrs,n_attr,"climate");
+    climate=getattr(metadata.attrs,metadata.n_attr,"climate");
     if(climate!=NULL)
     {
       if(config->climate!=NULL && strcmp(climate,config->climate))
@@ -308,44 +316,66 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
       }
       free(climate);
     }
-    freeattrs(attrs,n_attr);
   }
+  freemetadata(&metadata);
   closeclimatefile(&input,TRUE);
   return 0;
 } /* of 'checkdatafile' */
 
-static int checklandusefile(Config *config,const Filename *filename,const char *name,Bool cftonly,Bool check_title,int **cftmap,int *cftmapsize,const char *unit,int npft,int ncft)
+static int checklandusefile(Config *config,const Filename *filename,const char *name,Bool cftonly,Bool check_title,Bool check_basetemp,int **cftmap,int *cftmapsize,const char *unit,int npft,int ncft)
 {
   FILE *file;
   Header header;
   String headername;
-  int version;
+  int version,rc=0;
   Bool swap;
   Climatefile input;
   size_t offset;
-  Map *map=NULL;
-  Attr *attrs=NULL;
-  int n_attr;
+  Metadata metadata;
+  initmetadata(&metadata,filename->map);
   if(filename->fmt==CDF)
   {
-    if(openfile_netcdf(&input,&map,&attrs,&n_attr,filename,unit,config))
+    if(openfile_netcdf(&input,&metadata,filename,unit,config))
       return 1;
     closeclimate_netcdf(&input,TRUE);
   }
   else
   {
-    file=openinputfile(&header,&map,&attrs,&n_attr,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&metadata,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
   }
   if(check_title)
-    checktitle(attrs,n_attr,filename->name,&config->landuse,TRUE);
-  freeattrs(attrs,n_attr);
-  getmap(map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
+    checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->landuse,TRUE);
+  getmap(metadata.map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
   if(*cftmap==NULL)
     *cftmap=defaultcftmap(cftmapsize,name,cftonly,npft,ncft,config);
-  return 0;
+  if(check_basetemp)
+  {
+    if(metadata.basetemp==NULL)
+    {
+      fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
+              filename->name);
+    }
+    else
+    {
+      if(checkbasetemp(metadata.basetemp,metadata.basetemp_size,npft,config))
+        rc=1;
+    }
+    if(metadata.hlimit==NULL)
+    {
+      fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
+              filename->name);
+    }
+    else
+    {
+      if(checkhlimit(metadata.hlimit,metadata.hlimit_size,npft,config))
+        rc=1;
+    }
+  }
+  freemetadata(&metadata);
+  return rc;
 } /* of 'checklandusefile' */
 
 static int checkclmfile(Config *config,const char *data_name,const Filename *filename,const char *unit,Type datatype,Bool isclimate,Bool check, Bool check_title)
@@ -359,8 +389,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
   Climatefile input;
   size_t offset;
   int first,last,year,count;
-  Attr *attrs=NULL;
-  int n_attr;
+  Metadata metadata;
   if(filename->fmt==FMS)
     return 0;
   if(filename->fmt==SOCK)
@@ -371,6 +400,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
             data_name,config->start_coupling,config->firstyear-config->nspinup);
     return 1;
   }
+  initmetadata(&metadata,NULL);
   if(filename->fmt==CDF)
   {
     input.oneyear=FALSE;
@@ -387,7 +417,7 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
       for(year=first;year<=last;year++)
       {
         name=getsprintf(s,year);
-        if(openclimate_netcdf(&input,NULL,(isclimate) ? &attrs : NULL,&n_attr,name,filename,unit,config))
+        if(openclimate_netcdf(&input,&metadata,name,filename,unit,config))
         {
           count++;
         }
@@ -395,9 +425,9 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         {
           if(check_title)
           {
-            checktitle(attrs,n_attr,name,&config->climate,TRUE);
+            checktitle(metadata.attrs,metadata.n_attr,name,&config->climate,TRUE);
           }
-          freeattrs(attrs,n_attr);
+          freemetadata(&metadata);
           closeclimate_netcdf(&input,TRUE);
         }
         free(name);
@@ -407,13 +437,13 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     }
     else
     {
-      if(openclimate_netcdf(&input,NULL,(isclimate) ? &attrs : NULL,&n_attr,filename->name,filename,unit,config))
+      if(openclimate_netcdf(&input,&metadata,filename->name,filename,unit,config))
         return 1;
       if(check_title)
       {
-        checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+        checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE);
       }
-      freeattrs(attrs,n_attr);
+      freemetadata(&metadata);
       closeclimate_netcdf(&input,TRUE);
       if(check)
       {
@@ -439,15 +469,15 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
   }
   else
   {
-    file=openinputfile(&header,NULL,(isclimate) ? &attrs : NULL,&n_attr,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&metadata,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
     if(check_title)
     {
-      checktitle(attrs,n_attr,filename->name,&config->climate,TRUE);
+      checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE);
     }
-    freeattrs(attrs,n_attr);
+    freemetadata(&metadata);
     if(check)
     {
       if(header.firstyear>config->firstyear)
@@ -568,9 +598,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
                 Bool isout      /**< write output on stdout (TRUE/FALSE) */
                )                /** \return TRUE on error */
 {
-  Limit *basetemp;
-  int *hlimit;
-  int i,bad,badout,basetemp_size,hlimit_size;
+  int i,bad,badout;
   long long size;
   char *path,*oldpath;
   bad=0;
@@ -682,14 +710,14 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checklandcover(config->npft[GRASS]+config->npft[TREE],config);
   if(config->withlanduse!=NO_LANDUSE)
   {
-    if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,TRUE,
+    if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,TRUE,FALSE,
                           &config->landusemap,&config->landusemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
       bad++;
     else
       bad+=checklanduse(config);
     if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,FALSE,
+      if(checklandusefile(config,&config->sdate_filename,"sdatemap",TRUE,FALSE,FALSE,
                           &config->sdatemap,&config->sdatemap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -704,47 +732,11 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
-      if(checklandusefile(config,&config->crop_phu_filename,"crop_phumap",TRUE,FALSE,
+      if(checklandusefile(config,&config->crop_phu_filename,"crop_phumap",TRUE,FALSE,TRUE,
                           &config->crop_phumap,&config->crop_phumap_size,NULL,config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else if(checkdatafile(config,&config->crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config->crop_phumap_size,TRUE))
         bad++;
-      if(config->crop_phu_filename.fmt==META || config->crop_phu_filename.fmt==CDF)
-      {
-        basetemp=(config->crop_phu_filename.fmt==META) ?
-                   getlimitarrayfromjson(config->crop_phu_filename.name,&basetemp_size,"basetemp",TRUE) :
-                   getlimitarray_netcdf(config->crop_phu_filename.name,&basetemp_size,"basetemp",TRUE);
-        if(basetemp==NULL)
-        {
-          fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
-                  config->crop_phu_filename.name);
-        }
-        else
-        {
-          if(checkbasetemp(basetemp,basetemp_size,config->npft[GRASS]+config->npft[TREE],config))
-            bad++;
-          free(basetemp);
-        }
-        hlimit=(config->crop_phu_filename.fmt==META) ?
-                   getintarrayfromjson(config->crop_phu_filename.name,&hlimit_size,"hlimit",TRUE) :
-                   getintarray_netcdf(config->crop_phu_filename.name,&hlimit_size,"hlimit",TRUE);
-        if(hlimit==NULL)
-        {
-          fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
-                  config->crop_phu_filename.name);
-        }
-        else
-        {
-          if(checkhlimit(hlimit,hlimit_size,config->npft[GRASS]+config->npft[TREE],config))
-            bad++;
-          free(hlimit);
-        }
-      }
-    }
-    else
-    {
-      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile, no basetemp and hlimit array found.\n",
-              config->crop_phu_filename.name);
     }
     bad+=checkcountryfile(config,&config->countrycode_filename);
     if(config->reservoir)
@@ -764,7 +756,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->fertilizer_input==FERTILIZER &&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,
+      if(checklandusefile(config,&config->fertilizer_nr_filename,"fertilizermap",FALSE,TRUE,FALSE,
                           &config->fertilizermap,&config->fertilizermap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
        bad++;
       else
@@ -772,7 +764,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if (config->manure_input&&!config->fix_fertilization)
     {
-      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,
+      if(checklandusefile(config,&config->manure_nr_filename,"manuremap",FALSE,TRUE,FALSE,
                           &config->manuremap,&config->manuremap_size,"g/m2",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else
@@ -780,7 +772,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     }
     if(config->residue_treatment==READ_RESIDUE_DATA)
     {
-      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,FALSE,
+      if(checklandusefile(config,&config->residue_data_filename,"residuemap",FALSE,FALSE,FALSE,
                           &config->residuemap,&config->residuemap_size,"1",config->npft[GRASS]+config->npft[TREE],config->npft[CROP]))
         bad++;
       else

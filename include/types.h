@@ -102,6 +102,13 @@ typedef struct
 
 typedef struct
 {
+  Real low;  /**< lower tolerance limits */
+  Real high; /**< upper tolerance limits */
+} Limit;
+
+
+typedef struct
+{
   char *name;
   char *value;
 } Attr;

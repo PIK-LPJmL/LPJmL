@@ -33,6 +33,7 @@ int main(int argc,char **argv)
   Filename filename,grid_name;
   Type grid_type;
   Header header;
+  Metadata metadata;
   setversion=READ_VERSION;
   iszero=issearch=isjson=FALSE;
   progname=strippath(argv[0]);
@@ -234,7 +235,10 @@ int main(int argc,char **argv)
     header.order=CELLYEAR;
     header.cellsize_lon=lon;
     header.cellsize_lat=lat;
-    fprintjson(file,argv[iarg+3],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    initmetadata(&metadata,NULL);
+    metadata.source=strdup(progname);
+    fprintjson(file,argv[iarg+3],NULL,arglist,&header,&metadata,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    freemetadata(&metadata);
     free(out_json);
     free(arglist);
     fclose(file);

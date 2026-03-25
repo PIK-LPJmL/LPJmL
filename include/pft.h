@@ -58,12 +58,6 @@ typedef struct
 
 typedef struct
 {
-  Real low;  /**< lower tolerance limits */
-  Real high; /**< upper tolerance limits */
-} Limit;
-
-typedef struct
-{
   Real low;    /**< lower CN ratio  */
   Real median; /**< median CN ratio  */
   Real high;   /**< upper CN ratio  */
@@ -309,8 +303,6 @@ extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
 extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
 extern void getb(Pft *,Real);
-extern Limit *getlimitarrayfromjson(const char *,int *,const char *,Verbosity);
-extern int *getintarrayfromjson(const char *,int *,const char *,Verbosity);
 extern int *getpftmap(const Map *,const char *,int,const Config *);
 extern int *defaultpftmap(const char *,int,const Config *);
 

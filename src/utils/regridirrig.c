@@ -20,6 +20,7 @@ int main(int argc,char **argv)
 {
   FILE *file,*data_file;
   Header header,header2;
+  Metadata metadata;
   Coord *c,*c2;
   Bool swap,isjson=FALSE,ismeta=FALSE;
   int *data;
@@ -33,15 +34,10 @@ int main(int argc,char **argv)
   char *arglist,*out_json;
   size_t offset;
   Type grid_type;
-  Map *map=NULL;
-  Attr *global_attrs=NULL;
-  char *var_name=NULL,*var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL;
   char *path;
-  char *map_name;
-  map_name=MAP_NAME;
-  int n_global=0,format,iarg,index_datafile,index_gridfile;
+  int format,iarg,index_datafile,index_gridfile;
   setversion=READ_VERSION;
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -81,7 +77,7 @@ int main(int argc,char **argv)
     header.datatype=LPJ_INT;
     header.order=CELLYEAR;
     data_version=CLM_MAX_VERSION;
-    data_file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
+    data_file=openmetafile(&header,&metadata,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
 
     if(data_file==NULL)
       return EXIT_FAILURE;
@@ -346,19 +342,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    fprintjson(file,argv[index_datafile+1],NULL,arglist,&header2,&metadata,&filename,grid_type,format,id,FALSE,data_version);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(filename.name);
-  freemap(map);
-  freeattrs(global_attrs,n_global);
-  free(var_name);
-  free(var_units);
-  free(var_long_name);
-  free(var_standard_name);
-  free(source);
-  free(history);
+  freemetadata(&metadata);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -19,6 +19,7 @@
 int main(int argc,char **argv)
 {
   Header header;
+  Metadata metadata;
   String id;
   FILE *file;
   long long size;
@@ -27,7 +28,7 @@ int main(int argc,char **argv)
   int version,i,j,cell,iarg,year,index,setversion;
   float fmin,fmax,favg,avg,cavg,fmin2,fmax2,scale;
   float *vec;
-  char *endptr,*unit=NULL;
+  char *endptr;
   Type datatype;
   scale=1;
   verbose=iscsv=ismeta=FALSE;
@@ -114,25 +115,9 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  if(iscsv)
-  {
-    if(verbose)
-    {
-      if(unit!=NULL && strlen(unit))
-        printf("filename,year,min (%s) ,max (%s) ,avg (%s) \n",unit,unit,unit);
-      else
-        printf("filename,year,min,max,avg\n");
-    }
-    else
-    {
-      if(unit!=NULL && strlen(unit))
-        printf("filename,min (%s) ,max (%s) ,avg (%s) \n",unit,unit,unit);
-      else
-        printf("filename,min,max,avg\n");
-    }
-  }
   for(i=iarg;i<argc;i++)
   {
+    initmetadata(&metadata,NULL);
     if(ismeta)
     {
       header.scalar=1;
@@ -146,7 +131,7 @@ int main(int argc,char **argv)
       header.datatype=datatype;
       header.order=CELLYEAR;
       header.scalar=scale;
-      file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&unit,NULL,NULL,NULL,NULL,NULL,&swap,&offset,argv[i],TRUE);
+      file=openmetafile(&header,&metadata,NULL,NULL,NULL,&swap,&offset,argv[i],TRUE);
       if(file==NULL)
         continue;
       if(fseek(file,offset,SEEK_CUR))
@@ -178,6 +163,23 @@ int main(int argc,char **argv)
       if(size!=typesizes[header.datatype]*header.ncell*header.nbands*header.nyear*header.nstep)
         fprintf(stderr,"Warning: File length of '%s' does not match header, differs by %lld bytes.\n",
                 argv[i],llabs(size-(long long)typesizes[header.datatype]*header.ncell*header.nbands*header.nstep*header.nyear));
+    }
+    if(i==iarg && iscsv)
+    {
+      if(verbose)
+      {
+        if(metadata.unit!=NULL && strlen(metadata.unit))
+          printf("filename,year,min (%s) ,max (%s) ,avg (%s) \n",metadata.unit,metadata.unit,metadata.unit);
+        else
+          printf("filename,year,min,max,avg\n");
+      }
+      else
+      {
+        if(metadata.unit!=NULL && strlen(metadata.unit))
+          printf("filename,min (%s) ,max (%s) ,avg (%s) \n",metadata.unit,metadata.unit,metadata.unit);
+        else
+          printf("filename,min,max,avg\n");
+      }
     }
     fmin=HUGE_VAL;
     fmax=-HUGE_VAL;
@@ -220,8 +222,8 @@ int main(int argc,char **argv)
         {
           if(argc-iarg>1)
             printf("%s: ",argv[i]);
-          if(unit!=NULL && strlen(unit))
-            printf("year=%d, min=%g %s, max=%g %s, avg=%g %s\n",year+header.firstyear,fmin2,unit,fmax2,unit,cavg/header.ncell,unit);
+          if(metadata.unit!=NULL && strlen(metadata.unit))
+            printf("year=%d, min=%g %s, max=%g %s, avg=%g %s\n",year+header.firstyear,fmin2,metadata.unit,fmax2,metadata.unit,cavg/header.ncell,metadata.unit);
           else
             printf("year=%d, min=%g, max=%g, avg=%g\n",year+header.firstyear,fmin2,fmax2,cavg/header.ncell);
         }
@@ -231,8 +233,7 @@ int main(int argc,char **argv)
     free(vec);
     if(iserr)
     {
-      free(unit);
-      unit=NULL;
+      freemetadata(&metadata);
       continue;
     }
     if(iscsv)
@@ -246,13 +247,12 @@ int main(int argc,char **argv)
     {
       if(argc-iarg>1)
         printf("%s: ",argv[i]);
-      if(unit!=NULL && strlen(unit))
-        printf("min=%g %s, max=%g %s, avg=%g %s\n",fmin,unit,fmax,unit,favg/header.nyear,unit);
+      if(metadata.unit!=NULL && strlen(metadata.unit))
+        printf("min=%g %s, max=%g %s, avg=%g %s\n",fmin,metadata.unit,fmax,metadata.unit,favg/header.nyear,metadata.unit);
       else
         printf("min=%g, max=%g, avg=%g\n",fmin,fmax,favg/header.nyear);
     }
-    free(unit);
-    unit=NULL;
+    freemetadata(&metadata);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

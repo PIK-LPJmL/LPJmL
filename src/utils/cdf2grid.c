@@ -36,7 +36,7 @@ static int cmp(const void *a,const void *b)
 int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
-  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr=0;
+  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len;
   double *lat,*lon;
   float scalar=0.0;
   size_t lat_len,lon_len;
@@ -44,6 +44,7 @@ int main(int argc,char **argv)
   Bool israw,isjson,scalar_set;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
+  Metadata metadata;
   Intcoord coord;
   struct
   {
@@ -56,16 +57,16 @@ int main(int argc,char **argv)
   Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
-  char *source=NULL,*history=NULL,*title=NULL;
+  char *title=NULL;
   FILE *out;
   Data *data;
   int *index;
-  Attr *attrs=NULL;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
   israw=isjson=scalar_set=FALSE;
   initsetting_netcdf(&netcdf_config);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -261,15 +262,15 @@ int main(int argc,char **argv)
   error(rc);
   if(isjson)
   {
-    history=getattr_netcdf(ncid,NC_GLOBAL,"history");
-    source=getattr_netcdf(ncid,NC_GLOBAL,"source");
+    metadata.history=getattr_netcdf(ncid,NC_GLOBAL,"history");
+    metadata.source=getattr_netcdf(ncid,NC_GLOBAL,"source");
     title=getattr_netcdf(ncid,NC_GLOBAL,"title");
     if(nc_inq_natts(ncid,&len))
-      n_attr=0;
+      metadata.n_attr=0;
     else
     {
-      attrs=newvec(Attr,len);
-      if(attrs==NULL)
+      metadata.attrs=newvec(Attr,len);
+      if(metadata.attrs==NULL)
       {
         printallocerr("attrs");
         free(index);
@@ -278,16 +279,16 @@ int main(int argc,char **argv)
         nc_close(ncid);
         return EXIT_FAILURE;
       }
-      n_attr=0;
+      metadata.n_attr=0;
       for(i=0;i<len;i++)
       {
         if(!nc_inq_attname(ncid,NC_GLOBAL,i,name))
         {
           if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
           {
-            attrs[n_attr].value=getattr_netcdf(ncid,NC_GLOBAL,name);
-            if(attrs[n_attr].value!=NULL)
-              attrs[n_attr++].name=strdup(name);
+            metadata.attrs[metadata.n_attr].value=getattr_netcdf(ncid,NC_GLOBAL,name);
+            if(metadata.attrs[metadata.n_attr].value!=NULL)
+              metadata.attrs[metadata.n_attr++].name=strdup(name);
           }
         }
       }
@@ -418,12 +419,13 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     free(out_json);
-    fprintjson(out,argv[iarg+1],title,source,history,arglist,&header,NULL,NULL,attrs,n_attr,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    metadata.variable=strdup("grid");
+    metadata.unit=strdup("degree");
+    metadata.long_name=strdup("cell coordinates");
+    fprintjson(out,argv[iarg+1],title,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     free(arglist);
     free(title);
-    free(source);
-    free(history);
-    freeattrs(attrs,n_attr);
+    freemetadata(&metadata);
     fclose(out);
   }
   return EXIT_SUCCESS;

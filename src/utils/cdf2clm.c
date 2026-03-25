@@ -352,14 +352,13 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*outname,*endptr,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
-  char *map_name=NULL;
+  char *outname,*endptr,*arglist;
   char * config_filename=NULL;
-  Map *map=NULL;
   float scale,*data=NULL;
   Filename coord_filename,filename;
   Coord *coords;
   Header header;
+  Metadata metadata;
   FILE *file;
   int iarg,j,k,year,version;
   short *s=NULL;
@@ -368,9 +367,6 @@ int main(int argc,char **argv)
   Time time=DAY;
   size_t var_len=0;
   char *id,*out_json;
-  Attr *attrs=NULL;
-  int n_attr=0,len;
-  char name[NC_MAX_NAME];
   const char *progname;
   Filename grid_name;
   Type grid_type;
@@ -380,7 +376,6 @@ int main(int argc,char **argv)
   filename.map=MAP_NAME;
   filename.time=NULL;
   filename.unit=NULL;
-  units=NULL;
   scale=1;
   datatype=LPJ_SHORT;
   verbose=iszero=isjson=FALSE;
@@ -390,6 +385,7 @@ int main(int argc,char **argv)
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
   progname=strippath(argv[0]);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -453,8 +449,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        units=strdup(argv[++iarg]);
-        check(units);
+        metadata.unit=strdup(argv[++iarg]);
+        check(metadata.unit);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -465,7 +461,7 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-o"))
       {
@@ -627,7 +623,7 @@ int main(int argc,char **argv)
   climate.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
-    if(openclimate_netcdf(&climate,NULL,NULL,NULL,argv[j],&filename,units,&config))
+    if(openclimate_netcdf(&climate,(j==iarg+1) ? &metadata : NULL,argv[j],&filename,metadata.unit,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
@@ -702,47 +698,24 @@ int main(int argc,char **argv)
            fprintf(stderr,"Datatype %s not supported.\n",typenames[header.datatype]);
            return EXIT_FAILURE;
       }
-      if(units==NULL)
-        units=getattr_netcdf(climate.ncid,climate.varid,"units");
+      if(metadata.unit==NULL)
+        metadata.unit=getattr_netcdf(climate.ncid,climate.varid,"units");
       if(filename.var==NULL)
         filename.var=getvarname_netcdf(&climate);
-      long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
-      standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
-      history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
-      source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
-      if(map_name!=NULL)
+      metadata.variable=strdup(filename.var);
+      metadata.long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
+      metadata.standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
+      metadata.history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
+      metadata.source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
+      for(k=0;k<metadata.n_attr;k++)
       {
-        map=readmap_netcdf(climate.ncid,map_name);
-        if(map==NULL)
+        if(!strcmp(metadata.attrs[k].name,"history") || !strcmp(metadata.attrs[k].name,"source"))
         {
-          fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
-          map_name=NULL;
-        }
-        else
-          map_name=BAND_NAMES;
-      }
-      if(nc_inq_natts(climate.ncid,&len))
-        n_attr=0;
-      else
-      {
-        attrs=newvec(Attr,len);
-        if(attrs==NULL)
-        {
-          printallocerr("attrs");
-          return EXIT_FAILURE;
-        }
-        n_attr=0;
-        for(k=0;k<len;k++)
-        {
-          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,k,name))
-          {
-            if(strcmp(name,"history") && strcmp(name,"source"))
-            {
-              attrs[n_attr].value=getattr_netcdf(climate.ncid,NC_GLOBAL,name);
-              if(attrs[n_attr].value!=NULL)
-                attrs[n_attr++].name=strdup(name);
-            }
-          }
+          free(metadata.attrs[k].name);
+          free(metadata.attrs[k].value);
+          metadata.attrs[k]=metadata.attrs[metadata.n_attr-1];
+          k--;
+          metadata.n_attr--;
         }
       }
     }
@@ -853,18 +826,13 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,NULL,arglist,&header,&metadata,&grid_name,grid_type,CLM,id,FALSE,version);
     free(arglist);
     free(out_json);
     fclose(file);
   }
-  freeattrs(attrs,n_attr);
+  freemetadata(&metadata);
   free(filename.var);
-  free(units);
-  free(long_name);
-  free(standard_name);
-  free(history);
-  free(source);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

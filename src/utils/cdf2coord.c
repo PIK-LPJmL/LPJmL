@@ -35,6 +35,7 @@ int main(int argc,char **argv)
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
   Intcoord coord;
+  Metadata metadata;
   struct
   {
     double lon,lat;
@@ -359,7 +360,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[i+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    initmetadata(&metadata,NULL);
+    metadata.source=argv[0];
+    metadata.variable="grid";
+    metadata.unit="degree";
+    metadata.long_name="cell coodinates"; 
+    fprintjson(out,argv[i+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     fclose(out);
   }
   return EXIT_SUCCESS;

@@ -139,11 +139,11 @@ extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,con
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
-extern Bool openclmdata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
+extern Bool openclmdata(Climatefile *,Metadata *,const Filename *,const char *,const char *,
                      Type,Real,int,const Config *config);
-extern Bool opendata(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
+extern Bool opendata(Climatefile *,Metadata *,const Filename *,const char *,const char *,
                      Type,Type,Real,int,Bool,const Config *config);
-extern Bool opendata_seq(Climatefile *,Map **,Attr **,int *,const Filename *,const char *,const char *,
+extern Bool opendata_seq(Climatefile *,Metadata *,const Filename *,const char *,const char *,
                          Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,int,const Config *config);

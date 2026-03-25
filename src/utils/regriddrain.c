@@ -27,20 +27,16 @@ int main(int argc,char **argv)
   int *index,*index2;
   FILE *file,*data_file;
   Header header;
+  Metadata metadata;
   String id,line,line2;
   Bool swap,ismeta=FALSE,isjson=FALSE;
   Routing *r,r2;
   char *arglist,*out_json;
   size_t offset;
   Type grid_type;
-  Map *map=NULL;
-  Attr *global_attrs=NULL;
-  char *var_name=NULL,*var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL;
   char *path;
-  char *map_name;
-  map_name=MAP_NAME;
-  int n_global=0,format,iarg,index_datafile,index_gridfile,data_version;
+  int format,iarg,index_datafile,index_gridfile,data_version;
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -78,7 +74,7 @@ int main(int argc,char **argv)
     header.datatype=LPJ_INT;
     header.order=CELLYEAR;
     data_version=CLM_MAX_VERSION;
-    data_file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
+    data_file=openmetafile(&header,&metadata,&grid_name,NULL,&format,&swap,&offset,argv[index_datafile],TRUE);
     if(data_file==NULL)
       return EXIT_FAILURE;
     if(format==CLM)
@@ -348,19 +344,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    fprintjson(file,argv[index_datafile+1],NULL,arglist,&header,&metadata,&filename,grid_type,format,id,FALSE,data_version);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(filename.name);
-  freemap(map);
-  freeattrs(global_attrs,n_global);
-  free(var_name);
-  free(var_units);
-  free(var_long_name);
-  free(var_standard_name);
-  free(source);
-  free(history);
+  freemetadata(&metadata);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -292,13 +292,13 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
+  Metadata metadata;
   String headername;
   size_t offset;
   Attr *global_attrs=NULL;
-  Attr *global_attrs2=NULL;
   int i,ngrid,version,iarg,compress,setversion;
   Bool swap,isglobal,israw,ismeta,isnetcdf4,rc;
-  int n_global,n_global2;
+  int n_global;
   float cellsize_lon,cellsize_lat;
   Reservoir *rdata;
   char *endptr,*arglist;
@@ -309,8 +309,6 @@ int main(int argc,char **argv)
   Netcdf_config netcdf_config;
   char *filename,*outname,*config_filename=NULL;
   size_t filesize;
-  char *source=NULL,*history=NULL;
-  compress=0;
   cellsize_lon=cellsize_lat=0;
   isglobal=FALSE;
   israw=FALSE;
@@ -321,7 +319,7 @@ int main(int argc,char **argv)
   n_global=0;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
-
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -482,7 +480,7 @@ int main(int argc,char **argv)
     header.datatype=LPJ_INT;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,NULL,NULL,&global_attrs2,&n_global2,&source,&history,NULL,NULL,NULL,NULL,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -491,10 +489,9 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(global_attrs2!=NULL)
+    if(metadata.attrs!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
-      freeattrs(global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,metadata.attrs,metadata.n_attr,FALSE);
     }
   }
   else
@@ -582,8 +579,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
               filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -594,8 +590,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
               header.ncell,filename,ngrid,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -610,8 +605,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lon,filename,res.lon,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -621,8 +615,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -649,8 +642,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Number of bands=%d in '%s' must be 10.\n",
             header.nbands,filename);
-    free(source);
-    free(history);
+    freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
     free(grid);
     fclose(file);
@@ -659,8 +651,7 @@ int main(int argc,char **argv)
   index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
   {
-    free(source);
-    free(history);
+    freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
     free(grid);
     fclose(file);
@@ -668,10 +659,9 @@ int main(int argc,char **argv)
   }
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,source,history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
+  cdf=create_cdf(outname,metadata.source,metadata.history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
-  free(source);
-  free(history);
+  freemetadata(&metadata);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
   {

@@ -17,9 +17,7 @@
 #include "lpj.h"
 
 FILE *openinputfile(Header *header,           /**< [out] pointer to file header */
-                    Map **map,                /**< map array or NULL */
-                    Attr **attrs,             /**< pointer to array of attributes or NULL */
-                    int *n_attr,              /**< size of array attribute */
+                    Metadata *metadata,       /**< [out] metadata information */
                     Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
                     const Filename *filename, /**< [in]  file name */
                     String headername,        /**< [out] clm file header string */
@@ -32,7 +30,6 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                    )                          /** \return file pointer to open file or NULL */
 {
   FILE *file;
-  char *var_unit=NULL;
   long long size;
   if(filename->fmt==META)
   {
@@ -51,18 +48,16 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,map,NULL,attrs,n_attr,NULL,NULL,NULL,&var_unit,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,metadata,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR224: Cannot read JSON metafile '%s'.\n",filename->name);
       return NULL;
     }
-    if(isroot(*config) && unit!=NULL && var_unit!=NULL && strcmp(unit,var_unit))
+    if(isroot(*config) && unit!=NULL && metadata!=NULL && metadata->unit!=NULL && strcmp(unit,metadata->unit))
       fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
-                      var_unit,filename->name,unit);
-    free(var_unit);
-
+                      metadata->unit,filename->name,unit);
     if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {
       if(isroot(*config))
@@ -95,12 +90,6 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     }
     return file;
   }
-  if(map!=NULL)
-    *map=NULL;
-  if(attrs!=NULL)
-    *attrs=NULL;
-  if(n_attr!=NULL)
-    *n_attr=0;
   *offset=0; /* no additional offset in CLM file */
   if((file=fopen(filename->name,"rb"))==NULL)
   {

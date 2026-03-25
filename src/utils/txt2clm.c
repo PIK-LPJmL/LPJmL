@@ -76,6 +76,7 @@ int main(int argc,char **argv)
   short s;
   int data;
   Header header;
+  Metadata metadata;
   int version;
   char *id;
   char *arglist,*out_json;
@@ -493,7 +494,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+1],NULL,"txt2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,LPJ_SHORT,CLM,id,FALSE,version);
+    initmetadata(&metadata,NULL);
+    metadata.source="txt2clm";
+    fprintjson(out,argv[iarg+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,CLM,id,FALSE,version);
     fclose(out);
   }
   return EXIT_SUCCESS;

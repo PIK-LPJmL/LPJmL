@@ -24,14 +24,10 @@ int main(int argc,char **argv)
   size_t offset;
   int i,j,ngrid=0,iarg,nitem,nsum,nyear,version,format;
   char *endptr;
-  char *map_name=BAND_NAMES;
   char *arglist;
   char *out_json;
-  Map *map=NULL;
-  Attr *attrs=NULL;
-  int n_attr;
-  char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
   Header header;
+  Metadata metadata;
   Type grid_type;
   Filename grid_name;
   Bool swap,mean,isclm,ismeta;
@@ -41,6 +37,7 @@ int main(int argc,char **argv)
   grid_name.fmt=RAW;
   grid_name.name=NULL;
   grid_type=LPJ_SHORT;
+  initmetadata(&metadata,BAND_NAMES);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -181,7 +178,7 @@ int main(int argc,char **argv)
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.ncell=1;
     header.nyear=1;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     fseek(file,offset,SEEK_SET);
@@ -303,19 +300,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(grid_name.name);
-  free(units);
-  free(long_name);
-  free(variable);
-  free(standard_name);
-  free(source);
-  free(history);
-  freemap(map);
-  freeattrs(attrs,n_attr);
+  freemetadata(&metadata);
   return EXIT_SUCCESS;
 } /* of 'main' */

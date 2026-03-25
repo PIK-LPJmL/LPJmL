@@ -20,6 +20,7 @@
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
+  Metadata metadata1,metadata2;
   int version,yr,cell,k,s,isum;
   Bool swap1,swap2,flag;
   String id;
@@ -29,15 +30,9 @@ int main(int argc,char **argv)
   int iarg,ivalue,setversion;
   char *endptr;
   size_t size;
-  char *map_name=MAP_NAME;
   char *arglist;
   char *out_json;
   size_t offset;
-  Map *map=NULL,*map2=NULL;
-  Attr *attrs=NULL;
-  int n_attr;
-  char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
-  char *units2=NULL;
   const char *progname;
   Type grid_type,grid_type2;
   Filename grid_name,grid_name2;
@@ -57,6 +52,8 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   grid_name.name=NULL;
   grid_name2.name=NULL;
+  initmetadata(&metadata1,NULL);
+  initmetadata(&metadata2,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -163,7 +160,7 @@ int main(int argc,char **argv)
     header1.nyear=1;
     version=LPJ_CLIMATE_VERSION;
     grid_type=LPJ_SHORT;
-    in1=openmetafile(&header1,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,&format,&swap1,&offset,argv[iarg+1],TRUE);
+    in1=openmetafile(&header1,&metadata1,&grid_name,&grid_type,&format,&swap1,&offset,argv[iarg+1],TRUE);
     if(in1==NULL)
       return EXIT_FAILURE;
     if(format==CLM)
@@ -245,21 +242,20 @@ int main(int argc,char **argv)
         header2.ncell=1;
         header2.nyear=1;
         grid_type2=LPJ_SHORT;
-        in2=openmetafile(&header2,&map2,map_name,NULL,NULL,NULL,NULL,NULL,&units2,NULL,NULL,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
+        in2=openmetafile(&header2,&metadata2,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
         if(in2==NULL)
           return EXIT_FAILURE;
         fseek(in2,offset,SEEK_SET);
-        if(units!=NULL && units2!=NULL && strcmp(units,units2))
+        if(metadata1.unit!=NULL && metadata2.unit!=NULL && strcmp(metadata1.unit,metadata2.unit))
           fprintf(stderr,"Warning: Unit '%s' in '%s' differs from unit '%s' in '%s'.\n",
-                  units,argv[iarg+1],units2,argv[iarg+2]);
+                  metadata1.unit,argv[iarg+1],metadata2.unit,argv[iarg+2]);
         if(grid_name.name!=NULL && grid_name2.name!=NULL && strcmp(grid_name.name,grid_name2.name))
           fprintf(stderr,"Warning: Grid filename '%s' in '%s' differs from grid filename '%s' in '%s'.\n",
                   grid_name.name,argv[iarg+1],grid_name2.name,argv[iarg+2]);
-        if(map!=NULL  && map2!=NULL && !cmpmap(map,map2))
+        if(metadata1.map!=NULL  && metadata2.map!=NULL && !cmpmap(metadata1.map,metadata2.map))
           fprintf(stderr,"Warning: Map '%s' in '%s' differs from map in '%s'.\n",
-                  map_name,argv[iarg+1],argv[iarg+2]);
-        free(units2);
-        freemap(map2);
+                  metadata1.map_name,argv[iarg+1],argv[iarg+2]);
+        freemetadata(&metadata2);
         free(grid_name2.name);
       }
       else
@@ -959,19 +955,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,out_name,NULL,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    fprintjson(out,out_name,NULL,arglist,&header3,&metadata1,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
     free(out_json);
     free(arglist);
     fclose(out);
   }
+  freemetadata(&metadata1);
   free(grid_name.name);
-  freemap(map);
-  freeattrs(attrs,n_attr);
-  free(history);
-  free(source);
-  free(variable);
-  free(units);
-  free(standard_name);
-  free(long_name);
   return EXIT_FAILURE;
 } /* of 'main' */

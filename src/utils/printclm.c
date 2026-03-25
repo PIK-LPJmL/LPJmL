@@ -35,13 +35,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
   float fdata;
   double ddata;
   int year,cell,i,*index=NULL,rc,t;
-  char *unit=NULL,*long_name=NULL,*standard_name=NULL;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
-  Map *map=NULL;
-  Attr *attrs=NULL;
-  int n_attr=0;
+  Metadata metadata;
+  initmetadata(&metadata,map_name);
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -55,7 +53,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,NULL,NULL,&unit,&standard_name,&long_name,NULL,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,NULL,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -70,9 +68,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   else
   {
-    unit=NULL;
-    standard_name=NULL;
-    long_name=NULL;
     file=fopen(filename,"rb");
     if(file==NULL)
     {
@@ -96,12 +91,9 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,NULL,&header,&metadata,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
   }
-  free(long_name);
-  freemap(map);
-  freeattrs(attrs,n_attr);
   if((output & NO_HEADER)==0)
   {
     mod_date=getfiledate(filename);
@@ -116,17 +108,16 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
     printheader(&header);
-    if(map!=NULL)
+    if(metadata.map!=NULL)
     {
       printf("%s: ",map_name);
-      printmap(map);
+      printmap(metadata.map);
       printf("\n");
-      freemap(map);
     }
-    if(unit!=NULL && strlen(unit)>0)
-      printf("Unit:\t\t%s\n",unit);
+    if(metadata.unit!=NULL && strlen(metadata.unit)>0)
+      printf("Unit:\t\t%s\n",metadata.unit);
   }
-  free(unit);
+  freemetadata(&metadata);
   if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
     fprintf(stderr,"Warning: Unsupported version %d, must be less than %d.\n",
             version,CLM_MAX_VERSION+1);
