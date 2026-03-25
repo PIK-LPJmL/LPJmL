@@ -99,12 +99,12 @@ void update_monthly_grid(Outputfile *output,  /**< Output file data */
                __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif
     } /* if(!grid[cell].skip) */
-  } /* of 'for(cell=0;...)' */
 #ifdef DEBUG
-  printf("year=%d,month=%d\n",year,month+1);
-  printf("cell=%d\n",cell+config->startgrid);
-  printcell(grid+cell,1,npft,ncft,config);
+    printf("year=%d,month=%d\n",year,month+1);
+    printf("cell=%d\n",cell+config->startgrid);
+    printcell(grid+cell,1,npft,ncft,config);
 #endif
+  } /* of 'for(cell=0;...)' */
   if(year>=config->outputyear && month<NMONTH-1)
   {
     /* write out monthly output, postpone last timestep until after annual processes */

@@ -66,6 +66,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Pftcrop *crop;
   irrig_apply=0.0;
   isrice=FALSE;
+#if defined(CHECK_BALANCE) || defined(DEBUG)
+  String line;
+#endif
   //Stocks flux_estab={0,0};
 
   data=stand->data;
@@ -346,7 +349,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     vol_water_enth = climate->temp*c_water*(climate->prec+rw_apply+irrig_apply)/(climate->prec+rw_apply+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-
+#ifdef DEBUG
+  if(rainmelt+rw_apply+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
 
   runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
 
@@ -532,12 +539,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   free(wet);
 
 #ifdef CHECK_BALANCE
-  String line;
   fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
                     +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)-fluxes_in.carbon;
   end=0;
-  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;
   foreachstand(checkstand,s,stand->cell->standlist)
   {
     if(checkstand->type->landusetype!=KILL)
@@ -555,12 +561,12 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   if(stand->cell->ml.dam)
     end+=stand->cell->ml.resdata->pool.carbon;
 
-  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
+  if (fabs(end-start.carbon+CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid carbon balance in %s in cell (%s): day: %d %g start: %g end: %g CH4_fluxes: %g\n"
          "=====001: flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g\n"
          "=====002: fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g",
-         __FUNCTION__,sprintcoord(line,&stand->cell->coord),day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
+         __FUNCTION__,sprintcoord(line,&stand->cell->coord),day,end-start.carbon+CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
          stand->cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, stand->cell->balance.neg_fluxes.carbon,stand->cell->output.bm_inc,stand->cell->balance.arh,stand->cell->balance.aCH4_sink*WC/WCH4,
          stand->cell->balance.aCH4_em*WC/WCH4,dcflux);
   }

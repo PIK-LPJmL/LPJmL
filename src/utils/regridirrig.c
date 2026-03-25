@@ -346,7 +346,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
     free(out_json);
     free(arglist);
     fclose(file);

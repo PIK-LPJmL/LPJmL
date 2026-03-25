@@ -329,7 +329,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       {
         if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
         {
-          biome_image[cell]=biome_classification(avgtemp(climate,cell),npp_image[cell],stand,npft);
+          biome_image[cell]=biome_classification(avgtemp(climate,cell),npp_image[cell],stand,npft,config);
         } /* if NATURAL */
         foreachpft(pft,p,&stand->pftlist)
           switch(pft->par->type)

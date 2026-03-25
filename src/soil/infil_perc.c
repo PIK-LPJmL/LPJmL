@@ -385,9 +385,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(fabs(balancew)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
-        "Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g\n"
+        "Invalid water balance in %s at cell (%s): balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g\n"
         "=====001: drain_perched_out: %g runoff_out: %g rsup_top_lastl: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g lat_runoff_last: %g outflux: %g",
-        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,infil_start,lat_runoff_last,outflux);
+        __FUNCTION__,sprintcoord(line,&stand->cell->coord),balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,infil_start,lat_runoff_last,outflux);
   }
 #endif
 
@@ -460,12 +460,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-infil_start+runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff+lat_runoff_last+outflux+runoff_neg;
-  if(fabs(balancew)>epsilon)
+  if(fabs(balancew)>param.error_limit.w_fcn)
   {
     fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
-         "Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g\n"
+         "Invalid water balance in %s at cell (%s): balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g\n"
          "=====001: drain_perched_out: %g runoff_out: %g rsup_top_lastl: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g lat_runoff_last: %g outflux: %g",
-         __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,infil_start,lat_runoff_last,outflux);
+         __FUNCTION__,sprintcoord(line,&stand->cell->coord),balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,infil_start,lat_runoff_last,outflux);
   }
 #endif
 
@@ -1178,13 +1178,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(fabs(balancew)>param.error_limit.w_fcn && stand->frac>epsilon)
   {
     fail(INVALID_WATER_BALANCE_ERR,config->fail_on_balance,FALSE,
-        "Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f\n"
+        "Invalid water balance in %s at cell (%s): balanceW: %g water_before: %.6f water_after: %.6f\n"
         "=====001: standtype: %s standfrac: %g runoff_surface: %g runoff_neg: %g\n"
         "=====002: drain_perched_out: %g runoff_out: %g lat_runoff_last: %g rsup_top_lastl: %g runoff: %g rsub_top: %g\n"
         "=====003: rw_buff: %g wa: %g startwa: %g infil: %g qcharge_tot2: %g qcharge_tot1: %g\n"
         "=====004: qcharge: %g qcharge_tot1_rest: %g tmp_runoff: %g tmp_water: %g isrice= %d\n"
         "=====005: ground_st_am:%g ground_st:%g balance_gw:%g standfrac: %g wtable: %g",
-        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,
+        __FUNCTION__,sprintcoord(line,&stand->cell->coord),balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,
         runoff_neg,drain_perched_out,runoff_out,lat_runoff_last,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,wa_start,
         infil_start,qcharge_tot2,outflux,qcharge,qcharge_tot1,tmp_runoff,tmp_water,isrice,
         stand->cell->ground_st_am,stand->cell->ground_st,(stand->cell->ground_st_am+stand->cell->ground_st)-gw_start,stand->frac,soil->wtable);

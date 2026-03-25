@@ -17,7 +17,50 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
+
 ## [Unreleased]
+
+
+## [6.0.6] - 2026-03-25
+
+### Contributors
+
+author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- DEBUG print statements for negative input to infiltration in `daily_agriculture()`, `daily_agriculture_grass()`, `daily_agriculture_tree()`, `daily_biomass_grass()`, `daily_biomass_tree()`, `daily_woodplantation()`, and `daily_natural()`
+- Missing regridding of climate data added to the `regridlpj` utility
+
+### Changed
+
+- Replace hardcoded `Sphagnum_moss` index (13) with `strcmp(config->pftpar[p].name,"Sphagnum moss")` in 5 landuse files
+- Fix PFT numbering comments in pft.cjson to reflect actual positions (1-14)
+- Updated `biome_classification.c` to use `findpftname()` instead of hard-coded macros
+- Removed macros from `pftpar.h`
+- Added missing PFTs to `biome_classification.c`
+- String comparison in `landusechange_for_reservoir.c` replaced by call to `ispftinstand()`
+- Default value of `LPJINPATH` set to `/p/projects/lpjml/inputs/public_standard` in `configure.sh`
+
+### Removed
+
+- Removed boreal broadleaved summergreen tree from needleleaved fpc sum in `biome_classification.c`
+- Removed `daily_setaside.c` which was unused
+
+### Fixed
+
+- Double accounting of irrigation water interception in `daily_grassland.c`
+- C balance error in `deforest()`
+- Balance checks in `update_daily_cell()`, `grasslandreduction()` and `landusechange()`
+- DEBUG print statement in `restart2yaml.c`
+- Sign error in daily carbon balance check in `update_daily_cell()`, `daily_grassland()`, and `daily_agriculture()` when methane is enabled: absorbed atmospheric CH4 oxidized within the same timestep was double-counted
+- Global water balance check in `updatedaily_grid()` now uses daily increments of annual flux accumulators and per-cell daily storage snapshots instead of annual `_last` storage fields, eliminating errors when starting from a restart file; reservoir irrigation buffer (`dfout_irrigation_daily`) now included in surface storage accounting
+- Misplaced `printcell()` corrected in `update_monthly_grid.c` causing SEGV if `-DDEBUG` is set
+- Correct number of cells written in JSON metafile in `regridirrig`
+- Error message corrected for nitrogen balance check in `daily_natural.c` to avoid SEGV without land use enabled
+- Missing `fclose(file)` added in `getnsoilcode.c`
+- Reading of landcovermap corrected in `landcover.c`
 
 
 ## [6.0.5] - 2026-03-17
@@ -63,6 +106,8 @@ of `major.minor.patch` with
 
 
 ## [6.0.4] - 2026-03-06
+
+### Contributors
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)

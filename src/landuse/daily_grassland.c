@@ -88,6 +88,9 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   int *pvec;
 #endif
   irrig_apply=0.0;
+#if defined(DEBUG) || defined(CHECK_BALANCE)
+  String line;
+#endif
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
   nnat=getnnat(npft,config);
@@ -121,7 +124,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   fluxes_in.nitrogen=stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen; //influxes
   fluxes_out.nitrogen=stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
       +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen; //outfluxes
-  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4;
   foreachstand(checkstand,s,stand->cell->standlist)
   {
      if(getlandusetype(checkstand)!=KILL)
@@ -268,7 +271,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(irrig_apply<0)
     intercep_stand_blue+=irrig_apply;
   irrig_apply=max(0,irrig_apply);
-  rainmelt-=intercep_stand;
+  rainmelt-=(intercep_stand-intercep_stand_blue);
 
   /* rain-water harvesting*/
   if(!data->irrigation.irrigation && config->rw_manage && rainmelt<5)
@@ -293,11 +296,25 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
 
+#ifdef DEBUG
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
+
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
     stand->cell->lateral_water-=lateral_in*stand->frac;
   }
   else
+  {
+#ifdef DEBUG
+    if(rainmelt+rw_apply+irrig_apply < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, rw_apply=%g, irrig_apply=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),rainmelt, rw_apply, irrig_apply);
+#endif
     runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
+  }
+
 
   isphen = FALSE;
 #ifdef PERMUTE
@@ -561,7 +578,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
-  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
@@ -614,7 +631,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
 #ifdef CHECK_BALANCE
-  String line;
   transp=0;
   water_after=0;
   wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
@@ -634,7 +650,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)-fluxes_in.carbon;
   end=0;
-  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;
   foreachstand(checkstand,s,stand->cell->standlist)
   {
     if(checkstand->type->landusetype!=KILL)
@@ -651,12 +667,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(stand->cell->ml.dam)
     end+=stand->cell->ml.resdata->pool.carbon;
 
-  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
+  if (fabs(end-start.carbon+CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>param.error_limit.stocks_fcn.carbon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid carbon balance in %s cell (%s): day: %d  error: %g start: %g end: %g CH4_fluxes: %g\n"
          "=====001: flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g\n"
          "=====002: fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g",
-         __FUNCTION__,sprintcoord(line,&stand->cell->coord),day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
+         __FUNCTION__,sprintcoord(line,&stand->cell->coord),day,end-start.carbon+CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
          stand->cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, stand->cell->balance.neg_fluxes.carbon,stand->cell->output.bm_inc,stand->cell->balance.arh,stand->cell->balance.aCH4_sink*WC/WCH4,
          stand->cell->balance.aCH4_em*WC/WCH4,dcflux);
   }

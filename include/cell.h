@@ -83,6 +83,21 @@ typedef struct
   Real surface_storage;     /**< total water in surface storages (dm3) */
   Real surface_storage_last;     /**< total water in surface storages (dm3) */
   Real soil_storage_last;        /**< total water in soil storages (dm3) */
+#ifdef CHECK_BALANCE
+  Real daily_prec_last;          /**< daily snapshot of aprec for water balance check (mm) */
+  Real daily_evap_last;          /**< daily snapshot of aevap for water balance check (mm) */
+  Real daily_transp_last;        /**< daily snapshot of atransp for water balance check (mm) */
+  Real daily_interc_last;        /**< daily snapshot of ainterc for water balance check (mm) */
+  Real daily_evap_lake_last;     /**< daily snapshot of aevap_lake for water balance check (mm) */
+  Real daily_evap_res_last;      /**< daily snapshot of aevap_res for water balance check (mm) */
+  Real daily_conv_loss_last;     /**< daily snapshot of aconv_loss_evap for water balance check (mm) */
+  Real daily_wateruse_last;      /**< daily snapshot of awateruse_hil for water balance check */
+  Real daily_excess_last;        /**< daily snapshot of excess_water for water balance check (mm) */
+  Real daily_MT_water_last;      /**< daily snapshot of aMT_water for water balance check (mm) */
+  Real daily_discharge_last;          /**< daily snapshot of adischarge for water balance check */
+  Real daily_surface_prev;       /**< global total surface storage from previous day (dm3) */
+  Real daily_soil_prev;          /**< global total soil storage from previous day (dm3) */
+#endif
   Real excess_water;        /**< excess water (mm) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/

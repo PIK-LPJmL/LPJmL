@@ -106,17 +106,21 @@ void deforest(Cell *cell,          /**< pointer to cell */
       else
         pos=addstand(&natural_stand,cell)-1;
       cutstand=getstand(cell->standlist,pos);
-      cutstand->frac=min(difffrac,stand->frac-minnatfrac);
+      if(difffrac+epsilon>=stand->frac)
+      {
+        cutstand->frac=stand->frac;
+        difffrac-=stand->frac;
+      }
+      else
+        cutstand->frac=min(difffrac,stand->frac-minnatfrac);
       reclaim_land(stand,cutstand,cell,year>=param.luc_burn_startyear ? FALSE: config->luc_timber,npft+ncft,config);
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
       tillage(&cutstand->soil, param.residue_frac);
       updatelitterproperties(cutstand,cutstand->frac);
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(cutstand,NULL,NULL,cutstand->frac,config->fail_on_balance);
-      if(difffrac+epsilon>=stand->frac)
+      if(cutstand->frac>=stand->frac-epsilon)
       {
-        difffrac-=stand->frac;
-        cutstand->frac=stand->frac;
         delstand(cell->standlist,s);
         if(iswetland)
           pos=findlandusetype(cell->standlist,WETLAND);
@@ -736,7 +740,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case PASTURE:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -760,7 +764,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
+                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
                 n_est[config->pftpar[p].type]++;
@@ -804,7 +808,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
-               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
+               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && strcmp(config->pftpar[p].name,"Sphagnum moss"))
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -922,7 +926,10 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Real end_w = 0;
   int sn;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  /* aconv_loss_evap/drain not included: the irrig_stor payback below reverses them, but their
+   * counterparts (charging from distribute_water/drain) occurred earlier in the year outside
+   * this function, so including them would cause a local imbalance. */
+  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, sn, cell->standlist)
   {
@@ -1047,7 +1054,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   end_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(checkstand, sn, cell->standlist)
   {
@@ -1408,7 +1415,10 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stocks balance= {0,0};
   Real end_w = 0;
   Real start_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  /* aconv_loss_evap/drain not included: irrig_stor paybacks in grasslandreduction() reverse these
+   * accumulators, but the original charges occurred earlier in the year outside this function,
+   * so including them causes a local imbalance. */
+  start_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   start_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(stand, s, cell->standlist)
   {
@@ -1829,7 +1839,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen=0;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
+  end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   end_w+=cell->balance.excess_water+cell->lateral_water;
   foreachstand(stand, s, cell->standlist)
   {
