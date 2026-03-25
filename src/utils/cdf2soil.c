@@ -35,6 +35,7 @@ int main(int argc,char **argv)
   int missing_value;  /**< missing/fill value in file */
   int *data;
   Header header;
+  Real scalar;
   Intcoord coord;
   FILE *out,*soil;
   Byte soilcode;
@@ -47,6 +48,7 @@ int main(int argc,char **argv)
   char *var=SOIL_NAME;
   char *endptr;
   header.scalar=0.01;
+  scalar=0.01;
   isfloat=ismap=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -65,6 +67,7 @@ int main(int argc,char **argv)
       {
         isfloat=TRUE;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-soilmap"))
         ismap=TRUE;
@@ -76,7 +79,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=strtod(argv[++i],&endptr);
+        header.scalar=scalar;
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
@@ -241,8 +245,8 @@ int main(int argc,char **argv)
          }
          else
          {
-           coord.lat=(short)(lat[ilat]/header.scalar);
-           coord.lon=(short)(lon[ilon]/header.scalar);
+           coord.lat=(short)(lat[ilat]/scalar);
+           coord.lon=(short)(lon[ilon]/scalar);
 #ifdef DEBUG
            printf("%.3f %3f %d %d\n",lat[ilat],lon[ilon],coord.lat,coord.lon);
 #endif
@@ -270,9 +274,9 @@ int main(int argc,char **argv)
   header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)(fabs(lat[lat_len-1]-lat[0])/(lat_len-1));
-  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,header.scalar) || isfloatcoord(header.cellsize_lat*0.5,header.scalar)))
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
     fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
-            header.cellsize_lat,header.cellsize_lon,header.scalar);
+            header.cellsize_lat,header.cellsize_lon,scalar);
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(out);
   free(lon);

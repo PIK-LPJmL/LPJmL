@@ -28,7 +28,7 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
   int index1,index2,len1,len2;
   double *lat,*lon;
-  float scalar=0.0;
+  double scalar=0.01;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
@@ -75,11 +75,13 @@ int main(int argc,char **argv)
       {
         header.datatype=LPJ_FLOAT;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-double"))
       {
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-latlon"))
         latlon=TRUE;
@@ -106,7 +108,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scalar=header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=strtod(argv[++i],&endptr);
+        header.scalar=scalar;
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
@@ -118,7 +121,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]); 
+                USAGE,argv[i],argv[0]);
         return EXIT_FAILURE;
       }
     }
@@ -136,6 +139,7 @@ int main(int argc,char **argv)
             scalar,typenames[header.datatype]);
 
     header.scalar=1;
+    scalar=1;
   }
   rc=nc_open(argv[i],NC_NOWRITE,&ncid);
   if(rc)
@@ -273,9 +277,9 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(float)((lon[lon_len-1]-lon[0])/(lon_len-1));
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
-  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,header.scalar) || isfloatcoord(header.cellsize_lat*0.5,header.scalar)))
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
     fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
-            header.cellsize_lat,header.cellsize_lon,header.scalar);
+            header.cellsize_lat,header.cellsize_lon,scalar);
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
@@ -315,8 +319,8 @@ int main(int argc,char **argv)
             fwrite(&coord_d,sizeof(coord_d),1,out);
             break;
           default:
-            coord.lat=(short)(lat[offsets[first]]/header.scalar);
-            coord.lon=(short)(lon[offsets[first+1]]/header.scalar);
+            coord.lat=(short)(lat[offsets[first]]/scalar);
+            coord.lon=(short)(lon[offsets[first+1]]/scalar);
 #ifdef DEBUG
             printf("%.3f %3f %d %d\n",lat[offsets[1]],lon[offsets[2]],coord.lat,coord.lon);
 #endif
@@ -364,7 +368,7 @@ int main(int argc,char **argv)
     metadata.source=argv[0];
     metadata.variable="grid";
     metadata.unit="degree";
-    metadata.long_name="cell coodinates"; 
+    metadata.long_name="cell coodinates";
     fprintjson(out,argv[i+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     fclose(out);
   }
