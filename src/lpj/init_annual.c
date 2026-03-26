@@ -47,6 +47,14 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=cell->balance.agpp=cell->balance.nat_fluxes=0;
   cell->balance.temp=0;
+#ifdef CHECK_BALANCE
+  cell->balance.daily_prec_last=cell->balance.daily_evap_last=0.0;
+  cell->balance.daily_transp_last=cell->balance.daily_interc_last=0.0;
+  cell->balance.daily_evap_lake_last=cell->balance.daily_evap_res_last=0.0;
+  cell->balance.daily_conv_loss_last=cell->balance.daily_wateruse_last=0.0;
+  cell->balance.daily_excess_last=cell->balance.daily_MT_water_last=0.0;
+  cell->balance.daily_discharge_last=0.0;
+#endif
   cell->hydrotopes.wetland_wtable_mean=0;
   cell->hydrotopes.wtable_mean=0;
   if(config->separate_harvests)

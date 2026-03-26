@@ -235,6 +235,56 @@ static int checklanduse(const Config *config)
   return 0;
 } /* of 'checklanduse' */
 
+static int checklandcover(int npft,Config *config)
+{
+  Climatefile landcover;
+  Map *map=NULL;
+  if(config->landcover_filename.fmt==SOCK)
+  {
+    if(config->start_coupling<=config->firstyear-config->nspinup)
+      return 0;
+    fprintf(stderr,"ERROR149: No filename specified for landcover data required for socket connection before coupling year %d, first simulation year=%d.\n",
+            config->start_coupling,config->firstyear-config->nspinup);
+    return 1;
+  }
+  /* open landcover input data */
+  if(opendata_seq(&landcover,&map,NULL,NULL,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
+    return 1;
+  if(config->landcovermap==NULL)
+  {
+    /* No landcovermap defined in lpjml configuration file */
+    if(map==NULL)
+    {
+      /* no map found, set default 1:1 map */
+      config->landcovermap=defaultpftmap("landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getnnat(npft,config);
+    }
+    else
+    {
+      /* get landcovermap from input file */
+      config->landcovermap=getpftmap(map,"landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getmapsize(map);
+    }
+    if(config->landcovermap==NULL)
+    {
+      freemap(map);
+      closeclimatefile(&landcover,TRUE);
+      return 1;
+    }
+  }
+  freemap(map);
+  if(landcover.var_len!=config->landcovermap_size)
+  {
+    fprintf(stderr,
+            "ERROR147: Invalid number of bands=%zu in landcover data file, must be %d\n",
+            landcover.var_len,config->landcovermap_size);
+    closeclimatefile(&landcover,TRUE);
+    return 1;
+  }
+  closeclimatefile(&landcover,TRUE);
+  return 0;
+} /* of 'checklandcover' */
+
 static int checkdatafile(const Config *config,const Filename *filename,char *name,char *unit,Type datatype,int nbands,Bool checkclimate)
 {
   char *climate;
@@ -596,8 +646,8 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
       bad+=checkclmfile(config,"icefrac",&config->icefrac_filename,NULL,LPJ_SHORT,FALSE,TRUE,FALSE);
   }
 #ifdef IMAGE
-  if (config.wateruse_wd_filename.name != NULL)
-    bad+=checkclmfile(config,"wateruse_wd",&config->wateruse_wd_filename,"dm3/day",LPJ_INT,FALSE,FALSE);
+  if (config->wateruse_wd_filename.name != NULL)
+    bad+=checkclmfile(config,"wateruse_wd",&config->wateruse_wd_filename,"dm3/day",LPJ_INT,FALSE,FALSE,FALSE);
 #endif
   bad+=checkclmfile(config,(config->radiation_lwdown) ? "lwdown" : "lwnet",&config->lwnet_filename,"W/m2",LPJ_SHORT,TRUE,TRUE,TRUE);
   bad+=checkclmfile(config,"swdown",&config->swdown_filename,"W/m2",LPJ_SHORT,TRUE,TRUE,TRUE);
@@ -629,7 +679,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     bad+=checkrestartfile(config,config->restart_filename);
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
-    bad+=checkinputfile(config,&config->landcover_filename,"1",LPJ_SHORT,config->npft[GRASS]+config->npft[TREE]-config->nbiomass);
+    bad+=checklandcover(config->npft[GRASS]+config->npft[TREE],config);
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(checklandusefile(config,&config->landuse_filename,"landusemap",FALSE,TRUE,

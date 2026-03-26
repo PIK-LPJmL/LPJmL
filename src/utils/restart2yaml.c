@@ -200,7 +200,7 @@ int main(int argc,char **argv)
       break;
     }
 #ifdef DEBUG
-    printf("%d,%d,%s:",cell,level,bstruct_typenames[token]);
+    printf("%d,%d,%s:",cell,level,bstruct_typenames[data.token]);
 #endif
     switch(data.token)
     {
