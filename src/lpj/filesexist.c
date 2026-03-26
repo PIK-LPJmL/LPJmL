@@ -353,25 +353,33 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
     *cftmap=defaultcftmap(cftmapsize,name,cftonly,npft,ncft,config);
   if(check_basetemp)
   {
-    if(metadata.basetemp==NULL)
+    if(filename->fmt==META || filename->fmt==CDF)
     {
-      fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
-              filename->name);
+      if(metadata.basetemp==NULL)
+      {
+        fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
+                filename->name);
+      }
+      else
+      {
+        if(checkbasetemp(metadata.basetemp,metadata.basetemp_size,npft,config))
+          rc=1;
+      }
+      if(metadata.hlimit==NULL)
+      {
+        fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
+                filename->name);
+      }
+      else
+      {
+        if(checkhlimit(metadata.hlimit,metadata.hlimit_size,npft,config))
+        rc=1;
+      }
     }
     else
     {
-      if(checkbasetemp(metadata.basetemp,metadata.basetemp_size,npft,config))
-        rc=1;
-    }
-    if(metadata.hlimit==NULL)
-    {
-      fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
-              filename->name);
-    }
-    else
-    {
-      if(checkhlimit(metadata.hlimit,metadata.hlimit_size,npft,config))
-        rc=1;
+      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON metafile or NetCDF file, no basetemp and hlimit array found.\n",
+               filename->name);
     }
   }
   freemetadata(&metadata);

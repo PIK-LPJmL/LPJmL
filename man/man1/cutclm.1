@@ -3,7 +3,7 @@
 cutclm \- cuts clm data files
 .SH SYNOPSIS
 .B cutclm
-[\-longheader] [\-end] year
+[\-longheader] [\-metafile] [\-json] [\-end] year
 \fIinfile\fP \fIoutfile\fP
 .SH DESCRIPTION
 Program cuts climate data files in clm format.
@@ -11,6 +11,12 @@ Program cuts climate data files in clm format.
 .TP
 \-longheader
 Long (version 2) header assumed for clm files.
+.TP
+\-metafile
+Files are JSON metafiles describing the structure of the data. An additional JSON metafile with suffix \fI.json\fP is written.
+-TP
+\-json
+Additional JSON metafile written.
 .TP
 \-end
 Copy clm data till year, default is copy clm data from year.

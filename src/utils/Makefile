@@ -222,10 +222,10 @@ $(BIN)/mathclm$E: mathclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/cutclm$E: cutclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/splitclm$E: splitclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/splitclm$E splitclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/splitclm$E splitclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/setclm$E: setclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/setclm$E setclm.$O $(LPJLIBS) $(LIBS)
