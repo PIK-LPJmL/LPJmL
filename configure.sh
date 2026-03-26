@@ -132,7 +132,7 @@ if [ "$inpath" = "" ]
 then
 if test -d /p ;
 then
-  inpath=/p/projects/lpjml/input/historical
+  inpath=/p/projects/lpjml/inputs/public_standard
 else
   inpath=""
   echo >&2 No input directory found, LPJINPATH has to be set
