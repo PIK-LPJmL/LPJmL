@@ -89,7 +89,7 @@ int main(int argc,char **argv)
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.ncell=1;
     header.nyear=1;
-    version=LPJ_CLIMATE_VERSION;
+    version=CLM_MAX_VERSION;
     grid_type=LPJ_SHORT;
     file=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[index+1],TRUE);
     if(file==NULL)
@@ -162,7 +162,8 @@ int main(int argc,char **argv)
     header.nyear-=year-header.firstyear;
     header.firstyear=year;
   }
-  fwriteheader(out,&header,id,version);
+  if(format==CLM)
+    fwriteheader(out,&header,id,version);
   switch(size)
   {
     case 1:
@@ -228,7 +229,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[index+2],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    fprintjson(out,argv[index+2],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,version);
     free(out_json);
     free(arglist);
     fclose(out);
