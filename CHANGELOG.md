@@ -39,7 +39,9 @@ author: Werner von Bloh (bloh@pik-potsdam.de)
 - Warning for float coordinates corrected in `cdf2coord.c` and `cdf2soil.c`.
 
 
-## [6.0.6] - 2026-03-19
+## [6.0.6] - 2026-03-25
+
+### Contributors
 
 author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
