@@ -24,15 +24,16 @@ of `major.minor.patch` with
 ### Contributors
 
 author: Werner von Bloh (bloh@pik-potsdam.de)
+code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Added
 
-- Option `-metafile` and `-json` added to `cutclm`.
+- Option `-metafile` and `-json` added to `cutclm` and `catclm`.
 
 ### Changed
 
 - New datatype `Metadata` defined in `types.h` combining maps, attributes, basetemp and hlimit arrays used by `opendata()`.
-- basetemp and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `mathclm`.
+- basetemp and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
 
 ### Fixed
 

@@ -234,7 +234,7 @@ $(BIN)/mergeclm$E: mergeclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mergeclm$E mergeclm.$O $(LPJLIBS)
 
 $(BIN)/catclm$E: catclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/coupler_demo$E: coupler_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/coupler_demo$E coupler_demo.$O $(LPJLIBS)\
