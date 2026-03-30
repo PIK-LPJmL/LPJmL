@@ -14,26 +14,21 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: splitclm [-h] [-longheader] [-metafile] [-json] first last infile outfile\n"
+#define USAGE "Usage: splitclm [-h] [-longheader] first last infile outfile\n"
 #define ERR_USAGE USAGE "\nTry \"splitclm --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {
   FILE *file,*out;
-  char *endptr,*out_json,*arglist;
+  char *endptr;
   Header header;
-  Metadata metadata;
-  Filename grid_name;
-  Type grid_type;
-  Bool swap,ismeta=FALSE,isjson=FALSE;
-  size_t offset;
-  int version,first,last,iarg,*idata,i,nbands,format;
+  Bool swap;
+  int version,first,last,iarg,*idata,i,nbands;
   long long size,*ldata,filesize;
   short *sdata;
   Byte *bdata;
   String id;
   version=READ_VERSION;
-  grid_name.name=NULL;
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -47,8 +42,6 @@ int main(int argc,char **argv)
                "\nArguments:\n"
                "-h,--help   print this help text\n"
                "-longheader force version of clm file to 2\n"
-               "-metafile   set the input format to JSON metafile instead of CLM\n"
-               "-json       JSON metafile is created with suffix '.json'\n"
                "first       index of first band to be copied into new file\n"
                "last        index of last band to be copied into new file\n"
                "infile      filename of clm file to be splitted\n"
@@ -59,10 +52,6 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-longheader"))
         version=2;
-       else if(!strcmp(argv[iarg],"-json"))
-        isjson=TRUE;
-      else if(!strcmp(argv[iarg],"-metafile"))
-        ismeta=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -106,69 +95,38 @@ int main(int argc,char **argv)
     fputs("Error: source and destination filename are the same.\n",stderr);
     return EXIT_FAILURE;
   }
-  format=CLM;
-  initmetadata(&metadata,NULL);
-  if(ismeta)
+  file=fopen(argv[iarg+2],"rb");
+  if(file==NULL)
   {
-    /* set default values */
-    header.datatype=LPJ_SHORT;
-    header.timestep=1;
-    header.nbands=1;
-    header.nstep=1;
-    header.order=CELLYEAR;
-    header.firstcell=0;
-    header.firstyear=1901;
-    header.cellsize_lon=header.cellsize_lat=0.5;
-    header.ncell=1;
-    header.nyear=1;
-    version=CLM_MAX_VERSION;
-    grid_type=LPJ_SHORT;
-    file=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg+2],TRUE);
-    if(file==NULL)
-      return EXIT_FAILURE;
-    if(format==CLM)
-    {
-      if(freadheaderid(file,id,TRUE))
-        return EXIT_FAILURE;
-    }
-    fseek(file,offset,SEEK_SET);
-    size=typesizes[header.datatype];
+    fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+2],strerror(errno));
+    return EXIT_FAILURE;
   }
+  if(freadanyheader(file,&header,&swap,id,&version,TRUE))
+  {
+    fprintf(stderr,"Error reading header in '%s'.\n",
+            argv[iarg+2]);
+    return EXIT_FAILURE;
+  }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[iarg+2],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
+  if(version>=3)
+    size=typesizes[header.datatype];
   else
   {
-    file=fopen(argv[iarg+2],"rb");
-    if(file==NULL)
+    filesize=getfilesizep(file);
+    size=(filesize-headersize(id,version))/header.ncell/header.nbands/header.nyear/header.nstep;
+    printf("Size of data: %Ld bytes\n",size);
+    if(size!=1 && size!=2 && size!=4 && size!=8)
     {
-      fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+2],strerror(errno));
+      fprintf(stderr,"Invalid size of data=%Ld.\n",size);
       return EXIT_FAILURE;
     }
-    if(freadanyheader(file,&header,&swap,id,&version,TRUE))
-    {
-      fprintf(stderr,"Error reading header in '%s'.\n",
-              argv[iarg+2]);
-      return EXIT_FAILURE;
-    }
-    if(version>CLM_MAX_VERSION)
-    {
-      fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-              version,argv[iarg+2],CLM_MAX_VERSION+1);
-      return EXIT_FAILURE;
-    }
-    if(version>=3)
-      size=typesizes[header.datatype];
-    else
-    {
-      filesize=getfilesizep(file);
-      size=(filesize-headersize(id,version))/header.ncell/header.nbands/header.nyear/header.nstep;
-      printf("Size of data: %Ld bytes\n",size);
-      if(size!=1 && size!=2 && size!=4 && size!=8)
-      {
-        fprintf(stderr,"Invalid size of data=%Ld.\n",size);
-        return EXIT_FAILURE;
-      }
-      if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear*header.nstep)!=0)
-        fprintf(stderr,"Warning: file size of '%s' is not multiple of ncell*nbands*nstep*nyear.\n",argv[iarg+2]);
-    }
+    if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear*header.nstep)!=0)
+      fprintf(stderr,"Warning: file size of '%s' is not multiple of ncell*nbands*nstep*nyear.\n",argv[iarg+2]);
   }
   if(first>header.nbands)
   {
@@ -269,28 +227,5 @@ int main(int argc,char **argv)
   } /* of switch */
   fclose(file);
   fclose(out);
-  if(ismeta || isjson)
-  {
-    out_json=malloc(strlen(argv[iarg+3])+strlen(JSON_SUFFIX)+1);
-    if(out_json==NULL)
-    {
-      printallocerr("filename");
-      return EXIT_FAILURE;
-    }
-    strcat(strcpy(out_json,argv[iarg+3]),JSON_SUFFIX);
-    arglist=catstrvec(argv,argc);
-    out=fopen(out_json,"w");
-    if(out==NULL)
-    {
-      printfcreateerr(out_json);
-      return EXIT_FAILURE;
-    }
-    fprintjson(out,argv[iarg+3],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,version);
-    free(out_json);
-    free(arglist);
-    fclose(out);
-  }
-  freemetadata(&metadata);
-  free(grid_name.name);
   return EXIT_SUCCESS;
 } /* of 'main' */
