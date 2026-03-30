@@ -38,6 +38,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 ### Fixed
 
 - Warning for float coordinates corrected in `cdf2coord.c` and `cdf2soil.c`.
+- Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
 
 
 ## [6.0.6] - 2026-03-25
