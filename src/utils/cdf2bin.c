@@ -229,7 +229,7 @@ int main(int argc,char **argv)
   Filename filename;
   Climatefile data;
   Config config;
-  char *outname,*endptr,*out_json,*arglist,*title;
+  char *outname,*endptr,*out_json,*arglist,*title=NULL;
   const char *progname;
   Coord *grid;
   Intcoord intcoord;
