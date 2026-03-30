@@ -296,7 +296,7 @@ int main(int argc,char **argv)
   String headername;
   size_t offset;
   Attr *global_attrs=NULL;
-  int i,ngrid,version,iarg,compress,setversion;
+  int i,ngrid,version,iarg,compress=0,setversion;
   Bool swap,isglobal,israw,ismeta,isnetcdf4,rc;
   int n_global;
   float cellsize_lon,cellsize_lat;
