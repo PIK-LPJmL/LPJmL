@@ -82,7 +82,7 @@ void freemap(Map *map)
 
 char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           Header *header,     /**< pointer to file header */
-                          Metadata *metadata,
+                          Metadata *metadata, /**< metadata information or NULL */
                           Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
                           int *filefmt,       /**< file format or NULL */
@@ -317,7 +317,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
 
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
-                   Metadata *metadata,
+                   Metadata *metadata,   /**< metadata information or NULL */
                    Filename *gridfile,   /**< name of grid file or NULL */
                    Type *grid_type,      /**< datatype of grid or NULL */
                    int *filefmt,         /**< file format or NULL */

@@ -159,7 +159,7 @@ typedef struct
   char *unit;        /**< unit of variable or NULL */
   char *standard_name; /**< standard name of variable or NULL */
   char *long_name;   /**< long name of variable or NULL */
-} Metadata;          /**< metadata information stores in JSON/NetCDF files */
+} Metadata;          /**< metadata information stored in JSON/NetCDF files */
 
 /* Declaration of functions */
 

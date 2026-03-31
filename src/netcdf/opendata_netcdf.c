@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 Bool opendata_netcdf(Climatefile *file,        /**< data file */
-                     Metadata *metadata,
+                     Metadata *metadata,       /**< metadata information */
                      const Filename *filename, /**< filename */
                      const char *units,        /**< units or NULL */
                      const Config *config      /**< LPJ configuration */

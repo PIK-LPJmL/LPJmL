@@ -21,7 +21,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *title,    /**< title string printed as "sim_name" or NULL */
                 const char *arglist,  /**< argument string or NULL */
                 const Header *header, /**< file header */
-                const Metadata *metadata,
+                const Metadata *metadata, /**< metadata information or NULL */
                 const Filename *gridfile, /**< filename of grid file or NULL */
                 Type grid_type,       /**< datatype of grid */
                 int format,           /**< file format (RAW/CLM) */
@@ -35,7 +35,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
           "  \"filename\" : \"%s\",\n",strippath(filename));
   if(title!=NULL)
     fprintf(file,"  \"sim_name\" : \"%s\",\n",title);
-  fprintmetadata(file,metadata,arglist);
+  if(metadata!=NULL)
+    fprintmetadata(file,metadata,arglist);
   fprintf(file,"  \"firstcell\" : %d,\n",header->firstcell);
   fprintf(file,"  \"ncell\" : %d,\n",header->ncell);
   fprintf(file,"  \"cellsize_lon\" : %.8g,\n",header->cellsize_lon);
