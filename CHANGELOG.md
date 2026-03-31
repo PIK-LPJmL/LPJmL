@@ -23,7 +23,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-author: Werner von Bloh (bloh@pik-potsdam.de)
+author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth(wirth@pik-potsdam.de)
 code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Added
@@ -39,6 +39,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 
 - Warning for float coordinates corrected in `cdf2coord.c` and `cdf2soil.c`.
 - Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
+- Carbon balance fixed in `reclaim_land.c`.
 
 
 ## [6.0.6] - 2026-03-25
