@@ -40,6 +40,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 - Warning for float coordinates corrected in `cdf2coord.c` and `cdf2soil.c`.
 - Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
 - Carbon balance fixed in `reclaim_land.c`.
+- Check for NULL pointer added in `getuser.c` to avoid SEGV if user name cannot be resolved.
 
 
 ## [6.0.6] - 2026-03-25

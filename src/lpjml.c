@@ -93,6 +93,7 @@ int main(int argc,char **argv)
   Outputfile *output; /* Output file array */
   const char *progname;
   int year,rc,error_count_total;
+  char *user;         /* user name */
   Cell *grid;         /* cell array */
   Input input;        /* input data */
   time_t tstart,tend,tinvoke;   /* variables for timing */
@@ -181,7 +182,8 @@ int main(int argc,char **argv)
   if(isroot(config))
   { /* Output only for the root task 0 */
     copyright(progname);
-    printf("\nRunning for user %s on %s at %s",getuser(),gethost(),
+    user=getuser();
+    printf("\nRunning for user %s on %s at %s",(user==NULL) ? "N/A" : user,gethost(),
            ctime(&tinvoke));
     fflush(stdout);
   }

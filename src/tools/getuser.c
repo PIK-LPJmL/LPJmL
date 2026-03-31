@@ -36,6 +36,8 @@ char *getuser(void) /** \return user name */
 #else
   struct passwd *who;
   who=getpwuid(getuid());
+  if(who==NULL)
+    return NULL;
   return who->pw_name;
 #endif
 } /* of 'getuser' */
