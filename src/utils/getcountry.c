@@ -398,7 +398,7 @@ int main(int argc,char **argv)
   out=fopen(argv[iarg+2],"wb");
   if(out==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[3],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+2],strerror(errno));
     return EXIT_FAILURE;
   }
   fwriteheader(out,&outheader,LPJGRID_HEADER,version);

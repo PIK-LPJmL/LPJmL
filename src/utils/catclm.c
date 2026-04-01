@@ -116,10 +116,10 @@ int main(int argc,char **argv)
       if(in==NULL)
         return EXIT_FAILURE;
       if(format==CLM)
-      {   
+      {
         if(freadheaderid(in,id,TRUE))
           return EXIT_FAILURE;
-      }   
+      }
       fseek(in,offset,SEEK_SET);
       size=typesizes[header.datatype];
     }
