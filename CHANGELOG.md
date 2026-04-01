@@ -41,6 +41,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 - Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
 - Carbon balance fixed in `reclaim_land.c`.
 - Check for NULL pointer added in `getuser.c` to avoid SEGV if user name cannot be resolved.
+- Verbose output corrected for input without time axis in `cdf2clm.c`.
 
 
 ## [6.0.6] - 2026-03-25
