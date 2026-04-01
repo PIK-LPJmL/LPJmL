@@ -34,6 +34,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 
 - New datatype `Metadata` defined in `types.h` combining maps, attributes, basetemp and hlimit arrays used by `opendata()`.
 - basetemp and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
+- Scaling to sum of stand fractions removed for output `"vegc_avg"`.
 
 ### Fixed
 
