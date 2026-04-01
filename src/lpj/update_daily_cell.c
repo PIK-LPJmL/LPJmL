@@ -473,7 +473,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       cell->discharge.drunoff+=runoff*stand->frac;
       climate->prec=prec_save;
       foreachpft(pft, p, &stand->pftlist)
-        getoutput(&cell->output,VEGC_AVG,config)+=vegc_sum(pft)*stand->frac/fracsum;
+        getoutput(&cell->output,VEGC_AVG,config)+=vegc_sum(pft)*stand->frac;
       getoutput(&cell->output,SWC1,config)+=(stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
                 stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]*stand->frac/fracsum;
       getoutput(&cell->output,SWC2,config)+=(stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
