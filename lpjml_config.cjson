@@ -23,6 +23,7 @@
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
 //#define NETCDF_INPUT /* use NetCDF files as input */
 //#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
+//#define TESTCASE_2CELL /* running LPjml with 2 cells */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -294,11 +295,7 @@
 #define xstr(s) #s
 
 #ifdef FROM_RESTART
-#ifdef TESTCASE_2CELL
-  "json_config_filename" : "testcase_2cell/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-#else
   "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-#endif
   "output" :
   [
 
@@ -448,11 +445,7 @@ ID                               Fmt                        filename
 /*------------------------------ ------------------------- ------------------------------- */
   ],
 #else
-#ifdef TESTCASE_2CELL
-  "json_config_filename" : "testcase_2cell/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-#else
   "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-#endif
   "output" :
   [
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
