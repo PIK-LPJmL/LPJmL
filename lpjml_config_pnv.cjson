@@ -55,8 +55,8 @@
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 3},
-                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
+                    {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 5},
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 5}], /* fire duration intervals and maximum days of fire for each stand */
   "prescribe_ignition" : false, /* read ignitions from file */
   "fail_on_balance" : true, /* fail on check balance error (true/false) */
   "random_prec" : false,     /* Random weather generator for precipitation disabled */
@@ -422,12 +422,6 @@ ID                               Fmt                        filename
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-<<<<<<< HEAD
-#if defined CRU_MONTHLY
-  "lastyear" : 2011, /* last year of simulation */
-#else
-=======
->>>>>>> 4fb3ff11a2148b3ac06937536a8d1195594d23c7
   "lastyear" : 2019, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "baseyear": 1901, /* base year for output  */

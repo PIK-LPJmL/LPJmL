@@ -448,7 +448,7 @@
       "k_latosa" : K_LATOSA,
       "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
       "height_max" : HEIGHT_MAX, /* maximum height of tree */
-      "scorchheight_f_param" : 0.061, /* scorch height (F) */
+      "scorchheight_f_param" : 0.005, /* scorch height (F) */
       "crownlength" : 0.10, /* crown length (CL) */
       "barkthick_par1" : 0.1085, /* bark thickness par1 */
       "barkthick_par2" : 0.2120, /* bark thickness par2 */

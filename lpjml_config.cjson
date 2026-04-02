@@ -58,8 +58,8 @@
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [120,480] ,"ndayfire" : 1},
-                    {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 3},
-                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
+                    {"stand" : "wetland", "duration" : [120,480], "ndayfire" : 5},
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 5}], /* fire duration intervals and maximum days of fire for each stand */
   "prescribe_ignition" : false, /* read ignitions from file */
   "fail_on_balance" : true, /* fail on check balance error (true/false) */
   "random_prec" : false,     /* Random weather generator for precipitation disabled */
