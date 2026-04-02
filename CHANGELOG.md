@@ -34,6 +34,7 @@ code review: Werner von Bloh (bloh@pik-potsdam.de),
 ### Changed
 
 - modified `.gitignore` to allow for `*.clm` and `*.dat` input files in the `testcase_2cell` folder
+- modified `Makefile` for improved parallel compilation of `all` target
 
 
 ## [6.0.6] - 2026-03-25
