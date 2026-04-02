@@ -82,7 +82,8 @@ utils:
 	(cd src && $(MAKE) libs)
 	(cd src/utils && $(MAKE) all)
 
-all: main utils
+all: main 
+	$(MAKE) utils
 
 install: all
 	$(MKDIR) $(LPJROOT)/bin
@@ -111,8 +112,8 @@ install: all
 test: main
 	$(MKDIR) output
 	$(MKDIR) restart
-	bin/lpjml -DTESTCASE_2CELL lpjml_config.cjson
-	bin/lpjml -DTESTCASE_2CELL -DFROM_RESTART lpjml_config.cjson
+	bin/lpjml -DTESTCASE_2CELL lpjml_config.cjson > output/testcase_2cell_spinup.log
+	bin/lpjml -DTESTCASE_2CELL -DFROM_RESTART lpjml_config.cjson > output/testcase_2cell_transient.log
  
 hash:
 	(cd src && $(MAKE) hash)
