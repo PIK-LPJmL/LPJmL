@@ -281,6 +281,15 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.estab_storage_grass[0].carbon=grid[i].balance.estab_storage_grass[1].carbon=20.0;
     grid[i].balance.estab_storage_grass[0].nitrogen=grid[i].balance.estab_storage_grass[1].nitrogen=2.0;
     grid[i].balance.surface_storage_last=grid[i].balance.soil_storage_last=0.0;
+#ifdef CHECK_BALANCE
+    grid[i].balance.daily_prec_last=grid[i].balance.daily_evap_last=0.0;
+    grid[i].balance.daily_transp_last=grid[i].balance.daily_interc_last=0.0;
+    grid[i].balance.daily_evap_lake_last=grid[i].balance.daily_evap_res_last=0.0;
+    grid[i].balance.daily_conv_loss_last=grid[i].balance.daily_wateruse_last=0.0;
+    grid[i].balance.daily_excess_last=grid[i].balance.daily_MT_water_last=0.0;
+    grid[i].balance.daily_discharge_last=0.0;
+    grid[i].balance.daily_surface_prev=grid[i].balance.daily_soil_prev=0.0;
+#endif
     grid[i].balance.ricefrac=0.0;
     grid[i].discharge.waterdeficit=0.0;
 #ifdef IMAGE

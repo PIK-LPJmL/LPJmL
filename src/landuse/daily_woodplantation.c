@@ -30,7 +30,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         Real melt,            /**< melting water (mm) */
                         int npft,             /**< number of natural PFTs */
                         int ncft,             /**< number of crop PFTs   */
-                        int UNUSED(year),     /**< simulation year */
+                        int year,             /**< simulation year */
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         Real UNUSED(agrfrac),
                         const Config *config  /**< LPJ config */
@@ -160,6 +160,12 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
+#ifdef DEBUG
+  String line;
+  if(rainmelt+irrig_apply < 0)
+    fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rainmelt=%g, irrig_apply=%g\n",
+            day,year,sprintcoord(line,&stand->cell->coord),rainmelt, irrig_apply);
+#endif
   runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft, p, &stand->pftlist)
@@ -225,7 +231,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config) += intercep_stand*stand->frac; /* Note: including blue fraction*/
   getoutput(output,INTERC_B,config) += intercep_stand_blue*stand->frac;   /* blue interception and evap */
-  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
 
   getoutput(output,EVAP,config) += evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
