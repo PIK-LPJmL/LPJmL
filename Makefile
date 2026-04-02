@@ -111,7 +111,9 @@ install: all
 test: main
 	$(MKDIR) output
 	$(MKDIR) restart
-
+	bin/lpjml -DTESTCASE_2CELL lpjml_config.cjson
+	bin/lpjml -DTESTCASE_2CELL -DFROM_RESTART lpjml_config.cjson
+ 
 hash:
 	(cd src && $(MAKE) hash)
 

@@ -33,67 +33,69 @@ Directory tree after extracting the tar files:
 
 --lpjml
   |
-  +-config        : OS- and compiler-specific Makefiles
+  +-config         : OS- and compiler-specific Makefiles
   |
-  +-bin           : Directory for executables and shell scripts
+  +-bin             : Directory for executables and shell scripts
   |
-  +-man           : Manual pages root directory
+  +-man             : Manual pages root directory
   | |
-  | +-man1        : Manual pages for programs and scripts
+  | +-man1          : Manual pages for programs and scripts
   | |
-  | +-man3        : Manual pages for functions
+  | +-man3          : Manual pages for functions
   | |
-  | +-man5        : Manual pages for file formats
+  | +-man5          : Manual pages for file formats
   |
-  +--par          : Parameter files for PFTs and soils
+  +--par            : Parameter files for PFTs and soils
   |
-  +--output       : output data (created by make test)
+  +--testcase_2cell : Mimimum 2-cell data set for test
   |
-  +--restart      : restart data (created by make test)
+  +--output         : output data (created by make test)
   |
-  +--lib          : library files (created by make)
+  +--restart        : restart data (created by make test)
   |
-  +--include      : include files
+  +--lib            : library files (created by make)
   |
-  +--src          : source tree
+  +--include        : include files
+  |
+  +--src            : source tree
      |
-     +--numeric   : source for numerical routines
+     +--numeric     : source for numerical routines
      |
-     +--bstruct   : source for reading/writing restart files
+     +--bstruct     : source for reading/writing restart files
      |
-     +--tools     : source for tools
+     +--tools       : source for tools
      |
-     +--pnet      : source for library for distributed networks
+     +--pnet        : source for library for distributed networks
      |
-     +--climate   : climate code
+     +--climate     : climate code
      |
-     +--lpj       : lpj functions
+     +--lpj         : lpj functions
      |
-     +--soil      : soil code
+     +--soil        : soil code
      |
-     +--grass     : grass PFT code
+     +--grass       : grass PFT code
      |
-     +--tree      : tree PFT code
+     +--tree        : tree PFT code
      |
-     +--crop      : crop PFT code
+     +--crop        : crop PFT code
      |
-     +--landuse   : land use code
+     +--landuse     : land use code
      |
-     +--spitfire  : spitfire fire code
+     +--spitfire    : spitfire fire code
      |
-     +--reservoir : reservoir code
+     +--reservoir   : reservoir code
      |
-     +--socket    : socket communication library
+     +--socket      : socket communication library
      |
-     +--coupler   : coupler code
+     +--coupler     : coupler code
      |
-     +--image     : coupler to IMAGE model
+     +--image       : coupler to IMAGE model
      |
-     +--netcdf    : NetCDF input/output functions
+     +--netcdf      : NetCDF input/output functions
      |
-     +--utils     : utility programs
+     +--utils       : utility programs
      |
-     +--test      : unit tests for src code using ceedling
+     +--test        : unit tests for src code using ceedling
 
 Configure for your operating system
 
@@ -267,7 +269,7 @@ LPJOPTIONS     - cpp runtime options for LPJmL
 LPJOUTPATH     - Path appended to the output filenames. Only done for filenames
                  without absolute path.
 
-Create output and restart directory:
+Peform a minimum 2-cell simulation:
 
 make test
 
