@@ -55,7 +55,7 @@
 - [ ] Increment version number
 - [ ] Reviewers listed in the changelog
 - [ ] Add 2nd level heading for changelog entry with correct version number and date
-- [ ] Run `make test` and copy local 2-cell testcase `globalflux.csv` from `output` to `testcase_2cell` folder and commit
+- [ ] Run `make test` and copy the local 2-cell testcase output files `globalflux.csv` and `globalflux_spinup.csv` from `output` to `testcase_2cell` folder and commit
 
 # Notes on responsibilities of author and reviewers
 

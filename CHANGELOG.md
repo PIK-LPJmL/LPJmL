@@ -20,6 +20,21 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+author: Christoph Müller (cmueller@pik-potsdam.de)
+code review: Werner von Bloh (bloh@pik-potsdam.de), 
+
+### Added
+
+- `testcase_2cell` folder with standard inputs for a 2-cell riverbasin that can be used for testing the model and the `globalflux.csv` and `globalflux_spinup.csv` outputs for comparison
+- `make test` option that automatically runs the 2-cell testcase
+- maintaining the `globalflux.csv` and `globalflux_spinup.csv` files as author task for merge requests
+
+### Changed
+
+- modified `.gitignore` to allow for `*.clm` and `*.dat` input files in the `testcase_2cell` folder
+
 
 ## [6.0.6] - 2026-03-25
 
