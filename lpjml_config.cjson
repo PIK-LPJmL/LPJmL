@@ -296,14 +296,9 @@
 #ifdef FROM_RESTART
 #ifdef TESTCASE_2CELL
   "json_config_filename" : "testcase_2cell/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-
-  "output" :
-  [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "testcase_2cell/globalflux.csv"}}
-  ],
 #else
   "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-
+#endif
   "output" :
   [
 
@@ -452,23 +447,16 @@ ID                               Fmt                        filename
 
 /*------------------------------ ------------------------- ------------------------------- */
   ],
-#endif
 #else
 #ifdef TESTCASE_2CELL
   "json_config_filename" : "testcase_2cell/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-
-  "output" :
-  [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "testcase_2cell/globalflux_spinup.csv"}}
-  ],
 #else
   "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
-
+#endif
   "output" :
   [
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
-#endif
 #endif
 
 /*===================================================================*/
