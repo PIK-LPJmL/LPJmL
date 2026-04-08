@@ -66,6 +66,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Soil *soil;
   soil = &stand->soil;
   output=&stand->cell->output;
+#ifdef DEBUG
+  String line;
+#endif
 #ifdef CHECK_BALANCE
   Stand *checkstand;
   Real end = 0;
@@ -156,6 +159,12 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   /* soil inflow: infiltration and percolation */
   if ((stand->type->landusetype!=WETLAND || stand->frac<0.001))
   {
+#ifdef DEBUG
+    if(climate->prec+melt < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rain=%g, melt=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord),climate->prec, melt);
+#endif
+
     runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
     if (stand->type->landusetype==WETLAND)     //if stand frac is very small
     {
@@ -169,6 +178,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       lateral_in=300;
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
+#ifdef DEBUG
+    if(climate->prec+melt < 0)
+      fprintf(stderr,"WARNING044: Negative water input to infiltration on day %d of year %d in cell (%s): rain=%g, melt=%g\n",
+              day,year,sprintcoord(line,&stand->cell->coord), climate->prec, melt);
+#endif
 
     runoff+= infil_perc(stand,climate->prec+lateral_in+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
     stand->cell->lateral_water-=lateral_in*stand->frac;
@@ -322,15 +336,19 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
   if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>param.error_limit.stocks_fcn.nitrogen)
   {
-    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,"Invalid nitrogen balance in %s: day: %d error: %g start: %g end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-         "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g",
-         __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
-         fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
+    fprintf(stderr,"ERROR037: Invalid nitrogen balance in %s: day: %d error: %g start: %g end: %g\n"
+           "=====001: flux_estab.nitrogen: %g flux_harvest.nitrogen: %g influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
+           __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
+          fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
     foreachstand(checkstand,s,stand->cell->standlist)
-      fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-              checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
-              crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
+      fprintf(stderr,"=====%03d: stand: %d standfrac: %g standtype: %s iswetland: %s\n",
+              s+2,s,checkstand->frac, checkstand->type->name,bool2str(checkstand->soil.iswetland));
+    if(config->withlanduse)
+      fprintf(stderr,"=====%03d: cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+              s+2,crop_sum_frac(stand->cell->ml.landfrac,ncft,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
+              crop_sum_frac(stand->cell->ml.landfrac,ncft,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
               stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
+    fail(INVALID_NITROGEN_BALANCE_ERR,config->fail_on_balance,FALSE,NULL);
   }
 
 #endif

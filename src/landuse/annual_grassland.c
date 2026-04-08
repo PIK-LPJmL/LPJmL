@@ -91,7 +91,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 
   for(p=0;p<npft;p++)
   {
-    if(config->pftpar[p].type==GRASS && p!=Sphagnum_moss && config->pftpar[p].cultivation_type==NONE &&
+    if(config->pftpar[p].type==GRASS && strcmp(config->pftpar[p].name,"Sphagnum moss") && config->pftpar[p].cultivation_type==NONE &&
        establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,peatland))
     {
       if(!present[p])

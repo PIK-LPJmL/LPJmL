@@ -1,4 +1,4 @@
-# Installation of LPJmL C Version 6.0.5
+# Installation of LPJmL C Version 6.0.6
 
 ## Overview
 
@@ -58,7 +58,7 @@ After extracting the source files, the directory structure will look like this:
 ```bash
 mkdir lpjml
 cd lpjml
-gzip -cd lpjml-6.0.5.tar.gz | tar -xf -
+gzip -cd lpjml-6.0.6.tar.gz | tar -xf -
 ```
 
 ---
@@ -84,7 +84,11 @@ Install the required libraries:
 sudo apt-get install libnetcdf-dev
 sudo apt-get install libudunits2-dev
 sudo apt-get install libjson-c-dev
-sudo apt-get install mpich  # Optional: for parallel library
+```
+and optionally the MPICH parallel library:
+```bash
+sudo apt-get install mpich
+sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev
 ```
 
 ---
