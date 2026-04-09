@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions prints metadata information to JSOM files                        \n**/
+/**     Functions prints metadata information to JSON files                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -28,6 +28,8 @@ void initmetadata(Metadata *metadata,  /**< metadata information */
   metadata->n_attr=0;
   metadata->basetemp=NULL;
   metadata->basetemp_size=0;
+  metadata->countrymap=NULL;
+  metadata->countrymap_size=0;
   metadata->hlimit=NULL;
   metadata->hlimit_size=0;
   metadata->source=NULL;
@@ -41,9 +43,19 @@ void initmetadata(Metadata *metadata,  /**< metadata information */
 void freemetadata(Metadata *metadata /**< metadata information */
                  )
 {
+  int i;
   freemap(metadata->map);
   freeattrs(metadata->attrs,metadata->n_attr);
   free(metadata->basetemp);
+  if(metadata->countrymap!=NULL)
+  {
+    for(i=0;i<metadata->countrymap_size;i++)
+    {
+      free(metadata->countrymap[i].name);
+      free(metadata->countrymap[i].alpha_3);
+    }
+    free(metadata->countrymap);
+  }
   free(metadata->hlimit);
   free(metadata->source);
   free(metadata->history);
@@ -61,6 +73,19 @@ void fprintmetadata(FILE *file,               /**< pointer to text file */
 {
   int i,len;
   time_t t;
+  if(metadata->variable!=NULL)
+    fprintf(file,"  \"variable\" : \"%s\",\n",metadata->variable);
+  if(metadata->attrs!=NULL && metadata->n_attr>0)
+  {
+    fprintf(file,"  \"global_attrs\" :\n  {\n");
+    for(i=0;i<metadata->n_attr;i++)
+    {
+      fprintf(file,"    \"%s\" : \"%s\"",metadata->attrs[i].name,metadata->attrs[i].value);
+      if(i<metadata->n_attr-1)
+        fprintf(file,",\n");
+    }
+    fprintf(file,"\n  },\n");
+  }
   if(metadata->history==NULL)
   {
     if(arglist!=NULL)
@@ -85,19 +110,21 @@ void fprintmetadata(FILE *file,               /**< pointer to text file */
       fprintf(file,"\",\n");
     }
   }
-  if(metadata->attrs!=NULL && metadata->n_attr>0)
+  if(metadata->countrymap!=NULL)
   {
-    fprintf(file,"  \"global_attrs\" :\n  {\n");
-    for(i=0;i<metadata->n_attr;i++)
+    fprintf(file,"  \"countrymap\" :\n  [\n");
+    for(i=0;i<metadata->countrymap_size;i++)
     {
-      fprintf(file,"    \"%s\" : \"%s\"",metadata->attrs[i].name,metadata->attrs[i].value);
-      if(i<metadata->n_attr-1)
-        fprintf(file,",\n");
+      fprintf(file,"    \"name\" : \"%s\" : \"alpha-3\" : \"%s\"",
+              metadata->countrymap[i].name,
+              metadata->countrymap[i].alpha_3);
+      if(i<metadata->countrymap_size-1)
+        fputs(",\n",file);
+      else
+        fputc('\n',file);
     }
-    fprintf(file,"\n  },\n");
+    fputs("  ],\n",file);
   }
-  if(metadata->variable!=NULL)
-    fprintf(file,"  \"variable\" : \"%s\",\n",metadata->variable);
   if(metadata->map!=NULL)
   {
     len=fprintf(file,"  \"%s\" : [",metadata->map_name);

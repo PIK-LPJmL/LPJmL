@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions reads rints metdata information from JSOM file                   \n**/
+/**     Functions reads metdata information from JSON file                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -31,6 +31,12 @@ Bool fscanmetadata(LPJfile *file,      /**< pointer to JSON file */
   }
   if(iskeydefined(file,metadata->map_name))
     metadata->map=fscanmap(file,metadata->map_name,verbosity);
+  if(iskeydefined(file,"countrymap"))
+  {
+    metadata->countrymap=fscancountrymap(file,&metadata->countrymap_size,"countrymap",verbosity);
+    if(metadata->countrymap==NULL)
+      return TRUE;
+  }
   if(iskeydefined(file,"basetemp"))
   {
     array=fscanarray(file,&metadata->basetemp_size,"basetemp",verbosity);

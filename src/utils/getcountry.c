@@ -23,9 +23,9 @@ typedef struct
   int code;     /* LPJmL country code */
   const char *name;
   char abbrev[4]; /* ISO 3166-1 alpha-3 abbreviation for country */
-} Countryname;
+} Countryname2;
 
-static Countryname countrynames[NCOUNTRY]=
+static Countryname2 countrynames[NCOUNTRY]=
 {
   {Afghanistan,"Afghanistan","AFG"},
   {Aland_Islands,"Aland Islands","ALA"},
@@ -266,7 +266,7 @@ static Countryname countrynames[NCOUNTRY]=
 };
 
 static int findcountryname(const char *name,
-                           const Countryname countryname[],
+                           const Countryname2 countryname[],
                            int ncountries)
 {
   int i;
@@ -278,7 +278,7 @@ static int findcountryname(const char *name,
 
 static int compare(const void *a,const void *b)
 {
-  return strcmp(((const Countryname *)a)->name,((const Countryname *)b)->name);
+  return strcmp(((const Countryname2 *)a)->name,((const Countryname2 *)b)->name);
 }
 
 static Bool findcountry(const int country[],int n,int c)
@@ -323,7 +323,7 @@ int main(int argc,char **argv)
       else if(!strcmp(argv[iarg],"-list"))
       {
         puts("List of country codes:\nCode Name");
-        qsort(countrynames,NCOUNTRY,sizeof(Countryname),
+        qsort(countrynames,NCOUNTRY,sizeof(Countryname2),
               (int (*)(const void *,const void *))compare);
         for(i=0;i<NCOUNTRY;i++)
           printf("%s  %s\n",countrynames[i].abbrev,countrynames[i].name);

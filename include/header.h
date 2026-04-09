@@ -145,12 +145,20 @@ typedef struct
 
 typedef struct
 {
+  char *name;
+  char *alpha_3;
+} Countryname;
+
+typedef struct
+{
   Map *map;         /**< map from json file or NULL */
   const char *map_name; /**< name of map or NULL */
   Attr *attrs;       /**< pointer to array of attributes */
   int n_attr;        /**< size of array attribute */
   Limit *basetemp;   /**< basetemp array */
   int basetemp_size; /**< size of basetemp array */
+  Countryname *countrymap; /**< country map array */
+  int countrymap_size;     /**< siize of country map array */
   int *hlimit;       /**< harvest limit array */
   int hlimit_size;   /**< size of harvest limit array */
   char *source;      /**< source of data  or NULL */
@@ -175,6 +183,7 @@ extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(FILE *,Header *,Metadata *,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern Countryname *fscancountrymap(LPJfile *,int *,const char *,Verbosity);
 extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);
