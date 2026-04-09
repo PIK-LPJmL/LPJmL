@@ -11,7 +11,7 @@
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Jägermeyr et al. (2021a).  <https://doi.org/10.5281/zenodo.5062513>, Jägermeyr et al. (2021b). <https://dx.doi.org/10.1038/s43016-021-00400-y>"
   },
-  "histroy" : "`/p/projects/lpjml/scripts/ISIMIP3/create_sowing_harvest_dates_PHU_req_timeseries_ISIMIP3a.R`",
+  "history" : "`/p/projects/lpjml/scripts/ISIMIP3/create_sowing_harvest_dates_PHU_req_timeseries_ISIMIP3a.R`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
