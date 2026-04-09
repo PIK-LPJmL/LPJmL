@@ -1,6 +1,6 @@
 {
   "filename" : "landuse_testcase_2cell.clm",
-  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/landuse_paper/`\nFri Mar 20 14:14:23 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others_64bands.clm.json ./landuse_testcase_2cell.clm",
+  "variable" : "landfrac",
   "global_attrs" :
   {
     "title" : "LandInG v1 land input data",
@@ -9,8 +9,8 @@
     "summary" : "Land use fractions, with fallow land added to others and an added distinction of irrigation systems",
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documentation; source datasets documented therein"
-  },
-  "variable" : "landfrac",
+  },  
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/landuse_paper/`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -21,17 +21,18 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 64,
-  "scalar" : 1.000000,
-  "datatype" : "float",
-  "map" : ["temperate cereals","rice","maize","tropical cereals","pulses","temperate roots",
-    "tropical roots","oil crops sunflower","oil crops soybean","oil crops groundnut",
-    "oil crops rapeseed","sugarcane","others","grassland","biomass grass","biomass tree"],
+  "scalar" : 1.0,
   "unit" : "1",
   "long_name" : "fractions of grid cell for land-use types (see mapping) first for rainfed, then for surface irrigation, then for sprinkler irrigaten, then for drip irrigation systems",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta" },
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
-  "bigendian" : false
+  "bigendian" : false,
+  "map" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+           "temperate roots", "tropical roots", "oil crops sunflower",
+           "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+           "sugarcane","others","grassland","biomass grass","biomass tree"]
 }

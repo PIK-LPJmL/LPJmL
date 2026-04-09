@@ -1,6 +1,6 @@
 {
   "filename" : "crop_phu_testcase_2cell.clm",
-  "history" : "Fri Mar 20 14:14:21 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm.json ./crop_phu_testcase_2cell.clm",
+  "variable" : "phusum",
   "global_attrs" :
   {
     "title" : "Phenolgocial heat unit (phu) sum for maturity data",
@@ -11,7 +11,7 @@
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Jägermeyr et al. (2021a).  <https://doi.org/10.5281/zenodo.5062513>, Jägermeyr et al. (2021b). <https://dx.doi.org/10.1038/s43016-021-00400-y>"
   },
-  "variable" : "phusum",
+  "histroy" : "`/p/projects/lpjml/scripts/ISIMIP3/create_sowing_harvest_dates_PHU_req_timeseries_ISIMIP3a.R`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -22,19 +22,20 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 24,
-  "scalar" : 1.000000,
-  "datatype" : "short",
-  "map" : ["temperate cereals","rice","maize","tropical cereals","pulses","temperate roots",
-    "tropical roots","oil crops sunflower","oil crops soybean","oil crops groundnut",
-    "oil crops rapeseed","sugarcane"],
+  "scalar" : 1.0,
   "unit" : "degree days",
   "long_name" : "phenolgocial heat unit (phu) requirements to reach maturity",
+  "datatype" : "short",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : {"filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false,
+  "map" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+           "temperate roots", "tropical roots", "oil crops sunflower",
+           "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+           "sugarcane"],
   "basetemp" : 	
   [
     { "low" : 0.0, "high" : 0.0 },

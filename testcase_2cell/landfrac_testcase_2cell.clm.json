@@ -1,6 +1,6 @@
 {
   "filename" : "landfrac_testcase_2cell.clm",
-  "history" : "LandInG toolbox: predefined CRU-TS grid enforced on land fractions extracted from GADM level 0 polygons; post-processing: values >0.999 set to 1\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/landfrac_gadm36.clm.json ./landfrac_testcase_2cell.clm",
+  "variable" : "landfrac",
   "global_attrs" :
   {
     "title" : "LandInG v1 land input data",
@@ -9,8 +9,8 @@
     "summary" : "Land fraction in each grid cell. Includes inland water bodies. Does not include ocean fraction of cells along coastlines",
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention; Grid from CRU-TS data, land fractions from GADM version 3.6"
-  },
-  "variable" : "landfrac",
+  },  
+  "history": "LandInG toolbox: predefined CRU-TS grid enforced on land fractions extracted from GADM level 0 polygons; post-processing: values >0.999 set to 1",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -21,14 +21,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 1.000000,
-  "datatype" : "float",
+  "scalar" : 1.0,
   "unit" : "1",
   "long_name" : "land fraction of grid cell",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

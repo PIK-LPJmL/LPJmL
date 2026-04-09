@@ -1,20 +1,33 @@
 {
   "filename" : "grid_testcase_2cell.clm",
+  "variable" : "grid",
+  "global_attrs" :
+  {
+    "title" : "grid file",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "coordinates of each grid cell in the sequence grid cells are sorted in all other input files",
+    "license" : "Creative Commons Zero (CC0) 1.0",
+    "references" : "Harris et al. (2014).  <https://doi.org/10.1002/joc.3711>"
+  },
+  "history" : "created based on CRU TS",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
   "cellsize_lat" : 0.5,
-  "firstyear" : 0,
-  "lastyear" : 0,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
   "nyear" : 1,
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 2,
-  "scalar" : 0.010000,
+  "scalar" : 0.01,
+  "unit" : "degree",
+  "long_name" : "cell coordinates",
   "datatype" : "short",
   "format" : "clm",
   "order" : "cellyear",
-  "version" : 3,
-  "offset" : 51,
+  "version" : 4,
+  "offset" : 59,
   "bigendian" : false
 }

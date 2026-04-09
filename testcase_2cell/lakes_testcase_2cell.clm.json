@@ -1,6 +1,6 @@
 {
   "filename" : "lakes_testcase_2cell.clm",
-  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/lakes_rivers_paper/\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/glwd_lakes_and_rivers_30arcmin.clm.json ./lakes_testcase_2cell.clm",
+  "variable" : "lake_and_river_surface_area",
   "global_attrs" :
   {
     "title" : "LandInG v1 land input data",
@@ -9,8 +9,8 @@
     "summary" : "lake and river surface area fraction data processed with LandInG",
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention"
-  },
-  "variable" : "lake_and_river_surface_area",
+  },  
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/lakes_rivers_paper/",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -21,14 +21,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 1.000000,
-  "datatype" : "float",
+  "scalar" : 1.0,
   "unit" : "1",
   "long_name" : "surface area fractions of lakes and rivers in grid cell",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta" },
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

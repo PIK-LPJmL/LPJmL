@@ -1,6 +1,6 @@
 {
   "filename" : "hydro_testcase_2cell.clm",
-  "history" : "direct download\nFri Mar 20 14:14:21 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/hydro2_shuffle_new.clm.json ./hydro_testcase_2cell.clm",
+  "variable" : "CTI values",
   "global_attrs" :
   {
     "title" : "CTI",
@@ -11,7 +11,7 @@
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1007, Verdin, K.L., 2017, Hydrologic Derivatives for Modeling and Applications (HDMA) database: U.S. Geological Survey data release, https://doi.org/10.5066/F7S180ZP."
   },
-  "variable" : "CTI values",
+  "history" : "direct download",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -22,14 +22,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 3,
-  "scalar" : 0.001000,
-  "datatype" : "short",
+  "scalar" : 0.001,
   "unit" : "1",
   "long_name" : "mean CTI, standard deviation, skewness",
+  "datatype" : "short",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta" },
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

@@ -1,6 +1,6 @@
 {
   "filename" : "nh4_deposition_testcase_2cell.clm",
-  "history" : "created from ISIMIP file with script at `https://github.com/PIK-LPJmL/ISIMIP_non-climate_conversion/blob/main/create_deposition_inputs_ISIMIP3a.R`\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/nh4-deposition_isimip3a_histsoc_1850-2021.clm.json ./nh4_deposition_testcase_2cell.clm",
+  "variable" : "nhx",
   "global_attrs" :
   {
     "title" : "ISIMIP3a N-deposition input data (v1.3)",
@@ -11,7 +11,7 @@
     "license" : "Creative Commons Zero (CC0) 1.0",
     "references" : "Jia Yang, Hanqin Tian (2023): ISIMIP3a N-deposition input data (v1.3). ISIMIP Repository. <https://doi.org/10.48364/ISIMIP.759077.3>"
   },
-  "variable" : "nhx",
+  "history" : "created from ISIMIP file with script at `https://github.com/PIK-LPJmL/ISIMIP_non-climate_conversion/blob/main/create_deposition_inputs_ISIMIP3a.R`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -22,14 +22,14 @@
   "nstep" : 12,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 1.000000,
-  "datatype" : "float",
+  "scalar" : 1.0,
   "unit" : "g/m2/day",
   "long_name" : "NHx deposition",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : {"filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

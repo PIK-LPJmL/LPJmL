@@ -1,6 +1,6 @@
 {
   "filename" : "soil_ph_testcase_2cell.clm",
-  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/soil_paper/`\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/soil_pH_30arcmin.clm.json ./soil_ph_testcase_2cell.clm",
+  "variable" : "soilph",
   "global_attrs" :
   {
     "title" : "LandInG v1 land input data",
@@ -9,8 +9,8 @@
     "summary" : "Soil acidity (pH) of dominant (most prominant) soil type in cell, based on HWSD",
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention; FAO/IIASA/ISRIC/ISSCAS/JRC: Harmonized World Soil Database (version 1.21), FAO, Rome, Italy and IIASA, Laxenburg, Austria"
-  },
-  "variable" : "soilph",
+  },  
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/soil_paper/`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -21,14 +21,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 1.000000,
-  "datatype" : "float",
+  "scalar" : 1.0,
   "unit" : "1",
   "long_name" : "soil acidity (pH)",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

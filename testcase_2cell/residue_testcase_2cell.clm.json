@@ -1,6 +1,6 @@
 {
   "filename" : "residue_testcase_2cell.clm",
-  "history" : "extracted from MADRAT mrland package (Dietrich et al. 2020) with script at `/p/projects/lpjml/input/MADRAT/madrat2lpj_residues.r`\nFri Mar 20 14:14:21 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/residues_madrat_1850-2015_16bands.clm.json ./residue_testcase_2cell.clm",
+  "variable" : "residuefrac",
   "global_attrs" :
   {
     "title" : "Residue recycling fraction",
@@ -10,7 +10,7 @@
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "Dietrich et al. (2020) <https://doi.org/10.5281/zenodo.3822084>"
   },
-  "variable" : "residuefrac",
+  "history" : "extracted from MADRAT mrland package (Dietrich et al. 2020) with script at `/p/projects/lpjml/input/MADRAT/madrat2lpj_residues.r`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -21,17 +21,18 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 16,
-  "scalar" : 0.001000,
-  "datatype" : "short",
-  "map" : ["temperate cereals","rice","maize","tropical cereals","pulses","temperate roots",
-    "tropical roots","oil crops sunflower","oil crops soybean","oil crops groundnut",
-    "oil crops rapeseed","sugarcane","others","grassland","biomass grass","biomass tree"],
+  "scalar" : 0.001,
   "unit" : "1",
   "long_name" : "residue recycling fraction",
+  "datatype" : "short",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
-  "bigendian" : false
+  "bigendian" : false,
+  "map" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+           "temperate roots", "tropical roots", "oil crops sunflower",
+           "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+           "sugarcane","others","grassland","biomass grass","biomass tree"]
 }

@@ -1,6 +1,6 @@
 {
   "filename" : "wateruse_testcase_2cell.clm",
-  "history" : "created from ISIMIP file with script at `/p/projects/lpjml/scripts/ISIMIP3/water_uses_ISIMIP3a.R`\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/wateruse_isimip3a_histsoc_1850-2021.clm.json ./wateruse_testcase_2cell.clm",
+  "variable" : "water_use",
   "global_attrs" :
   {
     "title" : "ISIMIP3a water use data",
@@ -11,7 +11,7 @@
     "license" : "Creative Commons Zero (CC0) 1.0",
     "references" : "Yoshihide Wada, Martina Flörke, Naota Hanasaki, Hannes Müller Schmied, Simon N. Gosling, Jacob Schewe (2022): ISIMIP3a water abstraction input data (v1.0). ISIMIP Repository. <https://doi.org/10.48364/ISIMIP.228996>"
   },
-  "variable" : "water_use",
+  "history" : "created from ISIMIP file with script at `/p/projects/lpjml/scripts/ISIMIP3/water_uses_ISIMIP3a.R`",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -22,14 +22,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 10.000000,
-  "datatype" : "int",
+  "scalar" : 10.0,
   "unit" : "dm3/day",
   "long_name" : "water use",
+  "datatype" : "int",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }

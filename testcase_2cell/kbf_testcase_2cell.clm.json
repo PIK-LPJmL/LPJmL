@@ -1,6 +1,6 @@
 {
   "filename" : "kbf_testcase_2cell.clm",
-  "history" : "The approach used to generate the complete field is based on 167 empirical Kbf values in tropical and sub-tropical catchments (Arancibia et al., 2010). These values were found to be significantly correlated with climate indices, particularly mean precipitation in the catchment. We applied this relationship to recover gridded Kbf values, using mean precipitation for the period 1950–2002 from 0.5° gridded CRU TS2.1 data.\nFri Mar 20 14:14:20 2026: regridclm -metafile ./grid_testcase_2cell.clm /p/projects/lpjml/inputs/public_standard/kbf.clm.json ./kbf_testcase_2cell.clm",
+  "variable" : "KBF",
   "global_attrs" :
   {
     "title" : "base-flow recession coefficient",
@@ -11,7 +11,7 @@
     "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
     "references" : "<https://arquivo.pt/wayback/20160421113325mp_/http://ermitage.cs.man.ac.uk/sites/default/files/D5.3.pdf>, Arancibia, et al. 2010 <https://doi.org/10.5194/hess-14-2193-2010>"
   },
-  "variable" : "KBF",
+  "history" : "The approach used to generate the complete field is based on 167 empirical Kbf values in tropical and sub-tropical catchments (Arancibia et al., 2010). These values were found to be significantly correlated with climate indices, particularly mean precipitation in the catchment. We applied this relationship to recover gridded Kbf values, using mean precipitation for the period 1950–2002 from 0.5° gridded CRU TS2.1 data.",
   "firstcell" : 0,
   "ncell" : 2,
   "cellsize_lon" : 0.5,
@@ -22,14 +22,14 @@
   "nstep" : 1,
   "timestep" : 1,
   "nbands" : 1,
-  "scalar" : 1.000000,
-  "datatype" : "float",
+  "scalar" : 1.0,
   "unit" : "1",
   "long_name" : "base-flow recession coefficient",
+  "datatype" : "float",
   "format" : "clm",
   "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
   "version" : 4,
   "offset" : 59,
-  "grid" : {"filename" : "grid_testcase_2cell.clm", "format" : "clm", "datatype" : "short"},
   "bigendian" : false
 }
