@@ -115,7 +115,7 @@ void fprintmetadata(FILE *file,               /**< pointer to text file */
     fprintf(file,"  \"countrymap\" :\n  [\n");
     for(i=0;i<metadata->countrymap_size;i++)
     {
-      fprintf(file,"    \"name\" : \"%s\" : \"alpha-3\" : \"%s\"",
+      fprintf(file,"    {\"name\" : \"%s\", \"alpha-3\" : \"%s\"}",
               metadata->countrymap[i].name,
               metadata->countrymap[i].alpha_3);
       if(i<metadata->countrymap_size-1)
