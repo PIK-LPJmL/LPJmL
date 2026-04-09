@@ -27,7 +27,7 @@
   "datatype" : "short",
   "format" : "clm",
   "order" : "cellyear",
-  "version" : 4,
-  "offset" : 59,
+  "version" : 3,
+  "offset" : 51,
   "bigendian" : false
 }
