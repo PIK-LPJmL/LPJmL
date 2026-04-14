@@ -26,7 +26,7 @@
 #include "urban.h"
 #include "wetland.h"
 
-typedef enum {PASTURE=1, OTHER_PASTURE, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION,URBANIZATION } Cultivation_type;
+typedef enum {PASTURE=1, OTHER_PASTURE, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION,URBAN_AREA } Cultivation_type;
 
 #ifdef IMAGE
 #define minnatfrac_luc 0.0002
@@ -878,7 +878,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
-        case URBANIZATION:
+        case URBAN_AREA:
           mixstand->type->freestand(mixstand);
           freequeue(mixstand->fires);
           mixstand->type = &urban_stand;
@@ -1816,7 +1816,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       landexpansion(cell,difffrac,npft,NULL,
                     irrigation,cultivation_type,0,ncft,year,config);
     }
-    cultivation_type=URBANIZATION;
+    cultivation_type=URBAN_AREA;
     irrigation=i;
     s=findstand(cell->standlist,URBAN,irrigation);
     if(s!=NOT_FOUND)
