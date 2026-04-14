@@ -180,28 +180,21 @@ Real sumqueue(const Queue queue, /**< pointer to queue */
   return sum;
 } /* of 'sumqueue' */
 
-Real weighted_fireduration_from_queue(const Queue queue) /**< pointer to queue**/
+Real getmaxitemqueue(const Queue queue, /**< pointer to queue */
+                     int index          /**< index of queue element (<queue->count) */
+                    )                   /** \return maximum element in queue for index*/
 {
+  Real max;
   int i;
-  Real weightsum=0;
-  Real sum=0;
-
-  for(i=0;i<queue->size;i++){
-    weightsum+=queue->data[queue->count*(i+1)-1] * queue->data[i*queue->count];
-    sum+=queue->data[i*queue->count];
-  }
-  return (sum > 0.0) ?  weightsum/sum : 0.0;
-}
-
-Real max_fireduration_from_queue(const Queue queue) /**< pointer to queue**/
-{
-  int i;
-  Real max=0;
-  for(i=0;i<queue->size;i++){
-    max=max(max,queue->data[queue->count*(i+1)-1]);
+  max=queue->data[index];
+  for(i=1;i<queue->size;i++)
+  {
+    index+=queue->count;
+    if(queue->data[index])
+      max=queue->data[index];
   }
   return max;
-}
+} /* 'getmaxitemqueue' */
 
 void allsumqueue(const Queue queue, /**< pointer to queue */
                  Real sum[]         /** \return sum of queue elements */

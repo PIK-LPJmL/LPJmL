@@ -35,7 +35,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/soil.h $(INC)/manage.h $(INC)/spitfire.h $(INC)/bstruct.h\
           $(INC)/climate.h $(INC)/date.h $(INC)/pft.h $(INC)/param.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/cropdates.h $(INC)/crop.h\
-          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/grass.h\
+          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/grass.h $(INC)/queue.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/managepar.h\
           $(INC)/spitfire.h $(INC)/stand.h $(INC)/cdf.h $(INC)/discharge.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/header.h\

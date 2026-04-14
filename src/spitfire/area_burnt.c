@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+#define  max_fireduration_from_queue(queue) getmaxitemqueue(queue,4) /* 4 is the index of the last element in datatype Fire */
+
 /* Function calculates length to breadth ratio of assumed elliptical fire shape */
 
 static Real getlength_breadth_ratio(Real windsp_cover,     /**< mid-flame wind speed (m/min) */
