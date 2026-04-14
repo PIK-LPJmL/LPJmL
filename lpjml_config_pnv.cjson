@@ -21,7 +21,6 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-//#define GLOBFIRM /* enable GlobFIRM fire model, default is spitfire */
 //#define NO_METHANE /* running LPJmL wihout methane and oxygen dynamics */
 
 {   /* LPJmL configuration in JSON format */
@@ -40,16 +39,12 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "6.0",       /* LPJmL version expected */
+  "version"  : "6.1",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-#ifdef GLOBFIRM
-    "fire" : "globfirm", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
-#else
     "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
-#endif
   "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   "gsi_livefuel" : true,      /* livefuel calculated from growing season index (true/false) */
   "human_ign_prob" : false,   /* read human ignition probability from file */
@@ -320,18 +315,13 @@ ID                               Fmt                        filename
     { "id" : "seepage",          "file" : { "timestep" : "monthly", "name" : "output_pnv/mseepage"}},
     { "id" : "runoff_surf",      "file" : { "timestep" : "monthly", "name" : "output_pnv/mrunoff_surf"}},
     { "id" : "runoff_lat",       "file" : { "timestep" : "monthly", "name" : "output_pnv/mrunoff_lat"}},
-#ifdef GLOBFIRM
-    { "id" : "firec",            "file" : { "name" : "output_pnv/firec"}},
-    { "id" : "firen",            "file" : { "name" : "output_pnv/firen"}},
-#else
-    { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output_pnv/mfirec"}},
-    { "id" : "firen",            "file" : { "timestep" : "monthly" , "unit" : "gN/m2/month", "name" : "output_pnv/mfiren"}},
+    { "id" : "firec",            "file" : { "name" : "output_pnv/mfirec"}},
+    { "id" : "firen",            "file" : { "name" : "output_pnv/mfiren"}},
     { "id" : "nfire",            "file" : { "name" : "output_pnv/mnfire"}},
     { "id" : "fireduration",     "file" : { "name" : "output_pnv/mfireduration"}},
     { "id" : "firedurationdays", "file" : { "name" : "output_pnv/mfiredurationdays"}},
     { "id" : "firedi",           "file" : { "name" : "output_pnv/mfiredi"}},
     { "id" : "burntarea",        "file" : { "name" : "output_pnv/mburnt_area"}},
-#endif
     { "id" : "discharge",        "file" : { "timestep" : "monthly", "name" : "output_pnv/mdischarge"}},
     { "id" : "harvestc",         "file" : { "name" : "output_pnv/flux_harvest"}},
     { "id" : "pft_harvestc",     "file" : { "name" : mkstr(output_pnv/pft_harvest.SUFFIX)}},
