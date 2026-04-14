@@ -853,9 +853,9 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILN_SLOW,1);
   }
-  if(isopen(output,PFT_LITTERC))
+  if(isopen(output,PFT_AGTOP_LITTERC))
   {
-    if(iswrite2(PFT_LITTERC,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_LITTERC].timestep>0))
+    if(iswrite2(PFT_AGTOP_LITTERC,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_AGTOP_LITTERC].timestep>0))
     {
       litter=newvec(Real,npft+ncft);
       check(litter);
@@ -867,12 +867,12 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
             {
               pftlitter_agtop(litter,&stand->soil.litter);
               for(p=0;p<npft+ncft;p++)
-                getoutputindex(&grid[cell].output,PFT_LITTERC,p,config)+=litter[p];
+                getoutputindex(&grid[cell].output,PFT_AGTOP_LITTERC,p,config)+=litter[p];
             }
         }
       free(litter);
     }
-    writeoutputarray(PFT_LITTERC,1);
+    writeoutputarray(PFT_AGTOP_LITTERC,1);
   }
 
   if(isopen(output,LITC))

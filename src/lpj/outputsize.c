@@ -55,7 +55,7 @@ int outputsize(int index,     /**< output index */
       return 2*getnirrig(ncft,config);
     case FPC: case WPC:
       return getnnat(npft,config)+1;
-    case PFT_LITTERC:
+    case PFT_AGTOP_LITTERC:
       return npft+ncft;
     case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF: case PFT_PHEN:
       return getnnat(npft,config);

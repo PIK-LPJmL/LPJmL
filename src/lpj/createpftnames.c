@@ -164,7 +164,7 @@ char **createpftnames(int index,           /**< output index */
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
-    case PFT_LITTERC:
+    case PFT_AGTOP_LITTERC:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,npft+ncft))
         return NULL;
     case WFT_VEGC:
