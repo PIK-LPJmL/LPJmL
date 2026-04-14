@@ -16,13 +16,13 @@
 #include "lpj.h"
 
 Real litter_agtop_grass(const Litter *litter /**< pointer to litter data */
-                    )                        /** \return aboveground grass litter (gC/m2) */
+                       )                     /** \return aboveground grass litter (gC/m2) */
 {
   int l;
   Real sum;
   sum=0;
   for(l=0;l<litter->n;l++)
-    if(litter->item[l].pft->type==GRASS || litter->item[l].pft->type==CROP)
+    if(litter->item[l].pft->type==GRASS)
       sum+=litter->item[l].agtop.leaf.carbon;
   return sum;
 } /* of 'litter_agtop_grass' */

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  u p d a t e _ f b d _ g r a s s . c                           \n**/
+/**                  u p d a t e _ f b d _ c r o p . c                             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
+void update_fbd_crop(Litter* litter,Real fuelbulkdensity,Real carbon)
 {
   Real ratio,fuel;
   if(carbon<=0)
     return; /* no change in fbd, if carbon is lost */
-  fuel=litter_agtop_grass(litter);
+  fuel=litter_agtop_crop(litter);
 
   if(fuel>carbon)
   {
@@ -37,4 +37,4 @@ void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
            litter->avg_fbd[NFUELCLASS],carbon,fuel,NFUELCLASS);
     fflush(stdout);
   }
-} /* of 'update_fbd_grass' */
+} /* of 'update_fbd_crop' */

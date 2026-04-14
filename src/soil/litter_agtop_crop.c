@@ -1,8 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  u p d a t e _ f b d _ g r a s s . c                           \n**/
+/**                l  i  t  t  e  r  _  a  g  t  o  p  _  c  r  o  p  .  c         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**     Function computes sum of all above-ground litter pools for crop            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,27 +15,14 @@
 
 #include "lpj.h"
 
-void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
+Real litter_agtop_crop(const Litter *litter /**< pointer to litter data */
+                      )                     /** \return aboveground crop litter (gC/m2) */
 {
-  Real ratio,fuel;
-  if(carbon<=0)
-    return; /* no change in fbd, if carbon is lost */
-  fuel=litter_agtop_grass(litter);
-
-  if(fuel>carbon)
-  {
-    ratio = carbon/fuel;
-    litter->avg_fbd[NFUELCLASS]=litter->avg_fbd[NFUELCLASS]*(1-ratio)
-                                +fuelbulkdensity*ratio;
-  }
-  else if(fuel>1e-8)
-    litter->avg_fbd[NFUELCLASS]=fuelbulkdensity;
-  else
-    litter->avg_fbd[NFUELCLASS]=0;
-  if (litter->avg_fbd[NFUELCLASS] < 0 || litter->avg_fbd[NFUELCLASS] > 30)
-  {
-    printf("litter->avg_fbd=%.5f carbon=%.5f litter= %.5f fuelclass=%d\n",
-           litter->avg_fbd[NFUELCLASS],carbon,fuel,NFUELCLASS);
-    fflush(stdout);
-  }
-} /* of 'update_fbd_grass' */
+  int l;
+  Real sum;
+  sum=0;
+  for(l=0;l<litter->n;l++)
+    if(litter->item[l].pft->type==CROP)
+      sum+=litter->item[l].agtop.leaf.carbon;
+  return sum;
+} /* of 'litter_agtop_crop' */

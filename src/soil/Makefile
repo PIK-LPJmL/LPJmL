@@ -20,7 +20,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
           fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
-          hydrotopes.$O inithydro.$O update_wetland.$O\
+          hydrotopes.$O inithydro.$O update_wetland.$O litter_agtop_crop.$O\
           freadhydrotope.$O fscanhydropar.$O fwritehydrotope.$O \
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\

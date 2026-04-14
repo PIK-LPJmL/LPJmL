@@ -88,6 +88,7 @@ extern Real rateofspread(Real,Fuel *,Livefuel *);
 extern Real surface_fire_intensity(Real,Fuel *);
 extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
+extern void update_fbd_crop(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
 extern void dailyfire(Stand *,Real,Real,Real,Input *,int,int,const Dailyclimate *,const Config *);

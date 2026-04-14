@@ -52,7 +52,7 @@ void harvest_crop(Output *output,      /**< Output data */
 
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].agtop.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
-  update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,
+  update_fbd_crop(&stand->soil.litter,pft->par->fuelbulkdensity,
                    (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*res_onfield);
   getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield*stand->frac;
   stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield;
