@@ -169,6 +169,5 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   }
 
   free(fpc_total);
-  //printf("area burnt sum: %g\n", burnt_area_sum);
   return burnt_area_sum;
 } /* of 'area_burnt' */

@@ -115,7 +115,6 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
 
   /* dead litter moisture calculation */
   fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
-  //fuel->daily_litter_moist = max(0.025,fuel->daily_litter_moist); //fuel moisture never smaller than 2.5%, try that if LPJ moisture is too low
 
   /* TODO: implement separate fuel moisture content by size class */
   fuel->M[0]=fuel->daily_litter_moist;
@@ -252,10 +251,4 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   }
   else
     fuel->char_dens_fuel_ave = 0;
-  //printf("cured frac: %g\n", cured_frac);
-  //printf("fuel w:\n0: %g, 1: %g, 2: %g, 3: %g\n", fuel->w[0], fuel->w[1], fuel->w[2], fuel->w[3]);
-  //printf("live fuel w:\n0: %g, 1: %g\n", livefuel->w[0], livefuel->w[1]);
-  //printf("live fuel moisture: %g, dead fuel moisture: %g\n", livefuel->M[0], fuel->M[0]);
-  //printf("livegrass: %g\n", livegrass);
-  //printf("char_dens_fuel_ave: %g\n", fuel->char_dens_fuel_ave);
 } /* of 'fuelload' */

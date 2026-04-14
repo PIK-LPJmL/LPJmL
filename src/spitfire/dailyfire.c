@@ -76,7 +76,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand,climate,
                                     avgprec,config->fdi,config->relative_humidity);
-  //printf("fdi(%s)=%g\n",stand->type->name,fire_danger_index);
   if(config->prescribe_ignition)
     num_fires=climate->ignition;
   else
@@ -114,7 +113,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
   {
-    //printf("fire_frac: %g\n", fire_frac);
     burnt_area = stand->cell->coord.area*1e-4 * stand->frac; /*burnt area in ha*/
     fire_frac = 1.0;
   }
@@ -131,7 +129,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<param.intensity_limit)  //&& !prescribe_burntarea)
   {
-    //printf("surface_fi: %g\n", surface_fi);
     stand->afire_frac-=fire_frac;
     num_fires=0;
     burnt_area=0;
