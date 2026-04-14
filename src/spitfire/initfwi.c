@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               i  n  i  t  f  w  i  .  c                                        \n**/
 /**                                                                                \n**/
-/**     Function initializes Canadian fire danger index                            \n**/
+/**     Function initializes Canadian fire weather index                           \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/

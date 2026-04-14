@@ -46,8 +46,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   output=&stand->cell->output;
   initfuel(&fuel);
 
-  //printf("STAND: %d\n", stand->type->landusetype);
-
   /*use maximum Nesterov index in previous 90 days for fire simulations if burnt area is prescribed */
   if (config->prescribe_burntarea)
   {
@@ -114,19 +112,15 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     }
   }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
-  //printf("fire_frac: %g\n", fire_frac);
   if(fire_frac > 1.0)
   {
     //printf("fire_frac: %g\n", fire_frac);
     burnt_area = stand->cell->coord.area*1e-4 * stand->frac; /*burnt area in ha*/
     fire_frac = 1.0;
-    //printf("FIRE FRAC > 1\n");
   }
   stand->afire_frac+=fire_frac;
-  //printf("afire_frac first: %g\n", stand->afire_frac);
   if(stand->afire_frac > 1.0)
   {
-    //printf("AFIRE FRAC > 1\n");
     fire_frac = 1.0 - stand->afire_frac + fire_frac;
     burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac;
     stand->afire_frac = 1.0;
@@ -135,7 +129,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
   surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
-  //printf("surface_fi: %g\n", surface_fi);
   if(surface_fi<param.intensity_limit)  //&& !prescribe_burntarea)
   {
     //printf("surface_fi: %g\n", surface_fi);
@@ -149,7 +142,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   {
     deadfuel_consump=litter_update_fire(&stand->soil.litter,&emission,&fuel);
   }
-  //printf("afire_frac last: %g\n", stand->afire_frac);
 
   livefuel_consump.carbon=livefuel_consump.nitrogen=0;
   foreachpft(pft,p,&stand->pftlist)
@@ -181,7 +173,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   }
   total_fire.carbon = (deadfuel_consump.carbon + livefuel_consump.carbon) * stand->frac;
   total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen);
-  //printf("total_fire.carbon: %g \n", total_fire.carbon);
   /* write SPITFIRE outputs to LPJ output structures */
   getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;

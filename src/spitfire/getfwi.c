@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               g  e  t  f  w  i  .  c                                           \n**/
 /**                                                                                \n**/
-/**     Function calculates Canadian fire danger index                             \n**/
+/**     Function calculates Canadian fire weather index                            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -21,7 +21,7 @@ Real getfwi(FWIdata *fwi,
             const Dailyclimate  *climate, /**< daily climate data */
             int month,                    /**< month (0..11) */
             Bool relative_humidity        /**< humidity is relative humidity (TRUE/FALSE) */
-           )                              /** \return Canadian fire danger index */
+           )                              /** \return Canadian fire weather index */
 {
   Real d_fdi;
   Real temperature, rh,rk,cc,bb,isi,fW,fF,dc1,smi,pr;
@@ -200,7 +200,7 @@ temperature = max(climate->tmax,-2.8);
 
 /**Eq. 24 - Wind Effect**/
 /* the ifelse, also takes care of the ISI modification for the fbp functions*/
-/* this modification is *Equation 53a in FCFDG (1992)* -> TODO check out equation*/
+/* this modification is *Equation 53a in FCFDG (1992)* */
 
   fW = (climate->windspeed*3.6 >= 40) ? 12 * (1 - exp(-0.0818 * (climate->windspeed*3.6 - 28))) : exp(0.05039 * climate->windspeed*3.6);
 
