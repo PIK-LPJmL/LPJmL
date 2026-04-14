@@ -182,7 +182,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_def_dim(cdf->ncid,config->netcdf.depth.dim,size,&pft_dim_id);
   else if(index==FUEL)
     rc=nc_def_dim(cdf->ncid,config->netcdf.fuel.dim,size,&pft_dim_id);
-  else if(isstand(index))
+  else if(isstand_output(index))
     rc=nc_def_dim(cdf->ncid,config->netcdf.stand.dim,size,&pft_dim_id);
   else
     rc=nc_def_dim(cdf->ncid,config->netcdf.pft.dim,size,&pft_dim_id);
@@ -242,7 +242,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     put_att_text(cdf->ncid,pft_var_id,"standard_name",config->netcdf.fuel.standard_name);
     put_att_text(cdf->ncid,pft_var_id,"long_name",config->netcdf.fuel.long_name);
   }
-  else if(isstand(index))
+  else if(isstand_output(index))
   {
     rc=nc_def_var(cdf->ncid,config->netcdf.stand.name,NC_INT,1,&pft_dim_id,&pft_var_id2);
     put_att_text(cdf->ncid,pft_var_id2,"long_name",config->netcdf.stand.long_name);

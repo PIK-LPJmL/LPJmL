@@ -23,6 +23,6 @@ void initfuel(Fuel *fuel)
   fuel->cf=fuel->daily_litter_moist=0;
   for(i=0;i<=NFUELCLASS;++i)
     fuel->deadfuel_consum[i]=0;
-  fuel->ir=0;
+  fuel->ignition_rate=0;
   fuel->moist_1hr=fuel->moist_10_100hr=fuel->mw_weight=1.0;
 } /* of 'initfuel' */

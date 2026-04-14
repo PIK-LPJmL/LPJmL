@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 6.0.6-SPITFIRE                  \n**/
+/** Default configuration file for LPJmL C Version 6.1.0                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -54,7 +54,7 @@
     "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
 #endif
   "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
-  "gsilivefuel" : true,       /* livefuel calculated from growing season index (true/false) */
+  "gsi_livefuel" : true,   /* livefuel calculated from growing season index (true/false) */
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [120,480] ,"ndayfire" : 1},

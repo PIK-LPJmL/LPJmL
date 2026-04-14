@@ -199,7 +199,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
       beta=albedo_stand(stand);
       petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,beta);
-      if(config->gsilivefuel)
+      if(config->is_gsi_livefuel)
       {
         if(s==0)
         {

@@ -132,7 +132,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
 
   if(livegrass > 0)
   {
-    if(config->gsilivefuel)
+    if(config->is_gsi_livefuel)
       /* use GSI based phenolgy */
       livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9));
     else

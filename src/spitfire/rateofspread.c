@@ -30,7 +30,7 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   Real a, b, c, e;
   Real wind_forward;
   Real phi_wind, xi, dummy, gamma_max, gamma_aptr;
-  Real moist_damp_live,moist_damp_dead, ir, U_front;
+  Real moist_damp_live,moist_damp_dead, ignition_rate, U_front;
   Real char_sigma_dead,char_sigma_live,wndead,wnlive,char_sigma;
   Real w,wsum,msum,wsum_live,mfdead,Mdead,Mlive;
   Real hs_sum_live,hs_sum_dead,hs,mw_weight_live;
@@ -118,24 +118,19 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   moist_damp_live = (0.0 > (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))) ?
     0 : (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))));
   /* Reaction intensity */
-  ir=gamma_aptr*(wndead*1e-3*heat_content_fuel*moist_damp_dead*MINER_DAMP
+  ignition_rate=gamma_aptr*(wndead*1e-3*heat_content_fuel*moist_damp_dead*MINER_DAMP
                  +wnlive*1e-3*heat_content_fuel*moist_damp_live*MINER_DAMP);
   /* For use in post fire mortality */
-  fuel->ir =ir;
+  fuel->ignition_rate =ignition_rate;
 
-  //printf("windspeed: %g\n", windsp_cover);
 
   /* converts wind_speed (m/min) to ft/min
   * for input into Rothermel's formula for phi_wind in the ROS S/R */
   wind_forward=3.281*windsp_cover;
 
   /* wind speed limit according to Patricia L. Andrews et al. 2012 */
-  if(wind_forward > 96.8*pow(ir*0.0881,1.0/3.0))
-    wind_forward = 96.8*pow(ir*0.0881,1.0/3.0);
-
-  /* wind speed limit as in original Rothermel paper */
-  //if(wind_forward > 0.9*ir*0.0881)
-  //  wind_forward = 0.9*ir*0.0881;
+  if(wind_forward > 96.8*pow(ignition_rate*0.0881,1.0/3.0))
+    wind_forward = 96.8*pow(ignition_rate*0.0881,1.0/3.0);
 
   /* Effect of wind speed */
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e);
@@ -154,10 +149,7 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   if (hs <= 0)
     U_front = 0;
   else
-    U_front=(ir * xi * (1.0 + phi_wind)) / hs;
+    U_front=(ignition_rate * xi * (1.0 + phi_wind)) / hs;
   fuel->char_sigma=char_sigma;
-  //printf("ros: %g, char_sigma: %g, ir: %g\n", U_front, char_sigma, ir);
-  //printf("beta_fire: %g\n,", beta_fire);
-  //printf("wndead: %g, wnlive: %g, moist_damp_dead: %g, moist_damp_live: %g\n", wndead, wnlive, moist_damp_dead, moist_damp_live);
   return U_front;
 } /* of 'rateofspread' */

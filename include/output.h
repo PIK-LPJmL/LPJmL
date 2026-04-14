@@ -23,7 +23,7 @@
                        index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
-#define isstand(index) (index==STAND_BURNTAREA || index==STAND_FDI || index==STAND_SURFACE_FI || index==STAND_FIREDURATION)
+#define isstand_output(index) (index==STAND_BURNTAREA || index==STAND_FDI || index==STAND_SURFACE_FI || index==STAND_FIREDURATION)
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
 #define JSON_SUFFIX ".json" /* file suffix for JSON metafiles */

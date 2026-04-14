@@ -319,7 +319,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(isspitfire(config))
       len=printsim(file,len,&count,fdi[config->fdi]);
   }
-  if(config->gsilivefuel)
+  if(config->is_gsi_livefuel)
     len=printsim(file,len,&count,"GSI livefuel");
   if(config->shuffle_spinup_climate)
     len=printsim(file,len,&count,"shuffle spinup climate");
