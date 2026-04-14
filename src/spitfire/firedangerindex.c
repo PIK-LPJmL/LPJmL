@@ -18,13 +18,6 @@
 
 //#define alpha_fuelp 0.000337
 
-#define a -7.90298
-#define b 5.02808
-#define c -1.3816e-7
-#define d 11.344
-#define f 8.1328e-3
-#define h 3.49149
-#define Ts 373.16  /* water boiling point temperature in Kelvin Todo: dependend on altitude (pressure) */
 #define cR 2   /* day/mm */
 
 Real firedangerindex(Real char_moist_factor,
@@ -36,7 +29,7 @@ Real firedangerindex(Real char_moist_factor,
                     )                              /** \return fire danger index (0..1) */
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
-  Real temperature, rh, VD, R, Z, vpd_sum;
+  Real VD, vpd_sum;
   Real nesterov_accum;
   const Pft *pft;
   int p,n;
@@ -63,20 +56,6 @@ Real firedangerindex(Real char_moist_factor,
       vpd_sum=0;
       fpc_sum=0;
 
-      /*Goff and Gratch: coefficient z of saturation vapor pressure*/
-      temperature = climate->temp + 273.16;
-      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature)/log(10.0) + c * (pow(10,pow(d,(1-(temperature/Ts))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
-      if(relative_humidity)
-        rh=climate->humid;
-      else
-        /*conversion of specific humidity to relative humidity*/
-        rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
-  
-      /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
-       R = avgprec;
-       if (rh > 1)
-         rh = 1;
-  
       /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
       if(n>0)
       {
@@ -90,7 +69,7 @@ Real firedangerindex(Real char_moist_factor,
       VD = fpc_sum; /* todo implement lai or fpc?*/
    
       /*calculation of Vapor Pressure Deficite (VPD) */
-      d_fdi = pow(10,Z) * (1-rh) * VD * exp(-cR * R);
+      d_fdi = getvpd(climate,relative_humidity)/p_atm * VD * exp(-cR * avgprec);
       d_fdi*= vpd_sum;
       d_fdi = min(d_fdi,1);
       break;

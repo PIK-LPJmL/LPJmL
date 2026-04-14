@@ -28,6 +28,7 @@
 
 #define R_gas 8.314       /* universal gas constant J mol-1 K-1 */
 #define sigma_B 5.6704e-8 /* Stefan-Boltzmann constant (W m-2 K-4) */
+#define p_atm 101324.6    /* atmospheric pressure at sea level (Pa) */
 
 /* Definition of macros */
 
