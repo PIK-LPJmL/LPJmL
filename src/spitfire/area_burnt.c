@@ -57,10 +57,10 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Bool ismaxfire          /**< maximum fire size enabled (TRUE/FALSE) */
                )                        /** \return area burnt (hectare) */
 {
-  Real dbf,length_breadth_ratio;
+  Real dbf=0,length_breadth_ratio;
   Real ros_backward;
   Real *fpc_total; /* total grid FPC for PFTs */
-  Real d_area_burnt;
+  Real d_area_burnt=0;
   Real burnt_area_sum=0;
   Fire fire={0,0,0,0};
   Real wind_cover_cum;
