@@ -53,9 +53,9 @@ typedef struct
 
 typedef struct
 {
-  Real ffmc;
-  Real dmc;
-  Real dc;
+  Real ffmc; /* fine fuel moisture code */
+  Real dmc;  /* Duff moisture code */
+  Real dc;   /* drought code */
 } FWIdata;
 
 /* Declaration of functions */

@@ -3,6 +3,11 @@
 /**               g  e  t  f  w  i  .  c                                           \n**/
 /**                                                                                \n**/
 /**     Function calculates Canadian fire weather index                            \n**/
+/**     Derived from:                                                              \n**/
+/**     Van Wagner, C.E.; Pickett, T.L. 1985. Equations and FORTRAN program for    \n**/
+/**     the Canadian Forest Fire Weather Index System. Canadian Forestry Service,  \n**/
+/**     Petawawa National Forestry Institute, Chalk River, Ontario.                \n**/
+/**     Forestry Technical Report 33. 18 p.                                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
