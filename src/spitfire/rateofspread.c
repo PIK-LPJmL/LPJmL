@@ -60,13 +60,13 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   wsum=msum=0;
   for(i=0;i<NFUELCLASS;i++)
   {
-    wsum+=fuel->w[i]*exp(-138./30.48/sigma_dead[i]);
-    msum+=fuel->M[i]*fuel->w[i]*exp(-138./30.48/sigma_dead[i]);
+    wsum+=fuel->w[i]*exp(-138./ft2cm(sigma_dead[i]));
+    msum+=fuel->M[i]*fuel->w[i]*exp(-138./ft2cm(sigma_dead[i]));
   }
   wsum_live=0;
   for(i=0;i<2;i++)
     if(sigma_live[i]>0)
-      wsum_live+=livefuel->w[i]*exp(-500./30.48/sigma_live[i]);
+      wsum_live+=livefuel->w[i]*exp(-500./ft2cm(sigma_live[i]));
   if(wsum_live>0)
     {
     w=wsum/wsum_live;
@@ -138,11 +138,11 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   /* Heat sink term */
   hs_sum_dead=0;
   for(i=0;i<NFUELCLASS;i++)
-    hs_sum_dead+=fuel->f[i]*exp(-138./30.48/sigma_dead[i])*(581.0 + 2594.0 * fuel->M[i]);
+    hs_sum_dead+=fuel->f[i]*exp(-138./ft2cm(sigma_dead[i]))*(581.0 + 2594.0 * fuel->M[i]);
   hs_sum_live=0;
   for(i=0;i<2;i++)
     if(sigma_live[i]>0)
-      hs_sum_live+=livefuel->f[i]*exp(-138./30.48/sigma_live[i])*(581.0 + 2594.0 * livefuel->M[i]);
+      hs_sum_live+=livefuel->f[i]*exp(-138./ft2cm(sigma_live[i]))*(581.0 + 2594.0 * livefuel->M[i]);
   hs = fuel->char_dens_fuel_ave*(fuel->fi*hs_sum_dead+livefuel->fi*hs_sum_live);
 
   /* Forward Rate of Spread */

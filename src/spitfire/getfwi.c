@@ -21,7 +21,7 @@
 
 #include "lpj.h"
 
-Real getfwi(FWIdata *fwi,
+Real getfwi(FWIdata *fwi,                 /**< pointer to FWI data */
             const Coord *coord,           /**< cell coordinate */
             const Dailyclimate  *climate, /**< daily climate data */
             int month,                    /**< month (0..11) */
@@ -32,6 +32,7 @@ Real getfwi(FWIdata *fwi,
   Real temperature, rh,rk,cc,bb,isi,fW,fF,dc1,smi,pr;
   Real wmo,ed,ew,bui0,bui1,x,z,wm,rw,fm,wmr,pr0,dr0,pe,dr,wmi,be,pe1;
   Real ra;
+  /* DMC day length factors */
 /*46N: Canadian standard, latitude >= 30N   (Van Wagner 1987)*/
   static Real ell01[NMONTH] = {6.5, 7.5, 9, 12.8, 13.9, 13.9, 12.4, 10.9, 9.4, 8, 7, 6};
 /*20N: For 30 > latitude >= 10*/
@@ -41,6 +42,7 @@ Real getfwi(FWIdata *fwi,
 /*40S: For -30 > latitude*/
   static Real ell04[NMONTH] = {11.5, 10.5, 9.2, 7.9, 6.8, 6.2, 6.5, 7.4, 8.7, 10, 11.2, 11.8};
 /*20N: North of 20 degrees N*/
+  /* DC day length factors */
   static Real fl01[NMONTH] = {-1.6, -1.6, -1.6, 0.9, 3.8, 5.8, 6.4, 5, 2.4, 0.4, -1.6, -1.6};
 /*20S: South of 20 degrees S*/
   static Real fl02[NMONTH] = {6.4, 5, 2.4, 0.4, -1.6, -1.6, -1.6, -1.6, -1.6, 0.9, 3.8, 5.8};
