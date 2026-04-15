@@ -35,7 +35,7 @@ Real getvpd(const Dailyclimate  *climate, /**< daily climate data */
   if(relative_humidity)
     rh=climate->humid;
   else
-    rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
+    rh= getrh(climate->temp,climate->humid);
   if (rh > 1)
     rh=1;
   return pow(10,Z) * (1-rh)*p_atm;
