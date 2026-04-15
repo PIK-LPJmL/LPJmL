@@ -40,13 +40,10 @@ Real getfwi(FWIdata *fwi,
 /*20S: South of 20 degrees S*/
   static Real fl02[NMONTH] = {6.4, 5, 2.4, 0.4, -1.6, -1.6, -1.6, -1.6, -1.6, 0.9, 3.8, 5.8};
 
-
-  temperature = climate->tmax + 273.16;
-
   if(relative_humidity)
     rh=climate->humid*100; /*in percent*/
   else
-    rh = 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->tmax/(temperature-29.65))) * 100; /* in percent */
+    rh=getrh(climate->tmax,climate->humid)*100; /*in percent*/
 
   wmo = 147.27723 * (101-fwi->ffmc) / (59.5 + fwi->ffmc);
   if (climate->prec > 0.5)
