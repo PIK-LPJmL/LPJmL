@@ -148,7 +148,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"nbands\" : %d,\n",(id==GRID) ? ((config->outputvars[GRID].filename.fmt==CDF) ? 1 : 2) : nbands);
   if(nbands>1)
   {
-   if(issoil(id))
+   if(issoil_output(id))
    {
      fprintf(file,"  \"" BAND_NAMES "\" : [%f",layerbound[0]);
      for(p=1;p<nbands;p++)

@@ -110,7 +110,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     }
   }
   size=outputsize(index,npft,ncft,config);
-  if(issoil(index))
+  if(issoil_output(index))
   {
     layer=newvec(double,size);
     if(layer==NULL)
@@ -178,7 +178,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       rc=nc_def_dim(cdf->ncid,config->netcdf.time.dim,nyear*n,&time_dim_id);
     error(rc);
   }
-  if(issoil(index))
+  if(issoil_output(index))
     rc=nc_def_dim(cdf->ncid,config->netcdf.depth.dim,size,&pft_dim_id);
   else if(index==FUEL)
     rc=nc_def_dim(cdf->ncid,config->netcdf.fuel.dim,size,&pft_dim_id);
@@ -212,7 +212,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   rc=nc_def_dim(cdf->ncid,config->netcdf.bnds_name,2,&bnds_dim_id);
   error(rc);
-  if(issoil(index))
+  if(issoil_output(index))
   {
     rc=nc_def_var(cdf->ncid,config->netcdf.depth.name,NC_DOUBLE,1,&pft_dim_id,&pft_var_id);
     error(rc);
@@ -478,7 +478,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_put_var_double(cdf->ncid,time_bnds_var_id,time_bnds);
     error(rc);
   }
-  if(issoil(index))
+  if(issoil_output(index))
   {
     rc=nc_put_var_double(cdf->ncid,pft_var_id,layer);
     error(rc);
