@@ -224,7 +224,7 @@ char **createpftnames(int index,           /**< output index */
        }
        break;
      case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI: case STAND_FIREDURATION:
-       for(i=0;i<config->nstand;i++)
+       for(i=0;i<config->nstand-1;i++)
          pftnames[i]=strdup(config->standtypes[i]->name);
        break;
     default:
