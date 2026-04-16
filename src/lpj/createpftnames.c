@@ -224,10 +224,8 @@ char **createpftnames(int index,           /**< output index */
        }
        break;
      case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI: case STAND_FIREDURATION:
-       pftnames[0]=strdup("total");
-       pftnames[1]=strdup("natural");
-       pftnames[2]=strdup("grassland");
-       pftnames[3]=strdup("agriculture");
+       for(i=0;i<config->nstand;i++)
+         pftnames[i]=strdup(config->standtypes[i]->name);
        break;
     default:
       fprintf(stderr,"ERROR248: No PFT names defined for output '%s'.\n",config->outnames[index].name);

@@ -17,8 +17,6 @@
 #include "lpj.h"
 
 void fprintparam(FILE *file,    /**< pointer to text file */
-                 Standtype **standtypes, /**< array of stand types */
-                 int nstand,    /**< number of stand types */
                  int npft,      /**< number of natural PFTs */
                  int ncft,      /**< number of crop PFTs */
                  const Config *config /**< LPJ configuration */
@@ -87,7 +85,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             param.ler,param.fireduration[0],param.fireduration[1],param.max_ndayfire);
     if(config->ishuman_ign_prob)
       fprintf(file,"k_ign_prob:\t%g\n",param.k_ign_prob);
-    fprintfireduration(file,standtypes,nstand);
+    fprintfireduration(file,config->standtypes,config->nstand);
   }
   fprintf(file,"k_max:\t\t%g (1/d)\n"
           "k_2:\t\t%g\n"

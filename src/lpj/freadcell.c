@@ -24,8 +24,6 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
                const Soilpar *soilpar, /**< pointer to soil parameter */
-               Standtype **standtype,  /**< array of stand types */
-               int nstand,             /**< number of stand types */
                Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
@@ -119,7 +117,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
     }
     /* read stand list */
     cell->standlist=freadstandlist(file,"standlist",cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,config->separate_harvests);
+                                   config->standtypes,config->nstand,config->separate_harvests);
     if(cell->standlist==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");

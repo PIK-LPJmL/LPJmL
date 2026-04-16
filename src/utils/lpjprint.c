@@ -180,7 +180,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
     soil_id=config->soilmap[soilcode]-1;
     if(freadcell(file_restart,&grid,npft,ncft,
-                 config->soilpar+soil_id,standtype,NSTANDTYPES,config))
+                 config->soilpar+soil_id,config))
     {
       fprintf(stderr,"ERRROR190: Cannot read cell data from '%s', number of gridcells truncated to %d.\n",
               (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);

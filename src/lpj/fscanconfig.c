@@ -686,6 +686,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
+  config->nstand=nstand;
+  config->standtypes=standtypes;
   if(isspitfire(config))
   {
     if(fscanfireduration(file,standtypes,nstand,verbose))

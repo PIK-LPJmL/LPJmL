@@ -196,7 +196,7 @@ extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(Bstruct,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(Bstruct,Cell *,int,int,const Soilpar *,
-                      Standtype **,int,Config *);
+                      Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);

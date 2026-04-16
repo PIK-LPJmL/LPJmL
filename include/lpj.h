@@ -133,7 +133,7 @@ extern char *lpj_usage;
 
 /* Declaration of functions */
 
-extern Cell *newgrid(Config *,Standtype **,int,int,int);
+extern Cell *newgrid(Config *,int,int);
 extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Config *);
 extern Bstruct openrestart(const char *,Config *,int,int);
 extern void copyright(const char *);

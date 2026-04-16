@@ -273,8 +273,6 @@ static void fprintcultivations(FILE *file,const Pftpar *pftpar,int ntotpft)
 } /* of 'fprintcultivations' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
-                  Standtype **standtypes, /**< array of stand types */
-                  int nstand,          /**< Number of stand types */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
                   const Config *config /**< LPJmL configuration */
@@ -509,11 +507,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
-    for(i=0;i<nstand;i++)
-      if(standtypes[i]->dailyfire!=NULL && standtypes[i]->landusetype!=NATURAL)
+    for(i=0;i<config->nstand;i++)
+      if(config->standtypes[i]->dailyfire!=NULL && config->standtypes[i]->landusetype!=NATURAL)
       {
         len+=fprintf(file,", ");
-        snprintf(s,STRING_LEN,"fire on %s",standtypes[i]->name);
+        snprintf(s,STRING_LEN,"fire on %s",config->standtypes[i]->name);
         len=fputstring(file,len,s,78);
       }
     if(config->laimax_manage==LAIMAX_CONST)
@@ -764,7 +762,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     fputs("------------ ---- -------------------------------------------------------------\n",file);
   if(config->param_out)
-    fprintparam(file,standtypes,nstand,npft,ncft,config);
+    fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))
     fprintf(file,"Writing restart file '%s' after year %d.\n",
             config->write_restart_filename,config->restartyear);

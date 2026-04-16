@@ -76,7 +76,7 @@ int outputsize(int index,     /**< output index */
     case WFT_VEGC:
       return config->nwft;
     case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI: case STAND_FIREDURATION:
-      return 4;
+      return config->nstand;
     case FUEL:
       return NFUELCLASS;
     default:

@@ -174,34 +174,10 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
-  getoutputindex(output,STAND_BURNTAREA,0,config) += burnt_area; /*ha*/
-  getoutputindex(output,STAND_FDI,0,config) += fire_danger_index;
-  getoutputindex(output,STAND_SURFACE_FI,0,config) += surface_fi;
-  getoutputindex(output,STAND_FIREDURATION,0,config) += fireduration;
-  switch(stand->type->landusetype)
-  {
-    case NATURAL:
-      getoutputindex(output,STAND_BURNTAREA,1,config) += burnt_area; /*ha*/
-      getoutputindex(output,STAND_FDI,1,config) += fire_danger_index;
-      getoutputindex(output,STAND_SURFACE_FI,1,config) += surface_fi;
-      getoutputindex(output,STAND_FIREDURATION,1,config) += fireduration;
-      break;
-    case GRASSLAND:
-      getoutputindex(output,STAND_BURNTAREA,2,config) += burnt_area; /*ha*/
-      getoutputindex(output,STAND_FDI,2,config) += fire_danger_index;
-      getoutputindex(output,STAND_SURFACE_FI,2,config) += surface_fi;
-      getoutputindex(output,STAND_FIREDURATION,2,config) += fireduration;
-      break;
-    case AGRICULTURE:
-      getoutputindex(output,STAND_BURNTAREA,3,config) += burnt_area; /*ha*/
-      getoutputindex(output,STAND_FDI,3,config) += fire_danger_index;
-      getoutputindex(output,STAND_SURFACE_FI,3,config) += surface_fi;
-      getoutputindex(output,STAND_FIREDURATION,3,config) += fireduration;
-      break;
-    default:
-      /* do nothing */
-      break;
-  }
+  getoutputindex(output,STAND_BURNTAREA,stand->type->landusetype,config) += burnt_area; /*ha*/
+  getoutputindex(output,STAND_FDI,stand->type->landusetype,config) += fire_danger_index;
+  getoutputindex(output,STAND_SURFACE_FI,stand->type->landusetype,config) += surface_fi;
+  getoutputindex(output,STAND_FIREDURATION,stand->type->landusetype,config) += fireduration;
   getoutput(output,FIREC,config) += total_fire.carbon;
   if(stand->type->landusetype==NATURAL)
   {

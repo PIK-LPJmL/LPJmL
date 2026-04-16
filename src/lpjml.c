@@ -243,7 +243,7 @@ int main(int argc,char **argv)
   if(isroot(config))
   {
     createconfig(&config);
-    printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
+    printconfig(config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
   }
   if(config.sim_id==LPJML_FMS)
@@ -263,7 +263,7 @@ int main(int argc,char **argv)
 #ifdef USE_TIMING
   timing_start(t);
 #endif
-  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+  rc=((grid=newgrid(&config,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
 #ifdef USE_TIMING
   timing_stop(NEWGRID_FCN,t);
 #endif

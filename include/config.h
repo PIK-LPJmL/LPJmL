@@ -168,9 +168,11 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
+  int nstand;             /**< number of stands types */
   int *cult_types;        /**< array of cultivation types to read from pft.js */
   int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
+  Standtype **standtypes; /**< array of stand types */
   Soilpar *soilpar;       /**< Soil parameter array */
   Hydropar hydropar;      /**< Hydrology parameter */
   int ncountries;         /**< number of countries */
@@ -378,7 +380,7 @@ extern void initmpiconfig(Config *,MPI_Comm);
 extern void initconfig(Config *);
 extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
-extern void fprintconfig(FILE *,Standtype **,int,int,int,const Config *);
+extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config *,Bool);
 extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
@@ -390,7 +392,7 @@ extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
 extern Bool readconfig(Config *,Pfttype [],int,Standtype **,int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,Standtype **,int,int);
-extern void fprintparam(FILE *,Standtype **,int,int,int,const Config *);
+extern void fprintparam(FILE *,int,int,const Config *);
 extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
@@ -405,7 +407,7 @@ extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
 
-#define printconfig(standtypes,nstand,npft,ncft,config) fprintconfig(stdout,standtypes,nstand,npft,ncft,config)
+#define printconfig(npft,ncft,config) fprintconfig(stdout,npft,ncft,config)
 #define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)

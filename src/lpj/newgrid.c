@@ -23,8 +23,6 @@
 
 static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration */
                       int *count,
-                      Standtype **standtype, /* array of stand types */
-                      int nstand,              /* number of stand types */
                       int npft,                /* number of natural PFTs */
                       int ncft                 /* number of crop PFTs */
                      ) /* returns allocated cell grid or NULL */
@@ -451,7 +449,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else /* read cell data from restart file */
     {
       if(freadcell(file_restart,grid+i,npft,ncft,
-                   config->soilpar+soil_id,standtype,nstand,
+                   config->soilpar+soil_id,
                    config))
       {
         fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
@@ -533,8 +531,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 } /* of 'newgrid2' */
 
 Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
-              Standtype **standtype, /**< array of stand types */
-              int nstand,              /**< number of stand types */
               int npft,                /**< number of natural PFTs */
               int ncft                 /**< number of crop PFTs */
              ) /** \return allocated cell grid or NULL */
@@ -545,7 +541,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   int count,count_total;
   Bool iserr;
   Cell *grid;
-  grid=newgrid2(config,&count,standtype,nstand,npft,ncft);
+  grid=newgrid2(config,&count,npft,ncft);
   iserr=(grid==NULL);
 #ifdef USE_MPI
   counts=newvec(int,config->ntask);
