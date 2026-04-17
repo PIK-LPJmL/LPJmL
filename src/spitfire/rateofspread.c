@@ -68,15 +68,15 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
     if(sigma_live[i]>0)
       wsum_live+=livefuel->w[i]*exp(-500./ft2cm(sigma_live[i]));
   if(wsum_live>0)
-    {
+  {
     w=wsum/wsum_live;
     mfdead=msum/wsum;
-    }
+  }
   else
-    {
+  {
     w=0;
     mfdead=0;
-    }
+  }
   if(fuel->char_moist_factor>0)
     livefuel->char_moisture=max(2.9*w*(1-mfdead/fuel->char_moist_factor)-0.226,fuel->char_moist_factor);
   else
@@ -103,7 +103,6 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
     xi =exp(100) / (192 + 7.9095 * char_sigma);   /*TODO to avoid NAN*/
   else
     xi = (exp((0.792 + 3.7597 * (pow(char_sigma,0.5))) * (beta_fire + 0.1))) / (192 + 7.9095 * char_sigma);
-  /*printf( "xi= %.5f \n",xi);*/
 
   /* Optimum Reaction Velocity */
   dummy=(char_sigma <= 0.0001) ?  0.0 : exp(a*(1.0-bet));

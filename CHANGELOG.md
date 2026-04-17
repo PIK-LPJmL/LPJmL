@@ -21,6 +21,8 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.0] - 2026-04-15
+
 ### Contributors
 
 - author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
@@ -45,7 +47,7 @@ of `major.minor.patch` with
 
   "prescribe_ignition" : false, /* read ignitions from file */
 ```
-- Outputs `"pft_height"`, `"pft_litterc"`, `"littermoist"`, `"pft_phen"`, `"fireduration"`, `"firedurationdays"`, `"livegrass"`, `"dlm_livegrass"`, `"gsi_cum"`,
+- Outputs `"pft_height"`, `"pft_agttop_litterc"`, `"littermoist"`, `"pft_phen"`, `"fireduration"`, `"firedurationdays"`, `"livegrass"`, `"dlm_livegrass"`, `"gsi_cum"`,
   `"gsi_diff"`, `"ndayfire"`, `"fuel"`, `"max_firesize"`, `"stand_fireduration"`, `"stand_burntarea"`, `"stand_fdi"`, `"stand_surface_fi`", `"fwi"`,
   `"human_ignition"`, `"lightning"`, `"surface_fi"`, `"ros"`, `"firesize"`, `"firedays"` added.
 
@@ -97,8 +99,6 @@ code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmuel
 - Error message corrected for nitrogen balance check in `daily_natural.c` to avoid SEGV without land use enabled
 - Missing `fclose(file)` added in `getnsoilcode.c`
 - Reading of landcovermap corrected in `landcover.c`
-
-
 
 
 ## [6.0.5] - 2026-03-17

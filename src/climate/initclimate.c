@@ -459,7 +459,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
           return NULL;
         }
      }
-  } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
+  } /* of if(isspitfire(config)) */
   if(config->lwnet_filename.fmt!=FMS)
   {
     for (i = 0; i<ndata; i++)

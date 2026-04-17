@@ -219,7 +219,7 @@ Bool readlandfracmap(Landfrac *landfrac, /**< land fractions */
                     int *count,          /**< index in data array */
                     int ncft,            /**< number of crop PFTs */
                     int nwpt,            /**< number of woodplantations */
-                    int nagtree
+                    int nagtree          /**< number of agriculture PFTs */
                    )                     /** \return TRUE on error */
 {
   int i;

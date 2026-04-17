@@ -94,7 +94,7 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
-  "relative_humidity" : false,
+  "relative_humidity" : false,           /* humidity is in units of relative humidity (true/false) */
 #ifdef FROM_RESTART
   "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
