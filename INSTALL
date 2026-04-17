@@ -33,7 +33,7 @@ Directory tree after extracting the tar files:
 
 --lpjml
   |
-  +-config         : OS- and compiler-specific Makefiles
+  +-config          : OS- and compiler-specific Makefiles
   |
   +-bin             : Directory for executables and shell scripts
   |
