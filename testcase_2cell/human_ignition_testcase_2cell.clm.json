@@ -1,0 +1,32 @@
+{
+  "filename" : "human_ignition_testcase_2cell.clm",
+  "variable" : "human_ignition",
+  "global_attrs" : 
+  {
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "human fire ignition rates per year",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Thonicke, K., Spessa, A., Prentice, I. C., Harrison, S. P., Dong, L., and Carmona-Moreno, C. 2010: The influence of vegetation, fire spread and fire behaviour on biomass burning and trace gas emissions: results from a process-based model, Biogeosciences, 7, 1991-2011, doi:10.5194/bg-7-1991-2010, 2010"
+  },
+  "history" : "Tue Mar 10 17:09:52 2026: mathclm -metafile float human_ignition.clm.json human_ignition2.clm",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 1.0,
+  "datatype" : "float",
+  "unit" : "yr-1",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false
+}

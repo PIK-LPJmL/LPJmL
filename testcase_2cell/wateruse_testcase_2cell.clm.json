@@ -1,0 +1,35 @@
+{
+  "filename" : "wateruse_testcase_2cell.clm",
+  "variable" : "water_use",
+  "global_attrs" :
+  {
+    "title" : "ISIMIP3a water use data",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "project" : "Inter-Sectoral Impact Model Intercomparison Project phase 3a (ISIMIP3a)",
+    "contact" : "ISIMIP cross-sectoral science team <info@isimip.org> <https://www.isimip.org>",
+    "summary" : "ISIMIP3a water use input data. ISIMIP Repository.",
+    "license" : "Creative Commons Zero (CC0) 1.0",
+    "references" : "Yoshihide Wada, Martina Flörke, Naota Hanasaki, Hannes Müller Schmied, Simon N. Gosling, Jacob Schewe (2022): ISIMIP3a water abstraction input data (v1.0). ISIMIP Repository. <https://doi.org/10.48364/ISIMIP.228996>"
+  },
+  "history" : "created from ISIMIP file with script at `/p/projects/lpjml/scripts/ISIMIP3/water_uses_ISIMIP3a.R`",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1850,
+  "lastyear" : 2021,
+  "nyear" : 172,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 10.0,
+  "unit" : "dm3/day",
+  "long_name" : "water use",
+  "datatype" : "int",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false
+}

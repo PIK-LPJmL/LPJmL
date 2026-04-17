@@ -1,0 +1,38 @@
+{
+  "filename" : "manure_testcase_2cell.clm",
+  "variable" : "manure",
+  "global_attrs" :
+  {
+    "title" : "LandInG v1 land input data",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Sebastian Ostberg <ostberg@pik-potsdam.de>",
+    "summary" : "Manure nitrogen application rates combining rates from Zhang et al. (2017) with land use fractions from LandInG",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention; Zhang et al. (2027) <https://doi.org/10.1594/PANGAEA.871980>"
+  },  
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/fertilizer_paper/",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1860,
+  "lastyear" : 2017,
+  "nyear" : 158,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 32,
+  "scalar" : 1.0,
+  "unit" : "g/m2",
+  "longname" : "manure application rates on cropland, refers only to N weight in manure",
+  "datatype" : "float",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta" },
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false,
+  "map" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+           "temperate roots", "tropical roots", "oil crops sunflower",
+           "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+           "sugarcane","others","grassland","biomass grass","biomass tree"]
+}
