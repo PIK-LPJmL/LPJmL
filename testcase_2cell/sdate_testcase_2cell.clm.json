@@ -1,0 +1,38 @@
+{
+  "filename" : "sdate_testcase_2cell.clm",
+  "variable" : "sdate",
+  "global_attrs" :
+  {
+    "title" : "sdate file",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "sowing dates for the standard 12 crops of LPJmL for rainfed and irrigated systems based on the GGCMI Phase 3 crop calendar",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Jägermeyr et al. (2021a).  <https://doi.org/10.5281/zenodo.5062513>, Jägermeyr et al. (2021b). <https://dx.doi.org/10.1038/s43016-021-00400-y>"
+  },
+  "history" : "`/p/projects/lpjml/scripts/ISIMIP3/create_sowing_harvest_dates_PHU_req_timeseries_ISIMIP3a.R`",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 24,
+  "scalar" : 1.0,
+  "unit" : "doy",
+  "long_name" : "sowing dates for 12 crops, first rainfed, then irrigated",
+  "datatype" : "short",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false,
+  "map" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+           "temperate roots", "tropical roots", "oil crops sunflower",
+           "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+           "sugarcane"]
+}
