@@ -1,0 +1,52 @@
+/**********************************************************************/
+/**                                                                  **/
+/** File: input_minimum.cjson                                        **/
+/** Source: regridlpj -drainage -dir . minimum                       **/
+/** Configuration file for input dataset for LPJmL C Version 6.0.6   **/
+/**                                                                  **/
+/** Created: 20.03.2026                                              **/
+/**                                                                  **/
+/**********************************************************************/
+{
+  "soil"             : { "fmt" : "meta", "name" : "./soil_testcase_2cell.clm.json"},
+  "coord"            : { "fmt" : "meta", "name" : "./grid_testcase_2cell.clm.json"},
+  "countrycode"      : { "fmt" : "meta", "name" : "./country_testcase_2cell.clm.json"},
+  "landfrac"         : { "fmt" : "meta", "name" : "./landfrac_testcase_2cell.clm.json"},
+  "elevation"        : { "fmt" : "meta", "name" : "./elevation_testcase_2cell.clm.json"},
+  "drainage"         : { "fmt" : "meta", "name" : "./drainage_testcase_2cell.clm.json"},
+  "neighb_irrig"     : { "fmt" : "meta", "name" : "./irrig_testcase_2cell.clm.json"},
+  "reservoir"        : { "fmt" : "meta", "name" : "./reservoir_testcase_2cell.clm.json"},
+  "lakes"            : { "fmt" : "meta", "name" : "./lakes_testcase_2cell.clm.json"},
+  "slope_mean"       : { "fmt" : "meta", "name" : "./slope_mean_testcase_2cell.clm.json"},
+  "slope_min"        : { "fmt" : "meta", "name" : "./slope_min_testcase_2cell.clm.json"},
+  "slope_max"        : { "fmt" : "meta", "name" : "./slope_max_testcase_2cell.clm.json"},
+  "kbf"              : { "fmt" : "meta", "name" : "./kbf_testcase_2cell.clm.json"},
+  "hydrotopes"       : { "fmt" : "meta", "name" : "./hydro_testcase_2cell.clm.json"},
+  "landuse"          : { "fmt" : "meta", "name" : "./landuse_testcase_2cell.clm.json"},
+  "wateruse"         : { "fmt" : "meta", "name" : "./wateruse_testcase_2cell.clm.json"},
+  "grassland_lsuha"  : { "fmt" : "meta", "name" : "./grassland_lsuha_testcase_2cell.clm.json"},
+  "with_tillage"     : { "fmt" : "meta", "name" : "./tillage_testcase_2cell.clm.json"},
+  "residue_on_field" : { "fmt" : "meta", "name" : "./residue_testcase_2cell.clm.json"},
+  "sdate"            : { "fmt" : "meta", "name" : "./sdate_testcase_2cell.clm.json"},
+  "crop_phu"         : { "fmt" : "meta", "name" : "./crop_phu_testcase_2cell.clm.json"},
+  "temp"             : { "fmt" : "meta", "name" : "./tmp_testcase_2cell.clm.json"},
+  "prec"             : { "fmt" : "meta", "name" : "./prec_testcase_2cell.clm.json"},
+  "lwnet"            : { "fmt" : "meta", "name" : "./lwnet_testcase_2cell.clm.json"},
+  "swdown"           : { "fmt" : "meta", "name" : "./swdown_testcase_2cell.clm.json"},
+  "cloud"            : { "fmt" : "meta", "name" : "./cld_testcase_2cell.clm.json"},
+  "wind"             : { "fmt" : "meta", "name" : "./windspeed_testcase_2cell.clm.json"},
+  "tmin"             : { "fmt" : "meta", "name" : "./tmin_testcase_2cell.clm.json"},
+  "tmax"             : { "fmt" : "meta", "name" : "./tmax_testcase_2cell.clm.json"},
+  "humid"            : { "fmt" : "meta", "name" : "./humid_testcase_2cell.clm.json"},
+  "lightning"        : { "fmt" : "meta", "name" : "./lightning_testcase_2cell.clm.json"},
+  "human_ignition"   : { "fmt" : "meta", "name" : "./human_ignition_testcase_2cell.clm.json"},
+  "popnum"           : { "fmt" : "meta", "name" : "./popnum_testcase_2cell.clm.json"},
+  "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "./global_co2_ann_1700_2022.txt"},
+  "ch4"              : { "fmt" : "txt", "name" : "./CH4_concentration_1700-2022.dat"},
+  "wetdays"          : { "fmt" : "meta", "name" : "./wet_testcase_2cell.clm.json"},
+  "no3deposition"    : { "fmt" : "meta", "name" : "./no3_deposition_testcase_2cell.clm.json"},
+  "nh4deposition"    : { "fmt" : "meta", "name" : "./nh4_deposition_testcase_2cell.clm.json"},
+  "soilpH"           : { "fmt" : "meta", "name" : "./soil_ph_testcase_2cell.clm.json"},
+  "manure_nr"        : { "fmt" : "meta", "name" : "./manure_testcase_2cell.clm.json"},
+  "fertilizer_nr"    : { "fmt" : "meta", "name" : "./fertilizer_testcase_2cell.clm.json"}
+}

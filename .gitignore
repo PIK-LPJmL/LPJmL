@@ -181,3 +181,13 @@ bin/cmprestart
 
 # test build folder
 src/test/build
+
+# local output and restart folders
+output/
+restart/
+
+
+# Allow .clm and .dat files specifically in the testcase_2cell folder
+!testcase_2cell/
+!testcase_2cell/*.clm
+!testcase_2cell/*.dat

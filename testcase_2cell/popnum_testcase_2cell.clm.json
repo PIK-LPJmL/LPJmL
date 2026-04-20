@@ -1,0 +1,32 @@
+{
+  "filename" : "popnum_testcase_2cell.clm",
+  "variable" : "number_of_people",
+  "global_attrs" :
+  {
+    "title" : "Human population density",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "summary" : "gridded population density data",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Franziska Piontek, Tobias Geiger (2017): ISIMIP2b population input data (v1.0). ISIMIP Repository. https://doi.org/10.48364/ISIMIP.892838"
+  },
+  "history" : "Tue Mar 10 12:28:03 2026: cdf2clm -json -float -zero -o population_histsoc_0p5deg_annual_1861-2005.clm /p/projects/lpjml/inputs/public_standard/grid.clm population_histsoc_0p5deg_annual_1861-2005.nc4",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1861,
+  "lastyear" : 2005,
+  "nyear" : 145,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 1.0,
+  "datatype" : "float",
+  "unit" : "1",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false
+}

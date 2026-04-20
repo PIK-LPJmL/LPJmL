@@ -1,0 +1,35 @@
+{
+  "filename" : "slope_mean_testcase_2cell.clm",
+  "variable" : "slope_30as_mean",
+  "global_attrs" :
+  {
+    "title" : "mean slope",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "project" : "HYDRO1k",
+    "contact" : "Sibyll Schaphoff <Sibyll.Schaphoff@pik-potsdam-de>",
+    "summary" : "mean slope derived form 1 km spatial resolution",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "https://www.sciencebase.gov/catalog/item/5910def6e4b0e541a03ac98c, Verdin, K.L., 2017, Hydrologic Derivatives for Modeling and Applications (HDMA) database: U.S. Geological Survey data release, https://doi.org/10.5066/F7S180ZP"
+  },
+  "history" : "running a C programm to derive mean values from the higher resolution data",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 1.0,
+  "unit" : "degrees",
+  "long_name" : "mean slope of the grid cell",
+  "datatype" : "float",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : { "filename" : "grid_testcase_2cell.clm.json", "format" : "meta" },
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false
+}
