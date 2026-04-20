@@ -122,6 +122,7 @@ int main(int argc,char **argv)
     header.nyear=1;
     header.nbands=1;
     header.nstep=12;
+    header.timestep=1;
     header.datatype=LPJ_SHORT;
     header.order=CELLYEAR;
     data_version=CLM_MAX_VERSION;
