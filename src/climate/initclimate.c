@@ -216,17 +216,6 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(climate->firstyear<climate->file_wind.firstyear)
     climate->firstyear=climate->file_wind.firstyear;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
-    if(config->fdi==WVPD_INDEX)
-    {
-      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,1,1.0,TRUE,config))
-      {
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-    }
-  }
   if(config->fire==SPITFIRE_TMAX)
   {
     if(openclimate2(&climate->file_tmin,&config->tmin_filename,"tmin","celsius",LPJ_SHORT,1,0.1,TRUE,config))
@@ -240,8 +229,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE)
   {
     if(openclimate2(&climate->file_tamp,&config->tamp_filename,"tamp",NULL,LPJ_SHORT,1,0.1,TRUE,config))
     {
@@ -253,6 +241,14 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(isspitfire(config))
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,1,1.0,TRUE,config))
+      {
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
+    }
     if(config->prescribe_ignition)
     {
       if(openclimate2(&climate->file_ignition,&config->ignition_filename,"ignition",NULL,LPJ_SHORT,1,1.0,FALSE,config))
@@ -413,7 +409,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
     }
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE)
   {
     if(config->tamp_filename.fmt!=FMS)
     {
