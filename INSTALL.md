@@ -16,37 +16,38 @@ After extracting the source files, the directory structure will look like this:
 ```plaintext
 --lpjml
   |
-  +-config        : OS- and compiler-specific Makefiles
-  +-bin           : Directory for executables and shell scripts
-  +-man           : Manual pages root directory
-  | +-man1        : Manual pages for programs and scripts
-  | +-man3        : Manual pages for functions
-  | +-man5        : Manual pages for file formats
-  +-par           : Parameter files for PFTs and soils
-  +-output        : Output data (created by `make test`)
-  +-restart       : Restart data (created by `make test`)
-  +-lib           : Library files (created by `make`)
-  +-include       : Include files
-  +-src           : Source tree
-     +-numeric    : Source for numerical routines
-     +-bstruct    : source for reading/writing restart files
-     +-tools      : Source for tools
-     +-pnet       : Library for distributed networks
-     +-climate    : Climate code
-     +-lpj        : LPJ functions
-     +-soil       : Soil code
-     +-grass      : Grass PFT code
-     +-tree       : Tree PFT code
-     +-crop       : Crop PFT code
-     +-landuse    : Land use code
-     +-spitfire   : Spitfire fire code
-     +-reservoir  : Reservoir code
-     +-socket     : Socket communication library
-     +-coupler    : Coupler code
-     +-image      : Coupler to IMAGE model
-     +-netcdf     : NetCDF input/output functions
-     +-utils      : Utility programs
-     +-test       : Unit tests for source code using Ceedling
+  +-config         : OS- and compiler-specific Makefiles
+  +-bin            : Directory for executables and shell scripts
+  +-man            : Manual pages root directory
+  | +-man1         : Manual pages for programs and scripts
+  | +-man3         : Manual pages for functions
+  | +-man5         : Manual pages for file formats
+  +-par            : Parameter files for PFTs and soils
+  +-testcase_2cell : Mimimum 2-cell data set for test
+  +-output         : Output data (created by `make test`)
+  +-restart        : Restart data (created by `make test`)
+  +-lib            : Library files (created by `make`)
+  +-include        : Include files
+  +-src            : Source tree
+     +-numeric     : Source for numerical routines
+     +-bstruct     : source for reading/writing restart files
+     +-tools       : Source for tools
+     +-pnet        : Library for distributed networks
+     +-climate     : Climate code
+     +-lpj         : LPJ functions
+     +-soil        : Soil code
+     +-grass       : Grass PFT code
+     +-tree        : Tree PFT code
+     +-crop        : Crop PFT code
+     +-landuse     : Land use code
+     +-spitfire    : Spitfire fire code
+     +-reservoir   : Reservoir code
+     +-socket      : Socket communication library
+     +-coupler     : Coupler code
+     +-image       : Coupler to IMAGE model
+     +-netcdf      : NetCDF input/output functions
+     +-utils       : Utility programs
+     +-test        : Unit tests for source code using Ceedling
 ```
 
 ---
@@ -249,6 +250,10 @@ If running outside the root directory, set the `LPJROOT` environment variable:
 export LPJROOT=$HOME/lpjml
 export PATH=$PATH:$LPJROOT/bin
 ```
+
+Peform a minimum 2-cell simulation:
+
+make test
 
 ### Parallel Version
 

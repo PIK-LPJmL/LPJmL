@@ -47,7 +47,7 @@ To test the model, use the provided test data:
 3. Run a test simulation:
 
    ```bash
-    ./lpjml --test
+    make test
     ```
 
 For detailed usage instructions, refer to the [documentation](./man).

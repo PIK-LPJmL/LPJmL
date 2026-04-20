@@ -1,0 +1,34 @@
+{
+  "filename" : "drainage_testcase_2cell.clm",
+  "variable" : "drainage",
+  "global_attrs" :
+  {
+    "title" : "LandInG v1 land input data",
+    "institution" : "Potsdam Institute for Climate Impact Research (PIK)",
+    "contact" : "Sebastian Ostberg <ostberg@pik-potsdam.de>",
+    "summary" : "drainage data processed with LandInG",
+    "license" : "Creative Commons Attribution 4.0 International <https://creativecommons.org/licenses/by/4.0/>",
+    "references" : "Ostberg et al. (2023) <https://doi.org/10.5194/gmd-16-3375-2023> for LandInG documention"
+  },  
+  "history" : "Created using LandInG v1 scripts in `/p/projects/ikiimp/5min_input/toolbox_paper_application/river_routing_paper/",
+  "firstcell" : 0,
+  "ncell" : 2,
+  "cellsize_lon" : 0.5,
+  "cellsize_lat" : 0.5,
+  "firstyear" : 1901,
+  "lastyear" : 1901,
+  "nyear" : 1,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 2,
+  "scalar" : 1.0,
+  "unit" : "1",
+  "long_name" : "drainage data with cell index to which the river flows (no unit, band1) and flow distance (m, band2)",
+  "datatype" : "int",
+  "format" : "clm",
+  "order" : "cellyear",
+  "grid" : {"filename" : "grid_testcase_2cell.clm.json", "format" : "meta"},
+  "version" : 4,
+  "offset" : 59,
+  "bigendian" : false
+}
