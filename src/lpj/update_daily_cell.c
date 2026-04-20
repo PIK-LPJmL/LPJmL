@@ -176,7 +176,6 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     cell->discharge.drunoff=0.0;
     killstand(cell,npft,ncft,cell->ml.with_tillage,intercrop,year,config);
     if(isspitfire(config))
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     {
       update_nesterov(cell,climate);
       if(config->fdi==WVPD_INDEX)
