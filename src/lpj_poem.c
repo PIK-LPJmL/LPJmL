@@ -458,7 +458,7 @@ void lpj_init_
   }
 
   if(isroot(config))
-    printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
+    printconfig(config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
   /* Allocation and initialization of grid */
   /*! TODO: pass FMS domain bounding box info to the MPI partitioning code of LPJ
@@ -469,9 +469,9 @@ void lpj_init_
    * /home/bloh/trunks/lpj_latest/src/cpl/
    */
 
-  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+  rc=((grid=newgrid(&config,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],&config);
+  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   pch4 = param.pch4*1e-3;
