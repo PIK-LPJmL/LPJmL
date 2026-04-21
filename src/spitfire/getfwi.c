@@ -29,8 +29,13 @@ Real getfwi(FWIdata *fwi,                 /**< pointer to FWI data */
            )                              /** \return Canadian fire weather index */
 {
   Real d_fdi;
-  Real temperature, rh,rk,cc,bb,isi,fW,fF,dc1,smi,pr;
-  Real wmo,ed,ew,bui0,bui1,x,z,wm,rw,fm,wmr,pr0,dr0,pe,dr,wmi,be,pe1;
+  Real rk; /* dying factor */
+  Real rh; /* relative humidity (%) */
+  Real rw; /* effective rain */
+  Real wmi; /* initial moisture content */
+  Real wmr; /* moisture factor after rain */
+  Real temperature,cc,bb,isi,fW,fF,dc1,smi,pr;
+  Real wmo,ed,ew,bui0,bui1,x,z,wm,fm,pr0,dr0,pe,dr,be,pe1;
   Real ra;
   /* DMC day length factors */
 /*46N: Canadian standard, latitude >= 30N   (Van Wagner 1987)*/
