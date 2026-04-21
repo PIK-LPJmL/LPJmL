@@ -34,7 +34,8 @@ Real getfwi(FWIdata *fwi,                 /**< pointer to FWI data */
   Real rw; /* effective rain */
   Real wmi; /* initial moisture content */
   Real wmr; /* moisture factor after rain */
-  Real temperature,cc,bb,isi,fW,fF,dc1,smi,pr;
+  Real isi; /* initial spread index */
+  Real temperature,cc,bb,fW,fF,dc1,smi,pr;
   Real wmo,ed,ew,bui0,bui1,x,z,wm,fm,pr0,dr0,pe,dr,be,pe1;
   Real ra;
   /* DMC day length factors */
