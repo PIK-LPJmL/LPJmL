@@ -1827,8 +1827,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       if(difffrac>epsilon)
         deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
       else if(difffrac<-epsilon)
-        landexpansion(cell,difffrac,npft,stand,irrigation,
-                      cultivation_type,0,ncft,year,config);
+        regrowth(cell,difffrac,npft,i,FALSE,ncft,year,config);        /*regrowth*/
     }
     else if (cell->ml.landfrac[i].urban>epsilon)
     {
