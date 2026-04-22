@@ -1825,7 +1825,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       difffrac=stand->frac-cell->ml.landfrac[i].urban;
       stand->frac_change = -difffrac;
       if(difffrac>epsilon)
-        grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
+        deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
       else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,npft,stand,irrigation,
                       cultivation_type,0,ncft,year,config);

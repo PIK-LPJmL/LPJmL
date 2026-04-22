@@ -812,6 +812,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].woodplantation=grid[cell].ml.landfrac[1].woodplantation=0;
 
     }
+    grid[cell].ml.landfrac[0].urban=0.1+(year-1900)*0.1;
 
     /* force tinyfrac for all crops only on pixels with valid soil */
     if (config->withlanduse==ALL_CROPS  && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
