@@ -7,6 +7,12 @@
 /** Function calculates rate of spread using Rothermel/Albini model for use in     \n**/
 /** fire size and mortality calculations                                           \n**/
 /**                                                                                \n**/
+/** Derived from                                                                   \n**/
+/** Andrews, Patricia L. 2018. The Rothermel surface fire spread model and         \n**/
+/** associated developments: A comprehensive explanation. Gen. Tech. Rep.          \n**/
+/** RMRS-GTR-371. Fort Collins, CO: U.S. Department of Agriculture, Forest         \n**/
+/** Service, Rocky Mountain Research Station. 121 p.                               \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/

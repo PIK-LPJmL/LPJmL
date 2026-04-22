@@ -22,12 +22,12 @@ Real growing_season_index(Real gsi_old,                /**< old cumulative GSI (
                          )                             /** \return updated cumulative GSI */
 {
   Real itmin,iphoto,ivpd;
-  itmin=max(0,min(1.,1./7*climate->tmin+2./7));
-  iphoto=max(0,min(1.,daylength-10));
-  ivpd=max(0,min(1,1-getvpd(climate,relative_humidity)/3200+9./32.));
+  itmin=max(0,min(1.0,1./7.0*climate->tmin+2.0/7.0));
+  iphoto=max(0,min(1.0,daylength-10));
+  ivpd=max(0,min(1,1-getvpd(climate,relative_humidity)/3200+9.0/32.0));
   *gsi=itmin*iphoto*ivpd;
 #ifdef DEBUG
   printf("gsi_old=%g,itmin=%g,iphoto=%g,ivpd=%g,vpd=%g\n",gsi_old,itmin,iphoto,ivpd,getvpd(climate,relative_humidity));
 #endif
-  return gsi_old*20/21.0+*gsi/21.0;
+  return gsi_old*20.0/21.0+*gsi/21.0;
 } /* of 'growing_season_index' */

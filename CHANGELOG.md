@@ -63,8 +63,8 @@ of `major.minor.patch` with
 
 ### Contributors
 
-author: Christoph Müller (cmueller@pik-potsdam.de)
-code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 
 ### Added
 
