@@ -108,7 +108,7 @@ fi
 shift 1
 if [ $# -gt 0 ]
 then
-  if getcountry -json $LPJINPATH/input_VERSION2/cow_full_2018.clm  $grid $dir/grid_$name.clm $* ;
+  if getcountry -json $LPJINPATH/cow_full_2018.clm.json $dir/grid_$name.clm $* ;
   then
     echo regridding for countries $*
   else
@@ -121,7 +121,7 @@ else
     cp grid_$name.clm.json $dir
   fi
 fi
-if  regridclm $opt -metafile $dir/grid_$name.clm  $LPJINPATH/soil_30arcmin_13_types.clm.json $dir/soil_$name.clm
+if regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/soil_30arcmin_13_types.clm.json $dir/soil_$name.clm
 then
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tas_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmp_$name.clm
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/tasmin_gswp3-w5e5_obsclim_1901-2019.clm.json $dir/tmin_$name.clm
@@ -159,10 +159,10 @@ then
   regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/manure_N_default_cft_aggregation_30min_1860-2017.clm.json $dir/manure_$name.clm
   if [ "$drainage" = "1" ]
   then
-    regridclm $opt -metafile $dir/grid_$name.clm  $LPJINPATH/elevation_gadm_30arcmin.clm.json $dir/elevation_$name.clm
-    regridclm $opt -metafile $dir/grid_$name.clm  $LPJINPATH/reservoir_stn_30arcmin_par1.clm.json $dir/reservoir_$name.clm
-    regriddrain -metafile $dir/grid_$name.clm  $LPJINPATH/drainage_stn_30arcmin.clm.json $dir/drainage_$name.clm
-    regridirrig -metafile $dir/grid_$name.clm  $LPJINPATH/neighbour_irrig_stn_30arcmin_adjacent_exclude_downstream_exclude_upstream.clm.json $dir/irrig_$name.clm
+    regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/elevation_gadm_30arcmin.clm.json $dir/elevation_$name.clm
+    regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/reservoir_stn_30arcmin_par1.clm.json $dir/reservoir_$name.clm
+    regriddrain -metafile $dir/grid_$name.clm $LPJINPATH/drainage_stn_30arcmin.clm.json $dir/drainage_$name.clm
+    regridirrig -metafile $dir/grid_$name.clm $LPJINPATH/neighbour_irrig_stn_30arcmin_adjacent_exclude_downstream_exclude_upstream.clm.json $dir/irrig_$name.clm
   fi
   cat << EOF >input_$name.cjson
 /**********************************************************************/
@@ -170,7 +170,7 @@ then
 EOF
   printf "/** File: %-58s **/\n" input_$name.cjson >>input_$name.cjson
   printf "/** Source: %-56s **/\n" "$args" >>input_$name.cjson
-  printf "/** Configuration file for input dataset for LPJmL C Version %-7s **/\n" $(cat $LPJROOT/VERSION)  >>input_$name.cjson
+  printf "/** Configuration file for input dataset for LPJmL C Version %-7s **/\n" $(cat $LPJROOT/VERSION) >>input_$name.cjson
   cat << EOF >>input_$name.cjson
 /**                                                                  **/
 /** Created: $(date +"%d.%m.%Y")                                              **/
@@ -210,7 +210,7 @@ EOF
   "lightning"        : { "fmt" : "meta", "name" : "$dir/lightning_$name.clm.json"},
   "human_ignition"   : { "fmt" : "meta", "name" : "$dir/human_ignition_$name.clm.json"},
   "popnum"           : { "fmt" : "meta", "name" : "$dir/popnum_$name.clm.json"},
-  "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "$LPJINPATH/global_co2_ann_1700_2022.txt"},
+  "co2"              : { "id" : 5, "fmt" : "txt", "name" : "$LPJINPATH/global_co2_ann_1700_2022.txt"},
   "ch4"              : { "fmt" : "txt", "name" : "$LPJINPATH/CH4_concentration_1700-2022.dat"},
   "wetdays"          : { "fmt" : "meta", "name" : "$dir/wet_$name.clm.json"},
   "no3deposition"    : { "fmt" : "meta", "name" : "$dir/no3_deposition_$name.clm.json"},

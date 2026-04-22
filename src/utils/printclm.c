@@ -558,11 +558,6 @@ int main(int argc,char **argv)
                   ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
-        if(start!=INT_MAX && stop<start)
-        {
-          fprintf(stderr,"Error: argument of '-end' must be  >=%d.\n",start);
-          return EXIT_FAILURE;
-        }
       }
       else if(!strcmp(argv[i],"-type"))
       {
@@ -596,6 +591,17 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Filename missing.\n"
             ERR_USAGE,progname,progname);
+    return EXIT_FAILURE;
+  }
+  if(stop!=INT_MAX && start!=INT_MAX && stop<start)
+  {
+    fprintf(stderr,"Error: argument of '-end' must be  >=%d.\n",start);
+    return EXIT_FAILURE;
+  }
+  if(first>last)
+  {
+    fprintf(stderr,"First cell %d specified greater than specified last cell %d.\n",
+            first,last);
     return EXIT_FAILURE;
   }
   for(i=0;i<argc;i++)

@@ -334,15 +334,37 @@ Bool bstruct_readcoord(Bstruct file,     /**< pointer to restart file */
   return bstruct_readendstruct(file,name);
 } /* of 'bstruct_readcoord' */
 
-Bool writecoord(FILE *file,        /**< pointer to binary file */
-                const Coord *coord /**< cell coordinate written to file */
-               )                   /** \return FALSE for successful write */
+Bool writecoord(FILE *file,         /**< pointer to binary file */
+                const Coord *coord, /**< cell coordinate written to file */
+                float scalar,       /**< scaling factor */
+                Type datatype       /**< datatype */
+               )                    /** \returns TRUE on error */
+{
+  Intcoord icoord;
+  switch(datatype)
+  {
+    case LPJ_SHORT:
+      icoord.lat=(short)round(coord->lat/scalar);
+      icoord.lon=(short)round(coord->lon/scalar);
+      return fwrite(&icoord,sizeof(icoord),1,file)!=1;
+    case LPJ_FLOAT:
+      return writefloatcoord(file,coord);
+    case LPJ_DOUBLE:
+      return writedoublecoord(file,coord);
+    default:
+     return TRUE;
+  }
+} /* of 'writecoord' */
+
+Bool writeshortcoord(FILE *file,       /**< pointer to binary file */
+                    const Coord *coord /**< cell coordinate written to file */
+                   )                   /** \return FALSE for successful write */
 {
   Intcoord icoord;
   icoord.lat=(short)round(coord->lat*100);
   icoord.lon=(short)round(coord->lon*100);
   return fwrite(&icoord,sizeof(icoord),1,file)!=1;
-} /* of 'writecoord' */
+} /* of 'writeshortcoord' */
 
 Bool writefloatcoord(FILE *file,        /**< pointer to binary file */
                      const Coord *coord /**< cell coordinate written to file */
@@ -357,12 +379,25 @@ Bool writefloatcoord(FILE *file,        /**< pointer to binary file */
   return fwrite(&fcoord,sizeof(fcoord),1,file)!=1;
 } /* of 'writefloatcoord' */
 
+Bool writedoublecoord(FILE *file,       /**< pointer to binary file */
+                     const Coord *coord /**< cell coordinate written to file */
+                    )                   /** \returns TRUE on error */
+{
+  struct
+  {
+    double lon,lat;
+  } dcoord;
+  dcoord.lat=coord->lat;
+  dcoord.lon=coord->lon;
+  return fwrite(&dcoord,sizeof(dcoord),1,file)!=1;
+} /* of 'writedoublecoord' */
+
 int seekcoord(Coordfile coordfile, /**< open coord file */
               int pos              /**< position in file */
              )                     /** \return return code of fseek */
 {
   return fseek(coordfile->file,
-               (coordfile->fmt==RAW) ? pos*sizeof(Intcoord) : 
+               (coordfile->fmt==RAW) ? pos*sizeof(Intcoord) :
                (pos-coordfile->first)*2*typesizes[coordfile->datatype]+coordfile->offset,
                SEEK_SET);
 } /* of 'seekcoord' */
@@ -379,6 +414,12 @@ Type getcoordtype(const Coordfile coordfile /**< open coord file */
 {
   return  coordfile->datatype;
 } /* of 'getcoordtype' */
+
+float getcoordscale(const Coordfile coordfile /**< open coord file */
+                   )                          /** \return scale factor */
+{
+  return  coordfile->scalar;
+} /* of 'getcoordscale' */
 
 Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Coord *coord,  /**< cell coordinate read */

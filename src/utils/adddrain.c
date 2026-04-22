@@ -272,7 +272,7 @@ int main(int argc,char **argv)
   }
   if(isshort)
     for(i=0;i<header.ncell;i++)
-      writecoord(file,cnew+i);
+      writeshortcoord(file,cnew+i);
   else
     for(i=0;i<header.ncell;i++)
       writefloatcoord(file,cnew+i);

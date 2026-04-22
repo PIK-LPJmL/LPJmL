@@ -352,7 +352,7 @@ int main(int argc,char **argv)
          if(fabs(coord.lat*100-round(coord.lat*100))>1e-3)
            fprintf(stderr,"Warning: Latitude of %.6g at %d cannot be represented by short value of %g.\n",
                    coord.lat,header.ncell,round(coord.lat*100));
-         writecoord(gridfile,&grid);
+         writeshortcoord(gridfile,&grid);
     } /* of switch(type) */
     header.ncell++;
   }
