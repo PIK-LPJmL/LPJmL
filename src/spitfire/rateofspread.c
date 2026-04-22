@@ -26,7 +26,6 @@
 #define MINER_DAMP 0.41739        /* mineral damping factor,
                                     0.17*pow(Se,-0.19), Se=1% (effective mineral content) */
 #define heat_content_fuel 18608.0 /* amount of heat released by fuel (kJ/kg) */
-#define 
 
 Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
                   Fuel *fuel,        /**< fuel characteristics */
