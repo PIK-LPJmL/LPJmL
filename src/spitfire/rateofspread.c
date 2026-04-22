@@ -7,6 +7,12 @@
 /** Function calculates rate of spread using Rothermel/Albini model for use in     \n**/
 /** fire size and mortality calculations                                           \n**/
 /**                                                                                \n**/
+/** Derived from                                                                   \n**/
+/** Andrews, Patricia L. 2018. The Rothermel surface fire spread model and         \n**/
+/** associated developments: A comprehensive explanation. Gen. Tech. Rep.          \n**/
+/** RMRS-GTR-371. Fort Collins, CO: U.S. Department of Agriculture, Forest         \n**/
+/** Service, Rocky Mountain Research Station. 121 p.                               \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -20,6 +26,7 @@
 #define MINER_DAMP 0.41739        /* mineral damping factor,
                                     0.17*pow(Se,-0.19), Se=1% (effective mineral content) */
 #define heat_content_fuel 18608.0 /* amount of heat released by fuel (kJ/kg) */
+#define 
 
 Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
                   Fuel *fuel,        /**< fuel characteristics */

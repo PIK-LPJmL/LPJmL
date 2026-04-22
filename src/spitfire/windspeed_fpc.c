@@ -28,5 +28,5 @@ Real windspeed_fpc(Real windspeed,        /**< wind speed (m/s) */
     windsp_fpc+=pft->fpc*pft->par->windspeed;
     fpc_sum+=pft->fpc;
   }
-  return (fpc_sum>0) ? windsp_fpc*60*windspeed/fpc_sum : windspeed*60;
+  return (fpc_sum>0) ? windsp_fpc*60*windspeed/fpc_sum : windspeed*60; /* convert m/s ->m/min */
 } /* of 'windspeed_fpc' */
