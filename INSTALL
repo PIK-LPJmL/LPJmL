@@ -204,6 +204,7 @@ cdf2soil      - convert NetCDF file into binary file
 cft2clm       - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf       - convert CLM files into NetCDF files
 cmpbin        - compare two binary output files
+cmprestart    - compare two restart files for LPJmL and check for identity.
 country2cdf   - convert country/region code file into NetCDF file
 cru2clm       - convert CRU data into file format suitable for LPJmL.
                 CRU data files have to be in the format specified in
