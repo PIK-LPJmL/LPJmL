@@ -40,7 +40,7 @@ of `major.minor.patch` with
 - Constant `MAXLEVEL` renamed to `BSTRUCT_MAXLEVEL`.
 - Macros `getname()` and `isinvalidtoken()` renamed to `bstruct_getname()` and `bstruct_isinvalidtoken()`.
 - String comparison in `bstruct_fprintdata` replaced by call to `isnan()` and `isinf()`.
-- New token `bstruct_dzero` defined for restart flles to distinguish between float and double zeros, version of bstruct files changed to 2.
+- New token `bstruct_dzero` defined for restart files to distinguish between float and double zeros, version of bstruct files changed to 2.
 
 
 ## [6.0.7] - 2026-04-17
