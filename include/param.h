@@ -83,7 +83,7 @@ typedef struct
   Real firedura;        /**< scaling factor for fire duration */
   Real fireduration[2]; /**< default min/max daily fire duration interval (minutes) */
   int max_ndayfire;      /**< default maximum fire duration (days) */
-  Real ignition_rate;    /**< efficiency in starting lightning-caused fires (0..1) */
+  Real lightning_eff_rate; /**< efficiency in starting lightning-caused fires (0..1) */
   Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real intensity_limit; /**< intensity limit under which a fire cannot burn */

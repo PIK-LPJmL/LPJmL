@@ -82,12 +82,12 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   {
     human_ignition=(config->ishuman_ign_prob) ? human_ign_prob/365*param.k_ign_prob : humanignition(popdens,&stand->cell->ignition);
     num_fires=wildfire_ignitions(fire_danger_index,
-                                 human_ignition+climate->lightning*param.cg_ratio*param.ignition_rate,
+                                 human_ignition+climate->lightning*param.cg_ratio*param.lightning_eff_rate,
                                  stand->cell->coord.area*stand->frac);
 
     if(stand->type->landusetype==NATURAL)
     {
-      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.ignition_rate*stand->cell->coord.area*stand->frac*1e-4;
+      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.lightning_eff_rate*stand->cell->coord.area*stand->frac*1e-4;
       getoutput(output,HUMAN_IGNITION,config) +=human_ignition*stand->cell->coord.area*stand->frac*1e-4;
     }
   }

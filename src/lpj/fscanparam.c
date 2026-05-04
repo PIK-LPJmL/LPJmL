@@ -190,7 +190,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamrealarray(f,param.fireduration,2,"fireduration");
     fscanparamint(f,&param.max_ndayfire,"max_ndayfire");
     fscanparamreal01(f,&param.cg_ratio,"cg_ratio");
-    fscanparamreal01(f,&param.ignition_rate,"ignition_rate");
+    fscanparamreal01(f,&param.lightning_eff_rate,"lightning_eff_rate");
     if(config->ishuman_ign_prob)
       fscanparamreal(f,&param.k_ign_prob,"k_ign_prob");
   }
