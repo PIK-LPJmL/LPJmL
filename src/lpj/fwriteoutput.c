@@ -577,7 +577,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
-  Real depth=0;
+  Real depth;
 
 #ifdef USE_TIMING
   double t;
@@ -786,6 +786,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           {
             for(p=0;p<stand->soil.litter.n;p++)
               getoutput(&grid[cell].output,SOILC_1m,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+            depth=0;
             forrootsoillayer(l)
             {
               depth+=soildepth[l];
