@@ -25,7 +25,11 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
   for(i=0;i<NFUELCLASS;i++)
     fuel->deadfuel_consum[i]=0;
 
-    /* 1hr dead fuel consumption [gC/m2]*/
+  /* These are empirical constants based on: Peterson, D. L. and Ryan, K. C.: Modeling
+   * Postfire Conifer Mortality for Long-range Planning, Environ. Manage., 10, 797–808, 1986
+   */
+
+   /* 1hr dead fuel consumption [gC/m2]*/
   fuel->deadfuel_consum[0] = (fuel->char_moist_factor > 0) ? fuel_consumption_1hr(fuel->M[0]/fuel->char_moist_factor,fire_frac) : 0;
 
    /*  10hr fuel consumption */
