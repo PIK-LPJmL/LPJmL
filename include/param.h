@@ -88,6 +88,7 @@ typedef struct
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real intensity_limit; /**< intensity limit under which a fire cannot burn */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
+  Real ign_factor;      /**< used to scale human ignitions to balance human and lightning ignitions */
   Real k_ign_prob;      /**< scaling factor for human ignition probabilities */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */

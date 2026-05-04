@@ -75,13 +75,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
             "intensity_limit:\t%g\n"
+            "ign_factor:\t%g\n"
             "hum_ign:\t%g\n"
             "cg_ratio:\t%g\n"
             "lightning_eff_rate:\t%g\n"
             "fire duration:\t[%g,%g] (min)\n"
             "max ndayfire:\t%d (days)\n",
             param.firedura,param.fire_intens,param.intensity_limit,
-            param.hum_ign,param.cg_ratio,
+            param.ign_factor,param.hum_ign,param.cg_ratio,
             param.lightning_eff_rate,param.fireduration[0],param.fireduration[1],param.max_ndayfire);
     if(config->ishuman_ign_prob)
       fprintf(file,"k_ign_prob:\t%g\n",param.k_ign_prob);

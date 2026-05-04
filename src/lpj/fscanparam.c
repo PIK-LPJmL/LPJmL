@@ -187,6 +187,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.fire_intens,"fire_intens");
     fscanparamreal(f,&param.intensity_limit,"intensity_limit");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
+    fscanparamreal(f,&param.ign_factor,"ign_factor");
     fscanparamrealarray(f,param.fireduration,2,"fireduration");
     fscanparamint(f,&param.max_ndayfire,"max_ndayfire");
     fscanparamreal01(f,&param.cg_ratio,"cg_ratio");
