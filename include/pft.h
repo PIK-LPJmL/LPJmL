@@ -42,11 +42,11 @@ typedef struct
   Real moist_10_100hr;
   Real mw_weight;
   Real CME;
-  Real fi;
-  Real f[NFUELCLASS];
-  Real g[NFUELCLASS];
-  Real w[NFUELCLASS];
-  Real M[NFUELCLASS];
+  Real fi;            /**< combined Rothermel (1972) fuel weighting factor */
+  Real f[NFUELCLASS]; /**< Rothermel fuel weighting factor (by fuel class) */
+  Real g[NFUELCLASS]; /**< Albini (1976)fuel weighting factor (by fuel class) */
+  Real w[NFUELCLASS]; /**< fuel weight (0...1) (by fuel class) */
+  Real M[NFUELCLASS]; /**< fuel moisture content (by fuel class) */
   Real char_sigma;
 } Fuel;
 
@@ -58,12 +58,20 @@ typedef struct
   Real pot_fc_lg_c4; /**< Biomass of C4 grass in g/m2 */
   Real CME;
   Real char_moisture;
-  Real fi;
-  Real f[2];
-  Real g[2];
-  Real w[2];
-  Real M[2];
+  Real fi;   /**< combined Rothermel (1972) fuel weighting factor */
+  Real f[2]; /**< Rothermel fuel weighting factor (by fuel class) */
+  Real g[2]; /**< Albini (1976)fuel weighting factor (by fuel class) */
+  Real w[2]; /**< fuel weight (0...1) (by fuel class) */
+  Real M[2]; /**< fuel moisture content (by fuel class) */
 } Livefuel;
+
+/* References
+ *
+ * Albini, F. A.: Computer-based models of wildland fire behavior: a user's manual, Tech. rep., USDA Forest Service, Intermountain Forest and Range Experiment Station, Ogden, UT, https://www.frames.gov/documents/behaveplus/publications/Albini_1976_FIREMOD_ocr.pdf, 1976.
+
+ * Rothermel, R. C.: A Mathematical Model for Predicting Fire Spread in Wildland Fuels, Intermountain Forest and Range Experiment Station, Forest Service, US Department of Agriculture, https://www.fs.usda.gov/rm/pubs_int/int_rp115.pdf (last access: 21 March 2025), 1972.
+ *
+*/
 
 typedef struct
 {

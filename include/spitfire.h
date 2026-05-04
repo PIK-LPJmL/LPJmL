@@ -19,8 +19,8 @@
 
 /* Definition of constants */
 
-#define MINER_TOT 0.055
-#define PART_DENS 513.0
+#define MINER_TOT 0.055 /**< total mineral content fraction of fuel, used for combustion and fire spread */
+#define PART_DENS 513.0 /**< particle density of fuel (kg/m³), used to calculate packing-ratio */
 
 /* Declaration of global variables */
 
