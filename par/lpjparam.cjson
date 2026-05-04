@@ -119,7 +119,7 @@
     "k_ign_prob" :  0.3,
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "intensity_limit" :  5.0,           /* intensity limit under which a fire cannot burn, 50 in original SPITIFRE version*/
-    "ler" : 0.04,                       /* efficiency in starting fires */
+    "ignition_rate" : 0.04,             /* efficiency in starting lightning-caused fires (0..1) */
     "cg_ratio" : 0.2,                   /* cloud to ground ratio for lightning flashes */
     "fireduration" : [120,480],         /* default fire duration interval (min) */
     "max_ndayfire" : 5,                 /* maximum fire days (days) */

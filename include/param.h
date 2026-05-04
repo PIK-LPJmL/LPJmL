@@ -81,9 +81,9 @@ typedef struct
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
   Real firedura;        /**< scaling factor for fire duration */
-  Real fireduration[2]; /**< default fire duration interval (min) */
+  Real fireduration[2]; /**< default min/max daily fire duration interval (minutes) */
   int max_ndayfire;      /**< default maximum fire duration (days) */
-  Real ler;              /**< efficiency in starting fires (0..1) */
+  Real ignition_rate;    /**< efficiency in starting lightning-caused fires (0..1) */
   Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real intensity_limit; /**< intensity limit under which a fire cannot burn */

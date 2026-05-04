@@ -77,12 +77,12 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "intensity_limit:\t%g\n"
             "hum_ign:\t%g\n"
             "cg_ratio:\t%g\n"
-            "ler:\t\t%g\n"
+            "ignition_rate:\t\t%g\n"
             "fire duration:\t[%g,%g] (min)\n"
             "max ndayfire:\t%d (days)\n",
             param.firedura,param.fire_intens,param.intensity_limit,
             param.hum_ign,param.cg_ratio,
-            param.ler,param.fireduration[0],param.fireduration[1],param.max_ndayfire);
+            param.ignition_rate,param.fireduration[0],param.fireduration[1],param.max_ndayfire);
     if(config->ishuman_ign_prob)
       fprintf(file,"k_ign_prob:\t%g\n",param.k_ign_prob);
     fprintfireduration(file,config->standtypes,config->nstand);
