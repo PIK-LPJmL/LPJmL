@@ -6,6 +6,10 @@
 /**                                                                                \n**/
 /** Function calculates burnt area based on fire duration and rate of spread       \n**/
 /**                                                                                \n**/
+/** These are empiral derived equations from experimental sites in Canada          \n**/
+/** (reference: CFFBG: Development and structure of the Canadian Forest Fire       \n**/
+/** Behaviour Predictions Systems, Forestry Canada Fire Danger Group, 1992)        \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/

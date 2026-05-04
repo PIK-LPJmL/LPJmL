@@ -44,9 +44,9 @@ typedef struct
 
 typedef struct
 {
-  Real num_fires;
-  Real burnt_area;
-  Real dbf;
+  Real num_fires;  /**< number of fires burning */
+  Real burnt_area; /**< burned area of a single fire */
+  Real dbf;        /**< length of the major axis of the fire ellipse (diameter back-front) */
   Real wind_cover;
   Real days_burning;
 } Fire;
