@@ -44,7 +44,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 - Carbon balance fixed in `reclaim_land.c`.
 - Check for NULL pointer added in `getuser.c` to avoid SEGV if user name cannot be resolved.
 - Verbose output corrected for input without time axis in `cdf2clm.c`.
-- Output is rescaled by the actual sum of stand fractions in `update_daily_cell.c` to avoid division by zero (issue #411).
+- Output is rescaled by the actual sum of stand fractions in `update_daily_cell.c` and `fwriteoutput.c` to avoid division by zero (issue #411).
 - Default timestep set to 1 in `regridclm.c`.
 
 

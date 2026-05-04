@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 Bool openclmdata(Climatefile *file,        /**< pointer to file */
-                 Metadata *metadata,
+                 Metadata *metadata,       /**< metadata information */
                  const Filename *filename, /**< filename */
                  const char *name,         /**< name of data */
                  const char *unit,         /**< unit of data or NULL */
