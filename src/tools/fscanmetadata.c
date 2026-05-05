@@ -99,5 +99,12 @@ Bool fscanmetadata(LPJfile *file,      /**< pointer to JSON file */
       return TRUE;
     metadata->long_name=strdup(val);
   }
+  if(iskeydefined(file,"descr"))
+  {
+    val=fscanstring(file,NULL,"descr",verbosity);
+    if(val==NULL)
+      return TRUE;
+    metadata->long_name=strdup(val);
+  }
   return FALSE;
 } /* of 'fscanmetadata' */
