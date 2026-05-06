@@ -258,6 +258,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
         freeclimate(climate,isroot(*config));
         return NULL;
       }
+      /* Ignition data is handled like climate data, must be present for all simulation years */
       if(climate->firstyear<climate->file_ignition.firstyear)
         climate->firstyear=climate->file_ignition.firstyear;
     }
