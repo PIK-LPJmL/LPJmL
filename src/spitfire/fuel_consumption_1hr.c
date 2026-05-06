@@ -19,6 +19,11 @@ Real fuel_consumption_1hr(Real moist_par,
                          )
 {
   Real fuel_consum_1hr;
+
+  /* These are empirical constants based on: Peterson, D. L. and Ryan, K. C.: Modeling
+   * Postfire Conifer Mortality for Long-range Planning, Environ. Manage., 10, 797–808, 1986
+   */
+
   if(moist_par <= 0.18)
     fuel_consum_1hr = 1.0*(1.0-MINER_TOT)* fire_frac;
   else if(moist_par <= 0.73)
