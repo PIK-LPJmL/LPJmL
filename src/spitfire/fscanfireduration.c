@@ -72,6 +72,8 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         return TRUE;
       if(fscanint(s,&standtypes[index]->max_ndayfire,"ndayfire",FALSE,verbose))
         return TRUE;
+      if(verbose && index==AGRICULTURE)
+        fprintf(stderr,"WARNING050: Fire on agriculture stands has not been tested.\n");
       standtypes[index]->dailyfire=dailyfire;
     }
   }
