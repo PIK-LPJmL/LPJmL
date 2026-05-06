@@ -114,7 +114,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
   /* dead litter moisture calculation */
-  fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
+  fuel->daily_litter_moist =  (dead_fuel>epsilon) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
 
   /* TODO: implement separate fuel moisture content by size class */
   fuel->M[0]=fuel->daily_litter_moist;
