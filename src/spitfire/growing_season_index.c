@@ -4,6 +4,14 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/** Function calculates growing season index                                       \n**/
+/**                                                                                \n**/
+/** Algorithm and parameter taken from:                                            \n**/
+/** Jolly, W. M., Nemani, R., and Running, S. W.: A generalized, bio-              \n**/
+/** climatic index to predict foliar phenology in response to climate,             \n**/
+/** Glob. Change Biol., 11, 619–632, https://doi.org/10.1111/j.1365-               \n**/
+/** 2486.2005.00930.x, 2005                                                        \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
