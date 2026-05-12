@@ -47,6 +47,7 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 - Output is rescaled by the actual sum of stand fractions in `update_daily_cell.c` and `fwriteoutput.c` to avoid division by zero (issue #411).
 - Default timestep set to 1 in `regridclm.c`.
 - Variable `depth` initialized to zero before layer loop in `fwriteoutput.c` to correct `soilc_1m` output.
+- Length of buffer for hostname corrected in `gethost.c`.
 
 
 ## [6.0.7] - 2026-04-17
