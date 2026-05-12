@@ -39,7 +39,7 @@ char *gethost(void) /** \return get host name */
 #else
   static char name[HOST_NAME_MAX+1];
   gethostname(name,HOST_NAME_MAX+1);
-  name[HOST_NAME_MAX]=`\0`; /* to be sure that string is terminated by `\0` */
+  name[HOST_NAME_MAX]='\0'; /* to be sure that string is terminated by '\0' */
   return name;
 #endif
 } /* of 'gethost' */
