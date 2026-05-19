@@ -130,13 +130,13 @@ osname=$(uname)
 
 if [ "$inpath" = "" ]
 then
-if test -d /p ;
-then
-  inpath=/p/projects/lpjml/inputs/public_standard
-else
-  inpath=""
-  echo >&2 No input directory found, LPJINPATH has to be set
-fi
+  if test -d /p ;
+  then
+    inpath=/p/projects/lpjml/inputs/public_standard
+  else
+    inpath=""
+    echo >&2 "No input directory found, LPJINPATH has to be set using '-inpath' option"
+  fi
 fi
 
 if [ "$osname" = "Linux" ]  || [ "$osname" = "CYGWIN_NT-5.1" ] || [ "$osname" = "Darwin" ]
