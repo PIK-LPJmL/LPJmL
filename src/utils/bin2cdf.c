@@ -650,7 +650,7 @@ int main(int argc,char **argv)
   notime=FALSE;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
-  initmetadata(&metadata,NULL);
+  initmetadata(&metadata,BAND_NAMES);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -689,14 +689,14 @@ int main(int argc,char **argv)
                "-scale s         scale output with factor s, default is 1\n"
                "-notime          omit time axis\n"
                "-metafile        set the input format to JSON metafile instead of raw\n"
-               "-map name        name of map in JSON metafile, default is \"band_names\"\n"
+               "-map name        name of map in JSON metafile, default is \"%s\"\n"
                "-config file     read NetCDF setting from JSON file\n"
                "varname          variable name in NetCDF file\n"
                "gridfile         filename of grid data file\n"
                "binfile          filename of binary data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname,header.cellsize_lon,header.firstyear);
+               progname,header.cellsize_lon,header.firstyear,metadata.map_name);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
