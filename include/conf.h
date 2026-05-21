@@ -69,7 +69,7 @@
 #define NO_FIRE 0
 #define FIRE 1
 #define SPITFIRE 2
-#define SPITFIRE_TMAX 3
+#define SPITFIRE_TAMP 3
 #define NO_POPULATION 0
 #define DENS_POPULATION 1
 #define NUM_POPULATION 2

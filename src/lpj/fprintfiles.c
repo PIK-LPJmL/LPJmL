@@ -161,12 +161,12 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   addfilename(table,&config->soilph_filename,FALSE);
   addfilename(table,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     addfilename(table,&config->tmax_filename,TRUE);
     addfilename(table,&config->tmin_filename,TRUE);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
     addfilename(table,&config->tamp_filename,TRUE);
   if(isspitfire(config))
   {

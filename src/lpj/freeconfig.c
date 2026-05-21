@@ -153,12 +153,12 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->human_ignition_filename);
     }
   }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     freefilename(&config->tmin_filename);
     freefilename(&config->tmax_filename);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
     freefilename(&config->tamp_filename);
   if(config->withlanduse!=NO_LANDUSE)
   {

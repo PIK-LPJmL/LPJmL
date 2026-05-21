@@ -105,7 +105,7 @@ extern Bool freadfwi(Bstruct,const char *,FWIdata *);
 
 /* Definition of macros */
 
-#define isspitfire(config) ((config)->fire==SPITFIRE || (config)->fire==SPITFIRE_TMAX)
+#define isspitfire(config) ((config)->fire==SPITFIRE || (config)->fire==SPITFIRE_TAMP)
 #define fprintfwi(file,fwi) fprintf(file,"ffmc:\t\t%g\ndmc:\t\t%g\ndc:\t\t%g\n",(fwi)->ffmc,(fwi)->dmc,(fwi)->dc)
 
 #endif

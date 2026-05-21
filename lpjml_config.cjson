@@ -48,7 +48,7 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
+  "fire" : "spitfire", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tamp" */
   "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   "gsi_livefuel" : true,   /* livefuel calculated from growing season index (true/false) */
   "human_ign_prob" : false,   /* read human ignition probability from file */

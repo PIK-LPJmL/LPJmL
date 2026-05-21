@@ -210,7 +210,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *fertilizer[]={"no","yes","auto"};
   char *irrigation[]={"no","lim","pot","all"};
   char *radiation[]={"radiation","radiation_lwdown"};
-  char *fire[]={"no","globfirm","spitfire","spitfire_tmax"};
+  char *fire[]={"no","globfirm","spitfire","spitfire_tamp"};
   char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate"};
   char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   char *wateruse[]={"no","yes","all"};
@@ -976,14 +976,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     scanclimatefilename(input,&config->humid_filename,TRUE,TRUE,"humid");
   }
   scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     scanclimatefilename(input,&config->tmin_filename,TRUE,TRUE,"tmin");
     scanclimatefilename(input,&config->tmax_filename,TRUE,TRUE,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE_TAMP)
   {
     scanclimatefilename(input,&config->tamp_filename,TRUE,TRUE,"tamp");
   }

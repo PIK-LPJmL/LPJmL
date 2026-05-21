@@ -631,12 +631,12 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     if(config->ispopulation)
       bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,TRUE,FALSE);
   }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     bad+=checkclmfile(config,"tmin",&config->tmin_filename,"celsius",LPJ_SHORT,TRUE,TRUE,TRUE);
     bad+=checkclmfile(config,"tmax",&config->tmax_filename,"celsius",LPJ_SHORT,TRUE,TRUE,TRUE);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
   {
     bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE);
   }

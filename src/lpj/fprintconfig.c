@@ -86,14 +86,14 @@ static size_t isnetcdfinput(const Config *config)
     if(config->landfrac_filename.fmt==CDF)
       width=max(width,strlen(config->landfrac_filename.var));
   }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     if(config->tmin_filename.fmt==CDF)
       width=max(width,strlen(config->tmin_filename.var));
     if(config->tmax_filename.fmt==CDF)
       width=max(width,strlen(config->tmax_filename.var));
   }
-  if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
+  if(config->fire==SPITFIRE_TAMP && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
   if(config->wind_filename.fmt==CDF)
     width=max(width,strlen(config->wind_filename.var));
@@ -644,12 +644,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
     printinputfile(file,"ch4",&config->ch4_filename,width,config);
   printinputfile(file,"windspeed",&config->wind_filename,width,config);
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
     printinputfile(file,"tmax",&config->tmax_filename,width,config);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
     printinputfile(file,"temp ampl",&config->tamp_filename,width,config);
   if(isspitfire(config))
   {

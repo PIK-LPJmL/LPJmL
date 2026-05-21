@@ -216,7 +216,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
   }
   if(climate->firstyear<climate->file_wind.firstyear)
     climate->firstyear=climate->file_wind.firstyear;
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     if(openclimate2(&climate->file_tmin,&config->tmin_filename,"tmin","celsius",LPJ_SHORT,1,0.1,TRUE,config))
     {
@@ -229,7 +229,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-  else if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
   {
     if(openclimate2(&climate->file_tamp,&config->tamp_filename,"tamp",NULL,LPJ_SHORT,1,0.1,TRUE,config))
     {
@@ -392,7 +392,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
   }
 
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     for (i = 0; i<ndata; i++)
     {
@@ -410,7 +410,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
     }
   }
-  else if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
   {
     if(config->tamp_filename.fmt!=FMS)
     {

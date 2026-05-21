@@ -98,12 +98,12 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
   }
   if(checkvalid(&climate->file_wind,config->wind_filename.name,grid,config))
     return TRUE;
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE_TAMP)
   {
     if(checkvalid(&climate->file_tamp,config->tamp_filename.name,grid,config))
       return TRUE;
   }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     if(checkvalid(&climate->file_tmin,config->tmin_filename.name,grid,config))
       return TRUE;
