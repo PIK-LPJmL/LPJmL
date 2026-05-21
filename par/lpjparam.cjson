@@ -117,7 +117,7 @@
     "firedura" : -8.0,                  /* scaling factor for fire duration for the WVPD*/
     "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
     "ign_factor" : 15.0,                /* used to scale human ignitions to balance human and lightning ignitions */
-    "k_ign_prob" :  0.3,
+    "k_ign_prob" :  0.3,i               /* scaling factor for human ignition probabilities */
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "intensity_limit" :  5.0,           /* intensity limit under which a fire cannot burn, 50 in original SPITIFRE version*/
     "lightning_eff_rate" : 0.04,        /* efficiency in starting lightning-caused fires (0..1) */
