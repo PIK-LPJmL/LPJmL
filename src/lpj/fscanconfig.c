@@ -327,10 +327,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
   config->ispopulation=NO_POPULATION;
-  config->is_gsi_livefuel=FALSE;
+  config->isgsi_livefuel=FALSE;
   if(isspitfire(config))
   {
-    if(fscanbool(file,&config->is_gsi_livefuel,"gsi_livefuel",!config->pedantic,verbose))
+    if(fscanbool(file,&config->isgsi_livefuel,"gsi_livefuel",!config->pedantic,verbose))
       return TRUE;
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;

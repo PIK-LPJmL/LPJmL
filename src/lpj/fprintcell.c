@@ -122,7 +122,7 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       if(isspitfire(config))
       {
         fprintignition(file,&grid[cell].ignition);
-        if(config->is_gsi_livefuel)
+        if(config->isgsi_livefuel)
           fprintf(file,"GSI livefuel:\t%g\n",grid[cell].gsi_cum);
         fprintfwi(file,&grid[cell].fwi_data);
       }
