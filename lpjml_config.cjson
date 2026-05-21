@@ -478,9 +478,9 @@ ID                               Fmt                        filename
   "outputyear": 1901, /* first year output is written  */
   "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1700_nv.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
+  "write_restart_filename" : "restart/restart_1900_crop.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
 
 #else
@@ -492,7 +492,7 @@ ID                               Fmt                        filename
   "restart" :  false, /* start from restart file */
   "outputyear" :  -2099,
   "write_restart" : true, /* create restart file at year defined in "restart_year" */
-  "write_restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file written */
+  "write_restart_filename" : "restart/restart_1700_nv.lpj", /* filename of restart file written */
   "restart_year": 1700 /* write restart at year */
 
 #endif
