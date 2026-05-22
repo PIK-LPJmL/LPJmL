@@ -638,7 +638,11 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   }
   else if(config->fire==SPITFIRE_TAMP)
   {
-    bad+=checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE);
+    if(checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE))
+    {
+      fputs("=====001: Use \"spitfire\" fire model instead.\n",stderr);
+      bad++;
+    }
   }
   if(config->wateruse)
     bad+=checkclmfile(config,"wateruse",&config->wateruse_filename,"dm3/day",LPJ_INT,FALSE,FALSE,FALSE);
