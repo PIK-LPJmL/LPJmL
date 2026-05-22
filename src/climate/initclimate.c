@@ -234,7 +234,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     if(openclimate2(&climate->file_tamp,&config->tamp_filename,"tamp",NULL,LPJ_SHORT,1,0.1,TRUE,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open tamp data file, use \"spitfire\" fire model instead.\n");
+        fprintf(stderr,"ERROR236: Cannot open tamp data file, use \"spitfire\" fire setting instead.\n");
       freeclimate(climate,isroot(*config));
       return NULL;
     }

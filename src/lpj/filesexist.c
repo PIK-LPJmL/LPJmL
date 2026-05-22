@@ -640,7 +640,7 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
   {
     if(checkclmfile(config,"tamp",&config->tamp_filename,NULL,LPJ_SHORT,TRUE,TRUE,TRUE))
     {
-      fputs("=====001: Use \"spitfire\" fire model instead.\n",stderr);
+      fputs("=====001: Use \"spitfire\" fire setting instead.\n",stderr);
       bad++;
     }
   }

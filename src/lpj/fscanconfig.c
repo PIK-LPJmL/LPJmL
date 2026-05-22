@@ -988,7 +988,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(readclimatefilename(input,&config->tamp_filename,"tamp",def,FALSE,TRUE,TRUE,config))
     {
       if(verbose)
-        fprintf(stderr,"ERROR209: Cannot read filename for 'tamp' input, use \"spitfire\" fire model instead.\n");
+        fprintf(stderr,"ERROR209: Cannot read filename for 'tamp' input, use \"spitfire\" fire setting instead.\n");
       return TRUE;
     }
   }
