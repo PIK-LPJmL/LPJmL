@@ -4,8 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function checks stand fractions on consisteny. Sum of stand                \n**/
-/**     must be 1 and stand fractions must be non-negative                         \n**/
+/**     Function checks stand fractions on consisteny. Sum of stand fractions      \n**/
+/**     must be 1 and each stand fraction must be non-negative                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
