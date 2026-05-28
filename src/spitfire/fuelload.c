@@ -31,7 +31,8 @@ Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume rat
 Real sigma_live[2]={66.0,0}; /* surface area to volume ratio of live herbaceous and
                                 live woody component, respectively (live woody currently
                                 not implemented */
-static Real glim[NGLIM]={16,48,96,1200,1000000}; /* size bins for Albini weighting factors */
+static Real glim[NGLIM]={16.0/ft2cm(1),48.0/ft2cm(1),96.0/ft2cm(1),
+                         1200.0/ft2cm(1),1000000.0/ft2cm(1)}; /* size bins for Albini weighting factors (cm-1) */
 
 void fuelload(const Stand *stand,  /**< pointer to stand */
               Fuel *fuel,          /**< fuel characteristics */
@@ -201,7 +202,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   {
     /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
     for(index=0;index<NGLIM;++index)
-      if(sigma_dead[i]<glim[index]/ft2cm(1)) /*conversion from ft^-1 to cm^-1*/
+      if(sigma_dead[i]<glim[index]) /*conversion from ft^-1 to cm^-1*/
         break;
     fsum[index]+=fuel->f[i];
   }
@@ -209,7 +210,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   for(i=0;i<NFUELCLASS;++i)
   {
     for(index=0;index<NGLIM;++index)
-      if(sigma_dead[i]<glim[index]/ft2cm(1))
+      if(sigma_dead[i]<glim[index])
         break;
     fuel->g[i]=fsum[index];
   }
@@ -219,14 +220,14 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   for(i=0;i<2;++i)
   {
     for(index=0;index<NGLIM;++index)
-      if(sigma_live[i]<glim[index]/ft2cm(1)) /*conversion from ft^-1 to cm^-1*/
+      if(sigma_live[i]<glim[index]) /*conversion from ft^-1 to cm^-1*/
         break;
     fsum[index]+=livefuel->f[i];
   }
   for(i=0;i<2;++i)
   {
     for(index=0;index<NGLIM;++index)
-      if(sigma_live[i]<glim[index]/ft2cm(1))
+      if(sigma_live[i]<glim[index])
         break;
     livefuel->g[i]=fsum[index];
   }
