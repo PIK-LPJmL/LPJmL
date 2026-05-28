@@ -23,6 +23,7 @@
 #define fbd_c3_livegrass 4.0
 #define fbd_c4_livegrass 4.0
 #define NGLIM 5 /* length of Albini weighting factor array */
+#define HUGE_NUMBER 1000.0
 
 Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume ratio of 1,
                                                       10, 100 hr and cured grass fuel
@@ -114,7 +115,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
   /* dead litter moisture calculation */
-  fuel->daily_litter_moist =  (dead_fuel>epsilon) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
+  fuel->daily_litter_moist =  (dead_fuel>epsilon) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : HUGE_NUMBER; /* new version making use of new litter moisture calculation from tillage version */
 
   /* TODO: implement separate fuel moisture content by size class */
   fuel->M[0]=fuel->daily_litter_moist;
