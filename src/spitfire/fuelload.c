@@ -117,7 +117,6 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   /* dead litter moisture calculation */
   fuel->daily_litter_moist =  (dead_fuel>epsilon) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : HUGE_NUMBER; /* new version making use of new litter moisture calculation from tillage version */
 
-  /* TODO: implement separate fuel moisture content by size class */
   fuel->M[0]=fuel->daily_litter_moist;
   fuel->M[1]=fuel->daily_litter_moist;
   fuel->M[2]=fuel->daily_litter_moist;
@@ -235,7 +234,6 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   /* ==== calculating fuel bulk density ==== */
 
   /* average fuel bulk density for live and dead fuel*/
-  /* TODO: develop accurate fuel bulk density calculation */
   fbd_livefuel = fbd_c3_livegrass * ratio_c3_livegrass +
                  fbd_c4_livegrass * ratio_c4_livegrass;
   fbd_deadfuel = stand->soil.litter.avg_fbd[NFUELCLASS]*litter_agtop_grass(&stand->soil.litter);

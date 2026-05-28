@@ -66,7 +66,7 @@ Real firedangerindex(Real char_moist_factor,
         }
         vpd_sum/=fpc_sum;
       }
-      VD = fpc_sum; /* todo implement lai or fpc?*/
+      VD = fpc_sum;
    
       /*calculation of Vapor Pressure Deficite (VPD) */
       d_fdi = getvpd(climate,relative_humidity)/p_atm * VD * exp(-cR * avgprec);

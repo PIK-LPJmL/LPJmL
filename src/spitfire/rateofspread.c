@@ -88,7 +88,6 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   else
     livefuel->char_moisture=0;
   /* Packing ratio*/
-  /* TODO: develop accurate fuel bulk density calculation */
   beta_fire = fuel->char_dens_fuel_ave / PART_DENS;
 
   /* ==== implementing Rothermel model  ==== */
@@ -106,7 +105,7 @@ Real rateofspread(Real windsp_cover, /**< mid-flame wind speed (m/min) */
   if (char_sigma <= 0.00001)
     xi = 0.0;
   else  if ((0.792 + 3.7597 * (pow(char_sigma,0.5))) * (beta_fire + 0.1)>100)
-    xi =exp(100) / (192 + 7.9095 * char_sigma);   /*TODO to avoid NAN*/
+    xi =exp(100) / (192 + 7.9095 * char_sigma);   /* to avoid NAN*/
   else
     xi = (exp((0.792 + 3.7597 * (pow(char_sigma,0.5))) * (beta_fire + 0.1))) / (192 + 7.9095 * char_sigma);
 

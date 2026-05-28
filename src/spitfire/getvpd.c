@@ -22,7 +22,7 @@
 #define d 11.344
 #define f 8.1328e-3
 #define h 3.49149
-#define Ts 373.16  /* water boiling point temperature in Kelvin Todo: dependend on altitude (pressure) */
+#define Ts 373.16  /* water boiling point temperature in Kelvin at sea level */
 
 Real getvpd(const Dailyclimate  *climate, /**< daily climate data */
             Bool relative_humidity        /**< humidity is relative humidity (TRUE/FALSE) */
