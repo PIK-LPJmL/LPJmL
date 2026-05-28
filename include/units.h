@@ -44,5 +44,6 @@
 #define c2biomass(c) ((c)*2.22222222222222222222) /* convert Carbon to Biomass */
 #define biomass2c(c) ((c)*0.45)      /* convert Biomass to carbon */
 #define ft2cm(x) ((x)*30.48)  /* convert feet to cm */
+#define ft2cm_1(x) ((x)/30.48)  /* convert feet-1 to cm-1 */
 
 #endif
