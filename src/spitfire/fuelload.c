@@ -65,7 +65,6 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   for(i=0;i<NFUELCLASS;i++)
     fuel_gBiomass[0]=0;
 
-  /*TODO: simplify loop with new function litter_ag_tree.c!! */
   fuel_gBiomass[0]=c2biomass(litter_agtop_grass(&stand->soil.litter)+litter_agtop_tree(&stand->soil.litter,0));
   getoutputindex(&stand->cell->output,FUEL,0,config)+=fuel_gBiomass[0];
   for (i=1; i<NFUELCLASS;++i) /* 1hr fuel consumption not included*/
@@ -82,7 +81,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
 
   /* ==== pulling live grass fuel loads ==== */
 
-  /* Calculate livegrass biomass [g/m2]*/
+  /* Calculate livegrass biomass including herbaceous [g/m2]*/
   livegrass = 0;
   livefuel->pot_fc_lg_c3 = 0;
   livefuel->pot_fc_lg_c4 = 0;
