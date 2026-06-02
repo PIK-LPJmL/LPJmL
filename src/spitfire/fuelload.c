@@ -27,10 +27,10 @@
 
 Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume ratio of 1,
                                                       10, 100 hr and cured grass fuel
-                                                      component, respectively */
+                                                      component, respectively (cm3/cm2) */
 Real sigma_live[2]={66.0,0}; /* surface area to volume ratio of live herbaceous and
                                 live woody component, respectively (live woody currently
-                                not implemented */
+                                not implemented (cm3/cm2) */
 static Real glim[NGLIM]={ft2cm_1(16.0),ft2cm_1(48.0),ft2cm_1(96.0),
                          ft2cm_1(1200.0),ft2cm_1(1000000.0)}; /* size bins for Albini weighting factors (cm-1) */
 

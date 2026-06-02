@@ -20,12 +20,15 @@
 /* Definition of constants */
 
 #define MINER_TOT 0.055 /**< total mineral content fraction of fuel, used for combustion and fire spread */
-#define PART_DENS 513.0 /**< particle density of fuel (kg/m³), used to calculate packing-ratio */
+#define PART_DENS 513.0 /**< particle density of fuel (kg/m3), used to calculate packing-ratio */
 
 /* Declaration of global variables */
 
-extern Real sigma_dead[NFUELCLASS];
-extern Real sigma_live[2];
+extern Real sigma_dead[NFUELCLASS]; /**< surface area to volume ratio of 1,
+                                         10, 100 hr and cured grass fuel
+                                         component, respectively (cm3/cm2) */
+extern Real sigma_live[2];          /**< surface area to volume ratio of live herbaceous and
+                                         live woody component, respectively (cm3/cm2) */
 
 /* Declaration of datatypes */
 

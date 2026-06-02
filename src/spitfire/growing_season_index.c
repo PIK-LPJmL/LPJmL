@@ -9,7 +9,7 @@
 /** Algorithm and parameter taken from:                                            \n**/
 /** Jolly, W. M., Nemani, R., and Running, S. W.: A generalized, bio-              \n**/
 /** climatic index to predict foliar phenology in response to climate,             \n**/
-/** Glob. Change Biol., 11, 619–632, https://doi.org/10.1111/j.1365-               \n**/
+/** Glob. Change Biol., 11, 619-632, https://doi.org/10.1111/j.1365-               \n**/
 /** 2486.2005.00930.x, 2005                                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
