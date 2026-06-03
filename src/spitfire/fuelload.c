@@ -201,7 +201,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   {
     /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
     for(index=0;index<NGLIM;++index)
-      if(sigma_dead[i]<glim[index]) /*conversion from ft^-1 to cm^-1*/
+      if(sigma_dead[i]<glim[index])
         break;
     fsum[index]+=fuel->f[i];
   }
@@ -219,7 +219,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
   for(i=0;i<2;++i)
   {
     for(index=0;index<NGLIM;++index)
-      if(sigma_live[i]<glim[index]) /*conversion from ft^-1 to cm^-1*/
+      if(sigma_live[i]<glim[index])
         break;
     fsum[index]+=livefuel->f[i];
   }
