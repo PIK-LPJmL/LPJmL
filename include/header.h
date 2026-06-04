@@ -145,8 +145,8 @@ typedef struct
 
 typedef struct
 {
-  char *name;
-  char *alpha_3;
+  char *name;    /**< full country name */
+  char *alpha_3; /**< alpha-3 abbreviation */
 } Countryname;
 
 typedef struct
@@ -158,7 +158,7 @@ typedef struct
   Limit *basetemp;   /**< basetemp array */
   int basetemp_size; /**< size of basetemp array */
   Countryname *countrymap; /**< country map array */
-  int countrymap_size;     /**< siize of country map array */
+  int countrymap_size;     /**< size of country map array */
   int *hlimit;       /**< harvest limit array */
   int hlimit_size;   /**< size of harvest limit array */
   char *source;      /**< source of data  or NULL */
