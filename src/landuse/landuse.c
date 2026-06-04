@@ -69,6 +69,15 @@ static void checkyear(const char *name,const Climatefile *file,const Config *con
   }
 } /* of 'checkyear' */
 
+static Bool isurban(const int *landusemap,int landusemap_size,int ncft,const Config *config)
+{
+  int i;
+  for(i=0;i<landusemap_size;i++)
+    if(landusemap[i]==ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree)
+       return TRUE;
+  return FALSE;
+} /* of 'isurban' */
+
 Landuse initlanduse(int npft,      /**< number of natural PFTs */
                     int ncft,      /**< number of crop PFTs */
                     Config *config /**< LPJ configuration */
@@ -106,6 +115,8 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   }
   if(config->landusemap==NULL)
     config->landusemap=defaultcftmap(&config->landusemap_size,"landusemap",FALSE,TRUE,npft,ncft,config);
+  if(isroot(*config) && isurban(config->landusemap,config->landusemap_size,ncft,config))
+    fprintf(stderr,"REMARK004: Land use data file contains urban area, is paramaterized as bare soil and is converted from natural stands only, not tested for global runs.\n");
   if(landuse->landuse.var_len!=2*config->landusemap_size && landuse->landuse.var_len!=4*config->landusemap_size)
   {
     if(isroot(*config))
