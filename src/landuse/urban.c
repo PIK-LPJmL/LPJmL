@@ -17,7 +17,8 @@
 #include "lpj.h"
 #include "natural.h"
 #include "agriculture.h"
-#include "urban.h"
+
+char *urban_name="urban";
 
 Standtype urban_stand={URBAN,"urban",{0.0,0.0},0,new_agriculture,
                        free_agriculture,fwrite_agriculture,

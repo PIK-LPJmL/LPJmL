@@ -17,6 +17,7 @@
 #ifndef URBAN_H
 #define URBAN_H
 
+extern char *urban_name;
 extern Standtype urban_stand;
 
 #endif
