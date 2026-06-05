@@ -1285,7 +1285,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar);
   if(notime && (header.nstep>1 || header.nyear>1))
   {
-    fprintf(stderr,"Setting not time axis option not allowed for more than one time step.\n");
+    fprintf(stderr,"Setting `-notime` axis option not allowed for more than one time step.\n");
     return EXIT_FAILURE;
   }
   if(!isbaseyear)
