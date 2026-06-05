@@ -29,6 +29,7 @@ Bool openfile_netcdf(Climatefile *file,        /**< data file */
   if(file->time_step!=YEAR)
   {
     fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename->name);
+    freemetadata(metadata);
     closeclimate_netcdf(file,TRUE);
     return TRUE;
   }
@@ -36,6 +37,7 @@ Bool openfile_netcdf(Climatefile *file,        /**< data file */
   {
     fprintf(stderr,"ERROR435: Time step of %d yrs in file '%s' must be 1.\n",
             file->delta_year,filename->name);
+    freemetadata(metadata);
     closeclimate_netcdf(file,TRUE);
     return TRUE;
   }

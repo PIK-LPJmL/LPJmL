@@ -38,6 +38,7 @@ Bool opendata_netcdf(Climatefile *file,        /**< data file */
     if(isroot(*config))
       fprintf(stderr,"ERROR435: Time step of %d yrs in file '%s' must be 1.\n",
               file->delta_year,filename->name);
+    freemetadata(metadata);
     closeclimate_netcdf(file,isroot(*config));
     return TRUE;
   }
