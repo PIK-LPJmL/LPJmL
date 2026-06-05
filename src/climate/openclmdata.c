@@ -68,6 +68,7 @@ Bool openclmdata(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid number of steps=%d in %s data file '%s', must be 1.\n",
               header.nstep,name,filename->name);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }
@@ -76,6 +77,7 @@ Bool openclmdata(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid time step=%d in %s data file '%s', must be 1.\n",
               header.timestep,name,filename->name);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }

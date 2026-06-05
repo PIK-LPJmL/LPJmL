@@ -95,7 +95,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         s=getsprintf(file->filename,file->firstyear);
         check(s);
         rc=openclimate_netcdf(file,&metadata,s,filename,units,config);
-        checktitle(metadata.attrs,metadata.n_attr,s,&config->climate,isroot(*config));
+        if(!rc && checktitle(metadata.attrs,metadata.n_attr,s,&config->climate,isroot(*config)) && config->pedantic)
+          rc=TRUE;
         freemetadata(&metadata);
         free(s);
       }
@@ -133,7 +134,13 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       if(mpi_openclimate_netcdf(file,&metadata,filename,units,config))
         return TRUE;
       if(check)
-        checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config));
+      {
+        if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config)) && config->pedantic)
+        {
+          freemetadata(&metadata);
+          return TRUE;
+        }
+      }
       freemetadata(&metadata);
       if(file->time_step==MISSING_TIME)
       {
@@ -157,7 +164,14 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
   if(check)
-    checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config));
+  {
+    if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      fclose(file->file);
+      return TRUE;
+    }
+  }
   freemetadata(&metadata);
   if (header.order!=CELLYEAR)
   {

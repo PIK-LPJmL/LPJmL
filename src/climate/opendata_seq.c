@@ -38,6 +38,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename->name);
+      freemetadata(metadata);
       closeclimate_netcdf(file,isroot(*config));
       return TRUE;
     }
@@ -46,6 +47,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
       if(isroot(*config))
         fprintf(stderr,"ERROR435: Time step of %d yrs in file '%s' must be 1.\n",
                 file->delta_year,filename->name);
+      freemetadata(metadata);
       closeclimate_netcdf(file,isroot(*config));
       return TRUE;
     }
@@ -60,6 +62,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s data file '%s', must be %d.\n",
              file->var_len,name,filename->name,nbands);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }

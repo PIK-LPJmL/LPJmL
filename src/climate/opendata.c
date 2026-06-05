@@ -81,6 +81,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s data file '%s', must be %d.\n",
              file->var_len,name,filename->name,nbands);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }
