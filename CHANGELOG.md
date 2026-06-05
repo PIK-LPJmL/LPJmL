@@ -29,6 +29,7 @@ of `major.minor.patch` with
 ### Added
 
 - Option `-metafile` and `-json` added to `cutclm` and `catclm`.
+- Option `-double` added to `cdf2soil.c` to write grid file with double datatype.
 
 ### Changed
 
