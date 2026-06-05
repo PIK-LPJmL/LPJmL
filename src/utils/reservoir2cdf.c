@@ -335,7 +335,7 @@ int main(int argc,char **argv)
                "-v,--version     print LPJmL version\n"
                "-global          use global grid for NetCDF file\n"
                "-longheader      force version of CLM file to 2\n"
-               "-cellsize s      set cell size, default is 0.5\n"
+               "-cellsize s      set cell size, default is %g\n"
                "-metafile        set the input format to JSON metafile instead of CLM\n"
                "-raw             set the input format to raw instead of CLM\n"
                "-netcdf4         file written is in NetCDF4 format\n"
@@ -346,7 +346,7 @@ int main(int argc,char **argv)
                "clmfile          filename of CLM data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,cellsize_lon);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
@@ -486,6 +486,7 @@ int main(int argc,char **argv)
     if(fseek(file,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
+      freemetadata(&metadata);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -512,6 +513,8 @@ int main(int argc,char **argv)
     if(grid_name.name==NULL)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
+      freemetadata(&metadata);
+      fclose(file);
       return EXIT_FAILURE;
     }
     path=getpath(filename);
@@ -519,6 +522,9 @@ int main(int argc,char **argv)
     if(grid_filename==NULL)
     {
       printallocerr("name");
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      fclose(file);
       return EXIT_FAILURE;
     }
     free(grid_name.name);
@@ -528,7 +534,12 @@ int main(int argc,char **argv)
   grid_name.name=grid_filename;
   coordfile=opencoord(&grid_name,TRUE);
   if(coordfile==NULL)
+  {
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   ngrid=numcoord(coordfile);
   if(cellsize_lon>0)
     res.lon=res.lat=cellsize_lon;
@@ -542,6 +553,10 @@ int main(int argc,char **argv)
   if(grid==NULL)
   {
     printallocerr("grid");
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    fclose(file);
+    closecoord(coordfile);
     return EXIT_FAILURE;
   }
   for(i=0;i<numcoord(coordfile);i++)
@@ -558,6 +573,8 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error reading header of '%s'.\n",filename);
         free(grid);
+        freemetadata(&metadata);
+        freeattrs(global_attrs,n_global);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -567,6 +584,8 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,filename,CLM_MAX_VERSION+1);
+        freemetadata(&metadata);
+        freeattrs(global_attrs,n_global);
         free(grid);
         fclose(file);
         return EXIT_FAILURE;
