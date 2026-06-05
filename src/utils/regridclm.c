@@ -60,21 +60,21 @@ int main(int argc,char **argv)
                "\nArguments:\n"
                "-h,--help    print this help text\n"
                "-v,--version print LPJmL version\n"
-               "-metafile    files are JSON metafiles,\n"
-               "             additional JSON file is written\n"
+               "-metafile    input files are JSON metafiles,\n"
+               "             additional JSON file written for outputn"
                "-size4       size of CLM input data is set to 4 bytes\n"
                "-byte        size of CLM input data is set to 1 byte\n"
-               "-search      if cell is not found, nearest cell is used\n"
-               "-zero        id cell is not found, data is set to zero\n"
-               "-lonhgheader version of CLM file is set to 2\n"
-               "-json        an additional JSON metafile with suffix .json is created\n"
+               "-search      if cell not found, nearest cell is used\n"
+               "-zero        if cell not found, data is set to zero\n"
+               "-longheader  version of CLM file is set to 2\n"
+               "-json        an additional JSON metafile with suffix '%s' is created\n"
                "grid_old.clm corresponding grid filename of input data,\n"
                "             can be omitted for metafile input\n"
                "grid_new_clm grid filename data should be regridded to\n"
                "data_old_clm filename of data that should be regridded\n"
                "data_new.clm filename of data file where regridded data is written\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,JSON_SUFFIX);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
