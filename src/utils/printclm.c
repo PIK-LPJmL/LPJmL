@@ -22,7 +22,7 @@
 #define NO_TEXT 4
 
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjon)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjson)
 {
   FILE *file;
   time_t mod_date;
@@ -89,7 +89,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     isrestart=(!strcmp(id,RESTART_HEADER));
     isreservoir=(!strcmp(id,LPJRESERVOIR_HEADER));
   }
-  if(isjon)
+  if(isjson)
   {
     fprintjson(stdout,filename,NULL,NULL,&header,&metadata,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
@@ -433,16 +433,16 @@ int main(int argc,char **argv)
                "-json       print header in JSON format only\n"
                "-scale      scale data with scale factor defined in header\n"
                "-longheader set long header(version 2) in CLM files\n"
-               "-type t     set datatype of clm file. Default is short\n"
+               "-type t     set datatype of clm file, default is short\n"
                "-nbands n   set number of bands to n ignoring value in file header\n"
-               "-map name   name of map in JSON metafile, default is \"map\"\n"
+               "-map name   name of map in JSON metafile, default is \"%s\"\n"
                "-start s    start output of data at year s\n"
                "-end e      end output of data at year e\n"
                "-first f    index of first cell for output\n"
                "-last l     index of last cell for output\n"
                "clmfile     filename of clm data file(s)\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,map_name);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
