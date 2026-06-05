@@ -23,8 +23,8 @@ of `major.minor.patch` with
 
 ### Contributors
 
-author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth(wirth@pik-potsdam.de)
-code review: Jannes Breier (breier@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth(wirth@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -36,10 +36,11 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 - basetemp, counrymap and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
 - Scaling to sum of stand fractions removed for output `"vegc_avg"`.
 - Utility `getcountry` reads now JSON metafile for country codes including the alpha-3 country codes and global grid instead of CLM file.
+- If `-pedantic` option is set, non-matching titles in input files stops `lpjml` with an error.
 
 ### Fixed
 
-- Warning for float coordinates corrected in `cdf2coord.c` and `cdf2soil.c`.
+- Warning for float coordinates corrected in `cdf2coord.c`, `cdf2grid.c` and `cdf2soil.c`.
 - Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
 - Carbon balance fixed in `reclaim_land.c`.
 - Check for NULL pointer added in `getuser.c` to avoid SEGV if user name cannot be resolved.
@@ -54,8 +55,8 @@ code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Contributors
 
-author: Christoph Müller (cmueller@pik-potsdam.de)
-code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 
 ### Added
 
@@ -73,8 +74,8 @@ code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-pot
 
 ### Contributors
 
-author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
-code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
