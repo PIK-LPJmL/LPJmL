@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions prints metadata information to JSON files                        \n**/
+/**     Function prints metadata information to JSON files                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,53 +17,6 @@
 #include "lpj.h"
 
 #define LINE_LEN 80
-
-void initmetadata(Metadata *metadata,  /**< metadata information */
-                  const char *map_name /**< name of map or NULL */
-                 )
-{
-  metadata->map_name=(map_name==NULL) ? MAP_NAME : map_name;
-  metadata->map=NULL;
-  metadata->attrs=NULL;
-  metadata->n_attr=0;
-  metadata->basetemp=NULL;
-  metadata->basetemp_size=0;
-  metadata->countrymap=NULL;
-  metadata->countrymap_size=0;
-  metadata->hlimit=NULL;
-  metadata->hlimit_size=0;
-  metadata->source=NULL;
-  metadata->history=NULL;
-  metadata->variable=NULL;
-  metadata->unit=NULL;
-  metadata->standard_name=NULL;
-  metadata->long_name=NULL;
-} /* of 'initmetadata' */
-
-void freemetadata(Metadata *metadata /**< metadata information */
-                 )
-{
-  int i;
-  freemap(metadata->map);
-  freeattrs(metadata->attrs,metadata->n_attr);
-  free(metadata->basetemp);
-  if(metadata->countrymap!=NULL)
-  {
-    for(i=0;i<metadata->countrymap_size;i++)
-    {
-      free(metadata->countrymap[i].name);
-      free(metadata->countrymap[i].alpha_3);
-    }
-    free(metadata->countrymap);
-  }
-  free(metadata->hlimit);
-  free(metadata->source);
-  free(metadata->history);
-  free(metadata->variable);
-  free(metadata->unit);
-  free(metadata->standard_name);
-  free(metadata->long_name);
-} /* of 'freemetadata' */
 
 void fprintmetadata(FILE *file,               /**< pointer to text file */
                     const Metadata *metadata, /**< metadata information printed */
