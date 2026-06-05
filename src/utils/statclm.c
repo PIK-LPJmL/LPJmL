@@ -137,6 +137,7 @@ int main(int argc,char **argv)
       if(fseek(file,offset,SEEK_CUR))
       {
         fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[i],offset);
+        freemetadata(&metadata);
         fclose(file);
         continue;
       }
