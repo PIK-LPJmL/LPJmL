@@ -114,11 +114,18 @@ int main(int argc,char **argv)
         in=openmetafile(&header,&metadata2,NULL,&grid_type,NULL,&swap,&offset,argv[iarg+i],TRUE);
       }
       if(in==NULL)
+      {
+        fclose(out);
         return EXIT_FAILURE;
+      }
       if(format==CLM)
       {
         if(freadheaderid(in,id,TRUE))
+        {
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
+        }
       }
       fseek(in,offset,SEEK_SET);
       size=typesizes[header.datatype];
@@ -129,18 +136,23 @@ int main(int argc,char **argv)
       if(in==NULL)
       {
         fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+i],strerror(errno));
+        fclose(out);
         return EXIT_FAILURE;
       }
       version=setversion;
       if(freadheader(in,&header,&swap,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(version>CLM_MAX_VERSION)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,argv[i+iarg],CLM_MAX_VERSION+1);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       filesize=getfilesizep(in)-headersize(id,version);
@@ -148,6 +160,8 @@ int main(int argc,char **argv)
          (header.order!=CELLINDEX && filesize!=((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[iarg+i]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
     }
@@ -158,6 +172,8 @@ int main(int argc,char **argv)
         index=newvec(int,header.ncell);
         if(index==NULL)
         {
+          fclose(in);
+          fclose(out);
           printallocerr("index");
           return EXIT_FAILURE;
         }
@@ -165,6 +181,8 @@ int main(int argc,char **argv)
       if(freadint(index,header.ncell,swap,in)!=header.ncell)
       {
         fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
     }
@@ -173,36 +191,50 @@ int main(int argc,char **argv)
       if(version>=3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.order!=oldheader.order)
       {
         fprintf(stderr,"Error: Different order in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.ncell!=oldheader.ncell)
       {
         fprintf(stderr,"Error: Different number of cells in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.firstcell!=oldheader.firstcell)
       {
         fprintf(stderr,"Error: Different index of first cell in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.nbands!=oldheader.nbands)
       {
         fprintf(stderr,"Error: Different number of bands in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.nstep!=oldheader.nstep)
       {
         fprintf(stderr,"Error: Different number of steps in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.firstyear!=oldheader.firstyear+oldheader.nyear)
       {
         fprintf(stderr,"Error: First year=%d in '%s' is different from %d.\n",header.firstyear,argv[i+iarg],oldheader.firstyear+oldheader.nyear);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.order==CELLINDEX)
@@ -211,6 +243,8 @@ int main(int argc,char **argv)
           if(index[j]!=index2[j])
           {
             fprintf(stderr,"Cell index different in '%s'.\n",argv[i+iarg]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
       }
@@ -231,22 +265,30 @@ int main(int argc,char **argv)
         if(index==NULL)
         {
           printallocerr("index");
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         if(freadint(index,header.ncell,swap,in)!=header.ncell)
         {
           fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         if(fwrite(index,sizeof(int),header.ncell,out)!=header.ncell)
         {
           fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         index2=newvec(int,header.ncell);
         if(index2==NULL)
         {
           printallocerr("index");
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         for(j=0;j<header.ncell;j++)
@@ -269,11 +311,15 @@ int main(int argc,char **argv)
           if(fread(bvals,1,(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(fwrite(bvals,1,(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -287,6 +333,8 @@ int main(int argc,char **argv)
           if(fread(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -295,6 +343,8 @@ int main(int argc,char **argv)
           if(fwrite(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -308,6 +358,8 @@ int main(int argc,char **argv)
           if(fread(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -316,6 +368,8 @@ int main(int argc,char **argv)
           if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -329,6 +383,8 @@ int main(int argc,char **argv)
           if(fread(lvals,sizeof(long long),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -337,6 +393,8 @@ int main(int argc,char **argv)
           if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
