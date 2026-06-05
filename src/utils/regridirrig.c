@@ -85,6 +85,7 @@ int main(int argc,char **argv)
     {
       if(freadheaderid(data_file,id,TRUE))
       {
+        freemetadata(&metadata);
         fclose(data_file);
         return EXIT_FAILURE;
       }
@@ -92,12 +93,20 @@ int main(int argc,char **argv)
     if(fseek(data_file,offset,SEEK_SET))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);      fclose(data_file);
+      freemetadata(&metadata);
+      fclose(data_file);
       return EXIT_FAILURE;
     }
     if(argc==iarg+4)
     {
       filename.name=strdup(argv[iarg]);
-      check(filename.name);
+      if(filename.name==NULL)
+      {
+        printallocerr("name");
+        freemetadata(&metadata);
+        fclose(data_file);
+        return EXIT_FAILURE;
+      }
       filename.fmt=CLM;
     }
     else
@@ -105,6 +114,8 @@ int main(int argc,char **argv)
       if(grid_name.name==NULL)
       {
         fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",argv[index_datafile]);
+        freemetadata(&metadata);
+        fclose(data_file);
         return EXIT_FAILURE;
       }
       path=getpath(argv[index_datafile]);
@@ -113,6 +124,8 @@ int main(int argc,char **argv)
       if(filename.name==NULL)
       {
         printallocerr("name");
+        freemetadata(&metadata);
+        fclose(data_file);
         return EXIT_FAILURE;
       }
       free(grid_name.name);
@@ -139,18 +152,26 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
               data_version,argv[iarg+2],CLM_MAX_VERSION+1);
-        return EXIT_FAILURE;
+      fclose(data_file);
+      return EXIT_FAILURE;
     }
     if(data_version<3)
       header.datatype=LPJ_INT;
     filename.name=strdup(argv[iarg]);
-    check(filename.name);
+    if(filename.name==NULL)
+    {
+      printallocerr("name");
+      fclose(data_file);
+      return EXIT_FAILURE;
+    }
     filename.fmt=CLM;
   }
   if(header.datatype!=LPJ_INT)
   {
     fprintf(stderr,"Invalid datatype %s in '%s', must be int.\n",typenames[header.datatype],argv[index_datafile]);
     {
+      freemetadata(&metadata);
+      free(filename.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }
@@ -159,13 +180,20 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Invalid number of bands %d in '%s', must be 1.\n",header.nbands,argv[index_datafile]);
     {
+      freemetadata(&metadata);
+      free(filename.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }
   }
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
+  {
+    freemetadata(&metadata);
+    free(filename.name);
+    fclose(data_file);
     return EXIT_FAILURE;
+  }
   ngrid=numcoord(grid);
   getcellsizecoord(&lon,&lat,grid);
   res.lon=lon;
@@ -173,17 +201,23 @@ int main(int argc,char **argv)
   c=newvec(Coord,ngrid);
   if(c==NULL)
   {
-    closecoord(grid);
     printallocerr("c");
+    closecoord(grid);
+    freemetadata(&metadata);
+    free(filename.name);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid;i++)
   {
     if(readcoord(grid,c+i,&res))
     {
-      free(c);
-      closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,filename.name);
+      free(c);
+      freemetadata(&metadata);
+      free(filename.name);
+      fclose(data_file);
+      closecoord(grid);
       return EXIT_FAILURE;
     }
     //printf("c:%g %g\n",c[i].lon,c[i].lat);
@@ -191,12 +225,23 @@ int main(int argc,char **argv)
   closecoord(grid);
   free(filename.name);
   filename.name=strdup(argv[index_gridfile]);
-  check(filename.name);
+  if(filename.name==NULL)
+  {
+    printallocerr("name");
+    free(c);
+    freemetadata(&metadata);
+    fclose(data_file);
+    closecoord(grid);
+    return EXIT_FAILURE;
+  }
   filename.fmt=(setversion==2) ? CLM2 : CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
   {
     free(c);
+    freemetadata(&metadata);
+    free(filename.name);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   grid_type=getcoordtype(grid);
@@ -207,19 +252,25 @@ int main(int argc,char **argv)
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
-    free(c);
-    closecoord(grid);
     printallocerr("c2");
+    free(c);
+    freemetadata(&metadata);
+    free(filename.name);
+    fclose(data_file);
+    closecoord(grid);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid2;i++)
   {
     if(readcoord(grid,c2+i,&res2))
     {
+      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[index_gridfile]);
       free(c);
       free(c2);
+      freemetadata(&metadata);
+      free(filename.name);
+      fclose(data_file);
       closecoord(grid);
-      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[index_gridfile]);
       return EXIT_FAILURE;
     }
     //printf("c2:%g %g\n",c2[i].lon,c2[i].lat);
@@ -236,6 +287,8 @@ int main(int argc,char **argv)
             header.ncell,argv[index_datafile],ngrid);
     free(c);
     free(c2);
+    freemetadata(&metadata);
+    free(filename.name);
     fclose(data_file);
     return EXIT_FAILURE;
   }
@@ -246,6 +299,8 @@ int main(int argc,char **argv)
     printallocerr("idata");
     free(c);
     free(c2);
+    freemetadata(&metadata);
+    free(filename.name);
     fclose(data_file);
     return EXIT_FAILURE;
   }
@@ -256,6 +311,8 @@ int main(int argc,char **argv)
     free(c);
     free(c2);
     free(data);
+    freemetadata(&metadata);
+    free(filename.name);
     fclose(data_file);
     return EXIT_FAILURE;
   }
@@ -267,6 +324,8 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[index_datafile+1],strerror(errno));
     free(c);
     free(c2);
+    freemetadata(&metadata);
+    free(filename.name);
     free(data);
     return EXIT_FAILURE;
   }
@@ -278,6 +337,8 @@ int main(int argc,char **argv)
     free(c);
     free(c2);
     free(data);
+    freemetadata(&metadata);
+    free(filename.name);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -289,6 +350,12 @@ int main(int argc,char **argv)
       fputs("Coordinate ",stderr);
       fprintcoord(stderr,c2+i);
       fputs(" not found.\n",stderr);
+      free(c);
+      free(c2);
+      free(data);
+      freemetadata(&metadata);
+      free(filename.name);
+      fclose(file);
       return EXIT_FAILURE;
     }
     index=data[index];
@@ -300,6 +367,8 @@ int main(int argc,char **argv)
       free(c);
       free(c2);
       free(data);
+      freemetadata(&metadata);
+      free(filename.name);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -319,6 +388,8 @@ int main(int argc,char **argv)
       free(c);
       free(c2);
       free(data);
+      freemetadata(&metadata);
+      free(filename.name);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -333,6 +404,8 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      freemetadata(&metadata);
+      free(filename.name);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[index_datafile+1]),JSON_SUFFIX);
@@ -341,6 +414,8 @@ int main(int argc,char **argv)
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      freemetadata(&metadata);
+      free(filename.name);
       return EXIT_FAILURE;
     }
     fprintjson(file,argv[index_datafile+1],NULL,arglist,&header2,&metadata,&filename,grid_type,format,id,FALSE,data_version);
