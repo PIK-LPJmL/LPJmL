@@ -347,7 +347,10 @@ static int checklandusefile(Config *config,const Filename *filename,const char *
     fclose(file);
   }
   if(check_title)
-    checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->landuse,TRUE);
+  {
+    if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->landuse,TRUE) && config->pedantic)
+      rc=1;
+  }
   getmap(metadata.map,filename->name,name,cftonly,cftmap,cftmapsize,npft,ncft,config);
   if(*cftmap==NULL)
     *cftmap=defaultcftmap(cftmapsize,name,cftonly,npft,ncft,config);
@@ -433,7 +436,8 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         {
           if(check_title)
           {
-            checktitle(metadata.attrs,metadata.n_attr,name,&config->climate,TRUE);
+            if(checktitle(metadata.attrs,metadata.n_attr,name,&config->climate,TRUE) && config->pedantic)
+              count++;
           }
           freemetadata(&metadata);
           closeclimate_netcdf(&input,TRUE);
@@ -449,7 +453,11 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
         return 1;
       if(check_title)
       {
-        checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE);
+        if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE) && config->pedantic)
+        {
+          freemetadata(&metadata);
+          closeclimate_netcdf(&input,TRUE);
+        }
       }
       freemetadata(&metadata);
       closeclimate_netcdf(&input,TRUE);
@@ -483,7 +491,11 @@ static int checkclmfile(Config *config,const char *data_name,const Filename *fil
     fclose(file);
     if(check_title)
     {
-      checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE);
+      if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,TRUE) && config->pedantic)
+      {
+        freemetadata(&metadata);
+        return 1;
+      }
     }
     freemetadata(&metadata);
     if(check)
