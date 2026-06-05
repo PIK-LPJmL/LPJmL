@@ -63,6 +63,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
       if(isroot(*config))
         fprintf(stderr,"ERROR154: Longitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lon,config->resolution.lon,filename->name);
+      freemetadata(metadata);
       fclose(file);  
       return NULL;
     }
@@ -71,6 +72,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
       if(isroot(*config))
         fprintf(stderr,"ERROR154: Latitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lat,config->resolution.lat,filename->name);
+      freemetadata(metadata);
       fclose(file);  
       return NULL;
     }
@@ -85,6 +87,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
         fprintf(stderr,"ERROR155: Grid cells [%d,%d] in '%s' not in [%d,%d].\n",
                 header->firstcell,header->ncell+header->firstcell-1,filename->name,
                 config->firstgrid,config->nall+config->firstgrid-1);
+      freemetadata(metadata);
       fclose(file);  
       return NULL;
     }

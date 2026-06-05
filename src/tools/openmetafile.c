@@ -347,6 +347,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   {
     if(isout)
       fprintf(stderr,"ERROR223: Cannot parse JSON file '%s'.\n",filename);
+    freemetadata(metadata);
     return NULL;
   }
   path=getpath(filename);
@@ -356,21 +357,28 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     printallocerr("name");
     free(path);
     free(name);
+    freemetadata(metadata);
     return NULL;
   }
   free(name);
   free(path);
   name=fullname;
   /* open data file */
-  if((file=fopen(name,"rb"))==NULL  && isout)
-    printfopenerr(name);
+  file=fopen(name,"rb");
   /* check file size of binary file */
-  if(file!=NULL)
+  if(file==NULL)
+  {
+    if(isout)
+      printfopenerr(name);
+    freemetadata(metadata);
+  }
+  else
   {
     if((header->order==CELLINDEX  && getfilesizep(file)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(file)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
     {
       if(getfilesizep(file)==0)
       {
+        freemetadata(metadata);
         fclose(file);
         file=NULL;
         if(isout)
