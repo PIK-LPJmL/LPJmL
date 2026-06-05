@@ -166,7 +166,11 @@ int main(int argc,char **argv)
     if(format==CLM)
     {
       if(freadheaderid(in1,id,TRUE))
+      {
+        fclose(in1);
+        freemetadata(&metadata1);
         return EXIT_FAILURE;
+      }
     }
     fseek(in1,offset,SEEK_SET);
   }
@@ -195,6 +199,7 @@ int main(int argc,char **argv)
       if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
+        fclose(in1);
         return EXIT_FAILURE;
       }
       if(version>CLM_MAX_VERSION)
@@ -222,6 +227,8 @@ int main(int argc,char **argv)
       if(intvalue && ivalue==0 && op==DIV)
       {
         fprintf(stderr,"Value must not be zero for div operator.\n");
+        freemetadata(&metadata1);
+        fclose(in1);
         return EXIT_FAILURE;
       }
     }
@@ -264,6 +271,8 @@ int main(int argc,char **argv)
         if(in2==NULL)
         {
           fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+          freemetadata(&metadata1);
+          fclose(in1);
           return EXIT_FAILURE;
         }
         if(israw)
@@ -283,12 +292,18 @@ int main(int argc,char **argv)
           if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
           {
             fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
+            freemetadata(&metadata1);
+            fclose(in1);
+            fclose(in2);
             return EXIT_FAILURE;
           }
           if(version>CLM_MAX_VERSION)
           {
             fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                     version,argv[iarg+2],CLM_MAX_VERSION+1);
+            freemetadata(&metadata1);
+            fclose(in1);
+            fclose(in2);
             return EXIT_FAILURE;
           }
           if(index!=NOT_FOUND)
@@ -302,46 +317,73 @@ int main(int argc,char **argv)
       if(header1.nyear!=header2.nyear)
       {
         fprintf(stderr,"nyear %d differs from %d.\n",header1.nyear,header2.nyear);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.nbands!=header2.nbands)
       {
         fprintf(stderr,"nbands %d differs from %d.\n",header1.nbands,header2.nbands);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.nstep!=header2.nstep)
       {
         fprintf(stderr,"nstep %d differs from %d.\n",header1.nstep,header2.nstep);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.firstyear!=header2.firstyear)
       {
         fprintf(stderr,"firstyear %d differs from %d.\n",header1.firstyear,header2.firstyear);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.ncell!=header2.ncell)
       {
         fprintf(stderr,"ncell %d differs from %d.\n",header1.ncell,header2.ncell);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.firstcell!=header2.firstcell)
       {
         fprintf(stderr,"firstcell %d differs from %d.\n",header1.firstcell,header2.firstcell);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.cellsize_lon!=header2.cellsize_lon)
       {
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lon,header2.cellsize_lon);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.cellsize_lat!=header2.cellsize_lat)
       {
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
       if(header1.order!=header2.order)
       {
         fprintf(stderr,"cell order %d differs from %d.\n",header1.order,header2.order);
+        freemetadata(&metadata1);
+        fclose(in1);
+        fclose(in2);
         return EXIT_FAILURE;
       }
     }

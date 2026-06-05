@@ -182,6 +182,7 @@ int main(int argc,char **argv)
   if(grid==NULL)
   {
     printallocerr("grid");
+    free(grid_name.name);
     closecoord(coordfile);
     free(country);
     fclose(file);
@@ -218,6 +219,8 @@ int main(int argc,char **argv)
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
+    if(ismeta)
+      freemetadata(&metadata);
     free(grid);
     free(country);
     fclose(file);
@@ -229,6 +232,12 @@ int main(int argc,char **argv)
     if(readcountrycode(file,&code,header.datatype,isregion,swap))
     {
       fprintf(stderr,"Error reading country code at %d.\n",i+1);
+      if(ismeta)
+        freemetadata(&metadata);
+      free(grid);
+      free(country);
+      fclose(file);
+      fclose(out);
       return EXIT_FAILURE;
     }
     if(findcountry(country,n,code))
@@ -237,6 +246,12 @@ int main(int argc,char **argv)
       if(rc)
       {
         fprintf(stderr,"Error writing coordinate at %d.\n",i+1);
+        if(ismeta)
+          freemetadata(&metadata);
+        free(grid);
+        free(country);
+        fclose(file);
+        fclose(out);
         return EXIT_FAILURE;
       }
       outheader.ncell++;
