@@ -245,8 +245,8 @@ int main(int argc,char **argv)
          }
          else
          {
-           coord.lat=(short)(lat[ilat]/scalar);
-           coord.lon=(short)(lon[ilon]/scalar);
+           coord.lat=(short)round(lat[ilat]/scalar);
+           coord.lon=(short)round(lon[ilon]/scalar);
 #ifdef DEBUG
            printf("%.3f %3f %d %d\n",lat[ilat],lon[ilon],coord.lat,coord.lon);
 #endif
