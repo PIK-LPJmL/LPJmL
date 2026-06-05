@@ -181,6 +181,7 @@ int main(int argc,char **argv)
   {
     if(readcoord(grid,c+i,&res))
     {
+      free(c);
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,filename.name);
       return EXIT_FAILURE;
