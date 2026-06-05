@@ -89,13 +89,20 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   initmetadata(&metadata,config->landuse_filename.map);
   if(opendata(&landuse->landuse,&metadata,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
+    freemetadata(&metadata);
     freelanduse(landuse,config);
     return NULL;
   }
-  checktitle(metadata.attrs,metadata.n_attr,config->landuse_filename.name,&config->landuse,isroot(*config));
+  if(checktitle(metadata.attrs,metadata.n_attr,config->landuse_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+  {
+    freemetadata(&metadata);
+    freelanduse(landuse,config);
+    return NULL;
+  }
   if(getmap(metadata.map,config->landuse_filename.name,"landusemap",FALSE,
             &config->landusemap,&config->landusemap_size,npft,ncft,config))
   {
+    freemetadata(&metadata);
     freelanduse(landuse,config);
     return NULL;
   }
@@ -254,7 +261,12 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       freelanduse(landuse,config);
       return NULL;
     }
-    checktitle(metadata.attrs,metadata.n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config));
+    if(checktitle(metadata.attrs,metadata.n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      freelanduse(landuse,config);
+      return NULL;
+    }
     if(getmap(metadata.map,config->fertilizer_nr_filename.name,"fertilizermap",FALSE,
               &config->fertilizermap,&config->fertilizermap_size,npft,ncft,config))
     {
@@ -287,11 +299,17 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       freelanduse(landuse,config);
       return NULL;
     }
-    checktitle(metadata.attrs,metadata.n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config));
+    if(checktitle(metadata.attrs,metadata.n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      freelanduse(landuse,config);
+      return NULL;
+    }
     if(getmap(metadata.map,config->manure_nr_filename.name,"manuremap",FALSE,
               &config->manuremap,&config->manuremap_size,npft,ncft,config))
     {
       freemetadata(&metadata);
+      freelanduse(landuse,config);
       return NULL;
     }
     freemetadata(&metadata);
