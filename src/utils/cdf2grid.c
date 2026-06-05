@@ -38,7 +38,7 @@ int main(int argc,char **argv)
 #ifdef USE_NETCDF
   int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len;
   double *lat,*lon;
-  float scalar=0.0;
+  double scalar=0.01;
   size_t lat_len,lon_len;
   int missing_value;
   Bool israw,isjson,scalar_set;
@@ -84,11 +84,13 @@ int main(int argc,char **argv)
       {
         header.datatype=LPJ_FLOAT;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[iarg],"-double"))
       {
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[iarg],"-raw"))
       {
@@ -106,13 +108,13 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scalar=header.scalar=(float)strtod(argv[++iarg],&endptr);
+        header.scalar=scalar=strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.scalar!=1)
+        if(scalar!=1)
           scalar_set=TRUE;
       }
       else
@@ -136,6 +138,7 @@ int main(int argc,char **argv)
             scalar,typenames[header.datatype]);
 
     header.scalar=1;
+    scalar=1;
   }
   rc=nc_open(argv[iarg],NC_NOWRITE,&ncid);
   if(rc)
@@ -249,6 +252,10 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
+    fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
+            header.cellsize_lat,header.cellsize_lon,scalar);
+
   index=newvec(int,lat_len*lon_len);
   if(index==NULL)
   {
@@ -379,8 +386,8 @@ int main(int argc,char **argv)
         rc=fwrite(&coord_d,sizeof(coord_d),1,out);
         break;
       default:
-        coord.lat=(short)(lat[data[i].ilat]/header.scalar);
-        coord.lon=(short)(lon[data[i].ilon]/header.scalar);
+        coord.lat=(short)round(lat[data[i].ilat]/scalar);
+        coord.lon=(short)round(lon[data[i].ilon]/scalar);
 #ifdef DEBUG
         printf("%.3f %3f %d %d\n",lat[data[i].ilat],lon[data[i].ilon],coord.lat,coord.lon);
 #endif
