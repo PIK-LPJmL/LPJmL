@@ -319,8 +319,8 @@ int main(int argc,char **argv)
             fwrite(&coord_d,sizeof(coord_d),1,out);
             break;
           default:
-            coord.lat=(short)(lat[offsets[first]]/scalar);
-            coord.lon=(short)(lon[offsets[first+1]]/scalar);
+            coord.lat=(short)round(lat[offsets[first]]/scalar);
+            coord.lon=(short)round(lon[offsets[first+1]]/scalar);
 #ifdef DEBUG
             printf("%.3f %3f %d %d\n",lat[offsets[1]],lon[offsets[2]],coord.lat,coord.lon);
 #endif
