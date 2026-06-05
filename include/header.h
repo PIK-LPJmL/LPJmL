@@ -161,7 +161,7 @@ typedef struct
   int countrymap_size;     /**< size of country map array */
   int *hlimit;       /**< harvest limit array */
   int hlimit_size;   /**< size of harvest limit array */
-  char *source;      /**< source of data  or NULL */
+  char *source;      /**< source of data or NULL */
   char *history;     /**< history of data or NULL */
   char *variable;    /**< name of variable or NULL */
   char *unit;        /**< unit of variable or NULL */
