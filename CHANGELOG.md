@@ -34,7 +34,7 @@ of `major.minor.patch` with
 ### Changed
 
 - New datatype `Metadata` defined in `types.h` combining maps, attributes, basetemp and hlimit arrays used by `opendata()`.
-- basetemp, counrymap and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
+- basetemp, countrymap and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
 - Scaling to sum of stand fractions removed for output `"vegc_avg"`.
 - Utility `getcountry` reads now JSON metafile for country codes including the alpha-3 country codes and global grid instead of CLM file.
 - If `-pedantic` option is set, non-matching titles in input files stops `lpjml` with an error.
