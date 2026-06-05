@@ -184,6 +184,7 @@ extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(FILE *,Header *,Metadata *,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern Countryname *fscancountrymap(LPJfile *,int *,const char *,Verbosity);
+extern void freecountrymap(Countryname [],int);
 extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);

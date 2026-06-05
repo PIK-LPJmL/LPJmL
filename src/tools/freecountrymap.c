@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                f  r  e  e  m  e  t  a  d  a  t  a  .  c                        \n**/
+/**               f  r  e  e  c  o  u  n  t  r  y  m  a  p  .  c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function deallocates metadata information                                  \n**/
+/**     Function deallocates counrry map                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,23 +16,18 @@
 
 #include "lpj.h"
 
-void freemetadata(Metadata *metadata /**< metadata information */
-                 )
+void freecountrymap(Countryname countrymap[], /**< country map array */
+                    int size                  /**< size of country map */
+                   )
 {
-  if(metadata!=NULL)
+  int i;
+  if(countrymap!=NULL)
   {
-    freemap(metadata->map);
-    freeattrs(metadata->attrs,metadata->n_attr);
-    free(metadata->basetemp);
-    freecountrymap(metadata->countrymap,metadata->countrymap_size);
-    free(metadata->hlimit);
-    free(metadata->source);
-    free(metadata->history);
-    free(metadata->variable);
-    free(metadata->unit);
-    free(metadata->standard_name);
-    free(metadata->long_name);
-    /* set pointers to NULL to avoid double free corruption if freemetadat is called twice */
-    initmetadata(metadata,NULL);
+    for(i=0;i<size;i++)
+    {
+      free(countrymap[i].name);
+      free(countrymap[i].alpha_3);
+    }
+    free(countrymap);
   }
-} /* of 'freemetadata' */
+} /* of 'freecountrymap' */

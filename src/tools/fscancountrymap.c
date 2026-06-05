@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads counry map from JSON file                                   \n**/
+/**     Function reads country map from JSON file                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -40,15 +40,38 @@ Countryname *fscancountrymap(LPJfile *file,      /**< pointer to JSON file */
     item=fscanarrayindex(array,i);
     str=fscanstruct(item,NULL,verbosity);
     if(str==NULL)
+    {
+      freecountrymap(countrymap,i);
       return NULL;
+    }
     name=fscanstring(str,NULL,"name",verbosity);
     if(name==NULL)
+    {
+      freecountrymap(countrymap,i);
       return NULL;
+    }
     countrymap[i].name=strdup(name);
+    if(countrymap[i].name==NULL)
+    {
+      printallocerr("countrymap");
+      freecountrymap(countrymap,i);
+      return NULL;
+    }
     name=fscanstring(str,NULL,"alpha-3",verbosity);
     if(name==NULL)
+    {
+      free(countrymap[i].name);
+      freecountrymap(countrymap,i);
       return NULL;
+    }
     countrymap[i].alpha_3=strdup(name);
+    if(countrymap[i].alpha_3==NULL)
+    {
+      printallocerr("countrymap");
+      free(countrymap[i].name);
+      freecountrymap(countrymap,i);
+      return NULL;
+    }
   }
   return countrymap;
 } /* of 'fscancountrymap' */
