@@ -117,6 +117,8 @@ int main(int argc,char **argv)
       path=getpath(argv[index_datafile]);
       filename.name=addpath(grid_name.name,path);
       filename.fmt=grid_name.fmt;
+      free(grid_name.name);
+      free(path);
       if(filename.name==NULL)
       {
         printallocerr("name");
@@ -124,8 +126,6 @@ int main(int argc,char **argv)
         fclose(data_file);
         return EXIT_FAILURE;
       }
-      free(grid_name.name);
-      free(path);
     }
   }
   else
