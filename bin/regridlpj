@@ -104,6 +104,10 @@ name=$1
 if [ "$dir" != $PWD ]
 then
   mkdir -p $dir
+  if [ $? -ne 0 ] ;
+  then
+    exit 1
+  fi
 fi
 shift 1
 if [ $# -gt 0 ]
@@ -118,7 +122,15 @@ else
   if [ "$dir" != $PWD ]
   then
     cp grid_$name.clm $dir
+    if [ $? -ne 0 ] ;
+    then
+      exit 1
+    fi
     cp grid_$name.clm.json $dir
+    if [ $? -ne 0 ] ;
+    then
+      exit 1
+    fi
   fi
 fi
 if regridclm $opt -metafile $dir/grid_$name.clm $LPJINPATH/soil_30arcmin_13_types.clm.json $dir/soil_$name.clm
