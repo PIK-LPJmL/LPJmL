@@ -38,6 +38,7 @@ of `major.minor.patch` with
 - Scaling to sum of stand fractions removed for output `"vegc_avg"`.
 - Utility `getcountry` reads now JSON metafile for country codes including the alpha-3 country codes and global grid instead of CLM file.
 - If `-pedantic` option is set, non-matching titles in input files stops `lpjml` with an error.
+- Datatype of `lon`, `lat`, and `area` elements of `Coord` change from `Real` to `double`.
 
 ### Fixed
 

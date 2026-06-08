@@ -336,7 +336,7 @@ Bool bstruct_readcoord(Bstruct file,     /**< pointer to restart file */
 
 Bool writecoord(FILE *file,         /**< pointer to binary file */
                 const Coord *coord, /**< cell coordinate written to file */
-                double scalar,       /**< scaling factor */
+                double scalar,      /**< scaling factor */
                 Type datatype       /**< datatype */
                )                    /** \returns TRUE on error */
 {
@@ -403,8 +403,8 @@ int seekcoord(Coordfile coordfile, /**< open coord file */
 } /* of 'seekcoord' */
 
 double cellarea(const Coord *coord, /**< cell coordinate */
-                      const Coord *resol  /**< resolution (deg) */
-                     )                    /** \return area of cell (m^2) */
+                const Coord *resol  /**< resolution (deg) */
+               )                    /** \return area of cell (m^2) */
 {
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
