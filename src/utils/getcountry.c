@@ -269,14 +269,27 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      if(ismeta)
+        freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      if(ismeta)
+        freemetadata(&metadata);
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(arglist);
+      free(out_json);
+      if(ismeta)
+        freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     if(!ismeta)
