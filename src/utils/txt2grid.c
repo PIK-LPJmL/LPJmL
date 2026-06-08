@@ -105,7 +105,7 @@ int main(int argc,char **argv)
   int i,iarg,nskip,n,index;
   Double_coord dcoord;
   Float_coord coord;
-  Real dist_min;
+  double dist_min;
   Header header;
   Metadata metadata;
   char *endptr,*map_name;
@@ -139,11 +139,12 @@ int main(int argc,char **argv)
                "-double            write double data, default is short\n"
                "-skip n            skip first n lines, default is one\n"
                "-latlon            read latitude then longitude\n"
-               "-json              JSON metafile is created with suffix '.json'\n"
+               "-json              JSON metafile is created with suffix '%s'\n"
                "gridfile           filename of grid text file\n"
                "clmfile            filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               getversion(),fmt,header.cellsize_lon,header.cellsize_lat,header.cellsize_lon);
+               getversion(),fmt,header.cellsize_lon,header.cellsize_lat,header.cellsize_lon,
+               JSON_SUFFIX);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-fmt"))

@@ -34,16 +34,8 @@ int main(int argc,char **argv)
   double missing_value,data;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
-  Intcoord coord;
+  Coord coord;
   Metadata metadata;
-  struct
-  {
-    double lon,lat;
-  } coord_d;
-  struct
-  {
-    float lon,lat;
-  } coord_f;
   Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
@@ -306,26 +298,9 @@ int main(int argc,char **argv)
       if((!isnan(missing_value) && !isnan(data) && data!=missing_value) ||
           (isnan(missing_value) && !isnan(data)))
       {
-        switch(header.datatype)
-        {
-          case LPJ_FLOAT:
-            coord_f.lat=(float)lat[offsets[first]];
-            coord_f.lon=(float)lon[offsets[first+1]];
-            fwrite(&coord_f,sizeof(coord_f),1,out);
-            break;
-          case LPJ_DOUBLE:
-            coord_d.lat=lat[offsets[first]];
-            coord_d.lon=lon[offsets[first+1]];
-            fwrite(&coord_d,sizeof(coord_d),1,out);
-            break;
-          default:
-            coord.lat=(short)round(lat[offsets[first]]/scalar);
-            coord.lon=(short)round(lon[offsets[first+1]]/scalar);
-#ifdef DEBUG
-            printf("%.3f %3f %d %d\n",lat[offsets[1]],lon[offsets[2]],coord.lat,coord.lon);
-#endif
-            fwrite(&coord,sizeof(coord),1,out);
-        }
+        coord.lon=lon[offsets[first+1]];
+        coord.lat=lat[offsets[first]];
+        writecoord(out,&coord,scalar,header.datatype);
         header.ncell++;
       }
     }

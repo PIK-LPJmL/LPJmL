@@ -36,19 +36,11 @@ int main(int argc,char **argv)
   int *data;
   Header header;
   double scalar=0.01;
-  Intcoord coord;
   FILE *out,*soil;
   Byte soilcode;
   Bool ismap,scalar_set;
   Byte soilmap[]={Sa,LoSa,SaLo,SiLo,Lo,SaClLo,SiClLo,ClLo,SaCl,SiCl,Cl,Si};
-  struct
-  {
-    float lon,lat;
-  } coord_f;
-  struct
-  {
-    double lon,lat;
-  } coord_d;
+  Coord coord;
   char *var=SOIL_NAME;
   char *endptr;
   header.scalar=0.01;
@@ -255,26 +247,9 @@ int main(int argc,char **argv)
     {
       if(data[ilat*lon_len+ilon]!=missing_value)
       {
-        switch(header.datatype)
-        {
-          case LPJ_FLOAT: 
-            coord_f.lat=lat[ilat];
-            coord_f.lon=lon[ilon];
-            fwrite(&coord_f,sizeof(coord_f),1,out);
-            break;
-          case LPJ_DOUBLE: 
-            coord_d.lat=lat[ilat];
-            coord_d.lon=lon[ilon];
-            fwrite(&coord_d,sizeof(coord_d),1,out);
-            break;
-          default:
-            coord.lat=(short)round(lat[ilat]/scalar);
-            coord.lon=(short)round(lon[ilon]/scalar);
-#ifdef DEBUG
-            printf("%.3f %3f %d %d\n",lat[ilat],lon[ilon],coord.lat,coord.lon);
-#endif
-            fwrite(&coord,sizeof(coord),1,out);
-        }
+        coord.lat=lat[ilat];
+        coord.lon=lat[ilon];
+        writecoord(out,&coord,scalar,header.datatype);
         header.ncell++;
         if(ismap)
           soilcode=(Byte)(soilmap[data[ilat*lon_len+ilon]-1]+1);

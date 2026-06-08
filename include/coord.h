@@ -27,9 +27,9 @@ typedef struct
 
 typedef struct
 {
-  Real lon;  /**< longitude in degrees */
-  Real lat;  /**< latitude in degrees */
-  Real area; /**< cell area (m^2) */
+  double lon;  /**< longitude in degrees */
+  double lat;  /**< latitude in degrees */
+  double area; /**< cell area (m^2) */
 } Coord;
 
 typedef struct coordfile *Coordfile;
@@ -43,7 +43,7 @@ extern Bool readcoord(Coordfile,Coord *,const Coord *);
 extern void closecoord(Coordfile);
 extern Bool bstruct_writecoord(Bstruct,const char *,const Coord *);
 extern Bool bstruct_readcoord(Bstruct,const char *,Coord *);
-extern Bool writecoord(FILE *,const Coord *,float,Type);
+extern Bool writecoord(FILE *,const Coord *,double,Type);
 extern Bool writeshortcoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
 extern Bool writedoublecoord(FILE *,const Coord *);

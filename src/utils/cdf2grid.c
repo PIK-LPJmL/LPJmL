@@ -45,15 +45,7 @@ int main(int argc,char **argv)
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
   Metadata metadata;
-  Intcoord coord;
-  struct
-  {
-    double lon,lat;
-  } coord_d;
-  struct
-  {
-    float lon,lat;
-  } coord_f;
+  Coord coord;
   Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
@@ -373,27 +365,9 @@ int main(int argc,char **argv)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   for(i=0;i<header.ncell;i++)
   {
-    switch(header.datatype)
-    {
-      case LPJ_FLOAT:
-        coord_f.lat=(float)lat[data[i].ilat];
-        coord_f.lon=(float)lon[data[i].ilon];
-        rc=fwrite(&coord_f,sizeof(coord_f),1,out);
-        break;
-      case LPJ_DOUBLE:
-        coord_d.lat=lat[data[i].ilat];
-        coord_d.lon=lon[data[i].ilon];
-        rc=fwrite(&coord_d,sizeof(coord_d),1,out);
-        break;
-      default:
-        coord.lat=(short)round(lat[data[i].ilat]/scalar);
-        coord.lon=(short)round(lon[data[i].ilon]/scalar);
-#ifdef DEBUG
-        printf("%.3f %3f %d %d\n",lat[data[i].ilat],lon[data[i].ilon],coord.lat,coord.lon);
-#endif
-        rc=fwrite(&coord,sizeof(coord),1,out);
-    } /* of switch() */
-    if(rc!=1)
+    coord.lat=lat[data[i].ilat];
+    coord.lon=lat[data[i].ilon];
+    if(writecoord(out,&coord,scalar,header.datatype))
     {
       fprintf(stderr,"Error writing grid file '%s': %s.\n",
               argv[iarg+1],strerror(errno));

@@ -315,8 +315,8 @@ Bool bstruct_writecoord(Bstruct file,      /**< pointer to restart file */
 {
   if(bstruct_writebeginstruct(file,name))
     return TRUE;
-  bstruct_writereal(file,"lon",coord->lon);
-  bstruct_writereal(file,"lat",coord->lat);
+  bstruct_writedouble(file,"lon",coord->lon);
+  bstruct_writedouble(file,"lat",coord->lat);
   return bstruct_writeendstruct(file);
 } /* of 'bstruct_writecoord' */
 
@@ -327,16 +327,16 @@ Bool bstruct_readcoord(Bstruct file,     /**< pointer to restart file */
 {
   if(bstruct_readbeginstruct(file,name))
     return TRUE;
-  if(bstruct_readreal(file,"lon",&coord->lon))
+  if(bstruct_readdouble(file,"lon",&coord->lon))
     return TRUE;
-  if(bstruct_readreal(file,"lat",&coord->lat))
+  if(bstruct_readdouble(file,"lat",&coord->lat))
     return TRUE;
   return bstruct_readendstruct(file,name);
 } /* of 'bstruct_readcoord' */
 
 Bool writecoord(FILE *file,         /**< pointer to binary file */
                 const Coord *coord, /**< cell coordinate written to file */
-                float scalar,       /**< scaling factor */
+                double scalar,       /**< scaling factor */
                 Type datatype       /**< datatype */
                )                    /** \returns TRUE on error */
 {
@@ -352,7 +352,7 @@ Bool writecoord(FILE *file,         /**< pointer to binary file */
     case LPJ_DOUBLE:
       return writedoublecoord(file,coord);
     default:
-     return TRUE;
+      return TRUE;
   }
 } /* of 'writecoord' */
 
@@ -402,9 +402,9 @@ int seekcoord(Coordfile coordfile, /**< open coord file */
                SEEK_SET);
 } /* of 'seekcoord' */
 
-Real cellarea(const Coord *coord, /**< cell coordinate */
-              const Coord *resol  /**< resolution (deg) */
-             )                    /** \return area of cell (m^2) */
+double cellarea(const Coord *coord, /**< cell coordinate */
+                      const Coord *resol  /**< resolution (deg) */
+                     )                    /** \return area of cell (m^2) */
 {
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
@@ -426,9 +426,9 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )               /** \return TRUE on error */
 {
-  if(fscanreal(file,&coord->lon,"longitude",FALSE,verb))
+  if(fscandouble(file,&coord->lon,"longitude",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&coord->lat,"latitude",FALSE,verb))
+  if(fscandouble(file,&coord->lat,"latitude",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscancoord' */
@@ -477,14 +477,14 @@ void fprintcoord(FILE *file,        /**< pointer to text file */
     fprintf(file," %.6gE",coord->lon);
 } /* of 'fprintcoord' */
 
-int findnextcoord(Real *dist_min,     /**< [out] minimum distance */
+int findnextcoord(double *dist_min,   /**< [out] minimum distance */
                   const Coord *item,  /**< [in] coordinate to search for */
                   const Coord grid[], /**< [in] array of coordinates */
                   int size            /**< [in] size of array */
                  )                    /** \return index in array for nearest cell */
 {
   int i,i_min;
-  Real dist,dist_lon;
+  double dist,dist_lon;
   *dist_min=HUGE_VAL;
   i_min=0;
   for(i=0;i<size;i++)
@@ -503,8 +503,8 @@ int findnextcoord(Real *dist_min,     /**< [out] minimum distance */
   return i_min;
 } /* of 'findnextcoord' */
 
-Bool isfloatcoord(Real coord, /**< coordinate (deg) */
-                  Real scale  /**< scale factor */
+Bool isfloatcoord(double coord, /**< coordinate (deg) */
+                  double scale  /**< scale factor */
                  )            /** \return must be float coord  to resolve coordinate (TRUE/FALSE) */
 {
   return (short)(coord/scale)*scale!=coord;
