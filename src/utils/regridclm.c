@@ -265,6 +265,7 @@ int main(int argc,char **argv)
   {
     free(c);
     freemetadata(&metadata);
+    free(filename.name);
     fclose(data_file);
     return EXIT_FAILURE;
   }
