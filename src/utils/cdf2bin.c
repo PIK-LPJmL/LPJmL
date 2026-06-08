@@ -272,18 +272,18 @@ int main(int argc,char **argv)
                "-units u     set unit to convert from NetCDF file\n"
 #endif
                "-var name    variable name in NetCDF file\n"
-               "-map name    name of map in NetCDF file\n"
+               "-map name    name of map in NetCDF file, default is \"%s\"\n"
                "-clm         grid file is in CLM format, default is raw\n"
                "-byte        output data is converted in byte\n"
                "-floatgrid   set datatype of grid file to float, default is short\n"
                "-doublegrid  set datatype of grid file to double, default is short\n"
-               "-cellsize s  cell size in grid file, default is 0.5\n"
-               "-json        JSON metafile is created with suffix '.json'\n"
-               "-o binfile   filename of raw data file written. Default is out.bin\n"
+               "-cellsize s  cell size in grid file, default is %g\n"
+               "-json        JSON metafile is created with suffix '%s'\n"
+               "-o binfile   filename of raw data file written. Default is %s\n"
                "gridfile     filename of grid data file\n"
                "netcdffile   filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,metadata.map_name,cellsize_lon,JSON_SUFFIX,outname);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-swap"))
@@ -497,6 +497,7 @@ int main(int argc,char **argv)
   file=fopen(outname,"wb");
   if(file==NULL)
   {
+    free(grid);
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
     return EXIT_FAILURE;
   }
@@ -508,6 +509,8 @@ int main(int argc,char **argv)
     if(openclimate_netcdf(&data,(j==iarg+1) ? &metadata : NULL,argv[j],&filename,metadata.unit,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
+      free(grid);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(filename.var==NULL)
@@ -568,11 +571,17 @@ int main(int argc,char **argv)
         if(data.firstyear!=header.firstyear+header.nyear)
         {
           fprintf(stderr,"First year %d in '%s' is not %d.\n",data.firstyear,argv[j],header.firstyear+header.nyear);
+          free(grid);
+          closeclimate_netcdf(&data,TRUE);
+          fclose(file);
           return EXIT_FAILURE;
         }
         if(data.var_len!=header.nbands)
         {
           fprintf(stderr,"Number of bands %d in '%s' is not %d.\n",(int)data.var_len,argv[j],header.nbands);
+          free(grid);
+          closeclimate_netcdf(&data,TRUE);
+          fclose(file);
           return EXIT_FAILURE;
         }
         header.nyear+=data.nyear;
@@ -581,6 +590,9 @@ int main(int argc,char **argv)
     if(readmydata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
+      free(grid);
+      closeclimate_netcdf(&data,TRUE);
+      fclose(file);
       return EXIT_FAILURE;
     }
     closeclimate_netcdf(&data,TRUE);
