@@ -83,19 +83,25 @@ int main(int argc,char **argv)
     if(readcoord(coordfile,c+i,&res))
     {
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
+      free(c);
+      closecoord(coordfile);
       return EXIT_FAILURE;
     }
   closecoord(coordfile);
   filename.name=argv[2];
   coordfile=opencoord(&filename,TRUE);
   if(coordfile==NULL)
+  {
+    free(c);
     return EXIT_FAILURE;
+  }
   n2=numcoord(coordfile);
   c2=newvec(Coord,n2);
   if(c2==NULL)
   {
-    free(c);
     printallocerr("c2");
+    free(c);
+    closecoord(coordfile);
     return EXIT_FAILURE;
   }
   for(i=0;i<n2;i++)
@@ -104,6 +110,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
       free(c);
       free(c2);
+      closecoord(coordfile);
       return EXIT_FAILURE;
     }
   closecoord(coordfile);
@@ -121,6 +128,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(data_version>CLM_MAX_VERSION)
@@ -129,6 +137,7 @@ int main(int argc,char **argv)
             data_version,argv[3],CLM_MAX_VERSION+1);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(header.nbands!=2)
@@ -136,11 +145,15 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid number of bands=%d in '%s', must be 2.\n",header.nbands,argv[3]);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(header.nstep!=1)
   {
     fprintf(stderr,"Invalid number of steps=%d in '%s', must be 1.\n",header.nstep,argv[3]);
+    free(c);
+    free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(header.timestep!=1)
@@ -148,6 +161,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid time step=%d in '%s', must be 1.\n",header.timestep,argv[3]);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(data_version>2 && header.datatype!=LPJ_INT)
@@ -155,6 +169,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid datatype %s in '%s', must be int.\n",typenames[header.datatype],argv[3]);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(header.ncell!=n1)
@@ -163,24 +178,25 @@ int main(int argc,char **argv)
             header.ncell,argv[3],n1);
     free(c);
     free(c2);
+    fclose(file);
     return EXIT_FAILURE;
   }
   r=newvec(Routing,header.ncell);
   if(r==NULL)
   {
-    fclose(file);
     printallocerr("r");
+    fclose(file);
     free(c);
     free(c2);
     return EXIT_FAILURE;
   }
   if(fread(r,sizeof(Routing),header.ncell,file)!=header.ncell)
   {
+    fprintf(stderr,"Error reading routing in '%s'.\n",argv[3]);
     fclose(file);
     free(r);
     free(c);
     free(c2);
-    fprintf(stderr,"Error reading routing in '%s'.\n",argv[3]);
     return EXIT_FAILURE;
   }
   if(swap)
@@ -230,6 +246,7 @@ int main(int argc,char **argv)
       free(cnew);
       free(r);
       free(c);
+      fclose(file);
       return EXIT_FAILURE;
     }
     for(j=0;;)
