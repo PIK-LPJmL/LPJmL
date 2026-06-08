@@ -23,7 +23,7 @@ void fputprintable(FILE *file,      /**< pointer to text file */
 {
   while(*line!='\0')
   {
-    if((unsigned char)*line>=' ') /* is char a printable character? */
+    if(isprint(*line)) /* is char a printable character? */
       fputc(*line,file); /* yes, print it */
     else
       switch(*line) /* no */
@@ -50,7 +50,7 @@ void fputprintable(FILE *file,      /**< pointer to text file */
           fputs("\\b",file); /* backspace */
           break;
         default:
-          fprintf(file,"\\%03o",(unsigned int)*line); /* print char as 3 digit octal number */
+          fprintf(file,"\\%03o",(unsigned char)(*line)); /* print char as 3 digit octal number */
       }
     line++;
   }

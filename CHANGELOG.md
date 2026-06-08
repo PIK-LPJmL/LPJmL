@@ -51,6 +51,7 @@ of `major.minor.patch` with
 - Default timestep set to 1 in `regridclm.c`.
 - Variable `depth` initialized to zero before layer loop in `fwriteoutput.c` to correct `soilc_1m` output.
 - Length of buffer for hostname corrected in `gethost.c`.
+- Output of unprintable characters corrected in `fputprintable.c`.
 
 
 ## [6.0.7] - 2026-04-17
