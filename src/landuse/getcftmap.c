@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "grassland.h"
+#include "urban.h"
 
 int *getcftmap(const Map *map,      /**< pointer to string array  */
                const char *name,    /**< name or filename for map */
@@ -87,7 +88,7 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
           continue;
         }
       }
-      if(urban && !strcmp(getmapitem(map,cft),"urban"))
+      if(urban && !strcmp(getmapitem(map,cft),urban_name))
       {
         cftmap[cft]=ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree;
         undef[cftmap[cft]]=FALSE;
@@ -171,7 +172,7 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
         }
         else
           fputc(',',stderr);
-        fprintf(stderr," \"urban\"");
+        fprintf(stderr," \"%s\"",urban_name);
       }
       for(cft=0;cft<config->nagtree;cft++)
         if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])

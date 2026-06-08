@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "grassland.h"
+#include "urban.h"
 
 int *defaultcftmap(int *size,           /**< size of CFT map array */
                    const char *name,    /**< name of map */
@@ -50,7 +51,7 @@ int *defaultcftmap(int *size,           /**< size of CFT map array */
       for(cft=0;cft<config->nwft;cft++)
         fprintf(stderr,",\"%s\"",woodplantation_names[cft]);
       if(urban)
-        fprintf(stderr,",\"urban\"");
+        fprintf(stderr,",\"%s\"",urban_name);
       for(cft=0;cft<config->nagtree;cft++)
         fprintf(stderr,",\"%s\"",config->pftpar[npft-config->nagtree+cft].name);
     }
