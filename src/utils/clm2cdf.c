@@ -1154,6 +1154,7 @@ int main(int argc,char **argv)
       if(*endptr!='\0')
       {
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        freecoordarray(index);
         free(grid_filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
@@ -1167,6 +1168,7 @@ int main(int argc,char **argv)
       if(*endptr!='\0')
       {
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        freecoordarray(index);
         free(grid_filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
@@ -1187,6 +1189,7 @@ int main(int argc,char **argv)
   if(cdf==NULL)
   {
     free(grid_filename);
+    freecoordarray(index);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -1197,6 +1200,7 @@ int main(int argc,char **argv)
     {
       printallocerr("data");
       free(grid_filename);
+      close_cdf(cdf);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1206,6 +1210,7 @@ int main(int argc,char **argv)
       printallocerr("iarr");
       free(grid_filename);
       free(idata);
+      close_cdf(cdf);
       fclose(file);
       return EXIT_FAILURE;
     }

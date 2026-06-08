@@ -1015,6 +1015,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
               typenames[header.datatype],argv[iarg+2]);
       freemetadata(&metadata);
+      fclose(file);
       return EXIT_FAILURE;
     }
     isshort=header.datatype==LPJ_SHORT;
@@ -1375,6 +1376,7 @@ int main(int argc,char **argv)
         free(cmdline);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        freecoordarray(index);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1388,6 +1390,7 @@ int main(int argc,char **argv)
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        freecoordarray(index);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1401,6 +1404,8 @@ int main(int argc,char **argv)
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
   {
+    free(grid_filename);
+    freecoordarray(index);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -1410,6 +1415,7 @@ int main(int argc,char **argv)
     if(data_short==NULL)
     {
       printallocerr("data");
+      free(grid_filename);
       fclose(file);
       close_cdf(cdf);
       return EXIT_FAILURE;
@@ -1421,6 +1427,7 @@ int main(int argc,char **argv)
     if(data==NULL)
     {
       printallocerr("data");
+      free(grid_filename);
       fclose(file);
       close_cdf(cdf);
       return EXIT_FAILURE;
