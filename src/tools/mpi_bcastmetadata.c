@@ -26,23 +26,6 @@ void mpi_bcastmetadata(Metadata *metadata, /**< metadata information */
   int i,len;
   if(rank==0)
   {
-    if(metadata->title==NULL)
-      len=-1;
-    else
-      len=strlen(metadata->title)+1;
-  }
-  MPI_Bcast(&len,1,MPI_INT,0,comm);
-  if(len>=0)
-  {
-    if(rank)
-    {
-      metadata->title=malloc(len);
-      check(metdata->title);
-    }
-    MPI_Bcast(metadata->title,len,MPI_BYTE,0,comm);
-  }
-  if(rank==0)
-  {
     if(metadata->map==NULL)
       len=-1;
     else
