@@ -361,8 +361,22 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     return NULL;
   }
   free(name);
-  free(path);
   name=fullname;
+  if(gridfile!=NULL && gridfile->name!=NULL)
+  {
+    fullname=addpath(gridfile->name,path);
+    if(fullname==NULL)
+    {
+      printallocerr("name");
+      free(path);
+      free(name);
+      freemetadata(metadata);
+      return NULL;
+    }
+    free(gridfile->name);
+    gridfile->name=fullname;
+  }
+  free(path);
   /* open data file */
   file=fopen(name,"rb");
   /* check file size of binary file */
