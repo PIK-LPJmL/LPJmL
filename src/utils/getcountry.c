@@ -126,7 +126,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   else
-   isregion=TRUE;
+    isregion=TRUE;
   if(grid_name.name==NULL)
   {
     fprintf(stderr,"Filename of grid file missing in '%s'.\n",argv[iarg]);
@@ -136,7 +136,14 @@ int main(int argc,char **argv)
   }
   n=argc-iarg-2;
   country=newvec(int,n);
-  check(country);
+  if(country==NULL)
+  {
+    printallocerr("country");
+    free(grid_name.name);
+    fclose(file);
+    freemetadata(&metadata);
+    return EXIT_FAILURE;
+  }
   for(i=0;i<n;i++)
   {
     country[i]=strtol(argv[iarg+2+i],&endptr,10);
@@ -281,6 +288,7 @@ int main(int argc,char **argv)
       free(out_json);
       if(ismeta)
         freemetadata(&metadata);
+      return EXIT_FAILURE;
     }
     out=fopen(out_json,"w");
     if(out==NULL)
