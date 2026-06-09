@@ -15,11 +15,17 @@
 #include "coord.h"
 #include "freadheader.h"
 #include "openmetafile.h"
+#include "initmetadata.h"
+#include "freemetadata.h"
+#include "fscanmetadata.h"
+#include "fscancountrymap.h"
+#include "freecountrymap.h"
 #include "getfilesizep.h"
 #include "closeconfig.h"
 #include "parse_json.h"
 #include "fscanfcns.h"
 #include "fscanfloat.h"
+#include "fscandouble.h"
 #include "fscanreal.h"
 #include "fscanbool.h"
 #include "fscankeywords.h"
@@ -56,8 +62,8 @@
 #include "bstruct_writeint.h"
 #include "bstruct_writename.h"
 #include "bstruct_readint.h"
-#include "bstruct_writereal.h"
-#include "bstruct_readreal.h"
+#include "bstruct_writedouble.h"
+#include "bstruct_readdouble.h"
 #include "bstruct_readbeginstruct.h"
 #include "bstruct_writeendstruct.h"
 #include "bstruct_readendstruct.h"
@@ -73,7 +79,7 @@
 
 void test_isfloatcoord(void)
 {
-  Real coord,scale;
+  double coord,scale;
   Bool rc;
   coord=0.5;
   scale=0.01;
