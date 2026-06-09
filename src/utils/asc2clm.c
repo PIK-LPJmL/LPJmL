@@ -80,9 +80,9 @@ int main(int argc,char **argv)
                "-f           force overwrite of output file\n"
                "-firstyear y first year, default is %d\n"
                "-grid file   create grid file\n" 
-               "-nbands n    number of bands, default is 12\n"
-               "-nstep n     number of steps, default is 1\n"
-               "-header s    header string, default is " LPJ_CLIMATE_HEADER "\n"
+               "-nbands n    number of bands, default is %d\n"
+               "-nstep n     number of steps, default is %d\n"
+               "-header s    header string, default is '%s'\n"
                "-version v   version of clm file, default is %d\n"
                "-scale s     scale data by a factor of s\n"
                "-int         write integer data into clm file\n"
@@ -90,7 +90,7 @@ int main(int argc,char **argv)
                "infile       filename(s) of gridded data file\n"
                "clmfile      filename of clm data file\n\n"
                 "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-                getversion(),FIRSTYEAR,LPJ_CLIMATE_VERSION);
+                getversion(),header.firstyear,nbands,nstep,head,version);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-firstyear"))
@@ -523,15 +523,25 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[argc-1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     initmetadata(&metadata,NULL);
     metadata.source="asc2clm";
     fprintjson(out,argv[argc-1],NULL,arglist,&header,&metadata,(gridfile==NULL) ? NULL : &coord_filename,coord_type,CLM,head,FALSE,version);
+    free(out_json);
+    free(arglist);
     fclose(out);
   }
   return EXIT_SUCCESS;

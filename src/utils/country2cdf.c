@@ -381,24 +381,42 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   arglist=catstrvec(argv,argc);
+  if(arglist==NULL)
+  {
+    printallocerr("arglist");
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   cdf=create_cdf(argv[iarg+3],argv[0],arglist,argv[iarg],descr,&netcdf_config,res,compress,isnetcdf4,index);
   if(cdf==NULL)
+  {
+    fclose(file);
     return EXIT_FAILURE;
+  }
   data=newvec(short,ngrid*header.nbands);
   if(data==NULL)
   {
     printallocerr("data");
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   f=newvec(short,ngrid);
   if(f==NULL)
   {
     printallocerr("f");
+    free(data);
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   if(freadshort(data,ngrid*header.nbands,swap,file)!=ngrid*header.nbands)
   {
     fprintf(stderr,"Error reading country data.\n");
+    free(data);
+    free(f);
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid;i++)

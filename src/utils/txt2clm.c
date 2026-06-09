@@ -124,11 +124,12 @@ int main(int argc,char **argv)
                "-scale s     scale data by a factor of s\n"
                "-cellsize s  cell size, default is %g\n"
                "-header id   clm header string, default is '%s'\n"
-               "-json        JSON metafile is created with suffix '.json'\n"
+               "-json        JSON metafile is created with suffix '%s'\n"
                "txtfile      filename of text file\n"
                "clmfile      filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               version,header.nbands,header.nstep,header.timestep,header.ncell,header.firstyear,header.cellsize_lon,id);
+               version,header.nbands,header.nstep,header.timestep,header.ncell,header.firstyear,
+               header.cellsize_lon,id,JSON_SUFFIX);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-float"))
@@ -488,15 +489,25 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     initmetadata(&metadata,NULL);
     metadata.source="txt2clm";
     fprintjson(out,argv[iarg+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,CLM,id,FALSE,version);
+    free(out_json);
+    free(arglist);
     fclose(out);
   }
   return EXIT_SUCCESS;

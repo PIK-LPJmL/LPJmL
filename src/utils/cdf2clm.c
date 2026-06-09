@@ -897,10 +897,20 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      free(filename.var);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       freemetadata(&metadata);
       free(filename.var);
       return EXIT_FAILURE;

@@ -393,10 +393,20 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     free(out_json);

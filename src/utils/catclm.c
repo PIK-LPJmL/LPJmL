@@ -418,14 +418,28 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      freemetadata(&metadata);
+      free(grid_name.name);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[argc-1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      free(grid_name.name);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      freemetadata(&metadata);
+      free(grid_name.name);
       return EXIT_FAILURE;
     }
     fprintjson(out,argv[argc-1],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));

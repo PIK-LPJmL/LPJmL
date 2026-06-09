@@ -1178,6 +1178,16 @@ int main(int argc,char **argv)
     }
   }
   arglist=catstrvec(argv,argc);
+  if(arglist==NULL)
+  {
+    printallocerr("arglist");
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    free(grid_filename);
+    freecoordarray(index);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   cdf=create_cdf(outname,metadata.map,metadata.source,metadata.history,variable,units,metadata.standard_name,
                  long_name,&netcdf_config,arglist,global_attrs,n_global,
                  metadata.basetemp,metadata.hlimit,&header,compress,landuse,notime,

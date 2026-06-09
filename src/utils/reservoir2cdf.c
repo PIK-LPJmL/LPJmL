@@ -668,16 +668,23 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   index=createindex(grid,ngrid,res,isglobal,FALSE);
+  free(grid);
   if(index==NULL)
   {
     freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
-    free(grid);
     fclose(file);
     return EXIT_FAILURE;
   }
-  free(grid);
   arglist=catstrvec(argv,argc);
+  if(arglist==NULL)
+  {
+    printallocerr("arglist");
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   cdf=create_cdf(outname,metadata.source,metadata.history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
   freemetadata(&metadata);

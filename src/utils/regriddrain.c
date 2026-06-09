@@ -149,8 +149,8 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
               data_version,argv[iarg+2],CLM_MAX_VERSION+1);
-        fclose(data_file);
-        return EXIT_FAILURE;
+      fclose(data_file);
+      return EXIT_FAILURE;
     }
     if(data_version<3)
       header.datatype=LPJ_INT;
@@ -401,13 +401,21 @@ int main(int argc,char **argv)
     out_json=malloc(strlen(argv[index_datafile+1])+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
+      printallocerr("filename");
       freemetadata(&metadata);
       free(filename.name);
-      printallocerr("filename");
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[index_datafile+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      free(filename.name);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {

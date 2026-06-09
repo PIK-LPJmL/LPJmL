@@ -602,6 +602,7 @@ int main(int argc,char **argv)
     rewind(file);
     fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   }
+  free(grid);
   fclose(file);
   if(isjson)
   {
@@ -609,14 +610,31 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     grid_name.name=argv[iarg];
@@ -629,7 +647,6 @@ int main(int argc,char **argv)
   free(filename.var);
   free(title);
   freemetadata(&metadata);
-  free(grid);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

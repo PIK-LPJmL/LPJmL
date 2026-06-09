@@ -146,6 +146,7 @@ int main(int argc,char **argv)
     if(freadanyheader(data_file,&header,&swap,id,&data_version,TRUE))
     {
       fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
+      fclose(data_file);
       return EXIT_FAILURE;
     }
     if(data_version>CLM_MAX_VERSION)

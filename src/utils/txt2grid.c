@@ -358,6 +358,7 @@ int main(int argc,char **argv)
   rewind(gridfile);
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(gridfile);
+  fclose(file);
   if(isjson)
   {
     /* write JSON metafile */
@@ -369,10 +370,18 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     gridfile=fopen(out_json,"w");
     if(gridfile==NULL)
     {
       printfcreateerr(out_json);
+      free(arglist);
+      free(out_json);
       return EXIT_FAILURE;
     }
     initmetadata(&metadata,NULL);
@@ -381,8 +390,9 @@ int main(int argc,char **argv)
     metadata.unit="degree";
     metadata.long_name="cell coordinates";
     fprintjson(gridfile,argv[iarg+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    free(arglist);
+    free(out_json);
     fclose(gridfile);
   }
-  fclose(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

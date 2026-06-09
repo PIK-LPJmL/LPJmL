@@ -217,10 +217,18 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[iarg+3]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     grid_name.name=argv[iarg+1];

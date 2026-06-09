@@ -129,7 +129,6 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
             scalar,typenames[header.datatype]);
-
     header.scalar=1;
     scalar=1;
   }
@@ -333,10 +332,18 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[i+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     initmetadata(&metadata,NULL);
@@ -345,6 +352,8 @@ int main(int argc,char **argv)
     metadata.unit="degree";
     metadata.long_name="cell coodinates";
     fprintjson(out,argv[i+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    free(out_json);
+    free(arglist);
     fclose(out);
   }
   return EXIT_SUCCESS;

@@ -158,12 +158,6 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  out=fopen(argv[iarg+1],"wb");
-  if(out==NULL)
-  {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
-    return EXIT_FAILURE;
-  }
   format=(isclm) ? CLM : RAW;
   if(ismeta)
   {
@@ -202,8 +196,6 @@ int main(int argc,char **argv)
     nyear=header.nyear*nsum;
     nitem=header.nbands;
     header.nstep=1;
-    if(isclm || format==CLM)
-      fwriteheader(out,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   }
   else if(isclm)
   {
@@ -225,7 +217,6 @@ int main(int argc,char **argv)
     if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
       fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
     header.nstep=1;
-    fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
   }
   else
   {
@@ -246,6 +237,14 @@ int main(int argc,char **argv)
     printallocerr("data");
     return EXIT_FAILURE;
   }
+  out=fopen(argv[iarg+1],"wb");
+  if(out==NULL)
+  {
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
+    return EXIT_FAILURE;
+  }
+  if(isclm || format==CLM)
+    fwriteheader(out,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   for(i=0;i<nyear;i++)
   {
     if(i % nsum==0)
@@ -290,14 +289,28 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      free(grid_name.name);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      free(grid_name.name);
+      freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      free(grid_name.name);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     fprintjson(file,argv[iarg+1],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
