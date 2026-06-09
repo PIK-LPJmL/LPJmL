@@ -91,7 +91,7 @@ int main(int argc,char **argv)
     }
     if(fseek(data_file,offset,SEEK_SET))
     {
-      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);      fclose(data_file);
+      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);
       freemetadata(&metadata);
       fclose(data_file);
       return EXIT_FAILURE;

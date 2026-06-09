@@ -97,7 +97,7 @@ int main(int argc,char **argv)
   const char *fmt;
   Coord *grid_ref=NULL,res;
   String line;
-  int i,iarg,nskip,n,index,n_grid_ref;
+  int i,iarg,nskip,n,index,n_grid_ref=0;
   Coord coord;
   double dist_min;
   Header header;

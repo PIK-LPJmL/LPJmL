@@ -408,10 +408,10 @@ int main(int argc,char **argv)
     file=fopen(out_json,"w");
     if(file==NULL)
     {
+      printfcreateerr(out_json);
       free(out_json);
       free(filename.name);
       freemetadata(&metadata);
-      printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
     fprintjson(file,argv[index_datafile+1],NULL,arglist,&header,&metadata,&filename,grid_type,format,id,FALSE,data_version);
