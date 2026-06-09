@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function deallocates counrry map                                           \n**/
+/**     Function deallocates country map                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
