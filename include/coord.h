@@ -47,7 +47,7 @@ extern Bool writecoord(FILE *,const Coord *,double,Type);
 extern Bool writeshortcoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
 extern Bool writedoublecoord(FILE *,const Coord *);
-extern Real cellarea(const Coord *,const Coord *);
+extern double cellarea(const Coord *,const Coord *);
 extern int getfirstcoord(const Coordfile);
 extern Bool fscancoord(LPJfile *,Coord *,Verbosity);
 extern int numcoord(const Coordfile);
@@ -55,10 +55,10 @@ extern void getcellsizecoord(float *,float *,const Coordfile);
 extern char *sprintcoord(String,const Coord *);
 extern void fprintcoord(FILE *,const Coord *);
 extern int findcoord(const Coord *,const Coord [],const Coord *,int);
-extern int findnextcoord(Real *,const Coord *,const Coord[],int);
+extern int findnextcoord(double *,const Coord *,const Coord[],int);
 extern Type getcoordtype(const Coordfile);
 extern float getcoordscale(const Coordfile);
-extern Bool isfloatcoord(Real,Real);
+extern Bool isfloatcoord(double,double);
 
 /* Definition of macros */
 

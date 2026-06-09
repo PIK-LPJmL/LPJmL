@@ -26,7 +26,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
                )
 {
   int i,tabs;
-  Real convert;
+  double convert;
   if(config->nall > 80)
     convert = 1e-15;
   else

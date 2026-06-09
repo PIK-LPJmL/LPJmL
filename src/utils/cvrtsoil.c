@@ -28,7 +28,7 @@
 
 typedef struct
 {
-  Real lon,lat;
+  double lon,lat;
   int soilcode;
 } Soildata;
 
