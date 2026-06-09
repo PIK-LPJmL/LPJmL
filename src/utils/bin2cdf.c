@@ -622,7 +622,7 @@ int main(int argc,char **argv)
   size_t offset;
   char *filename;
   Filename grid_name;
-  char *variable,*grid_filename=NULL,*path,*config_filename=NULL;
+  char *variable,*grid_filename=NULL,*config_filename=NULL;
   grid_name.fmt=RAW;
   grid_name.name=NULL;
   units=long_name=NULL;
@@ -1075,18 +1075,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     variable=metadata.variable;
-    path=getpath(filename);
-    grid_filename=addpath(grid_name.name,path);
-    free(grid_name.name);
-    free(path);
-    if(grid_filename==NULL)
-    {
-      printallocerr("name");
-      freemetadata(&metadata);
-      freeattrs(global_attrs,n_global);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
+    grid_filename=grid_name.name;
   }
   if(isclm || grid_name.fmt==CLM || grid_name.fmt==META)
   {

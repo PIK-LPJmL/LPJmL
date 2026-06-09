@@ -304,7 +304,7 @@ int main(int argc,char **argv)
   char *endptr,*arglist;
   char *pos;
   const char *progname;
-  char *grid_filename,*path;
+  char *grid_filename;
   Filename grid_name;
   Netcdf_config netcdf_config;
   char *filename,*outname,*config_filename=NULL;
@@ -517,18 +517,7 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    path=getpath(filename);
-    grid_filename=addpath(grid_name.name,path);
-    if(grid_filename==NULL)
-    {
-      printallocerr("name");
-      freemetadata(&metadata);
-      freeattrs(global_attrs,n_global);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
-    free(grid_name.name);
-    free(path);
+    grid_filename=grid_name.name;
   }
   /* Open and read grid file */
   grid_name.name=grid_filename;

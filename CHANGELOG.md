@@ -39,6 +39,7 @@ of `major.minor.patch` with
 - Utility `getcountry` reads now JSON metafile for country codes including the alpha-3 country codes and global grid instead of CLM file.
 - If `-pedantic` option is set, non-matching titles in input files stops `lpjml` with an error.
 - Datatype of `lon`, `lat`, and `area` elements of `Coord` change from `Real` to `double`.
+- Missing path to grid file added in `openmetafile.c`.
 
 ### Fixed
 
@@ -52,7 +53,6 @@ of `major.minor.patch` with
 - Variable `depth` initialized to zero before layer loop in `fwriteoutput.c` to correct `soilc_1m` output.
 - Length of buffer for hostname corrected in `gethost.c`.
 - Output of unprintable characters corrected in `fputprintable.c`.
-- Missing path to grid file added in `openmetafile.c`.
 
 
 ## [6.0.7] - 2026-04-17

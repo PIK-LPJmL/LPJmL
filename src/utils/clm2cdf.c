@@ -560,7 +560,7 @@ int main(int argc,char **argv)
   char *units,*long_name,*endptr,*arglist,*missing_value;
   char *pos;
   const char *progname;
-  char *grid_filename,*path;
+  char *grid_filename;
   Filename grid_name;
   char *filename,*outname,*variable;
   size_t filesize;
@@ -955,17 +955,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     variable=metadata.variable;
-    path=getpath(filename);
-    grid_filename=addpath(grid_name.name,path);
-    free(grid_name.name);
-    free(path);
-    if(grid_filename==NULL)
-    {
-      printallocerr("name");
-      freemetadata(&metadata);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
+    grid_filename=grid_name.name;
   }
   /* Open and read grid file */
   grid_name.name=grid_filename;

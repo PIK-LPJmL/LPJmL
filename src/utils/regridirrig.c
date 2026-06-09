@@ -34,7 +34,6 @@ int main(int argc,char **argv)
   char *arglist,*out_json;
   size_t offset;
   Type grid_type;
-  char *path;
   int format,iarg,index_datafile,index_gridfile;
   setversion=READ_VERSION;
   initmetadata(&metadata,NULL);
@@ -118,18 +117,8 @@ int main(int argc,char **argv)
         fclose(data_file);
         return EXIT_FAILURE;
       }
-      path=getpath(argv[index_datafile]);
-      filename.name=addpath(grid_name.name,path);
+      filename.name=grid_name.name;
       filename.fmt=grid_name.fmt;
-      free(grid_name.name);
-      free(path);
-      if(filename.name==NULL)
-      {
-        printallocerr("name");
-        freemetadata(&metadata);
-        fclose(data_file);
-        return EXIT_FAILURE;
-      }
     }
   }
   else

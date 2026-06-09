@@ -40,7 +40,6 @@ int main(int argc,char **argv)
   String id;
   Filename filename,grid_name;
   Type grid_type;
-  char *path;
   Metadata metadata;
   isint=issearch=iszero=isjson=ismeta=isbyte=FALSE;
   setversion=READ_VERSION;
@@ -166,18 +165,8 @@ int main(int argc,char **argv)
         fclose(data_file);
         return EXIT_FAILURE;
       }
-      path=getpath(argv[index_datafile]);
-      filename.name=addpath(grid_name.name,path);
+      filename.name=grid_name.name;
       filename.fmt=grid_name.fmt;
-      free(grid_name.name);
-      free(path);
-      if(filename.name==NULL)
-      {
-        printallocerr("name");
-        freemetadata(&metadata);
-        free(grid_name.name);
-        return EXIT_FAILURE;
-      }
     }
   }
   else
