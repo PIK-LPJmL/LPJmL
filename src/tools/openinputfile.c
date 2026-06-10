@@ -19,12 +19,12 @@
 FILE *openinputfile(Header *header,           /**< [out] pointer to file header */
                     Metadata *metadata,       /**< [out] metadata information */
                     Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
-                    const Filename *filename, /**< [in]  file name */
+                    const Filename *filename, /**< [in] file name */
                     String headername,        /**< [out] clm file header string */
-                    const char *unit,         /**< unit expected or NULL */
-                    Type datatype,            /**< datatype for version 2 files */
+                    const char *unit,         /**< [in] unit expected or NULL */
+                    Type datatype,            /**< [in] datatype for version 2 files */
                     int *version,             /**< [inout] clm file version */
-                    size_t *offset,           /**< [in] offset in binary file */
+                    size_t *offset,           /**< [out] offset in binary file */
                     Bool isyear,              /**< [in] check for first year (TRUE/FALSE) */
                     const Config *config      /**< [in] LPJmL configuration */
                    )                          /** \return file pointer to open file or NULL */
@@ -57,14 +57,14 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     }
     if(isroot(*config) && unit!=NULL && metadata!=NULL && metadata->unit!=NULL && strcmp(unit,metadata->unit))
       fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
-                      metadata->unit,filename->name,unit);
+              metadata->unit,filename->name,unit);
     if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR154: Longitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lon,config->resolution.lon,filename->name);
       freemetadata(metadata);
-      fclose(file);  
+      fclose(file);
       return NULL;
     }
     if(fabs(header->cellsize_lat-config->resolution.lat)>epsilon)
@@ -73,7 +73,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
         fprintf(stderr,"ERROR154: Latitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lat,config->resolution.lat,filename->name);
       freemetadata(metadata);
-      fclose(file);  
+      fclose(file);
       return NULL;
     }
     if(header->firstyear>config->firstyear)
@@ -88,7 +88,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                 header->firstcell,header->ncell+header->firstcell-1,filename->name,
                 config->firstgrid,config->nall+config->firstgrid-1);
       freemetadata(metadata);
-      fclose(file);  
+      fclose(file);
       return NULL;
     }
     return file;
