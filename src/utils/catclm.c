@@ -32,7 +32,7 @@ int main(int argc,char **argv)
   Byte *bvals;
   long long *lvals;
   struct stat filestat;
-  Bool swap,verbose,force,ismeta=FALSE,isjson=FALSE;
+  Bool swap,verbose,force,ismeta=FALSE,isjson=FALSE,rc;
   size_t size,filesize,offset;
   char c;
   size=2;
@@ -118,7 +118,7 @@ int main(int argc,char **argv)
         fclose(out);
         return EXIT_FAILURE;
       }
-      if(format==CLM)
+      if(i==0 && format==CLM)
       {
         if(freadheaderid(in,id,TRUE))
         {
@@ -140,7 +140,11 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       version=setversion;
-      if(freadheader(in,&header,&swap,id,&version,TRUE))
+      if(i)
+        rc=freadheader(in,&header,&swap,id,&version,TRUE);
+      else
+        rc=freadanyheader(in,&header,&swap,id,&version,TRUE);
+      if(rc)
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         fclose(in);
