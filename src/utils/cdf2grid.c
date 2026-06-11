@@ -305,15 +305,17 @@ int main(int argc,char **argv)
     free(index);
     free(lon);
     free(lat);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   data=newvec(Data,header.ncell);
   if(data==NULL)
   {
+    printallocerr("data");
     free(index);
     free(lon);
     free(lat);
-    printallocerr("data");
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   header.ncell=0;
@@ -344,6 +346,7 @@ int main(int argc,char **argv)
       free(data);
       free(lon);
       free(lat);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
   header.nyear=1;
@@ -359,6 +362,7 @@ int main(int argc,char **argv)
     free(data);
     free(lon);
     free(lat);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   if(!israw)
@@ -375,6 +379,7 @@ int main(int argc,char **argv)
       free(data);
       free(lon);
       free(lat);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
   }
@@ -389,6 +394,7 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
@@ -398,6 +404,7 @@ int main(int argc,char **argv)
     {
       printallocerr("arglist");
       free(out_json);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     }
@@ -407,6 +414,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       free(out_json);
       free(arglist);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     free(out_json);

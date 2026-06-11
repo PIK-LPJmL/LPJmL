@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                 c  u  t  c  l  m  .  c                                         \n**/
 /**                                                                                \n**/
-/**     Program cuts input from CLM file with new start year                       \n**/
+/**     Program cuts input from CLM file with new start/end year                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -97,7 +97,12 @@ int main(int argc,char **argv)
     if(format==CLM)
     {
       if(freadheaderid(file,id,TRUE))
+      {
+        fclose(file);
+        freemetadata(&metadata);
+        free(grid_name.name);
         return EXIT_FAILURE;
+      }
     }
     fseek(file,offset,SEEK_SET);
     size=typesizes[header.datatype];
@@ -114,12 +119,14 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error reading header in '%s'.\n",
               argv[index+1]);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(version>CLM_MAX_VERSION)
     {
       fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
               version,argv[index+1],CLM_MAX_VERSION+1);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(version>=3)
@@ -131,8 +138,9 @@ int main(int argc,char **argv)
       printf("Size of data: %lld bytes\n",size);
       if(size!=1 && size!=2 && size!=4 && size!=8)
       {
-       fprintf(stderr,"Invalid size of data=%lld.\n",size);
-       return EXIT_FAILURE;
+        fprintf(stderr,"Invalid size of data=%lld.\n",size);
+        fclose(file);
+        return EXIT_FAILURE;
       }
       if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear*header.nstep)!=0)
         fprintf(stderr,"Warning: file size of '%s' is not multiple of ncell*nbands*nyear.\n",argv[index+1]);
@@ -141,13 +149,18 @@ int main(int argc,char **argv)
   if(year<header.firstyear || year>=header.firstyear+header.nyear)
   {
     fprintf(stderr,"Invalid year %d, must be in [%d,%d].\n",year,header.firstyear,header.firstyear+header.nyear-1);
+    fclose(file);
+    freemetadata(&metadata);
+    free(grid_name.name);
     return EXIT_FAILURE;
   }
-
   out=fopen(argv[index+2],"wb");
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s\n",argv[index+2],strerror(errno));
+    fclose(file);
+    freemetadata(&metadata);
+    free(grid_name.name);
     return EXIT_FAILURE;
   }
   if(istail)
@@ -157,6 +170,10 @@ int main(int argc,char **argv)
     if(fseek(file,size*(year-header.firstyear)*header.nbands*header.nstep*header.ncell,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to year %d.\n",argv[index+1],year);
+      fclose(file);
+      fclose(out);
+      freemetadata(&metadata);
+      free(grid_name.name);
       return EXIT_FAILURE;
     }
     header.nyear-=year-header.firstyear;
@@ -172,9 +189,13 @@ int main(int argc,char **argv)
         if(fread(&bdata,1,1,file)!=1)
         {
           fprintf(stderr,"Error reading input from '%s'.\n",argv[index+1]);
+          fclose(file);
+          fclose(out);
+          freemetadata(&metadata);
           return EXIT_FAILURE;
         }
         fwrite(&bdata,1,1,out);
+        free(grid_name.name);
       }
       break;
     case 2:
@@ -183,6 +204,10 @@ int main(int argc,char **argv)
         if(freadshort(&sdata,1,swap,file)!=1)
         {
           fprintf(stderr,"Error reading input from '%s'.\n",argv[index+1]);
+          fclose(file);
+          fclose(out);
+          freemetadata(&metadata);
+          free(grid_name.name);
           return EXIT_FAILURE;
         }
         fwrite(&sdata,sizeof(short),1,out);
@@ -194,6 +219,10 @@ int main(int argc,char **argv)
         if(freadint(&idata,1,swap,file)!=1)
         {
           fprintf(stderr,"Error reading input from '%s'.\n",argv[index+1]);
+          fclose(file);
+          fclose(out);
+          freemetadata(&metadata);
+          free(grid_name.name);
           return EXIT_FAILURE;
         }
         fwrite(&idata,sizeof(int),1,out);
@@ -205,6 +234,10 @@ int main(int argc,char **argv)
         if(freadlong(&ldata,1,swap,file)!=1)
         {
           fprintf(stderr,"Error reading input from '%s'.\n",argv[index+1]);
+          fclose(file);
+          fclose(out);
+          freemetadata(&metadata);
+          free(grid_name.name);
           return EXIT_FAILURE;
         }
         fwrite(&ldata,sizeof(long long),1,out);

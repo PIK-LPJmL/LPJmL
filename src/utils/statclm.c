@@ -186,7 +186,13 @@ int main(int argc,char **argv)
     fmax=-HUGE_VAL;
     favg=0;
     vec=newvec(float,header.nstep*header.nbands);
-    check(vec);
+    if(vec==NULL)
+    {
+      printallocerr("vec");
+      fclose(file);
+      freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     iserr=FALSE;
     for(year=0;year<header.nyear;year++)
     {
