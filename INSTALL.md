@@ -415,7 +415,3 @@ For Windows, the code has been tested with the Microsoft C++ compiler and `nmake
    ```cmd
    nmake
    ```
-
----
-
-This document is now fully formatted in GitLab-flavored Markdown. You can copy and paste it directly into your `INSTALL.md` file.
