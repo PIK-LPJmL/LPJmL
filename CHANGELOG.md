@@ -20,6 +20,25 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+author: Jannes Breier (breier@pik-potsdam.de),  Werner von Bloh (bloh@pik-potsdam.de)
+code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+
+### Added
+
+- `logo.png` added to `man` directory
+- `LICENSES` folder
+- `LICENSES/CC0-1.0.md` added for artwork license
+
+### Changed
+
+- `AUTHORS` renamed to `AUTHORS.md`
+- `INSTALL` renamed to `INSTALL.md` and adjusted
+- `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
+- `README` renamed to `README.md` and expanded
+- `configure.sh`, `src/lpj/copyright.c` and `src/lpj/printlicense.c` adjusted to reflect renaming of files
+
 
 ## [6.0.7] - 2026-04-17
 
