@@ -1015,6 +1015,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
               typenames[header.datatype],argv[iarg+2]);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1043,16 +1044,21 @@ int main(int argc,char **argv)
             header.nstep,header.timestep);
     freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
+    free(grid_name.name);
     fclose(file);
     return EXIT_FAILURE;
   }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
+    free(grid_name.name);
     grid_filename=strdup(argv[iarg+1]);
     if(grid_filename==NULL)
     {
       printallocerr("name");
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      fclose(file);
       return EXIT_FAILURE;
     }
   }
@@ -1063,6 +1069,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      free(grid_name.name);
       fclose(file);
       return EXIT_FAILURE;
     }

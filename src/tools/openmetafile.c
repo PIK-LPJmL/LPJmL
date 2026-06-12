@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions opens JSON desription file and returns filename of specified     \n**/
+/**     Function opens JSON desription file and returns filename of specified      \n**/
 /**     binary file. Description file has the following format:                    \n**/
 /**                                                                                \n**/
 /**     {                                                                          \n**/
@@ -314,7 +314,6 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   closeconfig(lpjfile);
   return ret;
 } /* of 'parse_json_metafile' */
-
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    Metadata *metadata,   /**< metadata information or NULL */

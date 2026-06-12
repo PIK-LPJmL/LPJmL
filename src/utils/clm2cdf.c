@@ -584,6 +584,7 @@ int main(int argc,char **argv)
   n_global=0;
   missing_value=NULL;
   type=LPJ_SHORT;
+  grid_name.name=NULL;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
   initmetadata(&metadata,NULL);
@@ -871,6 +872,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -889,6 +891,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Map missing for basetemp array in '%s'.\n",filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        free(grid_name.name);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -898,6 +901,7 @@ int main(int argc,char **argv)
                 getmapsize(metadata.map),metadata.basetemp_size,filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        free(grid_name.name);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -909,6 +913,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Map missing for hlimit array in '%s'.\n",filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        free(grid_name.name);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -918,6 +923,7 @@ int main(int argc,char **argv)
                 getmapsize(metadata.map),metadata.hlimit_size,filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        free(grid_name.name);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -935,8 +941,16 @@ int main(int argc,char **argv)
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
+    free(grid_name.name);
     grid_filename=strdup(argv[iarg+1]);
-    check(grid_filename);
+    if(grid_filename==NULL)
+    {
+      printallocerr("filename");
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      fclose(file);
+      return EXIT_FAILURE;
+    }
   }
   else
   {
@@ -944,6 +958,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -951,6 +966,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
       freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -964,6 +980,7 @@ int main(int argc,char **argv)
   {
     free(grid_filename);
     freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -982,6 +999,7 @@ int main(int argc,char **argv)
     printallocerr("grid");
     free(grid_filename);
     freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
   }
