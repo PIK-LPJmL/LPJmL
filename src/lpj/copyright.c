@@ -52,7 +52,7 @@ void copyright(const char *progname /**< program name */
   t[10]="see COPYRIGHT file";
   t[11]="Authors, and contributors see AUTHORS file";
   t[12]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
-  t[13]="See LICENSE file or go to http://www.gnu.org/licenses/";
+  t[13]="See LICENSE.md file or go to http://www.gnu.org/licenses/";
   t[14]="or invoke lpjml -l to print license";
   repo=getrepo();
   if(strlen(repo)>78-10)
