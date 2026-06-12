@@ -16,20 +16,23 @@
 
 #include "lpj.h"
 
-#define CG 0.2   /* cloud to ground flashes ratio */
-#define LER 0.04 /* efficiency in starting fires */
-
 void dailyfire(Stand *stand,                /**< pointer to stand */
-               Livefuel *livefuel,
                Real popdens,                /**< population density (capita/km2) */
+               Real human_ign_prob,         /**< human ignition probability */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
+               Input *input,                /**< pointer to input data */
+               int cell,                    /**< cell index */
+               int month,                   /**< month (0..11) */
                const Dailyclimate *climate, /**< daily climate data */
                const Config *config         /**< LPJmL configuration */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
   Real burnt_area,fire_frac;
-  Real fuel_consump;
+  Real fireduration;
+  Real ndayfire;
+  Real firedurationdays;
+  Real burnt_area_max;
   Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real surface_fi;
   Stocks total_fire;
@@ -38,9 +41,8 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   int p;
   Output *output;
   Pft *pft;
+  Livefuel livefuel={};
   Tracegas emission={0,0,0,0,0,0};
-  if((stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS) && !config->fire_on_grassland)
-    return;
   output=&stand->cell->output;
   initfuel(&fuel);
 
@@ -70,44 +72,64 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     /* if burnt area is simulated use the actual Nesterov index instead the maximum */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
-
-  fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
+  fuelload(stand, &fuel,&livefuel, stand->cell->ignition.nesterov_max,config);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
-                                    stand->cell->ignition.nesterov_max,
-                                    &stand->pftlist,climate->humid,
-                                    avgprec,config->fdi,climate->temp);
-  human_ignition=humanignition(popdens,&stand->cell->ignition);
-  num_fires=wildfire_ignitions(fire_danger_index,
-                               human_ignition+climate->lightning*CG*LER,
-                               stand->cell->coord.area*stand->frac);
-  windsp_cover=windspeed_fpc(climate->windspeed  ,&stand->pftlist); 
-  ros_forward=rateofspread(windsp_cover,&fuel);
+                                    stand,climate,
+                                    avgprec,config->fdi,config->relative_humidity);
+  if(config->prescribe_ignition)
+    num_fires=climate->ignition;
+  else
+  {
+    human_ignition=(config->ishuman_ign_prob) ? human_ign_prob/365*param.k_ign_prob : humanignition(popdens,&stand->cell->ignition);
+    num_fires=wildfire_ignitions(fire_danger_index,
+                                 human_ignition+climate->lightning*param.cg_ratio*param.lightning_eff_rate,
+                                 stand->cell->coord.area*stand->frac);
 
+    if(stand->type->landusetype==NATURAL)
+    {
+      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.lightning_eff_rate*stand->cell->coord.area*stand->frac*1e-4;
+      getoutput(output,HUMAN_IGNITION,config) +=human_ignition*stand->cell->coord.area*stand->frac*1e-4;
+    }
+  }
+  windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
+  ros_forward=rateofspread(windsp_cover,&fuel,&livefuel);
   /* use prescribed burnt area or calculate burnt area */
   if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
   else
-    burnt_area = area_burnt(fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
+  {
+    burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,
+                            stand->type->fireduration,
+                            fire_danger_index, num_fires, windsp_cover, ros_forward,
+                            config->ntypes, stand,config->max_firesize);
+    if(stand->type->landusetype==NATURAL)
+    {
+      getoutput(output,FIREDURATION,config)+=fireduration;
+      getoutput(output,NDAYFIRE,config)+=ndayfire;
+      getoutput(output,FIREDURATIONDAYS,config)+=firedurationdays;
+      getoutput(output,MAX_FIRESIZE,config)=max(getoutput(output,MAX_FIRESIZE,config),burnt_area_max);
+    }
+  }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
   {
     burnt_area = stand->cell->coord.area*1e-4 * stand->frac; /*burnt area in ha*/
     fire_frac = 1.0;
   }
-  stand->cell->afire_frac+=fire_frac;
-  if(stand->cell->afire_frac > 1.0)
+  stand->afire_frac+=fire_frac;
+  if(stand->afire_frac > 1.0)
   {
-    fire_frac = 1.0 - stand->cell->afire_frac + fire_frac;
-    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac; 
-    stand->cell->afire_frac = 1.0;
+    fire_frac = 1.0 - stand->afire_frac + fire_frac;
+    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac;
+    stand->afire_frac = 1.0;
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
-  fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
-  surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward);
+  deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
+  surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
-  if(surface_fi<50)  //&& !prescribe_burntarea)
+  if(surface_fi<param.intensity_limit)  //&& !prescribe_burntarea)
   {
-    stand->cell->afire_frac-=fire_frac;
+    stand->afire_frac-=fire_frac;
     num_fires=0;
     burnt_area=0;
     fire_frac=0;
@@ -118,18 +140,16 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     deadfuel_consump=litter_update_fire(&stand->soil.litter,&emission,&fuel);
   }
 
-  fraction_of_consumption(&fuel);
-
   livefuel_consump.carbon=livefuel_consump.nitrogen=0;
   foreachpft(pft,p,&stand->pftlist)
   {
-    if(surface_fi>50)
+    if(surface_fi>param.intensity_limit)
     {
       livefuel_consump_pft=pft->par->livefuel_consumption(&stand->soil.litter, pft,
-                                                          &fuel, livefuel, &isdead, surface_fi, fire_frac,config);
+                                                          &fuel, &livefuel, &isdead, surface_fi, fire_frac,config);
 #ifdef WITH_FIRE_MOISTURE
-      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
-      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
+      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel.CME/0.94);
+      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel.CME/0.94);
 #else
       emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2;
       emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co;
@@ -138,7 +158,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
       emission.voc+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.voc;
       emission.tpm+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.tpm;
       emission.nox+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.nox;
-     
+
       livefuel_consump.carbon+=livefuel_consump_pft.carbon;
       livefuel_consump.nitrogen+=livefuel_consump_pft.nitrogen;
       if(isdead)
@@ -150,13 +170,28 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   }
   total_fire.carbon = (deadfuel_consump.carbon + livefuel_consump.carbon) * stand->frac;
   total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen);
-
   /* write SPITFIRE outputs to LPJ output structures */
-  getoutput(output,FIREDI,config) +=fire_danger_index;
-  getoutput(output,NFIRE,config) +=num_fires;
+  getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
-  getoutput(output,FIREC,config)+= total_fire.carbon;
+  getoutputindex(output,STAND_BURNTAREA,stand->type->landusetype,config) += burnt_area; /*ha*/
+  getoutputindex(output,STAND_FDI,stand->type->landusetype,config) += fire_danger_index;
+  getoutputindex(output,STAND_SURFACE_FI,stand->type->landusetype,config) += surface_fi;
+  getoutputindex(output,STAND_FIREDURATION,stand->type->landusetype,config) += fireduration;
+  getoutput(output,FIREC,config) += total_fire.carbon;
+  if(stand->type->landusetype==NATURAL)
+  {
+    if (burnt_area>0)
+      getoutput(output,FIREDAYS,config) += 1;
+    getoutput(output,SURFACE_FI,config) += surface_fi;
+    getoutput(output,FIREDI,config) += fire_danger_index;
+    getoutput(output,ROS,config) += ros_forward;
+    if (num_fires>0)
+      getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
+    getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel.M[0];
+    getoutput(&stand->cell->output,DFMC,config)+=fuel.M[0];
+
+  }
   if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
     stand->cell->balance.nat_fluxes-=total_fire.carbon;
   stand->cell->balance.fire.carbon+=total_fire.carbon;

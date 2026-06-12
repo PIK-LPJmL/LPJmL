@@ -19,6 +19,6 @@
 #include "wetland.h"
 #include "agriculture.h"
 
-Standtype wetland_stand = {WETLAND,"wetland",new_natural,free_natural,
+Standtype wetland_stand = {WETLAND,"wetland",{0.0,0.0},0,new_natural,free_natural,
                            fwrite_natural,fread_natural,fprint_natural,
                            daily_natural,annual_natural,dailyfire};

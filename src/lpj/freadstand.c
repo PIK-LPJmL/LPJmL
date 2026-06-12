@@ -22,12 +22,13 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
                   const Pftpar pftpar[],/**< Pft parameter array */
                   int ntotpft,          /**<  total number of PFTs */
                   const Soilpar *soilpar, /**< soil parameter */
-                  const Standtype standtype[], /**< array of stand types */
+                  Standtype **standtype, /**< array of stand types */
                   int nstand, /**< number of stand types */
                   Bool separate_harvests
                  ) /** \return allocated stand data or NULL */
 {
   Stand *stand;
+  Bool isfire;
   Byte landusetype;
   if(bstruct_readbeginstruct(file,name))
     return NULL;
@@ -50,7 +51,7 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
     free(stand);
     return NULL;
   }
-  stand->type=standtype+landusetype;
+  stand->type=standtype[landusetype];
   initstand(stand);
   if(freadsoil(file,"soil",&stand->soil,soilpar,pftpar,ntotpft))
   {
@@ -83,6 +84,56 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
     return NULL;
   }
   stand->data=NULL;
+  if(bstruct_readbool(file,"isfire",&isfire))
+  {
+    free(stand);
+    return NULL;
+  }
+  if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+  {
+    if(isfire)
+    {
+      stand->fires=freadqueue(file,"fires");
+      if(stand->fires==NULL)
+      {
+        freepftlist(&stand->pftlist);
+        freesoil(&stand->soil);
+        free(stand);
+        return NULL;
+      }
+      /* check for length of queues */
+      if(queuesize(stand->fires)!=stand->type->max_ndayfire)
+      {
+        /*lengths differ, delete queue and initialize new queue */
+        freequeue(stand->fires);
+        stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+        if(stand->fires==NULL)
+        {
+          printallocerr("fires");
+          freepftlist(&stand->pftlist);
+          freesoil(&stand->soil);
+          free(stand);
+          return NULL;
+        }
+      }
+    }
+    else
+    {
+      stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+      if(stand->fires==NULL)
+      {
+        printallocerr("fires");
+        freepftlist(&stand->pftlist);
+        freesoil(&stand->soil);
+        free(stand);
+        return NULL;
+      }
+    }
+  }
+  else
+  {
+    stand->fires=NULL;
+  }
   /* read stand-specific data */
   if(stand->type->fread(file,stand))
   {

@@ -62,10 +62,22 @@
 #define PFTNAME_DIM_NAME "len"
 #define PFTNAME_STANDARD_NAME ""
 #define PFTNAME_LONG_NAME "Name of plant functional types"
+#define STANDNAME_NAME "Namestand"
+#define STANDNAME_DIM_NAME "len"
+#define STANDNAME_STANDARD_NAME ""
+#define STANDNAME_LONG_NAME "Name of stand types"
 #define PFT_NAME "pft"
 #define PFT_DIM_NAME "pft"
 #define PFT_STANDARD_NAME ""
 #define PFT_LONG_NAME "PFT index"
+#define STAND_NAME "stand"
+#define STAND_DIM_NAME "stand"
+#define STAND_STANDARD_NAME ""
+#define STAND_LONG_NAME "stand"
+#define FUEL_NAME "fuelclass"
+#define FUEL_DIM_NAME "fuelclass"
+#define FUEL_STANDARD_NAME "fuel_class"
+#define FUEL_LONG_NAME "Fuel class"
 #define CALENDAR "noleap"
 
 void initsetting_netcdf(Netcdf_config *nc_config)
@@ -125,10 +137,25 @@ void initsetting_netcdf(Netcdf_config *nc_config)
   nc_config->pft.long_name=PFT_LONG_NAME;
   nc_config->pft.comment=NULL;
   nc_config->pft.unit="";
+  nc_config->stand.name=STAND_NAME;
+  nc_config->stand.dim=STAND_DIM_NAME;
+  nc_config->stand.standard_name=STAND_STANDARD_NAME;
+  nc_config->stand.long_name=STAND_LONG_NAME;
+  nc_config->stand.unit="";
+  nc_config->fuel.name=FUEL_NAME;
+  nc_config->fuel.dim=FUEL_DIM_NAME;
+  nc_config->fuel.standard_name=FUEL_STANDARD_NAME;
+  nc_config->fuel.long_name=FUEL_LONG_NAME;
+  nc_config->fuel.unit="";
   nc_config->pft_name.name=PFTNAME_NAME;
   nc_config->pft_name.dim=PFTNAME_DIM_NAME;
   nc_config->pft_name.standard_name=PFTNAME_STANDARD_NAME;
   nc_config->pft_name.long_name=PFTNAME_LONG_NAME;
+  nc_config->pft_name.unit="";
+  nc_config->stand_name.name=STANDNAME_NAME;
+  nc_config->stand_name.dim=STANDNAME_DIM_NAME;
+  nc_config->stand_name.standard_name=STANDNAME_STANDARD_NAME;
+  nc_config->stand_name.long_name=STANDNAME_LONG_NAME;
   nc_config->pft_name.unit="";
   nc_config->bnds_name=BNDS_NAME;
   nc_config->years_name=YEARS_NAME;

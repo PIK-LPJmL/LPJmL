@@ -81,8 +81,15 @@ typedef struct
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
   Real firedura;        /**< scaling factor for fire duration */
+  Real fireduration[2]; /**< default min/max daily fire duration interval (minutes) */
+  int max_ndayfire;      /**< default maximum fire duration (days) */
+  Real lightning_eff_rate; /**< efficiency in starting lightning-caused fires (0..1) */
+  Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
+  Real intensity_limit; /**< intensity limit under which a fire cannot burn */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
+  Real ign_factor;      /**< used to scale human ignitions to balance human and lightning ignitions */
+  Real k_ign_prob;      /**< scaling factor for human ignition probabilities */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real manure_cn;       /* CN ratio of applied manure gC/gN */

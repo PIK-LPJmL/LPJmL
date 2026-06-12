@@ -48,7 +48,7 @@ void drain(Cell grid[],         /**< Cell array */
           )
 {
   int count,cell,i,j,iter,t,ncoeff;
-  Real fin,*out,*in;
+  Real fin,*out,*in,dis;
   Real fout_lake,irrig_to_river;
 #ifdef USE_TIMING
   double tstart;
@@ -133,8 +133,10 @@ void drain(Cell grid[],         /**< Cell array */
       grid[i].discharge.fout=0;
       ncoeff=queuesize(grid[i].discharge.queue);
       for(t=0;t<ncoeff;t++)
-        grid[i].discharge.fout+=getqueue(grid[i].discharge.queue,t)*grid[i].discharge.tfunct[t];
-
+      {
+        getqueue(grid[i].discharge.queue,&dis,t);
+        grid[i].discharge.fout+=dis*grid[i].discharge.tfunct[t];
+      }
       grid[i].discharge.dmass_river-=grid[i].discharge.fout;
       grid[i].discharge.dfout+=grid[i].discharge.fout;
       getoutput(&grid[i].output,DISCHARGE,config)+=grid[i].discharge.fout;
@@ -207,8 +209,8 @@ void drain(Cell grid[],         /**< Cell array */
   
       /* the remainder enters the river system */
       grid[i].discharge.dmass_river+=fin;
-      putqueue(grid[i].discharge.queue,fin);
-      grid[i].discharge.dmass_sum+=grid[i].discharge.dmass_river+grid[i].discharge.dmass_lake+sumqueue(grid[i].discharge.queue);
+      putqueue(grid[i].discharge.queue,&fin);
+      grid[i].discharge.dmass_sum+=grid[i].discharge.dmass_river+grid[i].discharge.dmass_lake+sumqueue(grid[i].discharge.queue,0);
 
 
     } /* of 'for(i=...)' */

@@ -16,18 +16,11 @@
 
 #define HEAT_CONTENT_FUEL 18000.0
 
-Real surface_fire_intensity(Real fuel_consump,
-                            Real fire_frac,
-                            Real ros_forward)
+Real surface_fire_intensity(Real ros_forward,
+                            Fuel *fuel)
 {
   Real surface_intens;
-  if (fire_frac <= param.fire_intens)
-    surface_intens = 0;
-  else
-  {
-    fuel_consump*=1e-3;
-    ros_forward/=60.0;
-    surface_intens=HEAT_CONTENT_FUEL*(fuel_consump/fire_frac)*ros_forward;
-  }
+  ros_forward/=60.0;
+  surface_intens=(fuel->char_sigma > 0) ? ft2cm_1(384.0)/fuel->char_sigma*fuel->ignition_rate*ros_forward : 0.0; /* calculated using Albini 1976 approach */
   return surface_intens;   
 } /* of 'surface_fire_intensity' */

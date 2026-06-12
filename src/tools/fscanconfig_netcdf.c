@@ -139,6 +139,9 @@ Bool fscanconfig_netcdf(LPJfile *file,            /**< pointer to LPJ file */
   fscanaxis2(d,&nc_config->depth_bnds,"depth_bnds",verb);
   fscanaxis2(d,&nc_config->pft,"pft",verb);
   fscanaxis2(d,&nc_config->pft_name,"pft_name",verb);
+  fscanaxis2(d,&nc_config->fuel,"fuel",verb);
+  fscanaxis2(d,&nc_config->stand,"stand",verb);
+  fscanaxis2(d,&nc_config->stand_name,"stand_name",verb);
   s=fscanstring(d,NULL,"bnds_name",verb);
   if(s==NULL)
     return TRUE;
@@ -170,6 +173,9 @@ void freeconfig_netcdf(Netcdf_config *config /**< NetCDF settings */
   freeaxis(&config->depth_bnds);
   freeaxis(&config->pft);
   freeaxis(&config->pft_name);
+  freeaxis(&config->fuel);
+  freeaxis(&config->stand);
+  freeaxis(&config->stand_name);
   free(config->bnds_name);
   free(config->calendar);
   free(config->years_name);

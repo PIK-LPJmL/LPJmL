@@ -34,5 +34,10 @@ void fprintstand(FILE *file,           /**< Pointer to text file */
   for(l=0;l<NSOILLAYER;l++)
     fprintf(file,"%.2f ",stand->frac_g[l]);
   fputc('\n',file);
+  if(stand->fires!=NULL)
+  {
+    fputs("Fire queue:",file);
+    fprintqueue(file,stand->fires);
+  }
   fprintpftlist(file,&stand->pftlist);
 } /* of 'fprintstand' */

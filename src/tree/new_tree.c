@@ -41,7 +41,7 @@ void new_tree(Pft *pft, /**< Parameter of pft */
   tree->falloc.root=treepar->sapl.root.carbon/sum;
   tree->falloc.sapwood=treepar->sapl.sapwood.carbon/sum;
   tree->ind.debt.carbon=tree->ind.debt.nitrogen=tree->gddtw=tree->aphen_raingreen=0.0;
-  tree->height=tree->crownarea=0.0;
+  tree->height=tree->crownarea=tree->barkthickness=0.0;
   tree->isphen=FALSE;
   tree->fruit.carbon=tree->fruit.nitrogen=0;
   tree->nfertilizer=tree->nmanure=0;

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                           n  e  t  c  d  f  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines NetCDF missing values and axis names for LPJmL 6.0.7                  \n**/
+/**  Defines NetCDF missing values and axis names for LPJmL 6.1.0                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -40,9 +40,18 @@
     "pft" : { "name" : "pft", "dim" : "pft", "comment" : null,
               "long_name" : "PFT index", "standard_name" : "",
               "unit" : "", "scale" : 1.0},
-    "pft_name" : { "name" : "NamePFT", "dim" : "len", "comment" : null,
-              "long_name" : "Name of plant functional types", "standard_name" : "",
+    "fuel" : { "name" : "fuelclass", "dim" : "fuelclass", "comment" : null,
+              "long_name" : "Fuel class", "standard_name" : "fuel_class",
               "unit" : "", "scale" : 1.0},
+    "stand" : { "name" : "stand", "dim" : "stand", "comment" : null,
+                "long_name" : "stand class", "standard_name" : "stand",
+                "unit" : "", "scale" : 1.0},
+    "stand_name" : { "name" : "Namestand", "dim" : "len", "comment" : null,
+                     "long_name" : "Name of stand types", "standard_name" : "",
+                     "unit" : "", "scale" : 1.0},
+    "pft_name" : { "name" : "NamePFT", "dim" : "len", "comment" : null,
+                   "long_name" : "Name of plant functional types", "standard_name" : "",
+                   "unit" : "", "scale" : 1.0},
     "bnds_name" : "bnds",
     /* calendar name */
     "calendar" : "noleap",

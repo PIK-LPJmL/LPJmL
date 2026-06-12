@@ -19,7 +19,7 @@
 #include "grassland.h"
 #include "biomass_grass.h"
 
-Standtype biomass_grass_stand={BIOMASS_GRASS,"biomass_grass",new_agriculture,
+Standtype biomass_grass_stand={BIOMASS_GRASS,"biomass_grass",{0.0,0.0},0,new_agriculture,
                                free_agriculture,fwrite_agriculture,
                                fread_agriculture,fprint_agriculture,
                                daily_biomass_grass,annual_biomass_grass,NULL};

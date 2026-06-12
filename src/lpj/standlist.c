@@ -53,9 +53,9 @@ Standlist freadstandlist(Bstruct file,          /**< pointer to restart file */
                          const Pftpar pftpar[], /**< pft parameter array */
                          int ntotpft,           /**< total number of PFTs */
                          const Soilpar *soilpar,/**< soil parameter */
-                         const Standtype standtype[],
+                         Standtype **standtype, /**< array of stand types */
                          int nstand,            /**< number of stand types */
-                         Bool separate_harvests
+                         Bool separate_harvests /**< separate harvests enabled (TRUE/FALSE) */
                         ) /** \return allocated stand list or NULL */
 {
   /* Function reads stand list from file */
@@ -100,6 +100,13 @@ int addstand(const Standtype *type, /**< stand type */
    stand->type=type;
    /* call stand-specific allocation function */
    initstand(stand);
+   if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+   {
+     stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+     check(stand->fires);
+   }
+   else
+     stand->fires=NULL;
    stand->type->newstand(stand);
    return getlistlen(cell->standlist);
 } /* of 'addstand' */
@@ -112,6 +119,7 @@ void initstand(Stand *stand /**< Pointer to stand */
   stand->growing_days=0;
   stand->Hag_Beta=stand->cell->Hag_beta;
   stand->prescribe_landcover=NO_LANDCOVER;
+  stand->afire_frac=0;
 } /* of 'initstand' */
 
 void freestand(Stand *stand /**< Pointer to stand */
@@ -119,11 +127,12 @@ void freestand(Stand *stand /**< Pointer to stand */
 {
   freepftlist(&stand->pftlist); /* free list of established PFTs */
   freesoil(&stand->soil);
+  freequeue(stand->fires);
   /* call stand-specific free function */
   stand->type->freestand(stand);
   free(stand);
 } /* of 'freestand'  */
- 
+
 int delstand(Standlist list, /**< stand list */
              int index       /**< index of stand to be deleted */
             )                /** \return new number of stands */
@@ -144,3 +153,15 @@ void freestandlist(Standlist standlist /**< stand list */
     freestand(stand);
   freelist(standlist);
 } /* of 'freestandlist' */
+
+Real standfracsum(const Standlist standlist /**< stand list */
+                 )                          /** \return sum of all stand fractions */
+{
+  Stand *stand;
+  Real frac_sum=0.0;
+  int s;
+  foreachstand(stand,s,standlist)
+    frac_sum+=stand->frac;
+  return frac_sum;
+} /* of 'standfracsum' */
+

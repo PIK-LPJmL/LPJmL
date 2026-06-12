@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes ignition data to binary file                               \n**/
+/**     Function writes ignition data to restart file                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,10 @@
 
 #include "lpj.h"
 
-Bool fwriteignition(Bstruct file,const char *name,const Ignition *ignition)
+Bool fwriteignition(Bstruct file,            /**< pointer to restart file */
+                    const char *name,        /**< name of object or NULL */
+                    const Ignition *ignition /**< data written to file */
+                   )                         /** \return TRUE on error */
 {
   bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"nesterov_accum",ignition->nesterov_accum);

@@ -55,7 +55,9 @@ int outputsize(int index,     /**< output index */
       return 2*getnirrig(ncft,config);
     case FPC: case WPC:
       return getnnat(npft,config)+1;
-    case PFT_MORT: case NV_LAI:
+    case PFT_AGTOP_LITTERC:
+      return npft+ncft;
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF: case PFT_PHEN:
       return getnnat(npft,config);
     case SOILTEMP: case SWC: case PERC: case WHC_NAT: case WHC_GRASS: case WHC_AGR:
     case KS_NAT: case KS_GRASS: case KS_AGR:
@@ -73,6 +75,10 @@ int outputsize(int index,     /**< output index */
       return (config->nbiomass+config->ngrass*2)*2;
     case WFT_VEGC:
       return config->nwft;
+    case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI: case STAND_FIREDURATION:
+      return config->nstand-1;
+    case FUEL:
+      return NFUELCLASS;
     default:
       return 1;
   } /* of 'switch' */

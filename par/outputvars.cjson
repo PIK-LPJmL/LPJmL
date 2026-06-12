@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 6.0.7                             \n**/
+/**  Defines array of output variables for LPJmL 6.1.0                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -57,7 +57,7 @@
     { "id" : KS_AGR, "name": "ks_agr", "timestep" : "monthly", "var" : "ks_agr", "long_name" : "hydraulic conductivity for agriculture", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
     { "id" : SWC1, "name": "swc1", "timestep" : "monthly", "var" : "SWC1", "long_name" : "fractional saturation of soil water content in layer 1", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "long_name" : "fractional saturation of soil water content in layer 2", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
-    { "id" : FIREC, "name": "firec", "timestep" : "annual", "var" : "FireC", "long_name" : "fire carbon emission", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+    { "id" : FIREC, "name": "firec", "timestep" : "monthly", "var" : "FireC", "long_name" : "fire carbon emission", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "long_name" : "burned fraction of natural vegetation", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "long_name" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "long_name" : "Soil Carbon in top 3 m", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -213,7 +213,7 @@
     { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "long_name" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
     { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "long_name" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAKETEMP, "name": "laketemp", "timestep" : "monthly", "var" :  "laketemp", "long_name" :  "lake surface temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-    { "id" : FIREN, "name": "firen", "timestep" : "annual", "var": "FireN", "long_name": "fire nitrogen emission", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+    { "id" : FIREN, "name": "firen", "timestep" : "monthly", "var": "FireN", "long_name": "fire nitrogen emission", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
     { "id" : FLUX_ESTABN, "name": "flux_estabn", "timestep" : "annual", "var": "estabn", "long_name": "establishment flux", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
     { "id" : HARVESTN, "name": "harvestn", "timestep" : "annual", "var": "harvestn", "long_name": "harvested nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
     { "id" : PFT_HARVESTN, "name": "pft_harvestn", "timestep" : "annual", "var": "harvestn", "long_name": "harvested nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
@@ -362,6 +362,31 @@
     { "id" : PROD_TURNOVER_N    ,"name": "prod_turnover_n", "timestep" : "annual", "var" : "prod_turnover_n", "long_name" : "nitrogen emissions from product turnover", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : ESTAB_STORAGE_C, "name": "estab_storage_c", "timestep" : "annual", "var" :  "estab_storage_c", "long_name" :  "Carbon storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "long_name" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+    { "id" : PFT_HEIGHT, "name": "pft_height", "timestep" : "annual","var": "heigt", "long_name": "tree height", "unit": "m", "scale": 1.0, "offset" : 0.0},
+    { "id" : PFT_AGTOP_LITTERC, "name": "pft_agtop_litterc", "timestep" : "daily", "var" : "litterc", "long_name" : "PFT-specific above-ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+    { "id" : LITTERMOIST, "name": "littermoist", "timestep" : "monthly", "var" : "littermoist", "long_name" : "litter moisture", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
+    { "id" : PFT_PHEN, "name": "pft_phen", "timestep" : "monthly","var": "phenology", "long_name": "PFT-specific phenology", "unit": "1", "scale": 1.0, "offset" : 0.0},
+    { "id" : FIREDURATION, "name": "fireduration", "timestep" : "monthly", "var" : "fireduration", "long_name" :  "fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
+    { "id" : FIREDURATIONDAYS, "name": "firedurationdays", "timestep" : "monthly", "var" : "firedurationdays", "long_name" :  "fire duration days", "unit" : "d", "scale" : 1.0, "offset" : 0.0},
+    { "id" : LIVEGRASS, "name": "livegrass", "timestep" : "monthly", "var" : "livegrass", "long_name" : "live grass fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
+    { "id" : DLM_LIVEGRASS, "name": "dlm_livegrass", "timestep" : "monthly", "var" : "dlm_livegrass", "long_name" : "litter moisture live grass", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : GSI_CUM, "name": "gsi_cum", "timestep" : "monthly", "var" : "gsicum", "long_name" : "cumulative GSI live fuel", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : GSI_DIFF, "name": "gsi_diff", "timestep" : "monthly", "var" : "gsidiff", "long_name" : "PFT specific mean square difference between GSI and grass phenology", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : NDAYFIRE, "name": "ndayfire", "timestep" : "monthly", "var" : "ndayfire", "long_name" :  "average length of fires", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
+    { "id" : FUEL, "name": "fuel", "timestep" : "monthly", "var" : "fuel", "long_name" : "class-specific fire fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
+    { "id" : MAX_FIRESIZE, "name": "max_firesize", "timestep" : "monthly", "var" :  "max_firesize", "long_name" :  "maximum fire size", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
+    { "id" : STAND_FIREDURATION, "name": "stand_fireduration", "timestep" : "monthly", "var" :  "fireduration", "long_name" :  "stand-specific fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
+    { "id" : STAND_BURNTAREA, "name": "stand_burntarea", "timestep" : "annual", "var" :  "burntarea", "long_name" :  "stand-specific area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
+    { "id" : STAND_FDI, "name": "stand_fdi", "timestep" : "annual", "var" :  "fdi", "long_name" :  "stand-specific fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : STAND_SURFACE_FI, "name": "stand_surface_fi", "timestep" : "annual", "var" :  "surface_fi", "long_name" :  "stand-specific average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
+    { "id" : FWI, "name": "fwi", "timestep" : "monthly", "var" :  "fwi", "long_name" :  "Canadian forest fire weather index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : DFMC, "name": "dfmc", "timestep" : "monthly", "var" : "dfmc", "long_name" : "dead fuel moisture content", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : HUMAN_IGNITION, "name": "human_ignition", "timestep" : "monthly", "var" :  "human_ign", "long_name" :  "human ignition", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : LIGHTNING, "name": "lightning", "timestep" : "monthly", "var" :  "lightning_ign", "long_name" :  "lightnings causing fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SURFACE_FI, "name": "surface_fi", "timestep" : "monthly", "var" :  "surface_fi", "long_name" :  "average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
+    { "id" : ROS, "name": "ros", "timestep" : "monthly", "var" :  "ros", "long_name" :  "rate of spread", "unit" : "m/s", "scale" : 1.0, "offset" : 0.0},
+    { "id" : FIRESIZE, "name": "firesize", "timestep" : "monthly", "var" :  "firesize", "long_name" :  "average size of fire", "unit" : "km2", "scale" : 1.0e-6, "offset" : 0.0},
+    { "id" : FIREDAYS, "name": "firedays", "timestep" : "monthly", "var" :  "firedays", "long_name" :  "number of days with fire", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
     { "id" : MWATER, "name" :  "mwater" , "timestep" : "monthly" , "var" :  "MWater"  , "long_name" : "mean water table in cell", "unit" :  "mm" , "scale" :  1.0, "offset" : 0.0},
     { "id" : WETFRAC, "name" :  "wetfrac"  , "timestep" : "annual", "var" :  "wetlandfrac"  , "long_name" : "annual wetlandfrac", "unit" :  "" , "scale" :  1.0, "offset" : 0.0},
     { "id" : WTAB, "name" :  "wtab" , "timestep" : "monthly" , "var" :   "WTab"  , "long_name" : "monthly water table in wetland", "unit" :  "mm" , "scale" :  1.0, "offset" : 0.0},

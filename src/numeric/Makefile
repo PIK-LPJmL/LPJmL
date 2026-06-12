@@ -21,7 +21,7 @@ OBJS    = leftmostzero.$O bisect.$O linreg.$O date.$O interpolate.$O\
           gammafunc.$O interpolate_data.$O\
           permute.$O setseed.$O freadseed.$O runmean_add.$O\
           finite_volume_diffusion.$O thomas_algorithm.$O\
-          fwriteseed.$O
+          fwriteseed.$O getavg.$O getmax.$O getrh.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

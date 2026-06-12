@@ -22,6 +22,8 @@
 
 /* Definitions of datatypes */
 
+typedef struct realdata *Realdata;
+
 typedef struct
 {
   Real *temp; /**< temperature data (deg C) */
@@ -32,7 +34,8 @@ typedef struct
   Real *tmax; /**< maximum temperature (deg C) */
   Real *humid; /**< specific humidity (kg/kg) */
   Real *tmin; /**< minimum temperature (deg C) */
-  Real *lightning;
+  Real *ignition; /**< fire ignitions */
+  Real *lightning; /**< lightning events */
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
   Real *burntarea;  /**< burnt area (ha) */
@@ -49,6 +52,7 @@ typedef struct Dailyclimate
   Real tmax;       /**< maximum temperature (deg C) */
   Real humid;      /**< specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
+  Real ignition;   /**< daily fire ignitions */
   Real lwnet;      /**< long wave net downward flux (W/m2) */
   Real swdown;     /**< short wave downward flux component (W/m2) */
   Real burntarea;  /**< burnt area (ha) */
@@ -75,6 +79,7 @@ typedef struct
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
+  Climatefile file_ignition;
   Climatefile file_delta_temp, file_delta_prec, file_delta_lwnet, file_delta_swdown;
 #if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
@@ -95,6 +100,7 @@ typedef struct
 #define getcelltmax(climate,cell) climate->data[0].tmax+(cell)*NMONTH
 #define getcellhumid(climate,cell) climate->data[0].humid+(cell)*NMONTH
 #define getcelltmin(climate,cell) climate->data[0].tmin+(cell)*NMONTH
+#define getcellignition(climate,cell) climate->data[0].ignition+(cell)*NMONTH
 #define getcelllightning(climate,cell) climate->data[0].lightning+(cell)*NMONTH
 #define getcellburntarea(climate,cell) climate->data[0].burntarea+(cell)*NMONTH
 #define getcellno3deposition(climate,cell) climate->data[0].no3deposition+(cell)*NMONTH
@@ -104,7 +110,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Climate *initclimate(const Cell *,Config *);
+extern Climate *initclimate(Config *);
 extern Bool getclimate(Climate *,const Cell *,int,int,const Config *);
 extern Bool getdeposition(Climate *,const Cell *,int,Config *);
 extern Bool getco2(const Climate *,Real *,int,const Config *);
@@ -131,12 +137,11 @@ extern void closeclimatefile(Climatefile *,Bool);
 extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
+extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,const Config *);
 extern Bool readtracegas(Tracedata *,const Filename *,Config *);
-extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern void interpolate_climate(Climate *, int, Real);
 extern void addanomaly_climate(Climate *, int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
-extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
 extern Bool openclmdata(Climatefile *,Metadata *,const Filename *,const char *,const char *,
@@ -149,6 +154,10 @@ extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,int,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
 extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
+extern Realdata initrealdata(const Filename *,const char *,const char *,const Config *);
+extern Bool readrealdata(Realdata,int,const Cell *,const Config *);
+extern Real getrealdata(const Realdata,int);
+extern void freerealdata(Realdata,Bool);
 extern Bool checktitle(const Attr *,int,const char *,char **,Bool);
 
 #endif

@@ -350,7 +350,7 @@ static Bool initriver(Cell grid[],Config *config)
     /* initialize delay queue with the same size */
     if(grid[cell].discharge.queue==NULL) /* has queue been read by freadcell? */
     {
-      grid[cell].discharge.queue=newqueue(ncoeff); /* no, allocate it */
+      grid[cell].discharge.queue=newqueue(1,ncoeff); /* no, allocate it */
       if(grid[cell].discharge.queue==NULL)
       {
         printallocerr("queue");
@@ -369,7 +369,7 @@ static Bool initriver(Cell grid[],Config *config)
       fprintf(stderr,"ERROR256: Size of discharge queue=%d of cell %d in restart file differs from %d, queue is resized and set to zero.\n",
              queuesize(grid[cell].discharge.queue),cell+config->startgrid,ncoeff);
       freequeue(grid[cell].discharge.queue);
-      grid[cell].discharge.queue=newqueue(ncoeff);
+      grid[cell].discharge.queue=newqueue(1,ncoeff);
       if(grid[cell].discharge.queue==NULL)
       {
         printallocerr("queue");

@@ -14,13 +14,19 @@
 
 #include "lpj.h"
 
-Real windspeed_fpc(Real windspeed,const Pftlist *pftlist)
+Real windspeed_fpc(Real windspeed,        /**< wind speed (m/s) */
+                   const Pftlist *pftlist /**< array of established PFTs */
+                  )                       /** \return canopy windspeed (m/min) */
 {
-  Real windsp_fpc;
+  Real windsp_fpc,fpc_sum;
   const Pft *pft;
   int p;
   windsp_fpc=0;
+  fpc_sum=0;
   foreachpft(pft,p,pftlist)
+  {
     windsp_fpc+=pft->fpc*pft->par->windspeed;
-  return windsp_fpc*60*windspeed;
+    fpc_sum+=pft->fpc;
+  }
+  return (fpc_sum>0) ? windsp_fpc*60*windspeed/fpc_sum : windspeed*60; /* convert m/s ->m/min */
 } /* of 'windspeed_fpc' */

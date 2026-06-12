@@ -23,8 +23,6 @@
 
 static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration */
                       int *count,
-                      const Standtype standtype[], /* array of stand types */
-                      int nstand,              /* number of stand types */
                       int npft,                /* number of natural PFTs */
                       int ncft                 /* number of crop PFTs */
                      ) /* returns allocated cell grid or NULL */
@@ -185,6 +183,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     file_restart=NULL;
     config->initsoiltemp=TRUE;
+    config->river_routing_restart=config->river_routing;
   }
   else
   {
@@ -342,6 +341,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].ignition.nesterov_day=0;
     grid[i].landcover=NULL;
     grid[i].output.data=NULL;
+    grid[i].gsi_cum=1;
+    grid[i].ignition.human=0;
+
+    initfwi(&grid[i].fwi_data);
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
@@ -446,7 +449,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else /* read cell data from restart file */
     {
       if(freadcell(file_restart,grid+i,npft,ncft,
-                   config->soilpar+soil_id,standtype,nstand,
+                   config->soilpar+soil_id,
                    config))
       {
         fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
@@ -456,7 +459,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(!config->ischeckpoint && config->new_seed)
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
-        check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac);
+      {
+        if(check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac,FALSE))
+          return NULL;
+      }
       else
         (*count)++;
     }
@@ -525,8 +531,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 } /* of 'newgrid2' */
 
 Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
-              const Standtype standtype[], /**< array of stand types */
-              int nstand,              /**< number of stand types */
               int npft,                /**< number of natural PFTs */
               int ncft                 /**< number of crop PFTs */
              ) /** \return allocated cell grid or NULL */
@@ -537,7 +541,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   int count,count_total;
   Bool iserr;
   Cell *grid;
-  grid=newgrid2(config,&count,standtype,nstand,npft,ncft);
+  grid=newgrid2(config,&count,npft,ncft);
   iserr=(grid==NULL);
 #ifdef USE_MPI
   counts=newvec(int,config->ntask);
@@ -591,6 +595,11 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
         fputs("ERROR207: Cannot initialize reservoir data.\n",stderr);
       return NULL;
     }
+  }
+  if(config->max_firesize)
+  {
+    if(initmax_firesize(grid,config))
+      return NULL;
   }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {
