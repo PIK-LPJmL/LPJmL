@@ -384,6 +384,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   {
     if(isout)
       printfopenerr(name);
+    if(gridfile!=NULL)
+      free(gridfile->name);
     freemetadata(metadata);
   }
   else
@@ -393,6 +395,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
       if(getfilesizep(file)==0)
       {
         freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         fclose(file);
         file=NULL;
         if(isout)
