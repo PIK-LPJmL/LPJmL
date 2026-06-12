@@ -66,7 +66,7 @@ gzip -cd lpjml-6.0.7.tar.gz | tar -xf -
 
 ### 2. Configure for Your Operating System
 
-#### On the New PIK Cluster
+#### On PIK's HPC "Eunice Foote"
 
 Set the following modules:
 
@@ -210,7 +210,7 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 | Flag                | Description                                                 |
 |---------------------|-------------------------------------------------------------|
 |`CHECK_BOUNDARY`     |check array boundaries of output                             |
-|`CHECK_BALANCE`     |enable localy function balance checks                             |
+|`CHECK_BALANCE`      |enable localy function balance checks                        |
 |`COUPLING_WITH_FMS`  |enable coupling to FMS                                       |
 |`DAILY_ESTABLISHMENT`|enable daily establishment                                   |
 |`DEBUG`              |diagnostic output is generated for debugging purposes        |
