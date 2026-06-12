@@ -1,4 +1,4 @@
-# Installation of LPJmL C Version 6.0.7
+# Installation of LPJmL C Version 6.1.1
 
 ## Overview
 
@@ -59,7 +59,7 @@ After extracting the source files, the directory structure will look like this:
 ```bash
 mkdir lpjml
 cd lpjml
-gzip -cd lpjml-6.0.7.tar.gz | tar -xf -
+gzip -cd lpjml-6.1.1.tar.gz | tar -xf -
 ```
 
 ---
