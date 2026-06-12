@@ -21,12 +21,12 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
-## [6.1.0] - 2026-04-15
+## [6.1.0] - 2026-06-12
 
 ### Contributors
 
 - author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
