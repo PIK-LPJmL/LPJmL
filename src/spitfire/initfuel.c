@@ -18,12 +18,11 @@
 void initfuel(Fuel *fuel)
 {
   int i;
-  fuel->char_moist_factor=fuel->char_alpha_fuel=fuel->char_net_fuel=0; 
+  fuel->char_moist_factor=fuel->char_alpha_fuel=0;
   fuel->char_dens_fuel_ave=0.00001;
-  fuel->cf=fuel->daily_litter_moist=0;   
+  fuel->cf=fuel->daily_litter_moist=0;
   for(i=0;i<=NFUELCLASS;++i)
     fuel->deadfuel_consum[i]=0;
-  fuel->gamma=0;
+  fuel->ignition_rate=0;
   fuel->moist_1hr=fuel->moist_10_100hr=fuel->mw_weight=1.0;
-  fuel->sigma=0.00001; 
 } /* of 'initfuel' */

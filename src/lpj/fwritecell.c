@@ -71,6 +71,8 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
         break;
       if(fwritestocksarray(file,"estab_storage_grass",grid[cell].balance.estab_storage_grass,2))
         break;
+      if(fwritefwi(file,"fwi",&grid[cell].fwi_data))
+        break;
       if(fwriteignition(file,"ignition",&grid[cell].ignition))
         break;
       if(bstruct_writereal(file,"excess_water",grid[cell].balance.excess_water))
@@ -119,6 +121,7 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
           break;
 #endif
       }
+      bstruct_writereal(file,"gsi_cum",grid[cell].gsi_cum);
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,"fertilizer_nr",grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)

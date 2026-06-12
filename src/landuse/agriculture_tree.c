@@ -20,7 +20,7 @@
 #include "tree.h"
 #include "agriculture_tree.h"
 
-Standtype agriculture_tree_stand={AGRICULTURE_TREE,"agriculture_tree",
+Standtype agriculture_tree_stand={AGRICULTURE_TREE,"agriculture_tree",{0.0,0.0},0,
                                   new_biomass_tree,
                                   free_agriculture,fwrite_biomass_tree,
                                   fread_biomass_tree,fprint_biomass_tree,

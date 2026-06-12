@@ -288,6 +288,52 @@ Bool freadclimbuf(Bstruct file,     /**< pointer to restart file */
   return bstruct_readendstruct(file,name);
 } /* of 'freadclimbuf' */
 
+void fprintclimbuf(FILE *file,             /**< pointer to text file */
+                   const Climbuf *climbuf, /**< pointer to climate buffer */
+                   int ncft                /**< number of crop pfts */
+                  )
+{
+  int m;
+
+  fprintf(file,"temp_max: %g\n",climbuf->temp_max);
+  fprintf(file,"temp_min: %g\n",climbuf->temp_min);
+  fprintf(file,"atemp_mean: %g\n",climbuf->atemp_mean);
+  fprintf(file,"aetp_mean: %g\n",climbuf->aetp_mean);
+  fprintf(file,"atemp_mean20: %g\n",climbuf->atemp_mean20);
+  fprintf(file,"atemp_mean20_fix: %g\n",climbuf->atemp_mean20_fix);
+  fprintf(file,"gdd5: %g\n",climbuf->gdd5);
+  fprintf(file,"dval_prec: %g\n",climbuf->dval_prec[0]);
+  fprintf(file,"startday_rainyseason: %d\n",climbuf->startday_rainyseason);
+  fputs("temp:",file);
+  for(m=0;m<NDAYS;m++)
+    fprintf(file," %g",climbuf->temp[m]);
+  fputs("\nprec:",file);
+  for(m=0;m<NDAYS;m++)
+    fprintf(file," %g",climbuf->prec[m]);
+  fputs("\nmpet20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mpet20[m]);
+  fputs("\nmprec20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mprec20[m]);
+  fputs("\nmprec100:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mprec100[m]);
+  fputs("\nmtemp20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mtemp20[m]);
+  fputs("\nV_req:",file);
+  for(m=0;m<ncft;m++)
+    fprintf(file," %g",climbuf->V_req[m]);
+  fputs("\nV_req_a:",file);
+  for(m=0;m<ncft;m++)
+    fprintf(file," %g",climbuf->V_req_a[m]);
+  fputs("\nMin buffer\n",file);
+  fprintbuffer(file,climbuf->min);
+  fputs("Max buffer\n",file);
+  fprintbuffer(file,climbuf->max);
+} /* of 'fprintclimbuf' */
+
 void freeclimbuf(Climbuf *climbuf /**< pointer to climate buffer */
                 )
 {

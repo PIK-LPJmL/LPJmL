@@ -48,6 +48,8 @@
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */
 typedef struct config Config; /* forward declaration of stand */
+typedef struct standtype Standtype; /* forward declaration of standtype */
+typedef struct input Input; /* forward declaration of input */
 typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF settings */
 
 /*  Defined header files for LPJ */
@@ -92,6 +94,7 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 #include "spitfire.h"
 #include "units.h"
 #include "stand.h"
+#include "spitfire.h"
 #include "crop.h"
 #include "discharge.h"
 #include "input.h"
@@ -130,7 +133,7 @@ extern char *lpj_usage;
 
 /* Declaration of functions */
 
-extern Cell *newgrid(Config *,const Standtype [],int,int,int);
+extern Cell *newgrid(Config *,int,int);
 extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Config *);
 extern Bstruct openrestart(const char *,Config *,int,int);
 extern void copyright(const char *);

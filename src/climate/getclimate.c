@@ -97,7 +97,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   char *name;
   Real *wet;
   Bool rc, isclimate;
-  int i,index;
+  int i,index,year_lightning;
 
   if (config->isanomaly)
   {
@@ -121,6 +121,26 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       }
       return TRUE;
     }
+    if(climate->data[0].lightning!=NULL)
+    {
+      if(year<climate->file_lightning.firstyear)
+        year_lightning=climate->file_lightning.firstyear;
+      else if(year>=climate->file_lightning.firstyear+climate->file_lightning.nyear)
+        year_lightning=climate->file_lightning.firstyear+climate->file_lightning.nyear-1;
+      else
+        year_lightning=year;
+      if(readclimate(&climate->file_lightning,climate->data[data_index].lightning,0,climate->file_lightning.scalar,grid,year_lightning,1,config))
+      {
+        if(isroot(*config))
+        {
+          name=getrealfilename(&config->lightning_filename);
+          fprintf(stderr,"ERROR131: Cannot read lightning of year %d from '%s'.\n",
+                  year,name);
+          free(name);
+        }
+        return TRUE;
+      }
+    }
     if(readclimate(&climate->file_prec,climate->data[data_index].prec,0,climate->file_prec.scalar,grid,year, 1,config))
     {
       if(isroot(*config))
@@ -131,6 +151,20 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         free(name);
       }
       return TRUE;
+    }
+    if(climate->data[0].ignition!=NULL)
+    {
+      if(readclimate(&climate->file_ignition,climate->data[data_index].ignition,0,climate->file_ignition.scalar,grid,year,1,config))
+      {
+        if(isroot(*config))
+        {
+          name=getrealfilename(&config->ignition_filename);
+          fprintf(stderr,"ERROR131: Cannot read ignition of year %d from '%s'.\n",
+                  year,name);
+          free(name);
+        }
+        return TRUE;
+      }
     }
     if(climate->data[0].tmax!=NULL)
     {

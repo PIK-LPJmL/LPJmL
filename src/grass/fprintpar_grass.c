@@ -29,4 +29,13 @@ void fprintpar_grass(FILE *file,const Pftpar *par,const Config *config)
           1.0/pargrass->nc_ratio.root,
           pargrass->reprod_cost);
   fprintf(file,"rel. ratio:\t%g\n",pargrass->ratio);
+  if(isspitfire(config))
+    fprintf(file,"lfmc_a:\t\t%g\n"
+            "lfmc_b:\t\t%g\n"
+            "lfmc_c:\t\t%g\n"
+            "lfmc_d:\t\t%g\n",
+            pargrass->lfmc_a,
+            pargrass->lfmc_b,
+            pargrass->lfmc_c,
+            pargrass->lfmc_d);
 } /* of 'fprintpar_grass' */

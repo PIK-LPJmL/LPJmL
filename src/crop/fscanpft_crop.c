@@ -143,7 +143,7 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->vegn_sum=vegn_sum_crop;
   pft->wdf=wdf_crop;
   pft->fprintpar=fprintpar_crop;
-  pft->livefuel_consumption=NULL;
+  pft->livefuel_consumption=livefuel_consum_crop;
   pft->annual=NULL;
   pft->turnover_daily=NULL;
   pft->albedo_pft=albedo_crop;

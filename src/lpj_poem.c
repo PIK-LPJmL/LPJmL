@@ -48,6 +48,7 @@
 #include "agriculture_tree.h"
 #include "agriculture_grass.h"
 #include "wetland.h"
+#include "urban.h"
 
 #include "cpl.h"
 
@@ -56,7 +57,7 @@
 //#endif
 
 #define NTYPES 3 /*< number of plant functional types: grass, tree, crop, bioenergy */
-#define NSTANDTYPES 15 /*< number of stand types / land use types as defined in landuse.h */
+#define NSTANDTYPES 16 /*< number of stand types / land use types as defined in landuse.h */
 
 static const char *progname;
 
@@ -64,7 +65,7 @@ static Outputfile *output; /*< Output file array */
 static Input input;        /*< input data */
 static Config config;      /*< LPJ configuration */
 static Cell *grid;         /*< cell array */
-static Standtype standtype[NSTANDTYPES];
+static Standtype *standtype[NSTANDTYPES];
 
 static int npft;           /*< Number of natural PFT's */
 static int ncft;           /*< Number of crop PFT's */
@@ -365,6 +366,23 @@ void lpj_init_
     {name_crop,fscanpft_crop}
   };
 
+  standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
+  standtype[KILL]=&kill_stand;
+
   /*
    * Use default communicator containing all processors. In defining your own
    * communicator it is possible to run LPJ on a subset of processors
@@ -408,26 +426,10 @@ void lpj_init_
    * crops must have last id-number */
   /* Read configuration file */
   rc=readconfig(&config,
-                scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+                scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fprintf(stderr,"WARNING018: Arguments listed after configuration filename, will be ignored.\n");
-
-  standtype[NATURAL]=natural_stand;
-  standtype[WETLAND]=wetland_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[OTHERS]=others_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
 
   /*! check that the date passed from FMS matches the date from the LPJ configuration */
   /* alternate TODO: set the date from FMS to the LPJ configuration structure */
@@ -467,9 +469,9 @@ void lpj_init_
    * /home/bloh/trunks/lpj_latest/src/cpl/
    */
 
-  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+  rc=((grid=newgrid(&config,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
+  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   pch4 = param.pch4*1e-3;

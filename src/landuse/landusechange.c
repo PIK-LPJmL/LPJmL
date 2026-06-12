@@ -23,9 +23,10 @@
 #include "biomass_tree.h"
 #include "reservoir.h"
 #include "woodplantation.h"
+#include "urban.h"
 #include "wetland.h"
 
-typedef enum {PASTURE=1, OTHER_PASTURE,BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION } Cultivation_type;
+typedef enum {PASTURE=1, OTHER_PASTURE, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION,URBAN_AREA } Cultivation_type;
 
 #ifdef IMAGE
 #define minnatfrac_luc 0.0002
@@ -442,10 +443,18 @@ static void regrowth(Cell *cell, /* pointer to cell */
     else
     {
       mixstand->type->freestand(mixstand);
+      freequeue(mixstand->fires);
       if(iswetland)
         mixstand->type=&wetland_stand;
       else
         mixstand->type=&natural_stand;
+      if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+      {
+        mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+        check(mixstand->fires);
+      }
+      else
+        mixstand->fires=NULL;
       mixstand->type->newstand(mixstand);
       natstand=mixstand;
       natstand->soil.iswetland=iswetland;
@@ -746,7 +755,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&grassland_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           data=mixstand->data;
           data->irrigation=irrigation;
@@ -785,7 +802,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&biomass_tree_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         case AGRICULTURE_TREE_PLANTATION:
@@ -800,7 +825,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               }
           }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=(config->pftpar[pft_id].type==GRASS) ? &agriculture_grass_stand : &agriculture_tree_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           biomass_tree=mixstand->data;
           biomass_tree->irrigation.pft_id=pft_id;
@@ -814,7 +847,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&biomass_grass_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         case WOOD_PLANTATION:
@@ -826,13 +867,28 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type = &woodplantation_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
+          mixstand->type->newstand(mixstand);
+          break;
+        case URBAN_AREA:
+          mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
+          mixstand->type = &urban_stand;
+          mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         default:
-            fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,TRUE,
-                 "WRONG CULTIVATION TYPE in landexpansion()");
-            break;
+          fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,TRUE,
+               "WRONG CULTIVATION TYPE in landexpansion()");
+          break;
       } /* of switch */
       data=mixstand->data;
       data->irrigation=irrigation;
@@ -1587,7 +1643,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     else if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl<(1-epsilon))
       deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
 
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
 
 #ifdef DEBUG4
@@ -1628,7 +1684,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
               difffrac,grassfrac,s);
 #endif
     }
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
 #ifdef DEBUG4
     foreachstand(stand,s,cell->standlist)
@@ -1671,7 +1727,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       if(year>1989)
         fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
 #endif
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
    /* Biomass plantations */
     cultivation_type=BIOMASS_TREE_PLANTATION;
     irrigation=i;
@@ -1760,8 +1816,27 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       landexpansion(cell,difffrac,npft,NULL,
                     irrigation,cultivation_type,0,ncft,year,config);
     }
+    cultivation_type=URBAN_AREA;
+    irrigation=i;
+    s=findstand(cell->standlist,URBAN,irrigation);
+    if(s!=NOT_FOUND)
+    {
+      stand=getstand(cell->standlist,s);
+      difffrac=stand->frac-cell->ml.landfrac[i].urban;
+      stand->frac_change = -difffrac;
+      if(difffrac>epsilon)
+        deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
+      else if(difffrac<-epsilon)
+        regrowth(cell,difffrac,npft,i,FALSE,ncft,year,config);        /*regrowth*/
+    }
+    else if (cell->ml.landfrac[i].urban>epsilon)
+    {
+      difffrac= -cell->ml.landfrac[i].urban;
+      landexpansion(cell,difffrac,npft,NULL,
+                    irrigation,cultivation_type,0,ncft,year,config);
+    }
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
   foreachstand(stand,s,cell->standlist)
     if(getlandusetype(stand)==GRASSLAND || 
@@ -1773,7 +1848,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
        (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 #endif
   sum_wl=sum[0]=sum[1]=0;
   foreachstand(stand,s,cell->standlist)
@@ -1817,7 +1892,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     cell->ml.image_data->timber_frac=0.0;
   }
   /* check that sum of fractions is 1.0 */
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
   /* check if there is more than 1 natural stand */
   nnat = 0;

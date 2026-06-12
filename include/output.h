@@ -19,9 +19,15 @@
 
 /* Definition of datatypes */
 
-#define issoil(index) (index==KS_NAT || index==KS_GRASS || index==KS_AGR ||index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR || index==SWC_VOL ||\
-                       index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
-                       index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
+#define issoil_output(index) (index==KS_NAT || index==KS_GRASS || index==KS_AGR ||index==WHC_NAT ||\
+                              index==WHC_GRASS || index==WHC_AGR || index==SWC_VOL ||\
+                              index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER ||\
+                              index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC ||\
+                              index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV ||\
+                              index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV ||\
+                              index == SOILC_AGR_LAYER || index==PERC)
+
+#define isstand_output(index) (index==STAND_BURNTAREA || index==STAND_FDI || index==STAND_SURFACE_FI || index==STAND_FIREDURATION)
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
 #define JSON_SUFFIX ".json" /* file suffix for JSON metafiles */

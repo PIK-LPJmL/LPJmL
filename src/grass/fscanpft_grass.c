@@ -135,6 +135,13 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
               grass->ratio,pft->name);
     return TRUE;
   }
+  if(isspitfire(config))
+  {
+    fscanreal2(verb,file,&grass->lfmc_a,pft->name,"lfmc_a");
+    fscanreal2(verb,file,&grass->lfmc_b,pft->name,"lfmc_b");
+    fscanreal2(verb,file,&grass->lfmc_c,pft->name,"lfmc_c");
+    fscanreal2(verb,file,&grass->lfmc_d,pft->name,"lfmc_d");
+  }
   fscanreal012(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
   grass->nc_ratio.leaf=1/grass->nc_ratio.leaf;
   grass->nc_ratio.root=1/grass->nc_ratio.root;

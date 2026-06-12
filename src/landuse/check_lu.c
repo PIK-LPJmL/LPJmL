@@ -38,7 +38,7 @@ Bool check_lu(const Standlist standlist, /**< List of stands */
   {
     foreachstand(stand,s,standlist)
     {
-     if(stand->pftlist.n==0)
+     if(getlandusetype(stand)!=URBAN && stand->pftlist.n==0)
       stand->type=&kill_stand;
      else if(stand->type->landusetype==landusetype)
       {

@@ -19,7 +19,7 @@
 #include "grassland.h"
 #include "agriculture_grass.h"
 
-Standtype agriculture_grass_stand={AGRICULTURE_GRASS,"agriculture_grass",
+Standtype agriculture_grass_stand={AGRICULTURE_GRASS,"agriculture_grass",{0.0,0.0},0,
                                    new_agriculture,
                                    free_agriculture,fwrite_agriculture,
                                    fread_agriculture,fprint_agriculture,

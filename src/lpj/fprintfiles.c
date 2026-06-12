@@ -161,21 +161,26 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   addfilename(table,&config->soilph_filename,FALSE);
   addfilename(table,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     addfilename(table,&config->tmax_filename,TRUE);
     addfilename(table,&config->tmin_filename,TRUE);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
     addfilename(table,&config->tamp_filename,TRUE);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
       addfilename(table,&config->humid_filename,TRUE);
+    if(config->prescribe_ignition)
+      addfilename(table,&config->ignition_filename,TRUE);
+    else
+    {
+      addfilename(table,&config->lightning_filename,FALSE);
+      addfilename(table,&config->human_ignition_filename,FALSE);
+    }
     if(config->prescribe_burntarea)
       addfilename(table,&config->burntarea_filename,TRUE);
-    addfilename(table,&config->lightning_filename,FALSE);
-    addfilename(table,&config->human_ignition_filename,FALSE);
   }
   if(config->ispopulation)
     addfilename(table,&config->popdens_filename,TRUE);

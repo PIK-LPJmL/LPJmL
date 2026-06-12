@@ -46,6 +46,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
                 int *size,           /**< size of CFT map array or -1 on error */
                 const char *name,    /**< name of map */
                 Bool cftonly,        /**< scan only crop PFTs */
+                Bool urban,
                 Bool defaultmap,     /**< set default map if name not found */
                 int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFTs */
@@ -65,11 +66,11 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       return NULL;
     }
     *size=getmapsize(map);
-    cftmap=getcftmap(map,name,cftonly,npft,ncft,config);
+    cftmap=getcftmap(map,name,cftonly,urban,npft,ncft,config);
     freemap(map);
   }
   else if(defaultmap)
-    cftmap=defaultcftmap(size,name,cftonly,npft,ncft,config);
+    cftmap=defaultcftmap(size,name,cftonly,urban,npft,ncft,config);
   else
   {
     *size=0;

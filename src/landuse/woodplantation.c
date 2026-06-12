@@ -20,7 +20,7 @@
 
 char *woodplantation_names[NWPTYPE]={"woodplantation"};
 
-Standtype woodplantation_stand={WOODPLANTATION,"woodplantation",new_biomass_tree,
+Standtype woodplantation_stand={WOODPLANTATION,"woodplantation",{0.0,0.0},0,new_biomass_tree,
                                 free_agriculture,fwrite_biomass_tree,
                                 fread_biomass_tree,fprint_biomass_tree,
                                 daily_woodplantation,annual_woodplantation,NULL};

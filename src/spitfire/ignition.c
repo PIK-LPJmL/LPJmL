@@ -22,8 +22,8 @@ struct human_ignition
 }; /* Definition of opaque datatype Human_ignition */
 
 Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
-                                 )                     /** \return pointer to human ignition
-                                                            struct or NULL */
+                                )                     /** \return pointer to human ignition
+                                                           struct or NULL */
 {
   Human_ignition ignition;
 
@@ -39,7 +39,7 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
     return NULL;
   }
   if(isroot(*config) && config->human_ignition_filename.fmt!=SOCK && config->lastyear>ignition->file.firstyear+ignition->file.nyear-1)
-    fprintf(stderr,"WARNING024: Last year in ignition data file=%d is less than last simulation year %d, data from last year used.\n",
+    fprintf(stderr,"WARNING024: Last year in human ignition data file=%d is less than last simulation year %d, data from last year used.\n",
             ignition->file.firstyear+ignition->file.nyear-1,config->lastyear);
 
   return ignition;

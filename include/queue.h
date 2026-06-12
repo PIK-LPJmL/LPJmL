@@ -21,16 +21,21 @@ typedef struct queue *Queue;
 
 /* Declarations of functions */
 
-extern Queue newqueue(int);
+extern Queue newqueue(int,int);
 extern void freequeue(Queue);
-extern Real getqueue(const Queue,int);
-extern void putqueue(Queue,Real);
-extern Real sumqueue(const Queue);
+extern void getqueue(const Queue,Real [],int);
+extern void setqueue(Queue,const Real [],int);
+extern void putqueue(Queue,const Real []);
+extern Real sumqueue(const Queue,int);
+extern Real getmaxitemqueue(const Queue,int);
+extern void allsumqueue(const Queue,Real []);
 extern Bool fwritequeue(Bstruct,const char *,const Queue);
+extern Bool skipqueue(FILE *,Bool);
 extern Queue freadqueue(Bstruct,const char *);
 extern void freequeue(Queue);
 extern void fprintqueue(FILE *,const Queue);
 extern int queuesize(const Queue);
+extern int lengthqueue(const Queue);
 
 /* Definition of macros */
 

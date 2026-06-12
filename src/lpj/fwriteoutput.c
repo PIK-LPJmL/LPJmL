@@ -577,6 +577,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+  Real *litter;
   Real depth=0;
 
 #ifdef USE_TIMING
@@ -852,6 +853,28 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILN_SLOW,1);
   }
+  if(isopen(output,PFT_AGTOP_LITTERC))
+  {
+    if(iswrite2(PFT_AGTOP_LITTERC,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_AGTOP_LITTERC].timestep>0))
+    {
+      litter=newvec(Real,npft+ncft);
+      check(litter);
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+            if(stand->type->landusetype==NATURAL)
+            {
+              pftlitter_agtop(litter,&stand->soil.litter);
+              for(p=0;p<npft+ncft;p++)
+                getoutputindex(&grid[cell].output,PFT_AGTOP_LITTERC,p,config)+=litter[p];
+            }
+        }
+      free(litter);
+    }
+    writeoutputarray(PFT_AGTOP_LITTERC,1);
+  }
+
   if(isopen(output,LITC))
   {
     if(iswrite2(LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
@@ -1185,6 +1208,9 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PREC_RES,1);
   writeoutputvar(NFIRE,1);
   writeoutputvar(FIREDI,ndate1);
+  writeoutputvar(FIREDURATION,ndate1);
+  writeoutputvar(NDAYFIRE,1);
+  writeoutputvar(FIREDURATIONDAYS,ndate1);
   writeoutputvar(FIREEMISSION_CO2,1);
   writeoutputvar(FIREEMISSION_CO,1);
   writeoutputvar(FIREEMISSION_CH4,1);
@@ -1192,17 +1218,31 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(FIREEMISSION_TPM,1);
   writeoutputvar(FIREEMISSION_NOX,1);
   writeoutputvar(BURNTAREA,1);
+  writeoutputvar(MAX_FIRESIZE,1);
+  writeoutputvar(HUMAN_IGNITION,1);
+  writeoutputvar(LIGHTNING,1);
+  writeoutputvar(SURFACE_FI,ndate1);
+  writeoutputvar(ROS,ndate1);
+  writeoutputvar(FIRESIZE,ndate1);
+  writeoutputvar(FIREDAYS,1);
   writeoutputvar(TEMP_IMAGE,ndate1);
   writeoutputvar(PREC_IMAGE,1);
   writeoutputvar(WET_IMAGE,1);
   writeoutputarray(PERC,1);
   writeoutputarray(SOILTEMP,ndate1);
+  writeoutputarray(FUEL,ndate1);
+  writeoutputvar(LIVEGRASS,ndate1);
+  writeoutputvar(DLM_LIVEGRASS,ndate1);
+  writeoutputvar(DFMC,ndate1);
+  writeoutputvar(GSI_CUM,ndate1);
+  writeoutputarray(GSI_DIFF,ndate1);
   writeoutputvar(SOILTEMP1,ndate1);
   writeoutputvar(SOILTEMP2,ndate1);
   writeoutputvar(SOILTEMP3,ndate1);
   writeoutputvar(SOILTEMP4,ndate1);
   writeoutputvar(SOILTEMP5,ndate1);
   writeoutputvar(SOILTEMP6,ndate1);
+  writeoutputvar(LITTERMOIST,ndate1);
   writeoutputvar(NUPTAKE,1);
   writeoutputvar(LEACHING,1);
   writeoutputvar(N2O_DENIT,1);
@@ -1270,6 +1310,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PHEN_TMAX,ndate1);
   writeoutputvar(PHEN_LIGHT,ndate1);
   writeoutputvar(PHEN_WATER,ndate1);
+  writeoutputvar(FWI,ndate1);
   writeoutputvar(WSCAL,ndate1);
   writeoutputvar(GCONS_RF,1);
   writeoutputvar(GCONS_IRR,1);
@@ -1308,6 +1349,10 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_N2_EMIS,1);
   writeoutputarray(CFT_LEACHING,1);
   writeoutputarray(CFT_C_EMIS,1);
+  writeoutputarray(STAND_FIREDURATION,1);
+  writeoutputarray(STAND_BURNTAREA,1);
+  writeoutputarray(STAND_FDI,ndate1);
+  writeoutputarray(STAND_SURFACE_FI,ndate1);
 
   if(isopen(output,PFT_NLIMIT))
   {
@@ -1392,6 +1437,8 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONSUMP_WATER_B,1);
   writeoutputarray(GROWING_PERIOD,1);
   writeoutputarray(PFT_MORT,1);
+  writeoutputarray(PFT_HEIGHT,1);
+  writeoutputarray(PFT_PHEN,ndate1);
   writeoutputarray(FPC_BFT,1);
   writeoutputarray(NV_LAI,ndate1);
   if(isopen(output,SOILC_LAYER))

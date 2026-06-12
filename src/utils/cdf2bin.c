@@ -543,6 +543,10 @@ int main(int argc,char **argv)
           map_name=BAND_NAMES;
         else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
           map_name=BAND_NAMES;
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.fuel.name))!=NULL)
+          map_name=BAND_NAMES;
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.stand_name.name))!=NULL)
+          map_name=BAND_NAMES;
         if(nc_inq_natts(data.ncid,&len))
           n_attr=0;
         else
