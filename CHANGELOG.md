@@ -50,6 +50,7 @@ of `major.minor.patch` with
 - Outputs `"pft_height"`, `"pft_agttop_litterc"`, `"littermoist"`, `"pft_phen"`, `"fireduration"`, `"firedurationdays"`, `"livegrass"`, `"dlm_livegrass"`, `"gsi_cum"`,
   `"gsi_diff"`, `"ndayfire"`, `"fuel"`, `"max_firesize"`, `"stand_fireduration"`, `"stand_burntarea"`, `"stand_fdi"`, `"stand_surface_fi`", `"fwi"`,
   `"human_ignition"`, `"lightning"`, `"surface_fi"`, `"ros"`, `"firesize"`, `"firedays"` added.
+- Spitfire related article added to `REFERENCES`.
 
 ### Changed
 
