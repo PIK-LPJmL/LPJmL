@@ -142,7 +142,6 @@ The following programs are created in the bin directory:
 |---------------|---------------------------------------------------------------------|
 |`adddrain`     | add river basin to coordinate file                                  |
 |`addheader`    | add CLM header to binary file                                       |
-|`allbin2cdf`   | convert all binary output files into NetCDF files                   |
 |`arr2clm`      | convert 2-D float arrays into CLM file                              |
 |`asc2clm`      | convert ARC/Info ASCII files to CLM data files for LPJmL            |
 |`backtrace`    | print backtrace from core                                           |
@@ -155,40 +154,52 @@ The following programs are created in the bin directory:
 |`cdf2coord`    | extract CLM grid file from NetCDF file                              |
 |`cdf2grid`     | convert grid NetCDF file into grid CLM or raw file                  |
 |`cdf2soil`     | convert NetCDF file into binary file                                |
-|`cft2clm`      | convert binary landuse data files to CLM data files for LPJmL       |
+|`cfts26lu2clm` | convert binary landuse data files to CLM data files for LPJmL       |
 |`clm2cdf`      | convert CLM files into NetCDF files                                 |
 |`cmpbin`       | compare two binary output files                                     |
+|`copyheader`   | copy CLM file header                                                |
 |`country2cdf`  | convert country/region code file into NetCDF file                   |
+|`coupler_demo` | Demo program for coupling to a program witch socket communication   |
 |`cru2clm`      | convert CRU data into file format suitable for LPJmL                |
 |`cutclm`       | cut LPJmL climate data files                                        |
 |`cvrtclm`      | convert version of CLM file to version 3 or 4                       |
+|`cvrtsoil`     | convert text soil input data into binary data                       |
 |`drainage2cdf` | convert CLM drainage file into NetCDF file                          |
 |`getcellindex` | get cell index from latitude, longitude values                      |
-|`grid2clm`     | convert grid data file to CLM data files for LPJmL                  |
+|`getcountry`   | extract grid cells for specified countries                          |
+|`grid2bsq`     | convert grid data file to CLM data files for LPJmL                  |
 |`headersize`   | print header size of CLM files                                      |
 |`json2restart` | convert JSON file into LPJmL restart file                           |
 |`lpjcat`       | concatenate restart files from distributed LPJmL simulations.       |
 |`lpjcheck`     | check syntax of LPJmL configuration files                           |
 |`lpjfiles`     | print list of input/output files of LPJmL                           |
 |`lpjprint`     | print contents of restart file of LPJmL model runs                  |
-|`printclm`     | print contents of CLM files for LPJmL                               |
-|`output_bsq`   | concatenate all output files from distributed LPJmL simulations     |
 |`manage2js`    | convert management  `*.par` files to JSON files                     |
 |`mathclm`      | perform mathematical operations with CLM files                      |
 |`mergeclm`     | merge LPJmL climate data files                                      |
+|`printclm`     | print contents of CLM files for LPJmL                               |
+|`printdrain`   | print drainage map                                                  |
 |`printglobal`  | print global values for raw binary output files                     |
 |`printharvest` | print global harvested carbon for crops and managed grasslands      |
+|`printreservoir` | print reservoir data                                              |
 |`regridclm`    | regrid CLM file to new grid                                         |
 |`regridlpj`    | regrid input data set for selected countries or specified grid file |
 |`regridsoil`   | regrid binary soil file to different grid file                      |
 |`reservoir2cdf`| convert CLM reservoir file into NetCDF file                         |
 |`restart2yaml` | convert LPJmL restart file into YAML                                |
+|`river_section_input_climate`     | regrid climate data                              |
+|`river_section_input_countrycode` | reggrid country code data                        |
+|`river_section_input_grid`        | re-orders grid cells according to river sections |
+|`river_section_input_irrig`       | regrid irrigation data                           |
+|`river_section_input_landuse`     | regrid land-use data                             |
+|`river_section_input_soil`        | regrid soil data                                 |
 |`setclm`       | set value in header of CLM files for LPJmL                          |
 |`soil2cdf`     | convert binary files into NetCDF files                              |
 |`splitclm`     | copy specific bands of clm data files                               |
 |`statclm`      | print statistics of clm files                                       |
-|`txt2grid`     | convert text files to CLM grid data files for LPJmL                 |
 |`txt2clm`      | convert text files to CLM data files for LPJmL                      |
+|`txt2grid`     | convert text files to CLM grid data files for LPJmL                 |
+|`water_use_input` | create water use data from industrial, domestic, and livestock use |
 
 ---
 
@@ -210,7 +221,7 @@ Compilation of LPJmL can be customized using the following flags in the `LPJFLAG
 | Flag                | Description                                                 |
 |---------------------|-------------------------------------------------------------|
 |`CHECK_BOUNDARY`     |check array boundaries of output                             |
-|`CHECK_BALANCE`     |enable localy function balance checks                             |
+|`CHECK_BALANCE`      |enable localy function balance checks                        |
 |`COUPLING_WITH_FMS`  |enable coupling to FMS                                       |
 |`DAILY_ESTABLISHMENT`|enable daily establishment                                   |
 |`DEBUG`              |diagnostic output is generated for debugging purposes        |
