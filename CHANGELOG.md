@@ -54,8 +54,8 @@ of `major.minor.patch` with
 ### Changed
 
 - SPITFIRE fire model updated, multi-day fire implemented ([Oberhagemann et al. 2025](https://doi.org/10.5194/gmd-18-2021-2025)).
-- The default fire model in `lpjml_config.cjson` is now set to `"spitfire_tmax"`.
-- Keyword `"fire"` renamed to `"globfirm"`, `"no_fire"` to `"no"`.
+- The default fire model in `lpjml_config.cjson` is now set to `"spitfire"`.
+- Keyword `"fire"` renamed to `"globfirm"`, `"no_fire"` to `"no"`, `"spitfire"` to `"spitfire_tamp"` and `"spitfire_tmax"` to `"spitfire"`.
 - Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
 
 
