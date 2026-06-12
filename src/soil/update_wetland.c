@@ -331,7 +331,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
         checkbalance(cell,start,water_before);
 #endif
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
       }
       // -----------------------------------------------------------------------------------------------
@@ -562,7 +562,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   } /* of foreachstand() */
 #endif
 
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 
 #ifdef CHECK_BALANCE
   checkbalance(cell,start,water_before);

@@ -168,6 +168,8 @@ extern void albedo_crop(Pft *,Real,Real);
 extern void copy_crop(Pft *, const Pft *);
 extern void separate_harvests(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
+extern Stocks livefuel_consum_crop(Litter *,Pft *,const Fuel *,Livefuel *,
+                                   Bool *,Real, Real,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real);
 extern void getb_crop(Pft *,Real);

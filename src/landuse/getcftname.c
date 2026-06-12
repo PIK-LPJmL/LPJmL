@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "grassland.h"
+#include "urban.h"
 
 const char *getcftname(int index,           /**< index of band */
                        int npft,            /**< number of natural PFTs */
@@ -37,5 +38,7 @@ const char *getcftname(int index,           /**< index of band */
   index-=config->nwptype;
   if(index<config->nagtree)
     return config->pftpar[npft-config->nagtree+index].name;
+  if(index==config->nagtree)
+     return urban_name;
   return NULL;
 } /* of 'getcftname' */

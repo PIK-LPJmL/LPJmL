@@ -375,7 +375,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 
     fscanpftlimit(verb,item,&pft->temp,pft->name,"temp");
     fscanpftreal(verb,item,&pft->soc_k,pft->name,"soc_k");
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(isspitfire(config))
     {
       fscanpftreal(verb,item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
       if(config->fdi==WVPD_INDEX)

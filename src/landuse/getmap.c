@@ -20,6 +20,7 @@ Bool getmap(Map *map,            /**< string array */
             const char *filename, /**< filename of landuse file */
             const char *name,
             Bool cftonly,
+            Bool urban,
             int **cftmap,
             int *cftmapsize,
             int npft,      /**< number of natural PFTs */
@@ -38,7 +39,7 @@ Bool getmap(Map *map,            /**< string array */
       freemap(map);
       return TRUE;
     }
-    landusemap=getcftmap(map,filename,cftonly,npft,ncft,config);
+    landusemap=getcftmap(map,filename,cftonly,urban,npft,ncft,config);
     if(landusemap!=NULL)
     {
       if(*cftmap==NULL)

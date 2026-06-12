@@ -39,7 +39,7 @@ typedef struct
 struct netcdf_config
 {
   Missing_value missing_value;
-  Axis lat,lat_bnds,lon,lon_bnds,time,time_bnds,depth,depth_bnds,pft,pft_name;
+  Axis lat,lat_bnds,lon,lon_bnds,time,time_bnds,depth,depth_bnds,pft,pft_name,fuel,stand,stand_name;
   char *bnds_name;
   char *years_name;
   char *calendar;
@@ -85,12 +85,15 @@ struct config
   Filename humid_filename;
   Filename tmin_filename;
   Filename lightning_filename;
+  Filename ignition_filename;
   Filename lwnet_filename;
   Filename delta_lwnet_filename;
   Filename swdown_filename;
   Filename delta_swdown_filename;
   Filename popdens_filename;
+  Filename human_ign_prob_filename;
   Filename human_ignition_filename;
+  Filename max_firesize_filename;
   Filename co2_filename;
   Filename ch4_filename;
   Filename icefrac_filename;
@@ -165,9 +168,11 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
+  int nstand;             /**< number of stands types */
   int *cult_types;        /**< array of cultivation types to read from pft.js */
   int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
+  Standtype **standtypes; /**< array of stand types */
   Soilpar *soilpar;       /**< Soil parameter array */
   Hydropar hydropar;      /**< Hydrology parameter */
   int ncountries;         /**< number of countries */
@@ -199,8 +204,9 @@ struct config
   Bool with_days;         /**< using days as a unit for monthly output */
   Type grid_type;         /**<  datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
-  Bool river_routing_restart; /**< river routing enabled in restart file */
+  Bool river_routing_restart;   /**< river routing enabled in restart file */
   Bool separate_harvests;
+  Bool relative_humidity;  /**< humidity is relative humidity */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
   int crop_phu_option_restart;  /**< crop phu option in restart file */
@@ -224,17 +230,17 @@ struct config
   Bool fix_co2;                 /**< fix CO2 after specified year */
   int fix_co2_year;             /**< year at which CO2 is fixed */
   Bool iscotton;                /**< cotton present in PFT parameter file */
-  Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
   Bool landfrac_from_file;      /**< land fraction read from file (TRUE/FALSE) */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool ofiles;                  /**< list only all output files */
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
+  Bool max_firesize;            /**< input for maximum fire size enabled (TRUE/FALSE) */
   int cft_temp;
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
-  int compress;           /**< compress NetCDF output (0: no compression) */
+  int compress;                 /**< compress NetCDF output (0: no compression) */
   Variable *outnames;
   Bool isanomaly;        /**< with climate anomalies (TRUE/FALSE) */
   int time_shift;
@@ -273,10 +279,12 @@ struct config
   int ntask;     /**< number of parallel tasks */
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
+  Bool isgsi_livefuel; /**< GSI livefuel enabled (TRUE/FALSE) */
   int seed_start;      /**< initial seed for random number generator */
   Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
   int ispopulation;
+  Bool ishuman_ign_prob; /**< human_ignition_probability considered (TRUE/FALSE) */
   Bool river_routing;  /**< river routing enabled */
   Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
@@ -329,8 +337,9 @@ struct config
   Bool rw_manage;           /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled;   /**< PFT output grid scaled */
   char *json_suffix;        /**< suffix for JSON metafiles */
+  Bool prescribe_burntarea; /**< use input to prescribe burnt area to SPITFIRE? */
+  Bool prescribe_ignition;  /**< use input to prescribe ignition to SPITFIRE? */
   Bool radiation_lwdown;    /**< LW radiation is downward */
-  Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
@@ -380,11 +389,11 @@ extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,Pfttype [],int,int,int *,
+extern Bool readconfig(Config *,Pfttype [],int,Standtype **,int,int,int *,
                        char ***,const char *);
-extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
-extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
+extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,Standtype **,int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
+extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);

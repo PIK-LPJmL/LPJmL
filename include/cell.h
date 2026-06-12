@@ -128,7 +128,6 @@ struct cell
   Climbuf climbuf;
   Ignition ignition;
   Real landfrac;            /**< land fraction ((0..1]) */
-  Real afire_frac;          /**< fraction of grid cell burnt this year */
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
   Real icefrac;             /**< ice fraction (0..1) */
@@ -166,6 +165,10 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real NO3_lateral;         /**< leached NO3 transported to wetland    */
   Hydrotope hydrotopes;
   Balance balance;          /**< balance checks */
+  Real max_firesize;        /**< maximum fire size (hectare) */
+  Real gsi_cum;             /**< cumulative growing season index  */
+  FWIdata fwi_data;         /**< Canadian fire weather index data */
+  Real fwi;                 /**< Candian fire weather index */
   Seed seed;                /**< seed for random generator */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
@@ -193,7 +196,7 @@ extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(Bstruct,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(Bstruct,Cell *,int,int,const Soilpar *,
-                      const Standtype [],int,Config *);
+                      Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);

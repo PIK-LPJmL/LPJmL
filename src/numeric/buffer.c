@@ -83,6 +83,21 @@ Bool fwritebuffer(Bstruct file,       /**< pointer to restart file */
   return bstruct_writeendstruct(file);
 } /* of 'fwritebuffer' */
 
+void fprintbuffer(FILE *file,         /**< file pointer */
+                  const Buffer buffer /**< pointer to buffer */
+                 )
+{
+  int i;
+  fprintf(file,"Size:  %d\n",buffer->size);
+  fprintf(file,"n:     %d\n",buffer->n);
+  fprintf(file,"Index: %d\n",buffer->index);
+  fprintf(file,"Sum:   %g\n",buffer->sum);
+  fputs("Data: ",file);
+  for(i=0;i<buffer->n;i++)
+    fprintf(file," %g",buffer->data[i]);
+  fputc('\n',file);
+} /* of 'fprintbuffer' */
+
 Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
                    const char *name /**< name of object */
                   )                 /** \return allocated buffer or NULL */

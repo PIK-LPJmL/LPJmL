@@ -84,9 +84,10 @@
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
 #include "wetland.h"
+#include "urban.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 15  /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 16 /* number of stand types / land use types as defined in landuse.h*/
 
 int main(int argc,char **argv)
 {
@@ -100,7 +101,7 @@ int main(int argc,char **argv)
 #ifdef USE_TIMING
   double t;
 #endif
-  Standtype standtype[NSTANDTYPES];
+  Standtype *standtype[NSTANDTYPES];
   String s;
   Config config;         /* LPJ configuration */
 
@@ -111,6 +112,25 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
+
+  standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
+  standtype[KILL]=&kill_stand;
+
+
   time(&tinvoke);
   tbegin=mrun();         /* Start timing for total wall clock time */
 #ifdef USE_MPI
@@ -193,7 +213,8 @@ int main(int argc,char **argv)
 #ifdef USE_TIMING
   timing_start(t);
 #endif
-  rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+  rc=readconfig(&config,
+                scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,lpj_usage);
 #ifdef USE_TIMING
   timing_stop(READCONFIG_FCN,t);
 #endif
@@ -238,26 +259,11 @@ int main(int argc,char **argv)
     failonerror(&config,rc,OPEN_IMAGE_ERR,"Cannot open IMAGE coupler");
   }
 #endif
-  standtype[NATURAL]=natural_stand;
-  standtype[WETLAND]=wetland_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[OTHERS]=others_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
   /* Allocation and initialization of grid */
 #ifdef USE_TIMING
   timing_start(t);
 #endif
-  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+  rc=((grid=newgrid(&config,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
 #ifdef USE_TIMING
   timing_stop(NEWGRID_FCN,t);
 #endif
@@ -271,7 +277,7 @@ int main(int argc,char **argv)
 #ifdef USE_TIMING
   timing_start(t);
 #endif
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
 #ifdef USE_TIMING
   timing_stop(INITINPUT_FCN,t);
 #endif

@@ -30,8 +30,8 @@ void litter_update_crop(Litter *litter, /**< Litter pools */
   litter->item[pft->litter].agtop.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac;
   getoutput(output,LITFALLN,config)+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac*pft->stand->frac;
   getoutput(output,LITFALLN_AGR,config)+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac*pft->stand->frac;
-  update_fbd_grass(litter,pft->par->fuelbulkdensity,
-                   (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*frac);
+  update_fbd_crop(litter,pft->par->fuelbulkdensity,
+                  (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*frac);
   litter->item[pft->litter].bg.carbon+=crop->ind.root.carbon*frac;
   getoutput(output,LITFALLC,config)+=crop->ind.root.carbon*frac*pft->stand->frac;
   litter->item[pft->litter].bg.nitrogen+=crop->ind.root.nitrogen*frac;

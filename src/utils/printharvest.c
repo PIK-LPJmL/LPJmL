@@ -17,8 +17,18 @@
 #include "tree.h"
 #include "crop.h"
 #include "grassland.h"
+#include "natural.h"
+#include "grassland.h"
+#include "biomass_tree.h"
+#include "biomass_grass.h"
+#include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
+#include "wetland.h"
+#include "urban.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#define NSTANDTYPES 16 /* number of stand types / land use types as defined in landuse.h*/
 
 #define USAGE "Usage: %s [-nopp] [-pp cmd] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
@@ -57,9 +67,25 @@ int main(int argc,char **argv)
   float harvest,lon,lat,frac;
   Real harvest_total;
   Landfrac *harvest_sum;
+  Standtype *standtype[NSTANDTYPES];
+  standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[URBAN]=&urban_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[KILL]=&kill_stand;
   initconfig(&config);
-
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
   {
     fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   }

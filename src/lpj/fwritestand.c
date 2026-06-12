@@ -34,6 +34,15 @@ Bool fwritestand(Bstruct file,       /**< pointer to restart file */
   bstruct_writereal(file,"slope_mean",stand->slope_mean);
   bstruct_writereal(file,"frac",stand->frac);
   /* write stand-specific data */
+  if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+  {
+    bstruct_writebool(file,"isfire",TRUE);
+    fwritequeue(file,"fires",stand->fires);
+  }
+  else
+  {
+    bstruct_writebool(file,"isfire",FALSE);
+  }
   if(stand->type->fwrite(file,stand))
     return TRUE;
   bstruct_writerealarray(file,"frac_g",stand->frac_g,NSOILLAYER);

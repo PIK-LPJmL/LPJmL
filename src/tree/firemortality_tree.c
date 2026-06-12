@@ -20,7 +20,7 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   Pfttree *tree;
   const Pfttreepar *treepar;
   Real tau_c,tau_l,crown_length_tree,scorch_height;
-  Real ck,postfire_mort_ck,postfire_mort_camb;
+  Real ck,postfire_mort_ck;
   Real postfire_mort_total;
   Real nind_fa,nind_kill;
 
@@ -34,16 +34,12 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   tau_c=2.9 * tree->barkthickness * tree->barkthickness;
   crown_length_tree=tree->height*treepar->crownlength;
 
-  /*scorch height per PFT */
+  /* scorch height per PFT */
 
   scorch_height=treepar->scorchheight_f_param*pow(surface_fi,0.667);
 
-  /* post-fire mortality from cambial damage */
-  /*     tau_r=cf/Gamma, tau_l=tau_r, if not tau_l=2*tau_r */
-  if (fuel->gamma <= 0)
-    tau_l = 0;
-  else
-    tau_l=2.0*(fuel->cf/fuel->gamma);
+  /* residence time calculated as in Albini 1976 */
+  tau_l=(fuel->char_sigma>0) ? 5*384/30.48/fuel->char_sigma : 0;
 
   /* crown kill in [%] assuming the crown shape being a cylinder
    * crown height as a fraction of tree height definded per PFT
@@ -53,45 +49,22 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   if (scorch_height < (tree->height - crown_length_tree))
     ck=0.0;
   else if(scorch_height < tree->height)
-    ck=(scorch_height - tree->height + crown_length_tree) / crown_length_tree;
+    ck=((scorch_height - tree->height + crown_length_tree)*(tree->height - scorch_height + crown_length_tree))/pow(crown_length_tree,2);
   else
     ck=1.0;
 
-  /*post-fire mortality from crown scorching */
-  postfire_mort_ck = treepar->crown_mort_rck*pow(ck,treepar->crown_mort_p);
-
-  /* post-fire mortality from cambial damage */
-  /* Allan's version after Peterson&Ryan */
-  if(tau_c>0)
-  {
-    if(tau_l/tau_c>=1.9)
-      postfire_mort_camb=1.0;
-    else if(tau_l/tau_c>0.22)
-      postfire_mort_camb=(0.562525*tau_l/tau_c)-0.125;
-    else
-      postfire_mort_camb=0.0;
-  }
-  else
-    postfire_mort_camb=0.0;
-
-#ifdef SAFE
-  if(postfire_mort_camb > 1)
-  {
-    printf("postfire_mort_camb = %f, tau_l/tau_c = %f, in firemortality_tree.c\n",postfire_mort_camb,(tau_l/tau_c));
-    fflush(stdout);
-  }
-#endif
-
-  /*Calculate total post-fire mortality from crown scorching AND cambial kill*/
-  postfire_mort_total=postfire_mort_camb+postfire_mort_ck-(postfire_mort_camb*postfire_mort_ck);
-  /*number of indivs affected by fire in grid cell */
+  /*Peterson & Ryan mortality*/
+  postfire_mort_total= (tau_l > 0 && ck > 0) ? pow(ck,tau_c/tau_l-0.5) : 0;
+  if(postfire_mort_total > 1)
+    postfire_mort_total = 1;
 #ifdef SAFE
   if(postfire_mort_total > 1)
   {
-    printf("postfire_mort_total = %f in firemortality_tree.c\n",postfire_mort_total);
+    printf("postfire_mort_total = %f, ck = %f, tau_c = %f, tau_l = %f in firemortality_tree.c\n",postfire_mort_total, ck, tau_c, tau_l);
     fflush(stdout);
   }
 #endif
+  /* number of indivs affected by fire in grid cell */
   nind_fa=fire_frac * pft->nind;
   nind_kill = postfire_mort_total * nind_fa;
   if(nind_kill<0)

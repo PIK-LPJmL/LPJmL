@@ -58,6 +58,7 @@ void initlandfracitem(Landfrac *landfrac, /**< land fractions */
     landfrac->grass[j]=value;
   landfrac->biomass_grass=landfrac->biomass_tree=value;
   landfrac->woodplantation=value;
+  landfrac->urban=value;
 } /* of 'initlandfracitem' */
 
 void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
@@ -89,6 +90,7 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
     landfrac[i].biomass_grass*=scale;
     landfrac[i].biomass_tree*=scale;
     landfrac[i].woodplantation*=scale;
+    landfrac[i].urban*=scale;
   }
 } /* of 'scalelandfrac' */
 
@@ -121,6 +123,7 @@ Bool fwritelandfrac(Bstruct file,               /**< pointer to restart file */
     bstruct_writerealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree);
     bstruct_writerealarray(file,"grass",landfrac[i].grass,NGRASS);
     bstruct_writereal(file,"woodplantation",landfrac[i].woodplantation);
+    bstruct_writereal(file,"urban",landfrac[i].urban);
     bstruct_writereal(file,"biomass_grass",landfrac[i].biomass_grass);
     bstruct_writereal(file,"biomass_tree",landfrac[i].biomass_tree);
     bstruct_writeendstruct(file);
@@ -142,6 +145,7 @@ void fprintlandfrac(FILE *file,               /**< pointer to text file */
   for(i=0;i<NGRASS;i++)
     fprintf(file," %g",landfrac->grass[i]);
   fprintf(file," %g",landfrac->woodplantation);
+  fprintf(file," %g",landfrac->urban);
   fprintf(file," %g",landfrac->biomass_grass);
   fprintf(file," %g",landfrac->biomass_tree);
 } /* of 'fprintlandfrac' */
@@ -174,6 +178,8 @@ Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
       return TRUE;
     if(bstruct_readreal(file,"woodplantation",&landfrac[i].woodplantation))
       return TRUE;
+    if(bstruct_readreal(file,"urban",&landfrac[i].urban))
+      return TRUE;
     if(bstruct_readreal(file,"biomass_grass",&landfrac[i].biomass_grass))
       return TRUE;
     if(bstruct_readreal(file,"biomass_tree",&landfrac[i].biomass_tree))
@@ -202,6 +208,7 @@ Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., i
   sum+=landfrac[irrig].biomass_grass;
   sum+=landfrac[irrig].biomass_tree;
   sum+=landfrac[irrig].woodplantation;
+  sum+=landfrac[irrig].urban;
   return sum;
 } /* of 'landfrac_sum' */
 
@@ -211,7 +218,8 @@ Bool readlandfracmap(Landfrac *landfrac, /**< land fractions */
                     const Real data[],   /**< data from land-use file */
                     int *count,          /**< index in data array */
                     int ncft,            /**< number of crop PFTs */
-                    int nwpt             /**< number of woodplantations */
+                    int nwpt,            /**< number of woodplantations */
+                    int nagtree          /**< number of agriculture PFTs */
                    )                     /** \return TRUE on error */
 {
   int i;
@@ -231,6 +239,8 @@ Bool readlandfracmap(Landfrac *landfrac, /**< land fractions */
       landfrac->biomass_tree+=data[(*count)++];
     else if(nwpt && map[i]==ncft+NGRASS+NBIOMASSTYPE)
       landfrac->woodplantation+=data[(*count)++];
+    else if(map[i]==ncft+NGRASS+NBIOMASSTYPE+nwpt+nagtree)
+      landfrac->urban+=data[(*count)++];
     else
       landfrac->ag_tree[map[i]-ncft-NGRASS-NBIOMASSTYPE-nwpt]+=data[(*count)++];
   }

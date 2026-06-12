@@ -87,6 +87,13 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->burntarea=NULL;
+  if(climate->data[0].ignition!=NULL)
+  {
+    store->ignition=newvec(Real,climate->file_ignition.n*nyear);
+    checkptr(store->ignition);
+  }
+  else
+    store->ignition=NULL;
   if(climate->data[0].no3deposition!=NULL)
   {
     store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
@@ -103,10 +110,8 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
     store->nh4deposition=NULL;
   if(climate->data[0].lightning!=NULL)
   {
-    store->lightning=newvec(Real,climate->file_lightning.n);
+    store->lightning=newvec(Real,climate->file_lightning.n*nyear);
     checkptr(store->lightning);
-    for(j=0;j<climate->file_lightning.n;j++)
-      store->lightning[j]=climate->data[0].lightning[j];
   }
   else
     store->lightning=NULL;
@@ -120,6 +125,18 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
     count=climate->file_prec.n*(year-firstyear);
     for(j=0;j<climate->file_prec.n;j++)
       store->prec[count++]=climate->data[index].prec[j];
+    if(store->lightning!=NULL)
+    {
+      count=climate->file_lightning.n*(year-firstyear);
+      for(j=0;j<climate->file_lightning.n;j++)
+        store->lightning[count++]=climate->data[index].lightning[j];
+    }
+    if(store->ignition!=NULL)
+    {
+      count=climate->file_ignition.n*(year-firstyear);
+      for(j=0;j<climate->file_ignition.n;j++)
+        store->ignition[count++]=climate->data[index].ignition[j];
+    }
     if(store->tmax!=NULL)
     {
       count=climate->file_tmax.n*(year-firstyear);
@@ -180,6 +197,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_nh4deposition.n;j++)
         store->nh4deposition[count++]=climate->data[index].nh4deposition[j];
     }
+    if(store->ignition!=NULL)
+    {
+      count=climate->file_ignition.n*(year-firstyear);
+      for(j=0;j<climate->file_ignition.n;j++)
+        store->ignition[count++]=climate->data[index].ignition[j];
+    }
   }
   return FALSE;
 } /* of 'storeclimate' */
@@ -208,6 +231,18 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     index=year*climate->file_humid.n;
     for(i=0;i<climate->file_humid.n;i++)
       climate->data[0].humid[i]=store->humid[index++];
+  }
+  if(store->lightning!=NULL)
+  {
+    index=year*climate->file_lightning.n;
+    for(i=0;i<climate->file_humid.n;i++)
+      climate->data[0].lightning[i]=store->lightning[index++];
+  }
+  if(store->ignition!=NULL)
+  {
+    index=year*climate->file_ignition.n;
+    for(i=0;i<climate->file_ignition.n;i++)
+      climate->data[0].ignition[i]=store->ignition[index++];
   }
   if(store->tmin!=NULL)
   {
@@ -277,8 +312,12 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
   climate->data[index].wind=store->wind+climate->file_wind.n*year;
   if(climate->data[0].tamp!=NULL)
     climate->data[index].tamp=store->tamp+climate->file_tamp.n*year;
+  if(climate->data[0].lightning!=NULL)
+    climate->data[index].lightning=store->lightning+climate->file_lightning.n*year;
   if(climate->data[0].burntarea!=NULL)
     climate->data[index].burntarea=store->burntarea+climate->file_burntarea.n*year;
+  if(climate->data[0].ignition!=NULL)
+    climate->data[index].ignition=store->ignition+climate->file_ignition.n*year;
   if(climate->data[0].no3deposition!=NULL)
     climate->data[index].no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
   if(climate->data[0].nh4deposition!=NULL)

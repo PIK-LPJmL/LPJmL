@@ -4,7 +4,10 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Kirsten Thonicke                                                           \n**/
+/** Function pulls fuel loads and litter moisture, calculates weighting factors    \n**/
+/** and live grass and fuel moisture for use in rate of spread and fuel            \n**/
+/** consumption                                                                    \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,99 +18,221 @@
 
 #include "lpj.h"
 #include "grass.h"
+#include "crop.h"
 
-#define moist_extinct_livegrass 0.2
 #define fbd_c3_livegrass 4.0
 #define fbd_c4_livegrass 4.0
+#define NGLIM 5 /* length of Albini weighting factor array */
+#define HUGE_NUMBER 1000.0
 
-static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
-static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
+Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0}; /* surface area to volume ratio of 1,
+                                                      10, 100 hr and cured grass fuel
+                                                      component, respectively (cm3/cm2) */
+Real sigma_live[2]={66.0,0}; /* surface area to volume ratio of live herbaceous and
+                                live woody component, respectively (live woody currently
+                                not implemented (cm3/cm2) */
+static Real glim[NGLIM]={ft2cm_1(16.0),ft2cm_1(48.0),ft2cm_1(96.0),
+                         ft2cm_1(1200.0),ft2cm_1(1000000.0)}; /* size bins for Albini weighting factors (cm-1) */
 
-
-void fuelload(Stand *stand,
-              Fuel *fuel,
-              Livefuel *livefuel,
-              Real nesterov_accum /**< accumulated Nesterov index */
+void fuelload(const Stand *stand,  /**< pointer to stand */
+              Fuel *fuel,          /**< fuel characteristics */
+              Livefuel *livefuel,  /**< live fuel characteristics */
+              Real nesterov_accum, /**< accumulated Nesterov index */
+              const Config *config /**< LPJmL configuration */
              )
 
 {
-  Real dead_fuel, net_fuel,mean_w;
+  Real dead_fuel, mean_w;
   Real ratio_dead_fuel, ratio_live_fuel;
-  Real alpha_fuel, alpha_livegrass;
-  Real moist_extinct, moist_livegrass_1hr;
   Real ratio_c3_livegrass, ratio_c4_livegrass;
-  Real livegrass,dlm_1hr,fbd_livefuel,fbd_deadfuel;
+  Real livegrass,fbd_livefuel,fbd_deadfuel;
   Real fuel_gBiomass[NFUELCLASS];
+  Real adead[NFUELCLASS];
+  Real alive[2];
+  Real fsum[NGLIM+1];
+  Real alive_sum=0;
+  Real adead_sum=0;
+  Real cured_frac=0;
+  Real fpc_grass_sum=0;
   Pft *pft;
   Pftgrass *grass;
-  int p,i;
+  Pftgrasspar *grasspar;
+  Pftcrop *crop;
+  int p,i,index;
 
-  dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
+  /* ==== pulling dead fuel loads ==== */
 
   /* for alpha_fuel calculation */
   for(i=0;i<NFUELCLASS;i++)
     fuel_gBiomass[0]=0;
 
-  /*foreachpft(pft,p,stand->pftlist) fuel_sum(pft,fuel->fuel_total);*/
-  /*for(i=0;i<stand->litter.n;i++)
-  {
-    fuel_gBiomass[0]+=c2biomass(litter->ag[i].trait.leaf+litter->ag[i].trait.wood[0]);
-    for(j=1;j<NFUELCLASS;j++)
-      fuel_gBiomass[j]+=c2biomass(litter->ag[i].trait.wood[j]);
-  } */
-  /*TODO: simplify loop with new function litter_agtop_tree.c!! */
   fuel_gBiomass[0]=c2biomass(litter_agtop_grass(&stand->soil.litter)+litter_agtop_tree(&stand->soil.litter,0));
+  getoutputindex(&stand->cell->output,FUEL,0,config)+=fuel_gBiomass[0];
   for (i=1; i<NFUELCLASS;++i) /* 1hr fuel consumption not included*/
+  {
     fuel_gBiomass[i]=c2biomass(litter_agtop_tree(&stand->soil.litter,i));
-
-  /* Dead fuel load, excluding 1000 hr fuels & convert to biomass (g m-2) */
+    getoutputindex(&stand->cell->output,FUEL,i,config)+=fuel_gBiomass[i];
+  }
+  for(i=0;i<NFUELCLASS-1;++i) /* looping to second last value to exclude 1000 hour fuels */
+  {
+    fuel->w[i]=fuel_gBiomass[i];
+  }
+  /* dead fuel biomass */
   dead_fuel = c2biomass(litter_agtop_sum_quick(&stand->soil.litter));
 
-  /* Net fuel load (kg biomass)*/
-  if (dead_fuel > 0)
-    net_fuel = (1.0 - MINER_TOT) * (dead_fuel*1e-3);
-  else
-    net_fuel = 0;
+  /* ==== pulling live grass fuel loads ==== */
 
-  /* Calculate livegrass biomass [g/m2]*/
+  /* Calculate livegrass biomass including herbaceous [g/m2]*/
   livegrass = 0;
+  livefuel->pot_fc_lg_c3 = 0;
+  livefuel->pot_fc_lg_c4 = 0;
   foreachpft(pft,p,&stand->pftlist)
   {
     if(isgrass(pft))
     {
       grass=pft->data;
-      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind )* pft->phen);
+      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind ));
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c3 += c2biomass(grass->ind.leaf.carbon*pft->nind);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c4 += c2biomass(grass->ind.leaf.carbon*pft->nind);
     }
-  }
-  fuel->char_net_fuel = net_fuel +(1.0-MINER_TOT)*livegrass*1e-3;  /*in kg biomass */
+    else if(iscrop(pft))
+    {
+      crop=pft->data;
+      livegrass += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon) * pft->nind );
+      if(pft->par->path==C3)
+        livefuel->pot_fc_lg_c3 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+      else
+        livefuel->pot_fc_lg_c4 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+    }
 
-  /* Compute dry litter moisture for livegrass from soil moisture */
+  }
+  getoutput(&stand->cell->output,LIVEGRASS,config)+=livegrass;
+
+  /* ==== calculating dead fuel moisture ==== */
+
+  ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
+
+  /* dead litter moisture calculation */
+  fuel->daily_litter_moist =  (dead_fuel>epsilon) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : HUGE_NUMBER; /* new version making use of new litter moisture calculation from tillage version */
+
+  fuel->M[0]=fuel->daily_litter_moist;
+  fuel->M[1]=fuel->daily_litter_moist;
+  fuel->M[2]=fuel->daily_litter_moist;
+  fuel->M[3]=fuel->M[0]; /* cured grass moisture always set to same value as 1h fuel class */
+  /* combustion efficiency for litter */
+  fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;
+
+  /* moisture of extinction (as PFT param.) weighted over litter amount, has to be changed if implementing PFT-specific moisture of extinctions */
+  fuel->char_moist_factor= moistfactor(&stand->soil.litter);
+
+  /* ==== calculating live fuel moisture ==== */
+
   if(livegrass > 0)
   {
-    /*TODO*/
-    mean_w=((stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
-            stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]+
-            (stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
-            stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1])/2 ;
-    livefuel->dlm_livegrass = (0.0 > ((10.0/9.0) * mean_w -(1.0/9.0)) ?
-                                0 : ((10.0/9.0) * mean_w -(1.0/9.0)));
+    if(config->isgsi_livefuel)
+      /* use GSI based phenolgy */
+      livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9));
+    else
+    {
+      /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */
+      fpc_grass_sum=0;
+      livefuel->M[0]=0;
+
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        if(isgrass(pft))
+        {
+          grasspar=pft->par->data;
+          livefuel->M[0] += max(grasspar->lfmc_a, min(2.5, grasspar->lfmc_b + grasspar->lfmc_c*pft->phen)) * pft->fpc;
+          fpc_grass_sum += pft->fpc;
+        }
+      }
+      if(fpc_grass_sum>0)
+        livefuel->M[0] = livefuel->M[0]/fpc_grass_sum;
+    }
+
     ratio_c3_livegrass = livefuel->pot_fc_lg_c3 / livegrass;
     ratio_c4_livegrass = livefuel->pot_fc_lg_c4 / livegrass;
   }
   else
   {
-    livefuel->dlm_livegrass = 0;
+    livefuel->M[0] = 0;
     ratio_c3_livegrass = 0;
     ratio_c4_livegrass = 0;
   }
+  livefuel->M[1] = 9999; /* placeholder value for live woody */
 
-  /* Livegrass weighted average fbd */
+  /*accounting for cured grass in fuel loads */
+  cured_frac=max(0,min(1,-1/0.9*livefuel->M[0]+4.0/3.0));
+  fuel->w[NFUELCLASS-1]=livegrass*cured_frac;
+  livefuel->w[0]=livegrass*(1-cured_frac);
+  livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
 
-  /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/
+  /* ==== calculating weighting factors ==== */
+
+  /* calculate Rothermel's f factors, neglecting unit conversions in values since they cancel */
+  /* calculating total surface area of each component first */
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
+    adead_sum+=adead[i];
+  }
+  for(i=0;i<2;++i)
+  {
+    alive[i]=sigma_live[i]*livefuel->w[i]/PART_DENS;
+    alive_sum+=alive[i];
+  }
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0;
+  }
+  for(i=0;i<2;++i)
+  {
+    livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
+  }
+  fuel->fi=(adead_sum>0) ? adead_sum/(adead_sum+max(0,alive_sum)) : 0;
+  livefuel->fi=(alive_sum > 0) ? alive_sum/(max(0,adead_sum)+alive_sum) : 0;
+  for(i=0;i<NGLIM+1;++i)
+    fsum[i]=0;
+  /* calculating total of f factors of each g bin */
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index])
+        break;
+    fsum[index]+=fuel->f[i];
+  }
+  /* assigning the f factor totals to the fuel classes in each g bin */
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index])
+        break;
+    fuel->g[i]=fsum[index];
+  }
+  /* live fuels calculation of g factors */
+  for(i=0;i<NGLIM+1;++i)
+    fsum[i]=0;
+  for(i=0;i<2;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index])
+        break;
+    fsum[index]+=livefuel->f[i];
+  }
+  for(i=0;i<2;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index])
+        break;
+    livefuel->g[i]=fsum[index];
+  }
+
+  /* ==== calculating fuel bulk density ==== */
+
   /* average fuel bulk density for live and dead fuel*/
   fbd_livefuel = fbd_c3_livegrass * ratio_c3_livegrass +
                  fbd_c4_livegrass * ratio_c4_livegrass;
@@ -116,7 +241,6 @@ void fuelload(Stand *stand,
     fbd_deadfuel += stand->soil.litter.avg_fbd[i]*litter_agtop_tree(&stand->soil.litter,i)*fbd_fac[i]; /*fbd_fac replaces FBD_A + FBD_B*/
   if(dead_fuel > epsilon)
     fbd_deadfuel /= biomass2c(dead_fuel);
-    /*fbd_deadfuel /= litter_agtop_sum_quick(&stand->soil.litter); */
 
   if (dead_fuel > epsilon && livegrass > epsilon)
   {
@@ -126,92 +250,4 @@ void fuelload(Stand *stand,
   }
   else
     fuel->char_dens_fuel_ave = 0;
-
-  /* Calculate sigma */
-  if (dead_fuel > epsilon)
-  {
-    fuel->sigma=0;
-    for(i=0;i<NFUELCLASS-1;++i)
-      fuel->sigma += fuel_gBiomass[i]*SIGMA[i];
-    /* TODO: if some components of dead_fuel <0, sigma is very large*/
-    fuel->sigma /= dead_fuel;
-  }
-  else
-    fuel->sigma=0.00001;
-#ifdef SAFE
-  if(fuel->sigma > 2*SIGMA[0])
-  {
-    /* may happen if litter is negative and causes numerical problems in rateofspread*/
-    fuel->sigma=SIGMA[0];
-  }
-#endif
-  /* Calculate weighted fuel moisture */
-  /* To be sent do firedangerindex */
-  alpha_fuel = 0.0;
-  if(dead_fuel > epsilon)
-  {
-    for(i=0;i<NFUELCLASS-1;++i)
-      alpha_fuel += alpha[i] * fuel_gBiomass[i];
-    alpha_fuel /= dead_fuel;
-  }
-
-  /* Calculate live grass moisture - backcalculate from NI relationship with dlm_lg */
-  if(nesterov_accum > epsilon)
-  {
-    if(livefuel->dlm_livegrass > 0)
-      alpha_livegrass =(log(livefuel->dlm_livegrass)/nesterov_accum)*(-1.0);
-    else
-      alpha_livegrass = 0.0;
-
-    /* weight moisture by amount for dead and live (grass) fuel available */
-    fuel->char_alpha_fuel = alpha_fuel * ratio_dead_fuel + alpha_livegrass * ratio_live_fuel;
-  }
-  else
-    fuel->char_alpha_fuel = 0.0001;
-#ifdef SAFE
-  if(fuel->char_alpha_fuel < 0)
-  {
-    fprintf(stderr,"fuel->char_alpha_fuel: %f alpha_fuel %f alpha_livegrass %f\n",
-            fuel->char_alpha_fuel,alpha_fuel,alpha_livegrass);
-    fuel->char_alpha_fuel = 0.0001;
-  }
-#endif
-  /* daily litter moisture back-calculated from nesterov_accum */
-  fuel->daily_litter_moist = exp(-(fuel->char_alpha_fuel) * nesterov_accum);
-
-  /* combustion efficiency for litter */
-  fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;  
-  dlm_1hr = exp(-alpha[0] * nesterov_accum);
-
-  /* moisture of extinction (as PFT param.) weighted over litter amount */
-  moist_extinct = moistfactor(&stand->soil.litter);
-
-  /* and influence of livegrass considered */
-  fuel->char_moist_factor = moist_extinct * ratio_dead_fuel + moist_extinct_livegrass * ratio_live_fuel;
-
-  /* influence of livefuel on 1hr fuel moisture content */
-  if (livegrass <= epsilon || fuel_gBiomass[0] <= epsilon)
-    moist_livegrass_1hr = 1.0;
-  else
-    moist_livegrass_1hr=(fuel->daily_litter_moist*livegrass + dlm_1hr*fuel_gBiomass[0])
-                            / (livegrass + fuel_gBiomass[0]);
-
-  if(fuel->char_moist_factor <= epsilon)
-  {
-    fuel->moist_1hr=1.0;
-    fuel->moist_10_100hr=1.0;
-  }
-  else
-  {
-    fuel->moist_1hr=moist_livegrass_1hr/fuel->char_moist_factor;
-    fuel->moist_10_100hr=fuel->daily_litter_moist/fuel->char_moist_factor;
-  }
-  livefuel->CME = 0.0005*pow(fuel->moist_10_100hr*100,2)-0.02*fuel->moist_10_100hr*100+0.94;
-
-  /* mw_weight for rate of spread and fuel consumption */
-  /* TODO: equals fuel->moist_10_100hr (correct??)*/
-  if (fuel->char_moist_factor <= epsilon)
-    fuel->mw_weight = 0.0;
-  else
-    fuel->mw_weight = fuel->daily_litter_moist / fuel->char_moist_factor;
 } /* of 'fuelload' */

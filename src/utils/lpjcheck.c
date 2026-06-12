@@ -17,8 +17,19 @@
 #include "grass.h"
 #include "tree.h"
 #include "crop.h"
+#include "natural.h"
+#include "grassland.h"
+#include "biomass_tree.h"
+#include "biomass_grass.h"
+#include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
+#include "wetland.h"
+#include "urban.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#define NSTANDTYPES 16 /* number of stand types / land use types as defined in landuse.h*/
+
 #define USAGE "\nUsage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]] [-pedantic]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
@@ -34,6 +45,7 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
+  Standtype *standtype[NSTANDTYPES];
   Config config;         /* LPJ configuration */
   int rc=0;              /* return code of program */
   Bool isout,check;
@@ -41,6 +53,22 @@ int main(int argc,char **argv)
   const char *title[4];
   String line,line2;
   FILE *file;
+  standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
+  standtype[KILL]=&kill_stand;
   initconfig(&config);
   isout=check=TRUE;
   progname=strippath(argv[0]);
@@ -111,7 +139,7 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,LPJ_USAGE))
   {
     fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   }

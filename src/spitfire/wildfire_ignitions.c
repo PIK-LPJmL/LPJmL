@@ -14,9 +14,9 @@
 
 #include "lpj.h"
 
-Real wildfire_ignitions(Real d_fdi,    /* daily fire danger index */
-                        Real ignition, /* ignition */
-                        Real area      /* cell area m^2 */
+Real wildfire_ignitions(Real d_fdi,    /**< daily fire danger index */
+                        Real ignition, /**< ignition */
+                        Real area      /**< cell area (m^2) */
                        )
 {
   Real d_numfire;

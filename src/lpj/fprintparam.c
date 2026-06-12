@@ -70,11 +70,24 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
     fprintf(file,"equisoil_fadeout:\t%d\n",param.equisoil_fadeout);
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
+  {
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
-            "hum_ign:\t%g\n",
-            param.firedura,param.fire_intens,param.hum_ign);
+            "intensity_limit:\t%g\n"
+            "ign_factor:\t%g\n"
+            "hum_ign:\t%g\n"
+            "cg_ratio:\t%g\n"
+            "lightning_eff_rate:\t%g\n"
+            "fire duration:\t[%g,%g] (min)\n"
+            "max ndayfire:\t%d (days)\n",
+            param.firedura,param.fire_intens,param.intensity_limit,
+            param.ign_factor,param.hum_ign,param.cg_ratio,
+            param.lightning_eff_rate,param.fireduration[0],param.fireduration[1],param.max_ndayfire);
+    if(config->ishuman_ign_prob)
+      fprintf(file,"k_ign_prob:\t%g\n",param.k_ign_prob);
+    fprintfireduration(file,config->standtypes,config->nstand);
+  }
   fprintf(file,"k_max:\t\t%g (1/d)\n"
           "k_2:\t\t%g\n"
           "p:\t\t%g\n"

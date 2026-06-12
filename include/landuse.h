@@ -18,7 +18,7 @@
 /* Definitions of datatypes */
 
 typedef enum {NATURAL,WETLAND,SETASIDE_RF,SETASIDE_IR,SETASIDE_WETLAND,AGRICULTURE,MANAGEDFOREST,
-              GRASSLAND,OTHERS,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,WOODPLANTATION,KILL} Landusetype;
+              GRASSLAND,OTHERS,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,URBAN,WOODPLANTATION,KILL} Landusetype;
 
 typedef struct landuse *Landuse;
 
@@ -30,6 +30,7 @@ typedef struct
   Real biomass_tree;
   Real *ag_tree;
   Real woodplantation;
+  Real urban;
 } Landfrac;
 
 typedef struct
@@ -125,7 +126,8 @@ extern void fprintlandfrac(FILE *,const Landfrac *,int,int);
 extern Irrig_system *newirrigsystem(int,int);
 extern void initirrigsystem(Irrig_system *,IrrigationType,int,int);
 extern Bool freadlandfrac(Bstruct,const char *,Landfrac [2],int,int);
-extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
+extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int,int);
+extern void fprintlandfrac(FILE *,const Landfrac *,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
 extern Real crop_sum_frac(Landfrac [2],int,int,Real,Bool);
 extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
@@ -155,8 +157,8 @@ extern Bool fwrite_irrigation(Bstruct,const char *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *,const Pftpar *);
 extern Bool fread_irrigation(Bstruct,const char *,Irrigation *);
 extern Harvest harvest_stand(Output *,Stand *,Real,const Config *);
-extern int *scancftmap(LPJfile *,int *,const char *,Bool,Bool,int,int,const Config *);
-extern int *defaultcftmap(int *,const char *,Bool,int,int,const Config *);
+extern int *scancftmap(LPJfile *,int *,const char *,Bool,Bool,Bool,int,int,const Config *);
+extern int *defaultcftmap(int *,const char *,Bool,Bool,int,int,const Config *);
 extern int *fscanagtreemap(LPJfile *,const char *,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
@@ -174,8 +176,8 @@ extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
                        Bool,const Config *);
 extern void cmplandusemap(const char *,const int *,int,const char *,const int *,int,int,int,const Config *);
 extern const char *getcftname(int,int,int,const Config *);
-extern int *getcftmap(const Map *,const char *,Bool,int,int,const Config *);
-extern Bool getmap(Map *,const char *,const char *,Bool,int **,int *,int,int,Config *);
+extern int *getcftmap(const Map *,const char *,Bool,Bool,int,int,const Config *);
+extern Bool getmap(Map *,const char *,const char *,Bool,Bool,int **,int *,int,int,Config *);
 extern Bool checkbasetemp(const Limit [],int,int,const Config *);
 extern Bool checkhlimit(const int [],int,int,const Config *);
 

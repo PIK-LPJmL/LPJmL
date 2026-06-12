@@ -16,10 +16,12 @@
 
 #include "lpj.h"
 #include "grassland.h"
+#include "urban.h"
 
 int *getcftmap(const Map *map,      /**< pointer to string array  */
                const char *name,    /**< name or filename for map */
                Bool cftonly,        /**< scan only crop PFTs */
+               Bool urban,
                int npft,            /**< number of natural PFTs */
                int ncft,            /**< number of crop PFTs */
                const Config *config /**< LPJ configuration */
@@ -35,7 +37,7 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
     printallocerr("cftmap");
     return NULL;
   }
-  undef=newvec(Bool,cftonly ? ncft : getnirrig(ncft,config));
+  undef=newvec(Bool,cftonly ? ncft : getnirrig(ncft,config)+urban);
   if(undef==NULL)
   {
     printallocerr("undef");
@@ -45,7 +47,7 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
     for(cft=0;cft<ncft;cft++)
       undef[cft]=TRUE;
   else
-    for(cft=0;cft<getnirrig(ncft,config);cft++)
+    for(cft=0;cft<getnirrig(ncft,config)+urban;cft++)
       undef[cft]=TRUE;
   for(cft=0;cft<getmapsize(map);cft++)
   {
@@ -85,6 +87,12 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
           undef[cftmap[cft]]=FALSE;
           continue;
         }
+      }
+      if(urban && !strcmp(getmapitem(map,cft),urban_name))
+      {
+        cftmap[cft]=ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree;
+        undef[cftmap[cft]]=FALSE;
+        continue;
       }
       if(config->nagtree)
       {
@@ -155,6 +163,17 @@ int *getcftmap(const Map *map,      /**< pointer to string array  */
             fputc(',',stderr);
           fprintf(stderr," \"%s\"",woodplantation_names[cft]);
         }
+      if(urban && undef[ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree])
+      {
+        if(first && isroot(*config))
+        {
+          fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+          first=FALSE;
+        }
+        else
+          fputc(',',stderr);
+        fprintf(stderr," \"%s\"",urban_name);
+      }
       for(cft=0;cft<config->nagtree;cft++)
         if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
         {

@@ -20,7 +20,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
           fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
-          hydrotopes.$O inithydro.$O update_wetland.$O\
+          hydrotopes.$O inithydro.$O update_wetland.$O litter_agtop_crop.$O\
           freadhydrotope.$O fscanhydropar.$O fwritehydrotope.$O \
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
@@ -36,7 +36,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           calc_soil_thermal_props.$O apply_heatconduction_of_a_day.$O compute_mean_layer_temps_from_enth.$O\
           apply_enth_of_untracked_mass_shifts.$O freezefrac2soil.$O enth2freezefrac.$O\
           apply_perc_enthalpy.$O update_soil_thermal_state.$O freadpool.$O fwritepool.$O\
-          soil_status.$O daily_littersom.$O littersom_nomethane.$O
+          soil_status.$O daily_littersom.$O littersom_nomethane.$O pftlitter_agtop.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

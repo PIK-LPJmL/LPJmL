@@ -55,7 +55,7 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "bark thickness:\t%g %g\n",
           partree->height_max,partree->reprod_cost,
           partree->k_est,partree->barkthick_par1,partree->barkthick_par2);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fprintf(file,"scorch height:\t%g\n"
                  "crown length:\t%g\n"

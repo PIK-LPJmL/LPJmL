@@ -69,7 +69,7 @@
 #define NO_FIRE 0
 #define FIRE 1
 #define SPITFIRE 2
-#define SPITFIRE_TMAX 3
+#define SPITFIRE_TAMP 3
 #define NO_POPULATION 0
 #define DENS_POPULATION 1
 #define NUM_POPULATION 2
@@ -86,8 +86,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 359
-/* number of output files */
+#define NOUT 384            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -453,6 +452,31 @@
 #define CH4_EMISSIONS_WET 356
 #define METHANOGENESIS 357
 #define CH4_LITTER 358
+#define FIREDURATION 359
+#define HUMAN_IGNITION 360
+#define LIGHTNING 361
+#define ROS 362
+#define SURFACE_FI 363
+#define FIRESIZE 364
+#define FIREDAYS 365
+#define STAND_BURNTAREA 366
+#define STAND_FDI 367
+#define STAND_SURFACE_FI 368
+#define NDAYFIRE 369
+#define MAX_FIRESIZE 370
+#define FUEL 371
+#define LIVEGRASS 372
+#define DLM_LIVEGRASS 373
+#define GSI_CUM 374
+#define GSI_DIFF 375
+#define PFT_PHEN 376
+#define STAND_FIREDURATION 377
+#define FWI 378
+#define PFT_AGTOP_LITTERC 379
+#define PFT_HEIGHT 380
+#define DFMC 381
+#define FIREDURATIONDAYS 382
+#define LITTERMOIST 383
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

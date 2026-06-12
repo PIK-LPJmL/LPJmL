@@ -24,6 +24,7 @@ typedef struct buffer *Buffer;
 extern Buffer newbuffer(int);
 extern void updatebuffer(Buffer,Real); 
 extern Bool fwritebuffer(Bstruct,const char *,const Buffer);
+extern void fprintbuffer(FILE *,const Buffer);
 extern Buffer freadbuffer(Bstruct,const char *);
 extern void freebuffer(Buffer);
 extern Real getbufferavg(const Buffer);

@@ -24,8 +24,6 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
                const Soilpar *soilpar, /**< pointer to soil parameter */
-               const Standtype standtype[], /**< array of stand types */
-               int nstand,             /**< number of stand types */
                Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
@@ -100,6 +98,8 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
       return TRUE;
     if(freadstocksarray(file,"estab_storage_grass",cell->balance.estab_storage_grass,2))
       return TRUE;
+    if(freadfwi(file,"fwi",&cell->fwi_data))
+      return TRUE;
     if(freadignition(file,"ignition",&cell->ignition))
     {
       fprintf(stderr,"ERROR254: Cannot read ignition data.\n");
@@ -117,7 +117,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
     }
     /* read stand list */
     cell->standlist=freadstandlist(file,"standlist",cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,config->separate_harvests);
+                                   config->standtypes,config->nstand,config->separate_harvests);
     if(cell->standlist==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
@@ -214,6 +214,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
       }
 #endif
     }
+    readreal(file,"gsi_cum",&cell->gsi_cum);
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
     {
       if(freadlandfrac(file,"fertilizer_nr",cell->ml.fertilizer_nr,ncft,config->nagtree))

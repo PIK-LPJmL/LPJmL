@@ -196,6 +196,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  Pfttype scanfcn[], /**< array of PFT-specific scan
                                          functions */
                  int ntypes,        /**< Number of PFT classes */
+                 Standtype **standtypes, /**< array of stand types */
+                 int nstand,        /**< number of stand types */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
 {
@@ -208,7 +210,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *fertilizer[]={"no","yes","auto"};
   char *irrigation[]={"no","lim","pot","all"};
   char *radiation[]={"radiation","radiation_lwdown"};
-  char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
+  char *fire[]={"no","globfirm","spitfire","spitfire_tamp"};
   char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate"};
   char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   char *wateruse[]={"no","yes","all"};
@@ -320,20 +322,40 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->ispopulation=NO_POPULATION;
   if(fscankeywords(file,&config->fire,"fire",fire,4,FALSE,verbose))
     return TRUE;
-  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  config->prescribe_burntarea=FALSE;
+  config->prescribe_ignition=FALSE;
+  config->max_firesize=FALSE;
+  config->ishuman_ign_prob=FALSE;
+  config->ispopulation=NO_POPULATION;
+  config->isgsi_livefuel=FALSE;
+  if(isspitfire(config))
   {
+    if(fscanbool(file,&config->isgsi_livefuel,"gsi_livefuel",!config->pedantic,verbose))
+      return TRUE;
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;
-    if(config->fdi==WVPD_INDEX && verbose)
-      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
-    if(fscankeywords(file,&config->ispopulation,"population",population,3,FALSE,verbose))
-      return TRUE;
-  }
-  config->prescribe_burntarea=FALSE;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
+    if(config->fdi==WVPD_INDEX)
+    {
+      config->relative_humidity=FALSE;
+      if(fscanbool(file,&config->relative_humidity,"relative_humidity",!config->pedantic,verbose))
+        return TRUE;
+    }
     if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",!config->pedantic,verbose))
       return TRUE;
+    if(fscanbool(file,&config->max_firesize,"max_firesize",!config->pedantic,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",!config->pedantic,verbose))
+      return TRUE;
+    if(!config->prescribe_ignition)
+    {
+      if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",!config->pedantic,verbose))
+        return TRUE;
+      if(!config->ishuman_ign_prob)
+      {
+        if(fscankeywords(file,&config->ispopulation,"population",population,3,FALSE,verbose))
+          return TRUE;
+      }
+    }
   }
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,!config->pedantic,verbose))
@@ -473,18 +495,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
     }
   }
-  config->fire_on_grassland=FALSE;
+  config->fertilizer_input=NO_FERTILIZER;
   if(config->sim_id!=LPJ)
   {
     if(fscankeywords(file,&config->withlanduse,"landuse",landuse,5,FALSE,verbose))
       return TRUE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && !config->prescribe_burntarea)
-      {
-        if(fscanbool(file,&config->fire_on_grassland,"fire_on_grassland",!config->pedantic,verbose))
-          return TRUE;
-      }
       if(fscanbool(file,&config->separate_harvests,"separate_harvests",!config->pedantic,verbose))
         return TRUE;
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
@@ -669,6 +686,21 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
+  config->nstand=nstand;
+  config->standtypes=standtypes;
+  if(isspitfire(config))
+  {
+    if(fscanfireduration(file,standtypes,nstand,verbose))
+    {
+      if(verbose)
+        fputs("ERROR246: Cannot read stand-specific maximum fire durations.\n",stderr);
+      return TRUE;
+    }
+    if(fscanfirestand(file,standtypes,nstand,verbose))
+      return TRUE;
+  }
+  else
+    standtypes[NATURAL]->dailyfire=NULL;
   if(config->others_to_crop)
   {
     name=fscanstring(file,NULL,"cft_temp",verbose);
@@ -794,38 +826,38 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap_size==-1)
       return TRUE;
     if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->fertilizermap_size==-1)
         return TRUE;
     }
     if(config->manure_input)
     {
-      config->manuremap=scancftmap(file,&config->manuremap_size,"manuremap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->manuremap=scancftmap(file,&config->manuremap_size,"manuremap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->manuremap_size==-1)
         return TRUE;
     }
     if (config->residue_treatment == READ_RESIDUE_DATA)
     {
-      config->residuemap=scancftmap(file,&config->residuemap_size,"residuemap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->residuemap=scancftmap(file,&config->residuemap_size,"residuemap",FALSE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->residuemap_size==-1)
         return TRUE;
     }
     if(config->sdate_option>=PRESCRIBED_SDATE)
     {
-      config->sdatemap=scancftmap(file,&config->sdatemap_size,"sdatemap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->sdatemap=scancftmap(file,&config->sdatemap_size,"sdatemap",TRUE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->sdatemap_size==-1)
         return TRUE;
     }
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
-      config->crop_phumap=scancftmap(file,&config->crop_phumap_size,"crop_phumap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->crop_phumap=scancftmap(file,&config->crop_phumap_size,"crop_phumap",TRUE,FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->crop_phumap_size==-1)
         return TRUE;
     }
@@ -939,37 +971,57 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
     config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
   scanclimatefilename(input,&config->soilph_filename,FALSE,FALSE,"soilpH");
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
+  if(isspitfire(config) && config->fdi==WVPD_INDEX)
   {
     scanclimatefilename(input,&config->humid_filename,TRUE,TRUE,"humid");
   }
   scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     scanclimatefilename(input,&config->tmin_filename,TRUE,TRUE,"tmin");
     scanclimatefilename(input,&config->tmax_filename,TRUE,TRUE,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE_TAMP)
   {
-    scanclimatefilename(input,&config->tamp_filename,TRUE,TRUE,"tamp");
+    if(readclimatefilename(input,&config->tamp_filename,"tamp",def,FALSE,TRUE,TRUE,config))
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR209: Cannot read filename for 'tamp' input, use \"spitfire\" fire setting instead.\n");
+      return TRUE;
+    }
   }
   else
     config->tamp_filename.name=NULL;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
-    scanclimatefilename(input,&config->lightning_filename,FALSE,TRUE,"lightning");
-    scanclimatefilename(input,&config->human_ignition_filename,
-                        FALSE,TRUE,"human_ignition");
-  }
-  if(config->ispopulation)
-  {
-    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,(config->ispopulation==DENS_POPULATION) ? "popdens" : "popnum");
-  }
-  if(config->prescribe_burntarea)
-  {
-    scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
+    if(config->prescribe_ignition)
+    {
+      scanclimatefilename(input,&config->ignition_filename,FALSE,FALSE,"ignition");
+    }
+    else
+    {
+      scanclimatefilename(input,&config->lightning_filename,FALSE,TRUE,"lightning");
+      if(config->ishuman_ign_prob)
+      {
+        scanclimatefilename(input,&config->human_ign_prob_filename,
+                            FALSE,TRUE,"human_ign_prob");
+      }
+    }
+    if(config->max_firesize)
+    {
+      scanclimatefilename(input,&config->max_firesize_filename,FALSE,FALSE,"maxfiresize");
+    }
+    if(config->ispopulation)
+    {
+      scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,(config->ispopulation==DENS_POPULATION) ? "popdens" : "popnum");
+      scanclimatefilename(input,&config->human_ignition_filename,FALSE,TRUE,"human_ignition");
+    }
+    if(config->prescribe_burntarea)
+    {
+      scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
+    }
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {

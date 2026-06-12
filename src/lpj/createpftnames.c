@@ -160,10 +160,13 @@ char **createpftnames(int index,           /**< output index */
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
-   case PFT_MORT: case NV_LAI:
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF: case PFT_PHEN:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
+    case PFT_AGTOP_LITTERC:
+      if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,npft+ncft))
+        return NULL;
     case WFT_VEGC:
       incr=0;
       for (j=0;j<npft;j++)
@@ -219,6 +222,10 @@ char **createpftnames(int index,           /**< output index */
          strcpy(pftnames[i+config->ngrass*4+config->nbiomass],"irrigated ");
          strcat(pftnames[i+config->ngrass*4+config->nbiomass],config->pftpar[i+nnat].name);
        }
+       break;
+     case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI: case STAND_FIREDURATION:
+       for(i=0;i<config->nstand-1;i++)
+         pftnames[i]=strdup(config->standtypes[i]->name);
        break;
     default:
       fprintf(stderr,"ERROR248: No PFT names defined for output '%s'.\n",config->outnames[index].name);

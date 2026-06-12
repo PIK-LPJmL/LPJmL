@@ -29,6 +29,7 @@ void freeinput(Input input,          /**< Input struct */
   freelanduse(input.landuse,config);
   freeicefrac(input.icefrac,isroot(*config));
   freepopdens(input.popdens,isroot(*config));
+  freehuman_ign_prob(input.human_ign_prob,isroot(*config));
   freehumanignition(input.human_ignition,isroot(*config));
   freelandcover(input.landcover,isroot(*config));
 } /* of 'freeinput' */

@@ -86,28 +86,46 @@ static size_t isnetcdfinput(const Config *config)
     if(config->landfrac_filename.fmt==CDF)
       width=max(width,strlen(config->landfrac_filename.var));
   }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     if(config->tmin_filename.fmt==CDF)
       width=max(width,strlen(config->tmin_filename.var));
     if(config->tmax_filename.fmt==CDF)
       width=max(width,strlen(config->tmax_filename.var));
   }
-  if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
+  if(config->fire==SPITFIRE_TAMP && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
   if(config->wind_filename.fmt==CDF)
     width=max(width,strlen(config->wind_filename.var));
-  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
       width=max(width,strlen(config->humid_filename.var));
-    if(config->lightning_filename.fmt==CDF)
-      width=max(width,strlen(config->lightning_filename.var));
+    if(config->prescribe_ignition)
+    {
+      if(config->ignition_filename.fmt==CDF)
+        width=max(width,strlen(config->ignition_filename.var));
+    }
+    else
+    {
+      if(config->lightning_filename.fmt==CDF)
+        width=max(width,strlen(config->lightning_filename.var));
+    }
+    if(config->max_firesize)
+    {
+      if(config->max_firesize_filename.fmt==CDF)
+        width=max(width,strlen(config->max_firesize_filename.var));
+    }
+  }
+  if(config->ispopulation)
+  {
+    if(config->popdens_filename.fmt==CDF)
+      width=max(width,strlen(config->popdens_filename.var));
     if(config->human_ignition_filename.fmt==CDF)
       width=max(width,strlen(config->human_ignition_filename.var));
   }
-  if(config->ispopulation && config->popdens_filename.fmt==CDF)
-    width=max(width,strlen(config->popdens_filename.var));
+  if(config->ishuman_ign_prob && config->human_ign_prob_filename.fmt==CDF)
+    width=max(width,strlen(config->human_ign_prob_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
     width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
@@ -158,11 +176,8 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->wet_filename.name!=NULL && config->wet_filename.fmt==CDF)
     width=max(width,strlen(config->wet_filename.var));
-  if(config->with_lakes)
-  {
-    if(config->lakes_filename.fmt==CDF)
-      width=max(width,strlen(config->lakes_filename.var));
-  }
+  if(config->with_lakes && config->lakes_filename.fmt==CDF)
+    width=max(width,strlen(config->lakes_filename.var));
   if(config->river_routing)
   {
     if(config->drainage_filename.fmt==CDF)
@@ -290,16 +305,20 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"random precipitation");
   if(config->fire)
   {
-    len=printsim(file,len,&count,(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)  ? "spitfire" : "fire");
-    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->ispopulation)
+    len=printsim(file,len,&count,(isspitfire(config))  ? "spitfire version " SPITFIRE_VERSION : "GlobFIRM fire");
+    if(isspitfire(config) && config->ispopulation)
       len=printsim(file,len,&count,"and population");
-    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
-      len=printsim(file,len,&count,"prescribe burntarea");
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(isspitfire(config) && config->prescribe_burntarea)
+      len=printsim(file,len,&count,"prescribed burntarea");
+    if(config->ishuman_ign_prob)
+      len=printsim(file,len,&count,"human ignition probabilities");
+    if(config->prescribe_ignition)
+      len=printsim(file,len,&count,"prescribed ignitions");
+    if(isspitfire(config))
       len=printsim(file,len,&count,fdi[config->fdi]);
-    if(config->fire_on_grassland)
-      len=printsim(file,len,&count,"fire on grassland");
   }
+  if(config->isgsi_livefuel)
+    len=printsim(file,len,&count,"GSI livefuel");
   if(config->shuffle_spinup_climate)
     len=printsim(file,len,&count,"shuffle spinup climate");
   if(config->fix_climate)
@@ -488,6 +507,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
+    for(i=0;i<config->nstand;i++)
+      if(config->standtypes[i]->dailyfire!=NULL && config->standtypes[i]->landusetype!=NATURAL)
+      {
+        len+=fprintf(file,", ");
+        snprintf(s,STRING_LEN,"fire on %s",config->standtypes[i]->name);
+        len=fputstring(file,len,s,78);
+      }
     if(config->laimax_manage==LAIMAX_CONST)
     {
       len+=fprintf(file,", ");
@@ -618,19 +644,25 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if (config->with_methane && config->with_dynamic_ch4==PRESCRIBED_CH4)
     printinputfile(file,"ch4",&config->ch4_filename,width,config);
   printinputfile(file,"windspeed",&config->wind_filename,width,config);
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
     printinputfile(file,"tmax",&config->tmax_filename,width,config);
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
     printinputfile(file,"temp ampl",&config->tamp_filename,width,config);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
-      printinputfile(file,"humid",&config->humid_filename,width,config);
-    printinputfile(file,"lightning",&config->lightning_filename,width,config);
-    printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
+      printinputfile(file,(config->relative_humidity) ? "rhumid" : "humid",&config->humid_filename,width,config);
+    if(config->prescribe_ignition)
+      printinputfile(file,"ignition",&config->ignition_filename,width,config);
+    else
+    {
+      printinputfile(file,"lightning",&config->lightning_filename,width,config);
+    }
+    if(config->max_firesize)
+      printinputfile(file,"maxfire",&config->max_firesize_filename,width,config);
   }
   if (config->isanomaly)
   {
@@ -642,7 +674,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file, "delta swdown", &config->delta_swdown_filename, width,config);
   }
   if(config->ispopulation)
+  {
     printinputfile(file,(config->ispopulation==DENS_POPULATION) ? "pop. dens" : "pop. num",&config->popdens_filename,width,config);
+    printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
+  }
+  if(config->ishuman_ign_prob)
+    printinputfile(file,"h ign prob",&config->human_ign_prob_filename,width,config);
   if(config->prescribe_burntarea)
     printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)
@@ -791,7 +828,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
                  "Byte order in output files:   %s\n",
             config->n_out,config->outputyear,
             bigendian() ? "big endian" : "little endian");
-    fputc('\n',file);
     isnetcdf=FALSE;
     for(i=0;i<config->n_out;i++)
       if(hassuffix(config->outputvars[i].filename.name,config->compress_suffix))

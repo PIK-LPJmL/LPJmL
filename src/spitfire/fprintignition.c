@@ -16,7 +16,9 @@
 
 #include "lpj.h"
 
-void fprintignition(FILE *file,const Ignition *ignition)
+void fprintignition(FILE *file,              /**< pointer to text file */
+                    const Ignition *ignition /**< pointer to data printed */
+                   )
 {
   fprintf(file,"Nesterov acum:\t%g\n"
           "Nesterov max:\t%g\n"

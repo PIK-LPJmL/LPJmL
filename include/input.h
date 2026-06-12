@@ -17,7 +17,7 @@
 
 /* Definition of datatypes */
 
-typedef struct
+struct input
 {
   Climate *climate;
   Landuse landuse;
@@ -27,14 +27,15 @@ typedef struct
   Wateruse wateruse_wd;
 #endif
   Popdens popdens;
+  Human_ign_prob human_ign_prob;
   Human_ignition human_ignition;
   Extflow extflow;
   Landcover landcover;
-} Input;
+};
 
 /* Declaration of functions */
 
-extern Bool initinput(Input *,const Cell *,int,int,Config *);
+extern Bool initinput(Input *,int,int,Config *);
 extern void freeinput(Input,const Config *);
 
 #endif
