@@ -38,6 +38,7 @@ code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@p
 - `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
 - `README` renamed to `README.md` and expanded
 - `configure.sh`, `src/lpj/copyright.c` and `src/lpj/printlicense.c` adjusted to reflect renaming of files
+- Updated module version for `oneAPI` in `run_simulate_default.sh`
 
 
 ## [6.0.7] - 2026-04-17
