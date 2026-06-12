@@ -35,7 +35,7 @@ code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@p
 
 ### Changed
 
-- `AUTHORS` renamed to `AUTHORS.md`
+- `AUTHORS` renamed to `AUTHORS.md` and restructured for active and previous authors
 - `INSTALL` renamed to `INSTALL.md` and adjusted
 - `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
 - `README` renamed to `README.md` and expanded
