@@ -35,7 +35,7 @@ of `major.minor.patch` with
 - Function `fprintbuffer()` added in `buffer.c` to print variables and is called in `fprintclimbuf.c`.
 - Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
 - Utility `lpjcat` checks for identical lakes setting in restart files to concatenate.
-- Urban stand added and is handled always as bare soil without any vegetation growth.
+- Urban stand added and is handled always as bare soil without any vegetation growth, this is an untested feature at global-scale simulations.
 - Boolean `"relative_humidity"` added to lpjml configuration to use relative instead of absolute humidity for input.
 - Fire related outputs and settings added:
 ```java
