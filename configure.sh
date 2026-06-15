@@ -53,7 +53,7 @@ while(( "$#" )); do
       exit 0
       ;;
     -l|--license)
-      more LICENSE
+      more LICENSES/AGPL-3.0.md
       exit 0
       ;;
     -v|--version)
