@@ -20,28 +20,6 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [6.1.1] - 2026-06-12
-
-### Contributors
-
-author: Jannes Breier (breier@pik-potsdam.de),  Werner von Bloh (bloh@pik-potsdam.de)
-code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
-
-### Added
-
-- `logo.png` added to `man` directory
-- `LICENSES` folder
-- `LICENSES/CC0-1.0.md` added for artwork license
-
-### Changed
-
-- `AUTHORS` renamed to `AUTHORS.md` and restructured for active and previous authors
-- `INSTALL` renamed to `INSTALL.md` and adjusted
-- `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
-- `README` renamed to `README.md` and expanded
-- `configure.sh`, `src/lpj/copyright.c` and `src/lpj/printlicense.c` adjusted to reflect renaming of files
-- Updated module version for `oneAPI` in `run_simulate_default.sh`
-
 
 ### Contributors
 
@@ -75,6 +53,29 @@ code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@p
 - Variable `depth` initialized to zero before layer loop in `fwriteoutput.c` to correct `soilc_1m` output.
 - Length of buffer for hostname corrected in `gethost.c`.
 - Output of unprintable characters corrected in `fputprintable.c`.
+
+
+## [6.1.1] - 2026-06-12
+
+### Contributors
+
+author: Jannes Breier (breier@pik-potsdam.de),  Werner von Bloh (bloh@pik-potsdam.de)
+code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+
+### Added
+
+- `logo.png` added to `man` directory
+- `LICENSES` folder
+- `LICENSES/CC0-1.0.md` added for artwork license
+
+### Changed
+
+- `AUTHORS` renamed to `AUTHORS.md` and restructured for active and previous authors
+- `INSTALL` renamed to `INSTALL.md` and adjusted
+- `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
+- `README` renamed to `README.md` and expanded
+- `configure.sh`, `src/lpj/copyright.c` and `src/lpj/printlicense.c` adjusted to reflect renaming of files
+- Updated module version for `oneAPI` in `run_simulate_default.sh`
 
 
 ## [6.1.0] - 2026-06-12
