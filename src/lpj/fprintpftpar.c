@@ -120,7 +120,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
             pftpar->wscal.sl, pftpar->wscal.base, pftpar->wscal.tau);
   if(config->fire!=NO_FIRE)
     fprintf(file,"flam:\t\t%g\n",pftpar->flam);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fprintf(file,"alpha_fuelp:\t%g\n",
             pftpar->alpha_fuelp);

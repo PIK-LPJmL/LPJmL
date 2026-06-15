@@ -35,7 +35,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/biomass_tree.h $(INC)/biomass_grass.h $(INC)/cdf.h\
           $(INC)/agriculture.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/wetland.h\
           $(INC)/hydrotope.h $(INC)/cpl.h $(INC)/woodplantation.h $(INC)/agriculture_tree.h\
-          $(INC)/agriculture_grass.h $(INC)/coupler.h $(INC)/timing.h
+          $(INC)/agriculture_grass.h $(INC)/coupler.h $(INC)/timing.h $(INC)/urban.h
 
 LIBDIR  = ../lib
 BINDIR  = ../bin
@@ -46,7 +46,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LI
           $(LIBDIR)/libcrop.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libsocket.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A $(LIBDIR)/liblpj.$A\
           $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A $(LIBDIR)/libnum.$A\
-          $(LIBDIR)/libbstruct.$A $(LIBDIR)/libtools.$A
+          $(LIBDIR)/libbstruct.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A
 
 EXE     = $(BINDIR)/lpjml$E
 

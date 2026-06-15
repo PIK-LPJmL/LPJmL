@@ -18,6 +18,8 @@
 
 #define fscanparamreal(file,var,name) \
   if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanparamrealarray(file,var,size,name) \
+  if(fscanrealarray(file,var,size,name,verbosity)) return TRUE;
 #define fscanparamreal01(file,var,name) \
   if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
@@ -179,11 +181,19 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   fscanparamreal(f,&param.fertilizer_rate,"fertilizer_rate");
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fscanparamreal(f,&param.firedura,"firedura");
     fscanparamreal(f,&param.fire_intens,"fire_intens");
+    fscanparamreal(f,&param.intensity_limit,"intensity_limit");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
+    fscanparamreal(f,&param.ign_factor,"ign_factor");
+    fscanparamrealarray(f,param.fireduration,2,"fireduration");
+    fscanparamint(f,&param.max_ndayfire,"max_ndayfire");
+    fscanparamreal01(f,&param.cg_ratio,"cg_ratio");
+    fscanparamreal01(f,&param.lightning_eff_rate,"lightning_eff_rate");
+    if(config->ishuman_ign_prob)
+      fscanparamreal(f,&param.k_ign_prob,"k_ign_prob");
   }
   fscanparamreal01(f,&param.residue_frac,"residue_frac");
   fscanparamreal01(f,&param.mixing_efficiency,"mixing_efficiency");

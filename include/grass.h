@@ -40,8 +40,12 @@ typedef struct
   Grassphyspar nc_ratio; /**< N:C mass ratio (13-15) */
   Real ratio;            /**< C:N ratio of roots relative to leaf */
   Grassphyspar sapl;     /**< sapling */
-  Real sapling_C;  /**< sapling C (gC/m2) */
+  Real sapling_C;        /**< sapling C (gC/m2) */
   Real reprod_cost;      /**< reproduction cost */
+  Real lfmc_a;           /**< parameter for fuel load used by SPITFIRE */
+  Real lfmc_b;           /**< parameter for fuel load used by SPITFIRE */
+  Real lfmc_c;           /**< parameter for fuel load used by SPITFIRE */
+  Real lfmc_d;           /**< parameter for fuel load used by SPITFIRE */
 } Pftgrasspar;
 
 typedef struct

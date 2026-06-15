@@ -17,13 +17,12 @@
 #include "lpj.h"
 
 Bool initinput(Input *input,        /**< Input data */
-               const Cell grid[],   /**< LPJ grid */
                int npft,            /**< number of natural PFTs */
                int ncft,            /**< number of crop PFTs */
                Config *config       /**< LPJ configuration */
               )                     /** \return TRUE on error */
 {
-  if((input->climate=initclimate(grid,config))==NULL)
+  if((input->climate=initclimate(config))==NULL)
     return TRUE;
   if(config->extflow)
   {
@@ -66,16 +65,21 @@ Bool initinput(Input *input,        /**< Input data */
   {
     if((input->popdens=initpopdens(config))==NULL)
       return TRUE;
-  }
-  else
-    input->popdens=NULL;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
     if((input->human_ignition=inithumanignition(config))==NULL)
       return TRUE;
   }
   else
+  {
     input->human_ignition=NULL;
+    input->popdens=NULL;
+  }
+  if(config->ishuman_ign_prob)
+  {
+    if((input->human_ign_prob=inithuman_ign_prob(config))==NULL)
+      return TRUE;
+  }
+  else
+    input->human_ign_prob=NULL;
   if(config->prescribe_landcover != NO_LANDCOVER)
   {
     if((input->landcover=initlandcover(npft,config))==NULL)

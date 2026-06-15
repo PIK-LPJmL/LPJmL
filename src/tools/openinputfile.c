@@ -23,8 +23,8 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                     Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
                     const Filename *filename, /**< [in]  file name */
                     String headername,        /**< [out] clm file header string */
-                    const char *unit,         /**< unit expected or NULL */
-                    Type datatype,            /**< datatype for version 2 files */
+                    const char *unit,         /**< [in] unit expected or NULL */
+                    Type datatype,            /**< [in] datatype for version 2 files */
                     int *version,             /**< [inout] clm file version */
                     size_t *offset,           /**< [in] offset in binary file */
                     Bool isyear,              /**< [in] check for first year (TRUE/FALSE) */

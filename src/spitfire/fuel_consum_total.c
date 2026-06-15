@@ -14,7 +14,9 @@
 
 #include "lpj.h"
 
-Stocks fuel_consum_total(const Litter *litter,const Fuel *fuel)
+Stocks fuel_consum_total(const Litter *litter, /**< pointer to litter */
+                         const Fuel *fuel      /**< pointer to fuel */
+                        )                      /** \return fuel consumed (gC/m2,gN/m2) */
 {
   int i,l;
   Stocks fuel_consum;

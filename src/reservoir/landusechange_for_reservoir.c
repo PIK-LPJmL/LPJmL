@@ -598,6 +598,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 #endif
 
     /* check if total fractions add up to 1 again */
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
   }
 } /* end of function */

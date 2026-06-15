@@ -244,6 +244,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
     if(isnatural(stand))
     {
+      getoutputindex(output,PFT_PHEN,pft->par->id,config)+=pft->phen;
       if(config->pft_output_scaled)
         getoutputindex(output,PFT_NPP,pft->par->id,config)+=npp*stand->frac;
       else

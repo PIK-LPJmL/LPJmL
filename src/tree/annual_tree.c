@@ -22,6 +22,7 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
                  const Config *config /**< LPJmL configuration */
                 )                    /** \return TRUE on death */
 {
+  Pfttree *tree;
   Stocks turnover_ind={0,0};
   Bool isdead;
 #ifdef CHECK_BALANCE
@@ -33,8 +34,11 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
   start.carbon= standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
   start.nitrogen= standstocks(stand).nitrogen-pft->establish.nitrogen;
 #endif
+  tree=pft->data;
   turnover_ind=turnover_tree(&stand->soil.litter,pft,config);
   isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,config);
+  if(isnatural(stand))
+     getoutputindex(&pft->stand->cell->output,PFT_HEIGHT,pft->par->id,config)+=tree->height;
   fpc_tree(pft);
   if(!isdead)
   {

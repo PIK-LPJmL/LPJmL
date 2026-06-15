@@ -24,7 +24,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de)
 
 ### Added
 
@@ -43,12 +43,74 @@ of `major.minor.patch` with
 - New token `bstruct_dzero` defined for restart files to distinguish between float and double zeros, version of bstruct files changed to 2.
 
 
+## [6.1.1] - 2026-06-12
+
+### Contributors
+
+author: Jannes Breier (breier@pik-potsdam.de),  Werner von Bloh (bloh@pik-potsdam.de)
+code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+
+### Added
+
+- `logo.png` added to `man` directory
+- `LICENSES` folder
+- `LICENSES/CC0-1.0.md` added for artwork license
+
+### Changed
+
+- `AUTHORS` renamed to `AUTHORS.md` and restructured for active and previous authors
+- `INSTALL` renamed to `INSTALL.md` and adjusted
+- `LICENSE` renamed to `LICENSES/AGPL-3.0.md` and moved to `LICENSES` folder
+- `README` renamed to `README.md` and expanded
+- `configure.sh`, `src/lpj/copyright.c` and `src/lpj/printlicense.c` adjusted to reflect renaming of files
+- Updated module version for `oneAPI` in `run_simulate_default.sh`
+
+
+## [6.1.0] - 2026-06-12
+
+### Contributors
+
+- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Option `-inpath` added to `configure.sh` to set path for input files.
+- Function `fprintclimbuf()` added in `climbuf.c` to print variables and is called in `fprintcell.c`.
+- Function `fprintbuffer()` added in `buffer.c` to print variables and is called in `fprintclimbuf.c`.
+- Lakes setting stored in restart file and setting compared to actual setting in `openrestart.c`.
+- Utility `lpjcat` checks for identical lakes setting in restart files to concatenate.
+- Urban stand added and is handled always as bare soil without any vegetation growth, this is an untested feature at global-scale simulations.
+- Boolean `"relative_humidity"` added to lpjml configuration to use relative instead of absolute humidity for input.
+- Fire related outputs and settings added:
+```java
+  "gsilivefuel" : true, /* livefuel calculated from growing season index (true/false) */
+  "human_ign_prob" : false,   /* read human ignition probability from file */
+  "max_firesize" : false,     /* read maximum fire size from file */
+  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
+
+  "prescribe_ignition" : false, /* read ignitions from file */
+```
+- Outputs `"pft_height"`, `"pft_agttop_litterc"`, `"littermoist"`, `"pft_phen"`, `"fireduration"`, `"firedurationdays"`, `"livegrass"`, `"dlm_livegrass"`, `"gsi_cum"`,
+  `"gsi_diff"`, `"ndayfire"`, `"fuel"`, `"max_firesize"`, `"stand_fireduration"`, `"stand_burntarea"`, `"stand_fdi"`, `"stand_surface_fi`", `"fwi"`,
+  `"human_ignition"`, `"lightning"`, `"surface_fi"`, `"ros"`, `"firesize"`, `"firedays"` added.
+- Spitfire related article added to `REFERENCES`.
+
+### Changed
+
+- SPITFIRE fire model updated, multi-day fire implemented ([Oberhagemann et al. 2025](https://doi.org/10.5194/gmd-18-2021-2025)).
+- The default fire model in `lpjml_config.cjson` is now set to `"spitfire"`.
+- Keyword `"fire"` renamed to `"globfirm"`, `"no_fire"` to `"no"`, `"spitfire"` to `"spitfire_tamp"` and `"spitfire_tmax"` to `"spitfire"`.
+- Simulation can be run without river routing from restart file with river routing. In this case a warning is printed.
+
+
 ## [6.0.7] - 2026-04-17
 
 ### Contributors
 
-author: Christoph Müller (cmueller@pik-potsdam.de)
-code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 
 ### Added
 

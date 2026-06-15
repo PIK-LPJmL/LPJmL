@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define LICENSE_NAME "LICENSE" /* name of license file */
+#define LICENSE_NAME "LICENSES/AGPL-3.0.md" /* name of license file */
 
 void printlicense(void)
 {

@@ -48,7 +48,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           update_irrig.$O update_separate_harvests.$O fscanagtreemap.$O sowingcft.$O\
           fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O newirrigsystem.$O\
           initirrigsystem.$O getcftmap.$O getcftname.$O cmplandusemap.$O\
-          defaultcftmap.$O getmap.$O checkhlimit.$O
+          defaultcftmap.$O getmap.$O checkhlimit.$O urban.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -66,7 +66,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/biomes.h\
           $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h $(INC)/param.h\
           $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/woodplantation.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
-          $(INC)/bstruct.h $(INC)/hydrotope.h $(INC)/timing.h $(INC)/climate.h
+          $(INC)/bstruct.h $(INC)/hydrotope.h $(INC)/timing.h $(INC)/urban.h\
+          $(INC)/climate.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

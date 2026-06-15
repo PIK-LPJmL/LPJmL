@@ -36,6 +36,7 @@ static void freeclimatedata2(Climate *climate)
     free(climate->data[i].tamp);
     free(climate->data[i].no3deposition);
     free(climate->data[i].nh4deposition);
+    free(climate->data[i].ignition);
     free(climate->data[i].lightning);
   }
 } /* of 'freeclimatedata2' */
@@ -54,6 +55,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->wind);
   free(data->tamp);
   free(data->burntarea);
+  free(data->ignition);
   free(data->lightning);
   free(data->no3deposition);
   free(data->nh4deposition);
@@ -73,9 +75,11 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_swdown,isroot);
     closeclimatefile(&climate->file_humid,isroot);
     closeclimatefile(&climate->file_wind,isroot);
+    closeclimatefile(&climate->file_lightning,isroot);
     closeclimatefile(&climate->file_tamp,isroot);
     closeclimatefile(&climate->file_wet,isroot);
     closeclimatefile(&climate->file_burntarea,isroot);
+    closeclimatefile(&climate->file_ignition,isroot);
     closeclimatefile(&climate->file_no3deposition,isroot);
     closeclimatefile(&climate->file_nh4deposition,isroot);
     closeclimatefile(&climate->file_delta_temp,isroot);

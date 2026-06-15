@@ -26,16 +26,15 @@ Stocks livefuel_consum_grass(Litter * UNUSED(litter),Pft *pft,
 
   Pftgrass *grass;
   Stocks livefuel_consum;
-  /*  livegrass consumption */
+  /* livegrass consumption */
   grass=pft->data;
-  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->dlm_livegrass,fire_frac)*grass->ind.leaf.carbon*pft->nind;
-  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->dlm_livegrass,fire_frac)*grass->ind.leaf.nitrogen*pft->nind;
+  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*grass->ind.leaf.carbon;
+  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*grass->ind.leaf.nitrogen;
   /* livegrass update */
-  if (pft->nind > 0)
-  {
-    grass->ind.leaf.carbon -= livefuel_consum.carbon / pft->nind;
-    grass->ind.leaf.nitrogen -= livefuel_consum.nitrogen / pft->nind;
-  }
+  grass->ind.leaf.carbon -= livefuel_consum.carbon;
+  grass->ind.leaf.nitrogen -= livefuel_consum.nitrogen;
+  livefuel_consum.carbon *=  pft->nind;
+  livefuel_consum.nitrogen *=  pft->nind;
   *isdead=FALSE;
   return livefuel_consum;
 } /* of 'livefuel_consum_grass' */

@@ -23,11 +23,11 @@ void copyright(const char *progname /**< program name */
   const char *repo;
   const char *t[18];
   /* large letters created by figlet */
-  t[0]=" _     ____     _           _        __          ___  ";
-  t[1]="| |   |  _ \\   | |_ __ ___ | |      / /_        / _ \\ ";
-  t[2]="| |   | |_) |  | | '_ ` _ \\| |     | '_ \\      | | | |";
-  t[3]="| |___|  __/ |_| | | | | | | |___  | (_) |  _  | |_| |";
-  t[4]="|_____|_|   \\___/|_| |_| |_|_____|  \\___/  (_)  \\___/ ";
+  t[0]=" _     ____     _           _        __         _ ";
+  t[1]="| |   |  _ \\   | |_ __ ___ | |      / /_       / |";
+  t[2]="| |   | |_) |  | | '_ ` _ \\| |     | '_ \\      | |";
+  t[3]="| |___|  __/ |_| | | | | | | |___  | (_) |  _  | |";
+  t[4]="|_____|_|   \\___/|_| |_| |_|_____|  \\___/  (_) |_|";
   t[5]="";
   snprintf(title,78-10,"%s C Version %s (%s)",progname,
            getversion(),getbuilddate());
@@ -52,7 +52,7 @@ void copyright(const char *progname /**< program name */
   t[10]="see COPYRIGHT file";
   t[11]="Authors, and contributors see AUTHORS file";
   t[12]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
-  t[13]="See LICENSE file or go to http://www.gnu.org/licenses/";
+  t[13]="See LICENSE.md file or go to http://www.gnu.org/licenses/";
   t[14]="or invoke lpjml -l to print license";
   repo=getrepo();
   if(strlen(repo)>78-10)

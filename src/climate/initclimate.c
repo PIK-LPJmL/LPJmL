@@ -34,6 +34,7 @@ static void initdata(Climate *climate)
   climate->file_tmax.isopen=FALSE;
   climate->file_tamp.isopen=FALSE;
   climate->file_lightning.isopen=FALSE;
+  climate->file_ignition.isopen=FALSE;
   climate->file_burntarea.isopen=FALSE;
   climate->file_delta_temp.isopen=FALSE;
   climate->file_delta_prec.isopen=FALSE;
@@ -61,6 +62,7 @@ static void initdata(Climate *climate)
     climate->data[i].no3deposition=NULL;
     climate->data[i].nh4deposition=NULL;
     climate->data[i].lightning=NULL;
+    climate->data[i].ignition=NULL;
   }
 } /* of 'initdata' */
 
@@ -86,9 +88,8 @@ static Bool openclimate2(Climatefile *file,const Filename *filename,const char *
   return FALSE;
 } /* of openclimate2' */
 
-Climate *initclimate(const Cell grid[], /**< LPJ grid */
-                     Config *config     /**< pointer to LPJ configuration */
-                    )                     /** \return allocated climate data struct or NULL on error */
+Climate *initclimate(Config *config /**< pointer to LPJ configuration */
+                    )               /** \return allocated climate data struct or NULL on error */
 {
   int i, ndata; 
   int lastyear;
@@ -142,7 +143,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   }
   if(climate->firstyear<climate->file_prec.firstyear)
     climate->firstyear=climate->file_prec.firstyear;
-  if(openclimate2(&climate->file_lwnet,&config->lwnet_filename,"lwnet","W/m2",LPJ_SHORT,1,0.1,TRUE,config))
+  if(openclimate2(&climate->file_lwnet,&config->lwnet_filename,(config->radiation_lwdown) ? "lwdown" : "lwnet","W/m2",LPJ_SHORT,1,0.1,TRUE,config))
   {
      if(isroot(*config))
        fprintf(stderr,"ERROR236: Cannot open %s data file.\n",(config->radiation_lwdown) ? "lwdown" : "lwnet");
@@ -215,18 +216,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   }
   if(climate->firstyear<climate->file_wind.firstyear)
     climate->firstyear=climate->file_wind.firstyear;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
-    if(config->fdi==WVPD_INDEX)
-    {
-      if(openclimate2(&climate->file_humid,&config->humid_filename,"humid","kg/kg",LPJ_SHORT,1,1.0,TRUE,config))
-      {
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-    }
-  }
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     if(openclimate2(&climate->file_tmin,&config->tmin_filename,"tmin","celsius",LPJ_SHORT,1,0.1,TRUE,config))
     {
@@ -239,27 +229,48 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       return NULL;
     }
   }
-
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
   {
     if(openclimate2(&climate->file_tamp,&config->tamp_filename,"tamp",NULL,LPJ_SHORT,1,0.1,TRUE,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open tamp data file.\n");
+        fprintf(stderr,"ERROR236: Cannot open tamp data file, use \"spitfire\" fire setting instead.\n");
       freeclimate(climate,isroot(*config));
       return NULL;
     }
   }
-
-
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
-    if(openclimate2(&climate->file_lightning,&config->lightning_filename,"lightning","hectare-1 d-1",LPJ_INT,1,1.0e-7,FALSE,config))
+    if(config->fdi==WVPD_INDEX)
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open lightning data file.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
+      if(openclimate2(&climate->file_humid,&config->humid_filename,"humidity",(config->relative_humidity) ? "1" : "kg/kg",LPJ_SHORT,1,1.0,TRUE,config))
+      {
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
+    }
+    if(config->prescribe_ignition)
+    {
+      if(openclimate2(&climate->file_ignition,&config->ignition_filename,"ignition",NULL,LPJ_SHORT,1,1.0,FALSE,config))
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR236: Cannot open ignition data file.\n");
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
+      /* Ignition data is handled like climate data, must be present for all simulation years */
+      if(climate->firstyear<climate->file_ignition.firstyear)
+        climate->firstyear=climate->file_ignition.firstyear;
+    }
+    else
+    {
+      if(openclimate2(&climate->file_lightning,&config->lightning_filename,"lightning","hectare-1 d-1",LPJ_INT,1,1.0e-7,FALSE,config))
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR236: Cannot open lightning data file.\n");
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
     }
     if (config->prescribe_burntarea)
     {
@@ -381,7 +392,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       }
   }
 
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     for (i = 0; i<ndata; i++)
     {
@@ -399,7 +410,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       }
     }
   }
-  if(config->fire==SPITFIRE)
+  else if(config->fire==SPITFIRE_TAMP)
   {
     if(config->tamp_filename.fmt!=FMS)
     {
@@ -413,7 +424,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       }
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
     {
@@ -425,22 +436,27 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
           return NULL;
         }
     }
-    for (i = 0; i<ndata; i++)
-      if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
-      {
-        printallocerr("lightning");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-    for (i = 0; i<ndata; i++)
-      if(readclimate(&climate->file_lightning,climate->data[i].lightning,0.0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,1,config))
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR192: Cannot read lightning.\n");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-  } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
+    if(config->prescribe_ignition)
+    {
+      for (i = 0; i<ndata; i++)
+        if((climate->data[i].ignition=newvec(Real,climate->file_ignition.n))==NULL)
+        {
+          printallocerr("ignition");
+          freeclimate(climate,isroot(*config));
+          return NULL;
+        }
+    }
+    else
+    {
+      for (i = 0; i<ndata; i++)
+        if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
+        {
+          printallocerr("lightning");
+          freeclimate(climate,isroot(*config));
+          return NULL;
+        }
+     }
+  } /* of if(isspitfire(config)) */
   if(config->lwnet_filename.fmt!=FMS)
   {
     for (i = 0; i<ndata; i++)
@@ -474,7 +490,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
         }
     }
   }
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
+  if(config->prescribe_burntarea)
   {
     for (i = 0; i < ndata; i++)
       if((climate->data[i].burntarea=newvec(Real,climate->file_burntarea.n))==NULL)

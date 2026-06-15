@@ -5,8 +5,8 @@
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-debug] [-check]        ##
-##                       [-with_timing] [-nompi] [-noerror]                    ##
+##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-inpath dir] [-debug]   ##
+##                       [-check] [-with_timing] [-nompi] [-noerror]           ##
 ##                       [-Dmacro[=value] ...]                                 ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
@@ -16,13 +16,14 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 #################################################################################
 
-USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-with_timing] [-nompi] [-check] [-check_balance] [-noerror] [-Dmacro[=value] ...]"
+USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-inpath dir] [-debug] [-with_timing] [-nompi] [-check] [-check_balance] [-noerror] [-Dmacro[=value] ...]"
 ERR_USAGE="\nTry \"$0 --help\" for more information."
 debug=0
 nompi=0
 prefix=$PWD
 checking=""
 macro=""
+inpath=""
 warning="-Werror"
 while(( "$#" )); do
   case "$1" in
@@ -36,6 +37,7 @@ while(( "$#" )); do
       echo "-v,--version    print version"
       echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
+      echo "-inpath dir     set input directory for LPJmL"
       echo "-debug          set debug flags and disable optimization"
       echo "-with_timing    enable timing functions for performance analysis"
       echo "-check          enable run-time checking of memory leaks and access out of bounds"
@@ -51,7 +53,7 @@ while(( "$#" )); do
       exit 0
       ;;
     -l|--license)
-      more LICENSE
+      more LICENSES/AGPL-3.0.md
       exit 0
       ;;
     -v|--version)
@@ -67,6 +69,16 @@ while(( "$#" )); do
         exit 1
       fi
       prefix=$2
+      shift 2
+      ;;
+    -inpath)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: inpath directory missing
+        echo >&2 $USAGE
+        exit 1
+      fi
+      inpath=$2
       shift 2
       ;;
     -debug)
@@ -116,12 +128,15 @@ echo Configuring LPJmL $(cat VERSION)...
 
 osname=$(uname)
 
-if test -d /p ;
+if [ "$inpath" = "" ]
 then
-  inpath=/p/projects/lpjml/inputs/public_standard
-else
-  inpath=""
-  echo >&2 No input directory found, LPJINPATH has to be set
+  if test -d /p ;
+  then
+    inpath=/p/projects/lpjml/inputs/public_standard
+  else
+    inpath=""
+    echo >&2 "No input directory found, LPJINPATH has to be set using '-inpath' option"
+  fi
 fi
 
 if [ "$osname" = "Linux" ]  || [ "$osname" = "CYGWIN_NT-5.1" ] || [ "$osname" = "Darwin" ]

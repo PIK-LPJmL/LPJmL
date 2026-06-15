@@ -1,6 +1,10 @@
  -----------------------------------------------------------------------------
                                  REFERENCES
  -----------------------------------------------------------------------------
+ Andrews PL 2018 The Rothermel surface fire spread model and associated
+   developments: A comprehensive explanation. Gen. Tech. Rep. RMRS-GTR-371.
+   Fort Collins, CO: U.S. Department of Agriculture, Forest Service,
+   Rocky Mountain Research Station. 121 p.
  Beringer T, Lucht W, Schaphoff S 2011 Bioenergy production potential of 
    global biomass plantations under environmental and agricultural constraints.
    Glob. Change Biol. Bioen. 3, 299-312.
@@ -14,6 +18,8 @@
    Global Change Biology 13, doi: 10.1111/j.1365-2486.2006.01305.x
  Carslaw, HS & Jaeger JC 1959 Conduction of Heat in Solids, Oxford University
    Press, London
+ CFFBG 1992 Development and structure of the Canadian Forest Fire Behaviour
+    Predictions Systems, Forestry Canada Fire Danger Group
  Collatz, GJ, Ball, JT, Grivet C & Berry, JA 1991 Physiological and
    environmental regulation of stomatal conductance, photosynthesis and
    transpiration: a model that includes a laminar boundary layer. Agricultural
@@ -54,6 +60,9 @@
    Hydrol. Earth Syst. Sci. 25: 2027-2044
  Jarvis, PG & McNaughton KG 1986 Stomatal control of transpiration: scaling up
    from leaf to region. Advances in Ecological Research 15: 1-49
+ Jolly WM, Nemani R, & Running SW 2005 A generalized, bioclimatic index to
+    predict foliar phenology in response to climate.  Glob. Change Biol. 11:
+    619-632, https://doi.org/10.1111/j.1365-2486.2005.00930.x
  Jury WA, Gardner WR & Gardner WH 1991 Soil Physics 5th ed, John Wiley, NY
  Larcher W 1983 Physiological Plant Ecology, 2nd ed, Springer-Verlag, Berlin
  Lloyd, J & Taylor JA 1994 On the temperature dependence of soil respiration
@@ -67,6 +76,13 @@
    14: 22-52
  Monteith, JL & Unsworth, MH 1990 Principles of Environmental Physics, 2nd ed,
    Arnold, London
+ Oberhagemann L, Billing M, von Bloh W, Drueke M, Forrest M, Bowring SPK,
+   Hetzer J, Ribalaygua Batalla J & Thonicke K 2025 Sources of uncertainty in
+   the SPITFIRE global fire model: development of LPJmL-SPITFIRE1.9 and
+   directions for future improvements.  Geoscientific Model Development 18:
+   2021-2025
+ Peterson DL and Ryan KC 1986 Modeling Postfire Conifer Mortality for Long-
+   range Planning, Environ. Manage., 10, 797–8086
  Prentice, IC, Sykes, MT & Cramer W 1993 A simulation model for the transient
    effects of climate change on forest landscapes. Ecological Modelling 65:
    51-70.
@@ -111,6 +127,10 @@
  van Duin, RHA 1963 The influence of soil management on the temperature
    wave near the surface. Tech Bull 29 Inst for Land and Water Management
    Research, Wageningen, Netherlands
+ van Wagner CE, and Pickett TL 1985 Equations and FORTRAN program for the
+   Canadian Forest Fire Weather Index System. Canadian Forestry Service,
+   Petawawa National Forestry Institute, Chalk River, Ontario.  Forestry
+   Technical Report 33. 18 p
  von Bloh, W, Rost, S, Gerten, D & Lucht, W 2010 Efficient parallelization of a
    dynamic global vegetation model with river routing. Environmental Modelling &
    Software 25: 685-690

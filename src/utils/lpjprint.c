@@ -25,16 +25,17 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 #include "wetland.h"
+#include "urban.h"
 
 #define NTYPES 3
-#define NSTANDTYPES 15 /* number of stand types */
+#define NSTANDTYPES 16 /* number of stand types */
 
 #define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [-pedantic] [-print_noread] [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 #define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
-                      Standtype standtype[],
+                      Standtype **standtype,
                       int npft,       /* number of natural PFTs */
                       int ncft,       /* number of crop PFTs */
                       Bool isout      /* print output (TRUE/FALSE) */
@@ -179,7 +180,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
     soil_id=config->soilmap[soilcode]-1;
     if(freadcell(file_restart,&grid,npft,ncft,
-                 config->soilpar+soil_id,standtype,NSTANDTYPES,config))
+                 config->soilpar+soil_id,config))
     {
       fprintf(stderr,"ERRROR190: Cannot read cell data from '%s', number of gridcells truncated to %d.\n",
               (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
@@ -214,7 +215,25 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
 
-  Standtype standtype[NSTANDTYPES];
+  Standtype *standtype[NSTANDTYPES];
+
+  standtype[NATURAL]=&natural_stand;
+  standtype[WETLAND]=&wetland_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=&setaside_wetland_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand,
+  standtype[URBAN]=&urban_stand,
+  standtype[KILL]=&kill_stand;
+
   progname=strippath(argv[0]);
   if(argc>1)
   {
@@ -260,7 +279,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,LPJ_USAGE))
     fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
@@ -313,21 +332,6 @@ int main(int argc,char **argv)
   if(startgrid>=config.startgrid)
     config.startgrid=startgrid;
   /*config.restart_filename=config.write_restart_filename; */
-  standtype[NATURAL]=natural_stand;
-  standtype[WETLAND]=wetland_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[OTHERS]=others_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
-  standtype[KILL]=kill_stand;
   rc=printgrid(&config,standtype,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],isout);
   freeconfig(&config);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;

@@ -216,7 +216,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     return TRUE;
   }
   fscanreal2(verb,file,&tree->wood_density,pft->name,"wood_density");
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
     fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");

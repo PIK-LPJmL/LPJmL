@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 6.0.7                                 \n**/
+/**     LPJ parameter file for LPJmL version 6.1.1                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -114,12 +114,19 @@
     "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
     "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
     "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
+    "firedura" : -8.0,                  /* scaling factor for fire duration for the WVPD*/
+    "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
+    "ign_factor" : 15.0,                /* used to scale human ignitions to balance human and lightning ignitions */
+    "k_ign_prob" :  0.3,                /* scaling factor for human ignition probabilities */
+    "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
+    "intensity_limit" :  5.0,           /* intensity limit under which a fire cannot burn, 50 in original SPITIFRE version*/
+    "lightning_eff_rate" : 0.04,        /* efficiency in starting lightning-caused fires (0..1) */
+    "cg_ratio" : 0.2,                   /* cloud to ground ratio for lightning flashes */
+    "fireduration" : [120,480],         /* default fire duration interval (min) */
+    "max_ndayfire" : 5,                 /* maximum fire days (days) */
     "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
     "hfrac2" : 2500.0,
     "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
-    "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
-    "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
-    "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
     "cft_fertday_temp" : "temperate cereals", /* cft name (see pft.cjson) for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */

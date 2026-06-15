@@ -61,14 +61,15 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   Real bnf;
   Real nh3;
   int l,i;
-  Livefuel livefuel={0,0,0,0,0};
   Real prec_save;
   Real agrfrac;
+  Real gsi;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   Real rice_em=0;
   runoff=snowrunoff=melt_all=0;
   Real popdensity=0;
+  Real human_ign_prob=0;
   Irrigation *data;
   Real eet_lake=0;
   Real rice_emiss=0;
@@ -134,6 +135,9 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
     if(config->ispopulation)
       popdensity=getpopdens(input->popdens,cell_id);
+    if(config->ishuman_ign_prob)
+      human_ign_prob=gethuman_ign_prob(input->human_ign_prob,cell_id);
+
     cell->output.dcflux=0;
     initoutputdata(&cell->output,DAILY,year,config);
     /* get daily values for temperature, precipitation, short and long wave radiation */
@@ -171,8 +175,12 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       flux_estab=sowing(cell,climate->prec,day,year,npft,ncft,config);
     cell->discharge.drunoff=0.0;
     killstand(cell,npft,ncft,cell->ml.with_tillage,intercrop,year,config);
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(isspitfire(config))
+    {
       update_nesterov(cell,climate);
+      if(config->fdi==WVPD_INDEX)
+        cell->fwi=getfwi(&cell->fwi_data,&cell->coord,climate,month,config->relative_humidity);
+    }
 
     agrfrac=0;
     cell->balance.ricefrac=0;
@@ -190,12 +198,23 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       }
       beta=albedo_stand(stand);
       petpar(&daylength,&par,&eeq,cell->coord.lat,day,climate->temp,climate->lwnet,climate->swdown,config->radiation_lwdown,beta);
+      if(config->isgsi_livefuel)
+      {
+        if(s==0)
+        {
+          cell->gsi_cum=growing_season_index(cell->gsi_cum,&gsi,climate,config->relative_humidity,daylength);
+          getoutput(&cell->output,GSI_CUM,config)+=cell->gsi_cum;
+        }
+        if(stand->type->landusetype==NATURAL)
+          foreachpft(pft, p, &stand->pftlist)
+              getoutputindex(&cell->output,GSI_DIFF,pft->par->id,config)+=(cell->gsi_cum-pft->phen)*(cell->gsi_cum-pft->phen);
+      }
       getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
       getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
-      if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && cell->afire_frac<1)
-        dailyfire_stand(stand,&livefuel,popdensity,avgprec,climate,config);
+      if(isspitfire(config) && stand->afire_frac<1)
+        dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,input,cell_id,month,climate,config);
       snowrunoff=snow(&stand->soil,&climate->prec,&melt,
                       climate->temp,&evap)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
@@ -227,6 +246,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       getoutput(&cell->output,SOILTEMP4,config)+=stand->soil.temp[3]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
       getoutput(&cell->output,SOILTEMP5,config)+=stand->soil.temp[4]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
       getoutput(&cell->output,SOILTEMP6,config)+=stand->soil.temp[5]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+      getoutput(&cell->output,LITTERMOIST,config)+=stand->soil.litter.agtop_moist*stand->frac*(1.0/(1-cell    ->lakefrac-cell->ml.reservoirfrac));
       foreachsoillayer(l)
         getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
       getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
@@ -266,6 +286,9 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(stand,NULL,NULL,stand->frac,config->fail_on_balance);
       updatelitterproperties(stand,stand->frac);
+      stand->soil.litter.avg_fbd[0]*=(1-param.bioturbate);
+      stand->soil.litter.avg_fbd[NFUELCLASS]*=(1-param.bioturbate);
+
       if(isnatural(stand))
         for(l=0;l<stand->soil.litter.n;l++)
         {
@@ -642,7 +665,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     soilpar_output(cell,agrfrac,config);
     killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,TRUE);
 #endif
     /* Establishment fluxes are area weighted in subroutines */
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;

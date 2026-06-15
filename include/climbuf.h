@@ -49,13 +49,13 @@ typedef struct
   int startday_rainyseason; /**< start day of rainy season (1..365) */
   Real *V_req;            /* 20-year average of vernalization requirements in days */
   Real *V_req_a;          /* annual vernalization requirements in days, used to calculate V_req */
-
 } Climbuf;
 
 /* Definitions of macros */
 
 #define initgdd5(climbuf) climbuf.gdd5=0
 #define updategdd5(climbuf,temp) if(temp>5) (*climbuf).gdd5++
+#define getavggpp(climbuf) (climbuf)->gpp_avg
 
 /* Declaration of functions */
 
@@ -69,6 +69,7 @@ extern int getstart_rainyseason(const Climbuf *);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
 extern void annual_climbuf(Climbuf *,Real,int,Bool);
 extern Bool fwriteclimbuf(Bstruct,const char *,const Climbuf *,int);
+extern void fprintclimbuf(FILE *,const Climbuf *,int);
 extern Bool freadclimbuf(Bstruct,const char *,Climbuf *,int);
 extern void freeclimbuf(Climbuf *);
 #endif

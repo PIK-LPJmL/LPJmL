@@ -58,6 +58,7 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       fputs("Invalid soil\n",file);
     else
     {
+      fprintclimbuf(file,&grid[cell].climbuf,ncft);
       fputs("GDD:\t\t",file);
       for(cft=0;cft<npft;cft++)
         fprintf(file," %6.1f",grid[cell].gdd[cft]);
@@ -118,8 +119,13 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
               grid[cell].ml.product.slow.carbon,
               grid[cell].ml.product.slow.nitrogen);
 #endif
-      if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+      if(isspitfire(config))
+      {
         fprintignition(file,&grid[cell].ignition);
+        if(config->isgsi_livefuel)
+          fprintf(file,"GSI livefuel:\t%g\n",grid[cell].gsi_cum);
+        fprintfwi(file,&grid[cell].fwi_data);
+      }
       fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
       fprintf(file,"lateral water:\t%g (mm)\n",grid[cell].lateral_water);
       fprintf(file,"lateral NO3:\t%g (mm)\n",grid[cell].NO3_lateral);
