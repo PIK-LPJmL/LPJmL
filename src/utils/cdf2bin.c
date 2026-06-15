@@ -254,6 +254,7 @@ int main(int argc,char **argv)
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
   initmetadata(&metadata,BAND_NAMES);
+  filename.map=BAND_NAMES;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
@@ -332,7 +333,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        metadata.map_name=argv[++iarg];
+        filename.map=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-o"))
       {
@@ -525,6 +526,17 @@ int main(int argc,char **argv)
       metadata.history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
       metadata.source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
       title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
+      if(metadata.map==NULL)
+      {
+        if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.fuel.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.stand_name.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+      }
       for(k=0;k<metadata.n_attr;k++)
       {
         if(!strcmp(metadata.attrs[k].name,"history") || !strcmp(metadata.attrs[k].name,"source") || !strcmp(metadata.attrs[k].name,"title"))
