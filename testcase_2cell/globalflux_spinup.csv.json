@@ -1,11 +1,11 @@
 {
   "sim_name" : "LPJmL Run",
   "source" : "LPJmL C Version 6.1.2",
-  "history" : "Wed Jun 17 13:08:09 2026: bin/lpjml -DTESTCASE_2CELL lpjml_config.cjson",
+  "history" : "Wed Jun 17 15:13:14 2026: bin/lpjml -DTESTCASE_2CELL lpjml_config.cjson",
   "global_attrs" :
   {
     "GIT_repo" : "git@gitlab.pik-potsdam.de:lpjml/LPJmL_internal.git",
-    "GIT_hash" : "66c25e33ebd06fbdc975e7e53ce20a3d524ed787",
+    "GIT_hash" : "165260a9e1d223b70a9498c529fab06b374c9cc0",
     "institution" : "Potsdam Institute for Climate Impact Research",
     "contact" : "",
     "comment" : ""
