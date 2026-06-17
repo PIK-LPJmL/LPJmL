@@ -20,6 +20,16 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+
+### Fixed
+
+- Check for last year for lightning and human ignition input yields a warning not an error in `lpjcheck`.
+
+
 ## [6.1.1] - 2026-06-12
 
 ### Contributors
