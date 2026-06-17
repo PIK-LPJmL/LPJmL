@@ -21,6 +21,8 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.2] - 2026-06-16
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
