@@ -21,13 +21,14 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+### Contributors
 
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
 
 ### Fixed
 
-- Check for last year for lightning and human ignition input yields a warning not an error in `lpjcheck`.
+- Check for last year for lightning and human ignition input yields now a warning and not an error in `lpjcheck`, `filesexist.c` corrected.
 
 
 ## [6.1.1] - 2026-06-12
