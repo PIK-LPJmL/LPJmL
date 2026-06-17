@@ -43,6 +43,18 @@ of `major.minor.patch` with
 - New token `bstruct_dzero` defined for restart files to distinguish between float and double zeros, version of bstruct files changed to 2.
 
 
+## [6.1.2] - 2026-06-16
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Fixed
+
+- Check for last year for lightning and human ignition disabled in `filesexist.c`, `lpjcheck` does not return an error for standard input.
+
+
 ## [6.1.1] - 2026-06-12
 
 ### Contributors
