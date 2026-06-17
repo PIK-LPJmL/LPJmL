@@ -24,11 +24,11 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Fixed
 
-- Check for last year for lightning and human ignition input yields now a warning and not an error in `lpjcheck`, `filesexist.c` corrected.
+- Check for last year for lightning and human ignition disabled in `filesexist.c`, `lpjcheck` does not return an error for standard input.
 
 
 ## [6.1.1] - 2026-06-12
