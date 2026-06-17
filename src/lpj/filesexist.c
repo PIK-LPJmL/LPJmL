@@ -675,9 +675,9 @@ Bool filesexist(Config *config, /**< LPJmL configuration */
     if(config->prescribe_ignition)
       bad+=checkclmfile(config,"ignition",&config->ignition_filename,NULL,LPJ_SHORT,TRUE,FALSE,FALSE);
     else
-      bad+=checkclmfile(config,"lightning",&config->lightning_filename,"hectare-1 d-1",LPJ_INT,FALSE,TRUE,FALSE);
+      bad+=checkclmfile(config,"lightning",&config->lightning_filename,"hectare-1 d-1",LPJ_INT,FALSE,FALSE,FALSE);
     if(config->ispopulation)
-      bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,TRUE,FALSE);
+      bad+=checkclmfile(config,"human ignition",&config->human_ignition_filename,"yr-1",LPJ_SHORT,FALSE,FALSE,FALSE);
   }
   if(config->fire==SPITFIRE)
   {
