@@ -20,6 +20,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [6.1.2] - 2026-06-16
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Fixed
+
+- Check for last year for lightning and human ignition disabled in `filesexist.c`, `lpjcheck` does not return an error for standard input.
+
+
 ## [6.1.1] - 2026-06-12
 
 ### Contributors
