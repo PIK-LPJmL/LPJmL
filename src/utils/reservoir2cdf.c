@@ -684,7 +684,7 @@ int main(int argc,char **argv)
     printallocerr("arglist");
     freemetadata(&metadata);
     free(grid_filename);
-    free(index);
+    freecoordarray(index);
     freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
