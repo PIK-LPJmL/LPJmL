@@ -89,6 +89,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   initmetadata(&metadata,NULL);
+  initmetadata(&metadata2,NULL);
   for(i=0;i<n;i++)
   {
     if(ismeta)
@@ -115,6 +116,8 @@ int main(int argc,char **argv)
       }
       if(in==NULL)
       {
+        free(grid_name.name);
+        freemetadata(&metadata);
         fclose(out);
         return EXIT_FAILURE;
       }
@@ -122,6 +125,9 @@ int main(int argc,char **argv)
       {
         if(freadheaderid(in,id,TRUE))
         {
+          free(grid_name.name);
+          freemetadata(&metadata);
+          freemetadata(&metadata2);
           fclose(in);
           fclose(out);
           return EXIT_FAILURE;
@@ -176,15 +182,21 @@ int main(int argc,char **argv)
         index=newvec(int,header.ncell);
         if(index==NULL)
         {
+          printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
+          freemetadata(&metadata2);
           fclose(in);
           fclose(out);
-          printallocerr("index");
           return EXIT_FAILURE;
         }
       }
       if(freadint(index,header.ncell,swap,in)!=header.ncell)
       {
         fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+          free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -195,6 +207,9 @@ int main(int argc,char **argv)
       if(version>=3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -202,6 +217,9 @@ int main(int argc,char **argv)
       if(header.order!=oldheader.order)
       {
         fprintf(stderr,"Error: Different order in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -209,6 +227,9 @@ int main(int argc,char **argv)
       if(header.ncell!=oldheader.ncell)
       {
         fprintf(stderr,"Error: Different number of cells in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -216,6 +237,9 @@ int main(int argc,char **argv)
       if(header.firstcell!=oldheader.firstcell)
       {
         fprintf(stderr,"Error: Different index of first cell in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -223,6 +247,9 @@ int main(int argc,char **argv)
       if(header.nbands!=oldheader.nbands)
       {
         fprintf(stderr,"Error: Different number of bands in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -230,6 +257,9 @@ int main(int argc,char **argv)
       if(header.nstep!=oldheader.nstep)
       {
         fprintf(stderr,"Error: Different number of steps in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -237,6 +267,9 @@ int main(int argc,char **argv)
       if(header.firstyear!=oldheader.firstyear+oldheader.nyear)
       {
         fprintf(stderr,"Error: First year=%d in '%s' is different from %d.\n",header.firstyear,argv[i+iarg],oldheader.firstyear+oldheader.nyear);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
         fclose(in);
         fclose(out);
         return EXIT_FAILURE;
@@ -247,6 +280,9 @@ int main(int argc,char **argv)
           if(index[j]!=index2[j])
           {
             fprintf(stderr,"Cell index different in '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            freemetadata(&metadata2);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -269,6 +305,8 @@ int main(int argc,char **argv)
         if(index==NULL)
         {
           printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
           fclose(in);
           fclose(out);
           return EXIT_FAILURE;
@@ -276,6 +314,8 @@ int main(int argc,char **argv)
         if(freadint(index,header.ncell,swap,in)!=header.ncell)
         {
           fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+          free(grid_name.name);
+          freemetadata(&metadata);
           fclose(in);
           fclose(out);
           return EXIT_FAILURE;
@@ -283,6 +323,8 @@ int main(int argc,char **argv)
         if(fwrite(index,sizeof(int),header.ncell,out)!=header.ncell)
         {
           fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+          free(grid_name.name);
+          freemetadata(&metadata);
           fclose(in);
           fclose(out);
           return EXIT_FAILURE;
@@ -291,6 +333,8 @@ int main(int argc,char **argv)
         if(index2==NULL)
         {
           printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
           fclose(in);
           fclose(out);
           return EXIT_FAILURE;
@@ -315,6 +359,8 @@ int main(int argc,char **argv)
           if(fread(bvals,1,(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -322,6 +368,8 @@ int main(int argc,char **argv)
           if(fwrite(bvals,1,(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -337,6 +385,8 @@ int main(int argc,char **argv)
           if(fread(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -347,6 +397,8 @@ int main(int argc,char **argv)
           if(fwrite(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -362,6 +414,8 @@ int main(int argc,char **argv)
           if(fread(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -372,6 +426,8 @@ int main(int argc,char **argv)
           if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -387,6 +443,8 @@ int main(int argc,char **argv)
           if(fread(lvals,sizeof(long long),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
@@ -397,6 +455,8 @@ int main(int argc,char **argv)
           if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
             fclose(in);
             fclose(out);
             return EXIT_FAILURE;
