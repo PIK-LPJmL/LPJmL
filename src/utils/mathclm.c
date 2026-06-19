@@ -17,6 +17,9 @@
 
 #define USAGE "Usage: %s [-v] [-f] [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int|sum|tsum|tmean} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
+#define freedata() { if(in1!=NULL) fclose(in1); if(in2!=NULL) fclose(in2); if(out!=NULL) fclose(out); freemetadata(&metadata1); free(grid_name.name); free(data1); free(data2); free(data3); free(idata1); free(idata2); free(idata3); }
+
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); freedata(); return EXIT_FAILURE; }
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
@@ -42,7 +45,7 @@ int main(int argc,char **argv)
   char *out_name;
   Bool isvalue=FALSE,intvalue,isint=FALSE,ismeta,israw,isjson,isforce;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT,SUM,TSUM,TMEAN} op;
-  FILE *in1,*in2=NULL,*out;
+  FILE *in1=NULL,*in2=NULL,*out=NULL;
   struct stat filestat;
   char c;
   setversion=READ_VERSION;
@@ -167,8 +170,7 @@ int main(int argc,char **argv)
     {
       if(freadheaderid(in1,id,TRUE))
       {
-        fclose(in1);
-        freemetadata(&metadata1);
+        freedata();
         return EXIT_FAILURE;
       }
     }
@@ -180,6 +182,7 @@ int main(int argc,char **argv)
     if(in1==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
+      freedata();
       return EXIT_FAILURE;
     }
     if(israw)
@@ -199,13 +202,14 @@ int main(int argc,char **argv)
       if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
-        fclose(in1);
+        freedata();
         return EXIT_FAILURE;
       }
       if(version>CLM_MAX_VERSION)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,argv[iarg+1],CLM_MAX_VERSION+1);
+        freedata();
         return EXIT_FAILURE;
       }
       if(index!=NOT_FOUND)
@@ -227,8 +231,7 @@ int main(int argc,char **argv)
       if(intvalue && ivalue==0 && op==DIV)
       {
         fprintf(stderr,"Value must not be zero for div operator.\n");
-        freemetadata(&metadata1);
-        fclose(in1);
+        freedata();
         return EXIT_FAILURE;
       }
     }
@@ -251,7 +254,10 @@ int main(int argc,char **argv)
         grid_type2=LPJ_SHORT;
         in2=openmetafile(&header2,&metadata2,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
         if(in2==NULL)
+        {
+          freedata();
           return EXIT_FAILURE;
+        }
         fseek(in2,offset,SEEK_SET);
         if(metadata1.unit!=NULL && metadata2.unit!=NULL && strcmp(metadata1.unit,metadata2.unit))
           fprintf(stderr,"Warning: Unit '%s' in '%s' differs from unit '%s' in '%s'.\n",
@@ -271,8 +277,7 @@ int main(int argc,char **argv)
         if(in2==NULL)
         {
           fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-          freemetadata(&metadata1);
-          fclose(in1);
+          freedata();
           return EXIT_FAILURE;
         }
         if(israw)
@@ -292,18 +297,14 @@ int main(int argc,char **argv)
           if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
           {
             fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
-            freemetadata(&metadata1);
-            fclose(in1);
-            fclose(in2);
+            freedata();
             return EXIT_FAILURE;
           }
           if(version>CLM_MAX_VERSION)
           {
             fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                     version,argv[iarg+2],CLM_MAX_VERSION+1);
-            freemetadata(&metadata1);
-            fclose(in1);
-            fclose(in2);
+            freedata();
             return EXIT_FAILURE;
           }
           if(index!=NOT_FOUND)
@@ -317,73 +318,55 @@ int main(int argc,char **argv)
       if(header1.nyear!=header2.nyear)
       {
         fprintf(stderr,"nyear %d differs from %d.\n",header1.nyear,header2.nyear);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.nbands!=header2.nbands)
       {
         fprintf(stderr,"nbands %d differs from %d.\n",header1.nbands,header2.nbands);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.nstep!=header2.nstep)
       {
         fprintf(stderr,"nstep %d differs from %d.\n",header1.nstep,header2.nstep);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.firstyear!=header2.firstyear)
       {
         fprintf(stderr,"firstyear %d differs from %d.\n",header1.firstyear,header2.firstyear);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.ncell!=header2.ncell)
       {
         fprintf(stderr,"ncell %d differs from %d.\n",header1.ncell,header2.ncell);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.firstcell!=header2.firstcell)
       {
         fprintf(stderr,"firstcell %d differs from %d.\n",header1.firstcell,header2.firstcell);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.cellsize_lon!=header2.cellsize_lon)
       {
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lon,header2.cellsize_lon);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.cellsize_lat!=header2.cellsize_lat)
       {
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
       if(header1.order!=header2.order)
       {
         fprintf(stderr,"cell order %d differs from %d.\n",header1.order,header2.order);
-        freemetadata(&metadata1);
-        fclose(in1);
-        fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
     }
@@ -394,73 +377,73 @@ int main(int argc,char **argv)
     if(isint)
     {
       idata1=newvec(int,header1.nbands*header1.nstep);
-      check(idata1);
+      checkptr(idata1);
       idata3=newvec(int,header1.nbands*header1.nstep);
-      check(idata3);
+      checkptr(idata3);
       if(!isvalue)
       {
         idata2=newvec(int,header1.nbands*header1.nstep);
-        check(idata2);
+        checkptr(idata2);
       }
     }
     else
     {
       data1=newvec(float,header1.nbands*header1.nstep);
-      check(data1);
+      checkptr(data1);
       data3=newvec(float,header1.nbands*header1.nstep);
-      check(data3);
+      checkptr(data3);
       if(!isvalue)
       {
         data2=newvec(float,header1.nbands*header1.nstep);
-        check(data2);
+        checkptr(data2);
       }
     }
   }
   else if(op==INT)
   {
     idata1=newvec(int,header1.nbands*header1.nstep);
-    check(idata1);
+    checkptr(idata1);
   }
   else if(op==FLOAT)
   {
     data1=newvec(float,header1.nbands*header1.nstep);
-    check(data1);
+    checkptr(data1);
   }
   else if(op==TSUM)
   {
     if(isint)
     {
       idata1=newvec(int,header1.nbands);
-      check(idata1);
+      checkptr(idata1);
       idata2=newvec(int,header1.nbands);
-      check(idata2);
+      checkptr(idata2);
     }
     else
     {
       data1=newvec(float,header1.nbands);
-      check(data1);
+      checkptr(data1);
       data2=newvec(float,header1.nbands);
-      check(data2);
+      checkptr(data2);
     }
   }
   else if(op==TMEAN)
   {
     data1=newvec(float,header1.nbands);
-    check(data1);
+    checkptr(data1);
     data2=newvec(float,header1.nbands);
-    check(data2);
+    checkptr(data2);
   }
   else
   {
     if(isint)
     {
       idata1=newvec(int,header1.nbands);
-      check(idata1);
+      checkptr(idata1);
     }
     else
     {
       data1=newvec(float,header1.nbands);
-      check(data1);
+      checkptr(data1);
     }
   }
   out_name=argv[iarg+((op==FLOAT || op==INT || op==SUM || op==TSUM || op==TMEAN) ? 2 : 3)];
@@ -471,13 +454,19 @@ int main(int argc,char **argv)
       fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",out_name);
       scanf("%c",&c);
       if(c!='y')
+      {
+        fclose(in1);
+        if(in2!=NULL)
+          fclose(in2);
         return EXIT_FAILURE;
+      }
     }
   }
   out=fopen(out_name,"wb");
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",out_name,strerror(errno));
+    freedata();
     return EXIT_FAILURE;
   }
   header3=header1;
@@ -533,12 +522,15 @@ int main(int argc,char **argv)
     if(cell_index==NULL)
     {
       printallocerr("index");
+      freedata();
       return EXIT_FAILURE;
     }
     if(freadint(cell_index,header1.ncell,swap1,in1)!=header1.ncell)
     {
       fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
               argv[iarg+1]);
+      free(cell_index);
+      freedata();
       return EXIT_FAILURE;
     }
     fwrite(cell_index,sizeof(int),header1.ncell,out);
@@ -548,12 +540,17 @@ int main(int argc,char **argv)
       if(cell_index2==NULL)
       {
         printallocerr("index2");
+        free(cell_index);
+        freedata();
         return EXIT_FAILURE;
       }
       if(freadint(cell_index2,header1.ncell,swap2,in2)!=header1.ncell)
       {
         fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
                 argv[iarg+2]);
+        free(cell_index);
+        free(cell_index2);
+        freedata();
         return EXIT_FAILURE;
       }
       for(cell=0;cell<header1.ncell;cell++)
@@ -561,6 +558,9 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Cell index in '%s' of %d=%d not equal %d in '%s'.\n",
                   argv[iarg+1],cell,cell_index[cell],cell_index2[cell],argv[iarg+2]);
+          free(cell_index);
+          free(cell_index2);
+          freedata();
           return EXIT_FAILURE;
         }
       free(cell_index);
@@ -576,12 +576,14 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
         if(fwrite(data1,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
       }
@@ -595,12 +597,14 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
         if(fwrite(idata1,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
       }
@@ -620,6 +624,7 @@ int main(int argc,char **argv)
             {
               fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                       argv[iarg+1],yr+header1.firstyear);
+              freedata();
               return EXIT_FAILURE;
             }
             for(k=0;k<header1.nbands;k++)
@@ -629,6 +634,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error writing '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
         }
@@ -646,6 +652,7 @@ int main(int argc,char **argv)
             {
               fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                       argv[iarg+1],yr+header1.firstyear);
+              freedata();
               return EXIT_FAILURE;
             }
             for(k=0;k<header1.nbands;k++)
@@ -655,6 +662,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error writing '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
         }
@@ -673,6 +681,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                     argv[iarg+1],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
           for(k=0;k<header1.nbands;k++)
@@ -684,6 +693,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
       }
@@ -701,6 +711,7 @@ int main(int argc,char **argv)
             {
               fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                       argv[iarg+1],yr+header1.firstyear);
+              freedata();
               return EXIT_FAILURE;
             }
             isum=0;
@@ -711,6 +722,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error writing '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
         }
@@ -726,6 +738,7 @@ int main(int argc,char **argv)
             {
               fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                       argv[iarg+1],yr+header1.firstyear);
+              freedata();
               return EXIT_FAILURE;
             }
             sum=0;
@@ -736,6 +749,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error writing '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
         }
@@ -749,6 +763,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
         if(isvalue)
@@ -791,6 +806,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
           switch(op)
@@ -814,6 +830,7 @@ int main(int argc,char **argv)
                 {
                   fprintf(stderr,"Value is zero for year %d and band %d.\n",
                           yr+header1.firstyear,k+1);
+                  freedata();
                   return EXIT_FAILURE;
                 }
                 idata3[k]=idata1[k]/idata2[k];
@@ -857,6 +874,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   out_name,yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
       }
@@ -868,6 +886,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
         if(isvalue)
@@ -910,6 +929,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
+            freedata();
             return EXIT_FAILURE;
           }
           switch(op)
@@ -968,11 +988,12 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   out_name,yr+header1.firstyear);
+          freedata();
           return EXIT_FAILURE;
         }
       }
   fclose(in1);
-  if(op!=FLOAT && op!=INT && op!=SUM && op!=TSUM && op!=TMEAN && !isvalue)
+  if(in2!=NULL)
     fclose(in2);
   fclose(out);
   free(data1);

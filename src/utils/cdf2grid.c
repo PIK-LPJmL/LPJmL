@@ -275,6 +275,7 @@ int main(int argc,char **argv)
         free(index);
         free(lon);
         free(lat);
+        freemetadata(&metadata);
         nc_close(ncid);
         return EXIT_FAILURE;
       }
@@ -401,12 +402,10 @@ int main(int argc,char **argv)
     arglist=catstrvec(argv,argc);
     if(arglist==NULL)
     {
-    {
       printallocerr("arglist");
       free(out_json);
       freemetadata(&metadata);
       return EXIT_FAILURE;
-    }
     }
     out=fopen(out_json,"w");
     if(out==NULL)

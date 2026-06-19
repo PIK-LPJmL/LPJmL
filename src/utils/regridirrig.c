@@ -36,6 +36,7 @@ int main(int argc,char **argv)
   Type grid_type;
   int format,iarg,index_datafile,index_gridfile;
   setversion=READ_VERSION;
+  grid_name.name=NULL;
   initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -85,6 +86,7 @@ int main(int argc,char **argv)
       if(freadheaderid(data_file,id,TRUE))
       {
         freemetadata(&metadata);
+        free(grid_name.name);
         fclose(data_file);
         return EXIT_FAILURE;
       }
@@ -93,11 +95,13 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }
     if(argc==iarg+4)
     {
+      free(grid_name.name);
       filename.name=strdup(argv[iarg]);
       if(filename.name==NULL)
       {

@@ -94,6 +94,7 @@ int main(int argc,char **argv)
   header.ncell=1;
   header.nyear=1;
   grid_type=LPJ_SHORT;
+  grid_name.name=NULL;
   initmetadata(&metadata,NULL);
   file=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg],TRUE);
   if(file==NULL)
@@ -102,6 +103,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Country map is missing in '%s.\n",argv[iarg]);
     fclose(file);
+    free(grid_name.name);
     freemetadata(&metadata);
     return EXIT_FAILURE;
   }
@@ -111,6 +113,7 @@ int main(int argc,char **argv)
     puts("List of country codes:\nCode Name");
     for(i=0;i<metadata.countrymap_size;i++)
        printf("%s  %s\n",metadata.countrymap[i].alpha_3,metadata.countrymap[i].name);
+    free(grid_name.name);
     freemetadata(&metadata);
     return EXIT_SUCCESS;
   }

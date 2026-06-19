@@ -43,6 +43,7 @@ int main(int argc,char **argv)
   Metadata metadata;
   isint=issearch=iszero=isjson=ismeta=isbyte=FALSE;
   setversion=READ_VERSION;
+  grid_name.name=NULL;
   initmetadata(&metadata,NULL);
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
@@ -133,6 +134,7 @@ int main(int argc,char **argv)
       if(freadheaderid(data_file,id,TRUE))
       {
         freemetadata(&metadata);
+        free(grid_name.name);
         fclose(data_file);
         return EXIT_FAILURE;
       }
@@ -141,11 +143,13 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }
     if(argc==iarg+4)
     {
+      free(grid_name.name);
       filename.name=strdup(argv[iarg]);
       if(filename.name==NULL)
       {

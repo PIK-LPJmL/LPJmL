@@ -511,6 +511,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       free(grid);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -584,6 +587,9 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"First year %d in '%s' is not %d.\n",data.firstyear,argv[j],header.firstyear+header.nyear);
           free(grid);
+          free(filename.var);
+          free(title);
+          freemetadata(&metadata);
           closeclimate_netcdf(&data,TRUE);
           fclose(file);
           return EXIT_FAILURE;
@@ -592,6 +598,9 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Number of bands %d in '%s' is not %d.\n",(int)data.var_len,argv[j],header.nbands);
           free(grid);
+          free(filename.var);
+          free(title);
+          freemetadata(&metadata);
           closeclimate_netcdf(&data,TRUE);
           fclose(file);
           return EXIT_FAILURE;
@@ -603,6 +612,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       free(grid);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       closeclimate_netcdf(&data,TRUE);
       fclose(file);
       return EXIT_FAILURE;

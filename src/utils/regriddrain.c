@@ -34,6 +34,7 @@ int main(int argc,char **argv)
   char *arglist,*out_json;
   size_t offset;
   Type grid_type;
+  grid_name.name=NULL;
   int format,iarg,index_datafile,index_gridfile,data_version;
   initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
@@ -81,6 +82,7 @@ int main(int argc,char **argv)
       if(freadheaderid(data_file,id,TRUE))
       {
         freemetadata(&metadata);
+        free(grid_name.name);
         fclose(data_file);
         return EXIT_FAILURE;
       }
@@ -89,11 +91,13 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[index_datafile],offset);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }
     if(argc==iarg+4)
     {
+      free(grid_name.name);
       filename.name=strdup(argv[iarg]);
       if(filename.name==NULL)
       {
@@ -167,6 +171,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid number of bands %d in '%s', must be 2.\n",header.nbands,argv[index_datafile]);
     {
       freemetadata(&metadata);
+      free(filename.name);
       fclose(data_file);
       return EXIT_FAILURE;
     }

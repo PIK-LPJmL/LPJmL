@@ -319,6 +319,7 @@ int main(int argc,char **argv)
   n_global=0;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
+  grid_name.name=NULL;
   initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -487,6 +488,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
       freemetadata(&metadata);
+      free(grid_name.name);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -506,7 +508,8 @@ int main(int argc,char **argv)
   }
   if(argc!=iarg+2)
   {
-    grid_filename=argv[iarg];
+    free(grid_name.name);
+    grid_filename=strdup(argv[iarg]);
   }
   else
   {
@@ -525,6 +528,7 @@ int main(int argc,char **argv)
   if(coordfile==NULL)
   {
     freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
@@ -543,6 +547,7 @@ int main(int argc,char **argv)
   {
     printallocerr("grid");
     freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
     fclose(file);
     closecoord(coordfile);
@@ -563,6 +568,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header of '%s'.\n",filename);
         free(grid);
         freemetadata(&metadata);
+        free(grid_filename);
         freeattrs(global_attrs,n_global);
         fclose(file);
         return EXIT_FAILURE;
@@ -574,6 +580,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,filename,CLM_MAX_VERSION+1);
         freemetadata(&metadata);
+        free(grid_filename);
         freeattrs(global_attrs,n_global);
         free(grid);
         fclose(file);
@@ -588,6 +595,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
               filename);
       freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -599,6 +607,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
               header.ncell,filename,ngrid,grid_filename);
       freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -614,6 +623,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lon,filename,res.lon,grid_filename);
       freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -624,6 +634,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);
       freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
@@ -651,6 +662,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Number of bands=%d in '%s' must be 10.\n",
             header.nbands,filename);
     freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
     free(grid);
     fclose(file);
@@ -661,6 +673,7 @@ int main(int argc,char **argv)
   if(index==NULL)
   {
     freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
@@ -670,6 +683,8 @@ int main(int argc,char **argv)
   {
     printallocerr("arglist");
     freemetadata(&metadata);
+    free(grid_filename);
+    free(index);
     freeattrs(global_attrs,n_global);
     fclose(file);
     return EXIT_FAILURE;
@@ -677,6 +692,7 @@ int main(int argc,char **argv)
   cdf=create_cdf(outname,metadata.source,metadata.history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
   freemetadata(&metadata);
+  free(grid_filename);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
   {
