@@ -192,10 +192,10 @@ int main(int argc,char **argv)
           fclose(file);
           fclose(out);
           freemetadata(&metadata);
+          free(grid_name.name);
           return EXIT_FAILURE;
         }
         fwrite(&bdata,1,1,out);
-        free(grid_name.name);
       }
       break;
     case 2:
