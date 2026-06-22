@@ -132,7 +132,7 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
       if(filepos<0 || filepos>=getfilesizep(bstruct->file))
       {
         if(isout)
-          fprintf(stderr,"ERROR517: Cannot seek to name table in '%s', file is too short.\n",
+          fprintf(stderr,"ERROR517: Cannot seek to name table in '%s', target is outside file boundaries.\n",
                   filename);
         fclose(bstruct->file);
         freehash(bstruct->hash);

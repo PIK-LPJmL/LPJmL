@@ -47,7 +47,7 @@ Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
   }
   if(index<0 || index>=getfilesizep(bstr->file))
   {
-    fprintf(stderr,"ERROR511: Cannot skip to %d in index array.\n",index);
+    fprintf(stderr,"ERROR511: Cannot skip to %d in index array, is outside file boundaries.\n",index);
     return TRUE;
   }
   fseek(bstr->file,sizeof(long long)*index,SEEK_CUR);

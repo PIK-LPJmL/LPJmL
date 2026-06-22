@@ -293,7 +293,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             if(bstr->isout)
             {
-              fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s'.\n",
+              fprintf(stderr,"ERROR506: Cannot seek to object '%s' for %s in struct '%s', object is outside file boundaries.\n",
                       name,bstruct_typenames[token_expected],
                       bstruct_getname(bstr->namestack[bstr->level-1].name));
               bstruct_printnamestack(bstr);
