@@ -17,10 +17,10 @@
 #include "bstruct_intern.h"
 
 int bstruct_gettype(Bstruct bstr,   /**< pointer to restart file */
-                    const char *key /**< key to get type from */
+                    const char *name /**< name to get type from */
                    )                /** \return type or BSTRUCT_NOTFOUND */
 {
-  /* Function gets type of key */
+  /* Function gets type of name */
   long long pos;
   Bool rc;
   Byte token,isout;
@@ -33,13 +33,13 @@ int bstruct_gettype(Bstruct bstr,   /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR502: Invalid token %d getting for object '%s'.\n",
-              token,bstruct_getname(key));
+              token,bstruct_getname(name));
     return FALSE;
   }
   isout=bstr->isout;
   /* temporarily switch off error messages */
   bstr->isout=FALSE;
-  rc=bstruct_findobject(bstr,&token,BSTRUCT_BYTE,key);
+  rc=bstruct_findobject(bstr,&token,BSTRUCT_BYTE,name);
   bstr->isout=isout;
   /* restore position in file */
   fseek(bstr->file,pos,SEEK_SET);
