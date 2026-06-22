@@ -38,7 +38,6 @@
 
 extern const size_t bstruct_typesizes[];
 
-#define bstruct_getname(name) (name==NULL) ? "unnamed" : name
 #define bstruct_isinvalidtoken(token) (((token) & 63)>BSTRUCT_MAXTOKEN)
 #define bstruct_printnamestack(bstr) bstruct_fprintnamestack(stderr,bstr)
 #define bstruct_hasname(token) (((token) & 128)==128) /* check for top bit set in token */
