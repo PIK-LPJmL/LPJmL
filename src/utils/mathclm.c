@@ -20,6 +20,7 @@
 #define freedata() { if(in1!=NULL) fclose(in1); if(in2!=NULL) fclose(in2); if(out!=NULL) fclose(out); freemetadata(&metadata1); free(grid_name.name); free(data1); free(data2); free(data3); free(idata1); free(idata2); free(idata3); }
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); freedata(); return EXIT_FAILURE; }
+
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
@@ -455,9 +456,7 @@ int main(int argc,char **argv)
       scanf("%c",&c);
       if(c!='y')
       {
-        fclose(in1);
-        if(in2!=NULL)
-          fclose(in2);
+        freedata();
         return EXIT_FAILURE;
       }
     }
