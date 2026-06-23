@@ -19,7 +19,7 @@
 - [ ] Run with `./configure.sh -check` performed to check for out-of-bounds access
 - [ ] Global benchmark report against the last version (`/p/projects/lpjml/benchmark_run_outputs/...`) created
 - [ ] Bitwise comparison of outputs with `cmpbin` or `diff` done, if no changes are expected in the results
-- [ ] Comparison of restart file with `cmprestart`, if no changes are expected in the results
+- [ } Comparison of old and new restart files with the utility `cmprestart`, if no changes are expected in the results
 - [ ] Compliance with `stylesheet.md` checked
 - [ ] Changelog entry added under the heading `## [Unreleased]` (i.e. not assuming a version number or merge date)
 - [ ] Man pages updated if needed
