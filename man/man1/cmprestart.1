@@ -6,17 +6,18 @@ cmprestart \- Compare two restart files for LPJmL and check for identity
 [\-q] \fIrestartfile1\fP \fIrestartfile2\fP
 
 .SH DESCRIPTION
-Program compares the numerical data of two LPJmL restart files and checks for identity. In case of a difference the variable name and the two values are printed.
+The programm checks if all objects of the first file are also contained in the second file and compares their values.
+In case of a difference the variable name and the two values are printed.
 .SH OPTIONS
 .TP
 \-q
-Print only the number of different values.
+Print only the tota count of different values.
 .TP
 .I restartfile1
-Name of restart file.
+Name of first restart file.
 .TP
 .I restartfile2
-Name of restart file to compare.
+Name of second restart file to compare.
 .SH EXAMPLE
 .TP
 Compare two restart files:
@@ -26,7 +27,7 @@ restart1.lpj restart2.lpj
 .SH EXIT STATUS
 .B
 cmprestart
-returns a zero exit status if the two restart file have been compared.
+returns a zero exit status if the two restart file have been compared successfully.
 Non zero is returned in case of failure.
 
 .SH AUTHORS
