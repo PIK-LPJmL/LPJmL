@@ -29,9 +29,9 @@ Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
   /* Function writes name table, closes restart file and frees memory */
   if(bstruct!=NULL)
   {
-    if(bstruct->hash!=NULL)
+    if(bstruct->hash!=NULL) /* file has to be written? */
     {
-      /* write end token */
+      /* yes, write end token */
       token=BSTRUCT_END;
       fwrite(&token,sizeof(token),1,bstruct->file);
       /* save position of start of name table */
@@ -82,7 +82,7 @@ Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
         rc=TRUE;
       }
     }
-    else if(bstruct->level>0 && bstruct->namestack[bstruct->level-1].varnames!=NULL)
+    else if(bstruct->level>0 && bstruct->namestack[bstruct->level-1].varnames!=NULL) /* no, checking for unread variables */
     {
       foreachlistitem(i,bstruct->namestack[bstruct->level-1].varnames)
       {
