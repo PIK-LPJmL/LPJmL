@@ -17,6 +17,7 @@
 #include "fputprintable.h"
 #include "bstruct_intern.h"
 #include "bstruct_skipdata.h"
+#include "bstruct_skiparrayelements.h"
 #include "bstruct_findobject.h"
 #include "bstruct_fprintnamestack.h"
 #include "bstruct_wopen.h"

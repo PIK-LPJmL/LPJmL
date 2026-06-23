@@ -17,6 +17,7 @@
 #include "fputprintable.h"
 #include "bstruct_intern.h"
 #include "bstruct_skipdata.h"
+#include "bstruct_skiparrayelements.h"
 #include "bstruct_findobject.h"
 #include "bstruct_wopen.h"
 #include "bstruct_open.h"
@@ -41,13 +42,14 @@
 #include "bstruct_readid.h"
 #include "bstruct_readtoken.h"
 
-void test_restart(void)
+void test_skiparray(void)
 {
   char *filename;
   int i,size,value;
   Bool rc;
   float vec[10],vec2[5];
   Bstruct bstr;
+  /* create test bstruct file */
   filename=tmpnam(NULL);
   bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
@@ -61,6 +63,7 @@ void test_restart(void)
   bstruct_writeendarray(bstr);
   bstruct_writeint(bstr,"b",2);
   bstruct_finish(bstr);
+  /* re-open test bstruct file */
   bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&value);
@@ -75,8 +78,10 @@ void test_restart(void)
     TEST_ASSERT_EQUAL_INT(FALSE,rc);
   }
   TEST_ASSERT_EQUAL_FLOAT_ARRAY(vec,vec2,5);
+  /* test skiparray function */
   rc=bstruct_skiparray(bstr);
   TEST_ASSERT_EQUAL_INT(FALSE,rc);
+  /* check that next object can be read */
   rc=bstruct_readint(bstr,"b",&value);
   TEST_ASSERT_EQUAL_INT(FALSE,rc);
   TEST_ASSERT_EQUAL_INT(2,value);
