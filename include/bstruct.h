@@ -132,6 +132,7 @@ extern Bool bstruct_skiparray(Bstruct);
 /* Definition of macros */
 
 #define bstruct_getname(name) (name==NULL) ? "unnamed" : name
+#define bstruct_isunnamed(data) ((data)->name==NULL)
 #define bstruct_printdata(data,decimals) bstruct_fprintdata(stdout,data,decimals)
 #define bstruct_printnametable(name,bstr,isjson) bstruct_fprintnametable(stdout,name,bstr,isjson)
 #define bstruct_create(filename) bstruct_wopen(filename,FALSE,TRUE)

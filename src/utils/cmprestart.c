@@ -294,12 +294,12 @@ int main(int argc,char **argv)
     {
       case BSTRUCT_BEGINSTRUCT:
         stack[level1].token=data1.token;
-        stack[level1].name=data1.name==NULL ? NULL : strdup(data1.name);
+        stack[level1].name=bstruct_isunnamed(&data1) ? NULL : strdup(data1.name);
         if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
           stack[level1-1].count++;
         if(level1==level2)
         {
-          if(data1.name==NULL || bstruct_isdefined(file2,data1.name))
+          if(bstruct_isunnamed(&data1) || bstruct_isdefined(file2,data1.name))
           {
             if(bstruct_readbeginstruct(file2,data1.name))
             {
@@ -321,14 +321,14 @@ int main(int argc,char **argv)
         break;
       case BSTRUCT_BEGINARRAY: case BSTRUCT_BEGINARRAY1:
         stack[level1].token=data1.token;
-        stack[level1].name=data1.name==NULL ? NULL : strdup(data1.name);
+        stack[level1].name=bstruct_isunnamed(&data1) ? NULL : strdup(data1.name);
         stack[level1].size=data1.size;
         stack[level1].count=0;
         if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
           stack[level1-1].count++;
         if(level1==level2)
         {
-          if(data1.name==NULL || bstruct_isdefined(file2,data1.name))
+          if(bstruct_isunnamed(&data1) || bstruct_isdefined(file2,data1.name))
           {
             if(bstruct_readbeginarray(file2,data1.name,&size))
             {
