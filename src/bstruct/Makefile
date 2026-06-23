@@ -38,7 +38,7 @@ OBJS    = bstruct_finish.$O bstruct_wopen.$O bstruct_fprintdata.$O\
           bstruct_skipdata.$O bstruct_fprintnamestack.$O bstruct_writenull.$O\
           bstruct_isnull.$O bstruct_getnoread.$O bstruct_printnoread.$O\
           bstruct_writedata.$O bstruct_readid.$O bstruct_getlevel.$O\
-          bstruct_skiparray.$O bstruct_gettype.$O
+          bstruct_skiparray.$O bstruct_gettype.$O bstruct_skiparrayelements.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

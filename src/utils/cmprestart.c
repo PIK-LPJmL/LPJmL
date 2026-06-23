@@ -72,8 +72,9 @@ static Bool cmpfloat(float value1,float value2)
   return value1!=value2;
 } /* of 'cmpfloat' */
 
-static void cmpbool(Bstruct file1,Bstruct file2,const char *name,const char *filename1,const char *filename2)
+static void cmpheaderbool(Bstruct file1,Bstruct file2,const char *name,const char *filename1,const char *filename2)
 {
+  /* Function compares boolean in file headers */
   Bool bool1,bool2;
   if(!bstruct_readbool(file1,name,&bool1))
   {
@@ -84,13 +85,17 @@ static void cmpbool(Bstruct file1,Bstruct file2,const char *name,const char *fil
                 name,bool2str(bool1),filename1,bool2str(bool2),filename2);
     }
   }
-} /* of 'cmpbool' */
+} /* of 'cmpheaderbool' */
 
 int main(int argc,char **argv)
 {
   Bstruct file1,file2;
   Bstruct_data data1;
-  int level=1,ilevel=1,size,count=0,iarg,i,npft1,npft2,allcount=0,grid_index;
+  int level1=1; /* nesting level in first file */
+  int level2=1; /* nesting level in second file */
+  int size,count=0,iarg,i,npft1,npft2,allcount=0,grid_index;
+  int year1,year2;
+  int datatype1,datatype2;
   int firstcell1=0,firstcell2=0;
   float f;
   double d;
@@ -138,7 +143,7 @@ int main(int argc,char **argv)
   {
     if(bstruct_readbeginstruct(file2,"header"))
     {
-      fprintf(stderr,"No header found in '%s'.\n",argv[iarg]);
+      fprintf(stderr,"No header found in '%s'.\n",argv[iarg+1]);
       bstruct_readendstruct(file1,"header");
     }
     else
@@ -158,13 +163,13 @@ int main(int argc,char **argv)
       }
       else
         free(version1);
-      if(!bstruct_readint(file1,"year",&npft1))
+      if(!bstruct_readint(file1,"year",&year1))
       {
-        if(!bstruct_readint(file2,"year",&npft2))
+        if(!bstruct_readint(file2,"year",&year2))
         {
-          if(npft1!=npft2)
+          if(year1!=year2)
             fprintf(stderr,"Year %d in '%s' differs from %d in '%s'.\n",
-                    npft1,argv[iarg],npft2,argv[iarg+1]);
+                    year1,argv[iarg],year2,argv[iarg+1]);
         }
       }
       if(!bstruct_readint(file1,"firstcell",&firstcell1))
@@ -195,24 +200,24 @@ int main(int argc,char **argv)
                     npft1,argv[iarg],npft2,argv[iarg+1]);
         }
       }
-      if(!bstruct_readint(file1,"datatype",&npft1))
+      if(!bstruct_readint(file1,"datatype",&datatype1))
       {
-        if(!bstruct_readint(file2,"datatype",&npft2))
+        if(!bstruct_readint(file2,"datatype",&datatype2))
         {
-          if(npft1!=npft2)
+          if(datatype1!=datatype2)
           {
             fprintf(stderr,"Datatype %d in '%s' differs from %d in '%s'.\n",
-                    npft1,argv[iarg],npft2,argv[iarg+1]);
+                    datatype1,argv[iarg],datatype2,argv[iarg+1]);
             bstruct_finish(file1);
             bstruct_finish(file2);
             return EXIT_FAILURE;
           }
         }
       }
-      cmpbool(file1,file2,"landuse",argv[iarg],argv[iarg+1]);
-      cmpbool(file1,file2,"crop_phu_option",argv[iarg],argv[iarg+1]);
-      cmpbool(file1,file2,"river_routing",argv[iarg],argv[iarg+1]);
-      cmpbool(file1,file2,"separate_harvests",argv[iarg],argv[iarg+1]);
+      cmpheaderbool(file1,file2,"landuse",argv[iarg],argv[iarg+1]);
+      cmpheaderbool(file1,file2,"crop_phu_option",argv[iarg],argv[iarg+1]);
+      cmpheaderbool(file1,file2,"river_routing",argv[iarg],argv[iarg+1]);
+      cmpheaderbool(file1,file2,"separate_harvests",argv[iarg],argv[iarg+1]);
       bstruct_readendstruct(file1,"header");
       bstruct_readendstruct(file2,"header");
     }
@@ -256,50 +261,52 @@ int main(int argc,char **argv)
     switch(data1.token)
     {
       case BSTRUCT_BEGINSTRUCT:
-        stack[level].token=data1.token;
-        stack[level].name=data1.name==NULL ? NULL : strdup(data1.name);
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        stack[level1].token=data1.token;
+        stack[level1].name=data1.name==NULL ? NULL : strdup(data1.name);
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(data1.name==NULL || bstruct_isdefined(file2,data1.name))
           {
             if(bstruct_readbeginstruct(file2,data1.name))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading struct %s in '%s'\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
-            ilevel++;
+            level2++;
           }
           else
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             puts("not found");
           }
         }
-        level++;
+        level1++;
         break;
       case BSTRUCT_BEGINARRAY: case BSTRUCT_BEGINARRAY1:
-        stack[level].token=data1.token;
-        stack[level].name=data1.name==NULL ? NULL : strdup(data1.name);
-        stack[level].size=data1.size;
-        stack[level].count=0;
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        stack[level1].token=data1.token;
+        stack[level1].name=data1.name==NULL ? NULL : strdup(data1.name);
+        stack[level1].size=data1.size;
+        stack[level1].count=0;
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(data1.name==NULL || bstruct_isdefined(file2,data1.name))
           {
             if(bstruct_readbeginarray(file2,data1.name,&size))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading array %s in '%s'\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(size!=data1.size)
             {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(".size=%d<>%d\n",data1.size,size);
@@ -309,55 +316,57 @@ int main(int argc,char **argv)
                 return EXIT_FAILURE;
               break;
             }
-            ilevel++;
+            level2++;
           }
           else
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             puts("not found");
             count++;
           }
         }
-        level++;
+        level1++;
         break;
       case BSTRUCT_ENDSTRUCT:
-        if(level==ilevel)
+        if(level1==level2)
         {
-          if(bstruct_readendstruct(file2,stack[level-1].name))
+          if(bstruct_readendstruct(file2,stack[level1-1].name))
           {
-            fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+            fprintf(stderr,"Comparison stopped in cell %d reading end of struct %s in '%s'.\n",
+                    grid_index,bstruct_getname(stack[level1-1].name),argv[iarg+1]);
             return EXIT_FAILURE;
           }
-          ilevel--;
+          level2--;
         }
-        free(stack[level-1].name);
-        level--;
-        if(level==1)
+        free(stack[level1-1].name);
+        level1--;
+        if(level1==1)
           grid_index++;
         break;
       case BSTRUCT_ENDARRAY:
-        if(level==ilevel)
+        if(level1==level2)
         {
-          if(bstruct_readendarray(file2,stack[level-1].name))
+          if(bstruct_readendarray(file2,stack[level1-1].name))
           {
-            fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+            fprintf(stderr,"Comparison stopped in cell %d reading end of array %s in '%s'.\n",
+                    grid_index,bstruct_getname(stack[level1-1].name),argv[iarg+1]);
             return EXIT_FAILURE;
           }
-          ilevel--;
+          level2--;
         }
-        free(stack[level-1].name);
-        level--;
+        free(stack[level1-1].name);
+        level1--;
         break;
       case BSTRUCT_TRUE: case BSTRUCT_FALSE:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%s<>not found\n",bool2str(data1.data.b));
@@ -365,12 +374,16 @@ int main(int argc,char **argv)
           else
           {
             if(bstruct_readbool(file2,data1.name,&b))
+            {
+              fprintf(stderr,"Comparison stopped in cell %d reading boolean %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
+            }
             if(data1.data.b!=b)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%s<>%s\n",bool2str(data1.data.b),bool2str(b));
@@ -380,13 +393,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_ZERO:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":0<>not found\n");
@@ -396,14 +409,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readint(file2,data1.name,&i))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading int %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(i!=0)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":0<>%d\n",i);
@@ -415,13 +429,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_FZERO:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":0.0<>not found\n");
@@ -431,14 +445,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readfloat(file2,data1.name,&f))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading float %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(cmpfloat(0,f))
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":0<>%g\n",f);
@@ -450,13 +465,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_DZERO:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":0.0<>not found\n");
@@ -466,14 +481,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readdouble(file2,data1.name,&d))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading double %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(cmpdouble(0,d))
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":0<>%g\n",d);
@@ -485,13 +501,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_DOUBLE:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%g<>not found\n",data1.data.d);
@@ -501,14 +517,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readdouble(file2,data1.name,&d))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading double %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(cmpdouble(data1.data.d,d))
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%g<>%g\n",data1.data.d,d);
@@ -520,13 +537,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_FLOAT:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%g<>not found\n",data1.data.f);
@@ -536,14 +553,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readfloat(file2,data1.name,&f))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading float %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(cmpfloat(data1.data.f,f))
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%g<>%g\n",data1.data.f,f);
@@ -555,31 +573,31 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_INT:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%d<>not found\n",data1.data.i);
             count++;
           }
-          //  fprintf(stderr,"Object '%s' not found in '%s'.\n",data1.name,argv[iarg+1]);
           else
           {
             if(bstruct_readint(file2,data1.name,&i))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading int %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(data1.data.i!=i)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%d<>%d\n",data1.data.i,i);
@@ -591,13 +609,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_SHORT:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%d<>not found\n",data1.data.s);
@@ -607,32 +625,33 @@ int main(int argc,char **argv)
           {
             if(bstruct_readint(file2,data1.name,&i))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading int %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(data1.data.s!=i)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%d<>%d\n",data1.data.s,i);
               }
               count++;
             }
-            allcount++;
           }
+          allcount++;
         }
         break;
       case BSTRUCT_USHORT:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%d<>not found\n",data1.data.us);
@@ -642,14 +661,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readint(file2,data1.name,&i))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading int %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(data1.data.us!=i)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%d<>%d\n",data1.data.us,i);
@@ -661,13 +681,13 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_BYTE:
-        if(stack[level-1].token==BSTRUCT_BEGINARRAY || stack[level-1].token==BSTRUCT_BEGINARRAY1)
-          stack[level-1].count++;
-        if(level==ilevel)
+        if(stack[level1-1].token==BSTRUCT_BEGINARRAY || stack[level1-1].token==BSTRUCT_BEGINARRAY1)
+          stack[level1-1].count++;
+        if(level1==level2)
         {
           if(!bstruct_isdefined(file2,data1.name))
           {
-            printstack(stack,level);
+            printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
             printf(":%d<>not found\n",data1.data.b);
@@ -677,14 +697,15 @@ int main(int argc,char **argv)
           {
             if(bstruct_readint(file2,data1.name,&i))
             {
-              fprintf(stderr,"Comparison stopped in cell %d\n",grid_index);
+              fprintf(stderr,"Comparison stopped in cell %d reading int %s in '%s'.\n",
+                      grid_index,bstruct_getname(data1.name),argv[iarg+1]);
               return EXIT_FAILURE;
             }
             if(data1.data.b!=i)
             {
               if(verb)
               {
-                printstack(stack,level);
+                printstack(stack,level1);
                 if(data1.name!=NULL)
                   fputs(data1.name,stdout);
                 printf(":%d<>%d\n",data1.data.b,i);
@@ -699,7 +720,7 @@ int main(int argc,char **argv)
         break;
     } /* of  switch(data1.token) */
     bstruct_freedata(&data1);
-  } while(data1.token!=BSTRUCT_END && level>0);
+  } while(data1.token!=BSTRUCT_END && level1>0);
   if(count)
     printf("%d out of %d differences in values found.\n",count,allcount);
   else

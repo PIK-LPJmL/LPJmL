@@ -82,6 +82,7 @@ extern int bstruct_cmpdata(const void *,const void *);
 extern void bstruct_freenamestack(Bstruct);
 extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_skipdata(Bstruct,Byte);
+extern Bool bstruct_skiparrayelements(Bstruct);
 extern Bool bstruct_findobject(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_writename(Bstruct bstr,Byte,const char *);
 extern Var *bstruct_findvar(Bstruct,Id);
