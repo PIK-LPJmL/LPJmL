@@ -314,7 +314,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            puts("not found");
+            printf(" not found in '%s'\n",argv[iarg+1]);
           }
         }
         level1++;
@@ -355,7 +355,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            puts("not found");
+            printf(" not found in '%s'\n",argv[iarg+1]);
             count++;
           }
         }
@@ -401,7 +401,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%s<>not found\n",bool2str(data1.data.b));
+            printf(":%s<>not found in '%s'\n",bool2str(data1.data.b),argv[iarg+1]);
           }
           else
           {
@@ -434,7 +434,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":0<>not found\n");
+            printf(":0<>not found in '%s'\n",argv[iarg+1]);
             count++;
           }
           else
@@ -470,7 +470,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":0.0<>not found\n");
+            printf(":0.0<>not found in '%s'\n",argv[iarg+1]);
             count++;
           }
           else
@@ -506,7 +506,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":0.0<>not found\n");
+            printf(":0.0<>not found in '%s'\n",argv[iarg+1]);
             count++;
           }
           else
@@ -542,7 +542,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%g<>not found\n",data1.data.d);
+            printf(":%g<>not found in '%s'\n",data1.data.d,argv[iarg+1]);
             count++;
           }
           else
@@ -578,7 +578,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%g<>not found\n",data1.data.f);
+            printf(":%g<>not found in '%s'\n",data1.data.f,argv[iarg+1]);
             count++;
           }
           else
@@ -614,7 +614,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%d<>not found\n",data1.data.i);
+            printf(":%d<>not found in '%s'\n",data1.data.i,argv[iarg+1]);
             count++;
           }
           else
@@ -650,7 +650,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%d<>not found\n",data1.data.s);
+            printf(":%d<>not found in '%s'\n",data1.data.s,argv[iarg+1]);
             count++;
           }
           else
@@ -686,7 +686,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%d<>not found\n",data1.data.us);
+            printf(":%d<>not found in '%s'\n",data1.data.us,argv[iarg+1]);
             count++;
           }
           else
@@ -722,7 +722,7 @@ int main(int argc,char **argv)
             printstack(stack,level1);
             if(data1.name!=NULL)
               fputs(data1.name,stdout);
-            printf(":%d<>not found\n",data1.data.b);
+            printf(":%d<>not found in '%s'\n",data1.data.b,argv[iarg+1]);
             count++;
           }
           else
