@@ -36,6 +36,20 @@ typedef struct
   char *name;
 } Stack;
 
+typedef struct
+{
+  char *version;
+  int year;
+  int firstcell;
+  int datatype;
+  int npft;
+  int ncft;
+  Bool landuse;
+  Bool crop_phu_option;
+  Bool river_routing;
+  Bool separate_harvests;
+} Restartheader;
+
 static void fprintstack(FILE *file,const Stack stack[],int level)
 {
   int i;
@@ -49,6 +63,77 @@ static void fprintstack(FILE *file,const Stack stack[],int level)
       fputc('.',file);
   }
 } /* of 'fprintstack' */
+
+static Bool readheader(Bstruct bstr,Restartheader *header,const char *filename)
+{
+  header->version=NULL;
+  if(bstruct_readbeginstruct(bstr,"header"))
+  {
+    fprintf(stderr,"No header found in '%s'.\n",filename);
+    return TRUE;
+  }
+  header->version=bstruct_readstring(bstr,"version");
+  if(header->version==NULL)
+  {
+    fprintf(stderr,"No version found in '%s'.\n",filename);
+    return TRUE;
+  }
+  if(bstruct_readint(bstr,"year",&header->year))
+  {
+    fprintf(stderr,"Cannot read year in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readint(bstr,"firstcell",&header->firstcell))
+  {
+    fprintf(stderr,"Cannot read firstcell in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readint(bstr,"npft",&header->npft))
+  {
+    fprintf(stderr,"Cannot read npft in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readint(bstr,"ncft",&header->ncft))
+  {
+    fprintf(stderr,"Cannot read ncft in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readint(bstr,"datatype",&header->datatype))
+  {
+    fprintf(stderr,"Cannot read datatype in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readbool(bstr,"landuse",&header->landuse))
+  {
+    fprintf(stderr,"Cannot read landuse in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readbool(bstr,"crop_phu_option",&header->crop_phu_option))
+  {
+    fprintf(stderr,"Cannot read crop_phu_option in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readbool(bstr,"river_routing",&header->river_routing))
+  {
+    fprintf(stderr,"Cannot read river_routing  in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  if(bstruct_readbool(bstr,"separate_harvests",&header->separate_harvests))
+  {
+    fprintf(stderr,"Cannot read separate harvests  in '%s'.\n",filename);
+    free(header->version);
+    return TRUE;
+  }
+  return bstruct_readendstruct(bstr,"header");
+} /* of 'readheader' */
 
 static Bool cmpdouble(double value1,double value2)
 {
@@ -72,36 +157,18 @@ static Bool cmpfloat(float value1,float value2)
   return value1!=value2;
 } /* of 'cmpfloat' */
 
-static void cmpheaderbool(Bstruct file1,Bstruct file2,const char *name,const char *filename1,const char *filename2)
-{
-  /* Function compares boolean in file headers */
-  Bool bool1,bool2;
-  if(!bstruct_readbool(file1,name,&bool1))
-  {
-    if(!bstruct_readbool(file2,name,&bool2))
-    {
-      if(bool1!=bool2)
-        fprintf(stderr,"%s=%s in '%s' differs from %s in '%s'.\n",
-                name,bool2str(bool1),filename1,bool2str(bool2),filename2);
-    }
-  }
-} /* of 'cmpheaderbool' */
-
 int main(int argc,char **argv)
 {
   Bstruct file1,file2;
   Bstruct_data data1;
   int level1=1; /* nesting level in first file */
   int level2=1; /* nesting level in second file */
-  int size,count=0,iarg,i,npft1,npft2,allcount=0,grid_index;
-  int year1,year2;
-  int datatype1,datatype2;
-  int firstcell1=0,firstcell2=0;
+  int size,count=0,iarg,i,allcount=0,grid_index;
   float f;
   double d;
-  char *version1,*version2;
   Bool verb=TRUE,b;
   Stack stack[15];
+  Restartheader header1,header2;
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -137,91 +204,56 @@ int main(int argc,char **argv)
   bstruct_setout(file1,FALSE);
   bstruct_setout(file2,FALSE);
   /* compare header */
-  if(bstruct_readbeginstruct(file1,"header"))
-    fprintf(stderr,"No header found in '%s'.\n",argv[iarg]);
-  else
+  if(readheader(file1,&header1,argv[iarg]))
   {
-    if(bstruct_readbeginstruct(file2,"header"))
-    {
-      fprintf(stderr,"No header found in '%s'.\n",argv[iarg+1]);
-      bstruct_readendstruct(file1,"header");
-    }
-    else
-    {
-      version1=bstruct_readstring(file1,"version");
-      if(version1!=NULL)
-      {
-        version2=bstruct_readstring(file2,"version");
-        if(version2!=NULL)
-        {
-          if(strcmp(version1,version2))
-            fprintf(stderr,"Version %s in '%s' differs from version %s in '%s'.\n",
-                    version1,argv[iarg],version2,argv[iarg+1]);
-          free(version2);
-        }
-        free(version1);
-      }
-      else
-        free(version1);
-      if(!bstruct_readint(file1,"year",&year1))
-      {
-        if(!bstruct_readint(file2,"year",&year2))
-        {
-          if(year1!=year2)
-            fprintf(stderr,"Year %d in '%s' differs from %d in '%s'.\n",
-                    year1,argv[iarg],year2,argv[iarg+1]);
-        }
-      }
-      if(!bstruct_readint(file1,"firstcell",&firstcell1))
-      {
-        if(!bstruct_readint(file2,"firstcell",&firstcell2))
-        {
-          if(firstcell1!=firstcell2)
-            fprintf(stderr,"First cell %d in '%s' differs from %d in '%s'.\n",
-                    firstcell1,argv[iarg],firstcell2,argv[iarg+1]);
-        }
-      }
-      grid_index=firstcell1;
-      if(!bstruct_readint(file1,"npft",&npft1))
-      {
-        if(!bstruct_readint(file2,"npft",&npft2))
-        {
-          if(npft1!=npft2)
-            fprintf(stderr,"Number of PFTs %d in '%s' differs from %d in '%s'.\n",
-                    npft1,argv[iarg],npft2,argv[iarg+1]);
-        }
-      }
-      if(!bstruct_readint(file1,"ncft",&npft1))
-      {
-        if(!bstruct_readint(file2,"ncft",&npft2))
-        {
-          if(npft1!=npft2)
-            fprintf(stderr,"Number of CFTs %d in '%s' differs from %d in '%s'.\n",
-                    npft1,argv[iarg],npft2,argv[iarg+1]);
-        }
-      }
-      if(!bstruct_readint(file1,"datatype",&datatype1))
-      {
-        if(!bstruct_readint(file2,"datatype",&datatype2))
-        {
-          if(datatype1!=datatype2)
-          {
-            fprintf(stderr,"Datatype %d in '%s' differs from %d in '%s'.\n",
-                    datatype1,argv[iarg],datatype2,argv[iarg+1]);
-            bstruct_finish(file1);
-            bstruct_finish(file2);
-            return EXIT_FAILURE;
-          }
-        }
-      }
-      cmpheaderbool(file1,file2,"landuse",argv[iarg],argv[iarg+1]);
-      cmpheaderbool(file1,file2,"crop_phu_option",argv[iarg],argv[iarg+1]);
-      cmpheaderbool(file1,file2,"river_routing",argv[iarg],argv[iarg+1]);
-      cmpheaderbool(file1,file2,"separate_harvests",argv[iarg],argv[iarg+1]);
-      bstruct_readendstruct(file1,"header");
-      bstruct_readendstruct(file2,"header");
-    }
+    bstruct_finish(file1);
+    bstruct_finish(file2);
+    return EXIT_FAILURE;
   }
+  if(readheader(file2,&header2,argv[iarg+1]))
+  {
+    bstruct_finish(file1);
+    bstruct_finish(file2);
+    return EXIT_FAILURE;
+  }
+  if(strcmp(header1.version,header2.version))
+    fprintf(stderr,"Version %s in '%s' differs from version %s in '%s'.\n",
+            header1.version,argv[iarg],header2.version,argv[iarg+1]);
+  free(header1.version);
+  free(header2.version);
+  if(header1.year!=header2.year)
+    fprintf(stderr,"Year %d in '%s' differs from %d in '%s'.\n",
+             header1.year,argv[iarg],header2.year,argv[iarg+1]);
+  if(header1.firstcell!=header2.firstcell)
+    fprintf(stderr,"First cell %d in '%s' differs from %d in '%s'.\n",
+            header1.firstcell,argv[iarg],header2.firstcell,argv[iarg+1]);
+  grid_index=header1.firstcell;
+  if(header1.npft!=header2.npft)
+     fprintf(stderr,"Number of PFTs %d in '%s' differs from %d in '%s'.\n",
+             header1.npft,argv[iarg],header2.npft,argv[iarg+1]);
+  if(header1.ncft!=header2.ncft)
+    fprintf(stderr,"Number of CFTs %d in '%s' differs from %d in '%s'.\n",
+                    header1.ncft,argv[iarg],header2.ncft,argv[iarg+1]);
+  if(header1.datatype!=header2.datatype)
+  {
+    fprintf(stderr,"Datatype %d in '%s' differs from %d in '%s'.\n",
+                    header1.datatype,argv[iarg],header2.datatype,argv[iarg+1]);
+    bstruct_finish(file1);
+    bstruct_finish(file2);
+    return EXIT_FAILURE;
+   }
+  if(header1.landuse!=header2.landuse)
+    fprintf(stderr,"Setting landuse=%s in '%s' differs from %s in '%s'.\n",
+            bool2str(header1.landuse),argv[iarg],bool2str(header2.landuse),argv[iarg+1]);
+  if(header1.crop_phu_option!=header2.crop_phu_option)
+    fprintf(stderr,"Setting crop_phu_option=%s in '%s' differs from %s in '%s'.\n",
+            bool2str(header1.crop_phu_option),argv[iarg],bool2str(header2.crop_phu_option),argv[iarg+1]);
+  if(header1.river_routing!=header2.river_routing)
+    fprintf(stderr,"Setting river_routing=%s in '%s' differs from %s in '%s'.\n",
+            bool2str(header1.river_routing),argv[iarg],bool2str(header2.river_routing),argv[iarg+1]);
+  if(header1.separate_harvests!=header2.separate_harvests)
+    fprintf(stderr,"Setting separate_harvests=%s in '%s' differs from %s in '%s'.\n",
+            bool2str(header1.separate_harvests),argv[iarg],bool2str(header2.separate_harvests),argv[iarg+1]);
   /* switch on error messages from bstruct */
   bstruct_setout(file1,TRUE);
   bstruct_setout(file2,TRUE);
