@@ -990,6 +990,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
             ERR_USAGE,progname,progname);
+    freeattrs(global_attrs,n_global);
     return EXIT_FAILURE;
   }
   else
@@ -1002,6 +1003,7 @@ int main(int argc,char **argv)
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
       fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      freeattrs(global_attrs,n_global);
       return EXIT_FAILURE;
     }
   }
@@ -1009,13 +1011,21 @@ int main(int argc,char **argv)
   {
     file=openmetafile(&header,&metadata,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
+    {
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
+    }
     if(header.datatype!=LPJ_SHORT && header.datatype!=LPJ_FLOAT)
     {
       fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
               typenames[header.datatype],argv[iarg+2]);
       freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
       free(grid_name.name);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1035,6 +1045,9 @@ int main(int argc,char **argv)
     if(file==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
   }
@@ -1045,6 +1058,8 @@ int main(int argc,char **argv)
     freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
     free(grid_name.name);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -1058,6 +1073,8 @@ int main(int argc,char **argv)
       printallocerr("name");
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1070,6 +1087,8 @@ int main(int argc,char **argv)
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       free(grid_name.name);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1079,6 +1098,8 @@ int main(int argc,char **argv)
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       fclose(file);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
     variable=metadata.variable;
@@ -1095,6 +1116,8 @@ int main(int argc,char **argv)
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
       fclose(file);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
     grid=newvec(Coord,numcoord(coordfile));
@@ -1104,6 +1127,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       closecoord(coordfile);
       fclose(file);
       return EXIT_FAILURE;
@@ -1115,6 +1140,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       closecoord(coordfile);
       fclose(file);
       return EXIT_FAILURE;
@@ -1136,6 +1163,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1161,6 +1190,8 @@ int main(int argc,char **argv)
         free(grid_filename);
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
     }
@@ -1170,6 +1201,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1180,6 +1213,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1222,6 +1257,8 @@ int main(int argc,char **argv)
       free(grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1230,6 +1267,8 @@ int main(int argc,char **argv)
       fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file '%s'.\n",header.ncell,filename,ngrid,grid_filename);
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1245,6 +1284,8 @@ int main(int argc,char **argv)
       fprintf(stderr," is not supported.\n.");
       freemetadata(&metadata);
       freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -1257,12 +1298,18 @@ int main(int argc,char **argv)
       if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
       {
         fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
       if(header.ncell!=ngrid)
       {
         fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1280,6 +1327,9 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
                   typenames[header.datatype],argv[iarg+2]);
+          freeattrs(global_attrs,n_global);
+          if(config_filename!=NULL)
+            freeconfig_netcdf(&netcdf_config);
           fclose(file);
           return EXIT_FAILURE;
         }
@@ -1291,6 +1341,9 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,argv[iarg+2],CLM_MAX_VERSION+1);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1298,6 +1351,9 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Resolution (%g,%g) in '%s' does not match (%g,%g) in grid file.\n",
                 header.cellsize_lon,header.cellsize_lat,argv[iarg+2],res.lon,res.lat);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1309,6 +1365,9 @@ int main(int argc,char **argv)
         else
           fprintf(stderr,"%d",header.order);
         fprintf(stderr," is not supported.\n.");
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1320,6 +1379,9 @@ int main(int argc,char **argv)
       if(getfilesizep(file)==0)
       {
         fprintf(stderr,"Error: File '%s' is empty.\n",argv[iarg+2]);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1346,6 +1408,8 @@ int main(int argc,char **argv)
     fprintf(stderr,"Setting `-notime` axis option not allowed for more than one time step.\n");
     freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -1356,6 +1420,8 @@ int main(int argc,char **argv)
   {
     freemetadata(&metadata);
     freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -1373,6 +1439,8 @@ int main(int argc,char **argv)
         freemetadata(&metadata);
         freeattrs(global_attrs,n_global);
         freecoordarray(index);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1387,6 +1455,8 @@ int main(int argc,char **argv)
         freeattrs(global_attrs,n_global);
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
         freecoordarray(index);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -1398,6 +1468,8 @@ int main(int argc,char **argv)
   free(cmdline);
   freemetadata(&metadata);
   freeattrs(global_attrs,n_global);
+  if(config_filename!=NULL)
+    freeconfig_netcdf(&netcdf_config);
   if(cdf==NULL)
   {
     free(grid_filename);
