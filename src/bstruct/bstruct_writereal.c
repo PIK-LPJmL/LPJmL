@@ -24,12 +24,12 @@ Bool bstruct_writereal(Bstruct bstr,     /**< pointer to restart file */
   Bool rc=FALSE;
   Byte token;
   if(fpclassify(value)==FP_ZERO)
-    token=BSTRUCT_FZERO;  // only non-zero values are written to reduce file size
+    token=(sizeof(Real)==sizeof(double)) ? BSTRUCT_DZERO : BSTRUCT_FZERO;  // only non-zero values are written to reduce file size
   else
     token=(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT;
   if(bstruct_writename(bstr,token,name))
     return TRUE;
-  if(token!=BSTRUCT_FZERO)
+  if(fpclassify(value)!=FP_ZERO)
     rc=fwrite(&value,sizeof(value),1,bstr->file)!=1;
   return rc;
 } /* of 'bstruct_writereal' */

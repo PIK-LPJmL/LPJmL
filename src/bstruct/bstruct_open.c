@@ -39,7 +39,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
 {
   /* Function opens restart file for reading and reads name table at the end of the file */
   Bstruct bstruct;
-  int version,i;
+  int i;
   long long filepos,save;
   Byte len;
   unsigned short *id;
@@ -63,8 +63,8 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     free(bstruct);
     return NULL;
   }
-  version=READ_VERSION;
-  if(freadtopheader(bstruct->file,&bstruct->swap,BSTRUCT_HEADER,&version,isout))
+  bstruct->version=READ_VERSION;
+  if(freadtopheader(bstruct->file,&bstruct->swap,BSTRUCT_HEADER,&bstruct->version,isout))
   {
     if(isout)
       fprintf(stderr,"ERROR513: Invalid header in file '%s'.\n",filename);
@@ -72,11 +72,11 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     free(bstruct);
     return NULL;
   }
-  if(version!=BSTRUCT_VERSION)
+  if(bstruct->version>BSTRUCT_FILE_VERSION)
   {
     if(isout)
       fprintf(stderr,"ERROR514: Invalid version %d in file '%s', must be %d.\n",
-              version,filename,BSTRUCT_VERSION);
+              bstruct->version,filename,BSTRUCT_FILE_VERSION);
     fclose(bstruct->file);
     free(bstruct);
     return NULL;
@@ -115,16 +115,17 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   }
   /* save file position and seek to table */
   save=ftell(bstruct->file);
-  if(fseek(bstruct->file,filepos,SEEK_SET))
+  if(filepos<0 || filepos>=getfilesizep(bstruct->file))
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot seek to name table in '%s'.\n",
+      fprintf(stderr,"ERROR517: Cannot seek to name table in '%s', file is too short.\n",
               filename);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
+  fseek(bstruct->file,filepos,SEEK_SET);
   /* read size of name table */
   if(freadint(&bstruct->count,1,bstruct->swap,bstruct->file)!=1)
   {

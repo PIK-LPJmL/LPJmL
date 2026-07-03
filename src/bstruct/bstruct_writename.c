@@ -34,7 +34,7 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     {
       fprintf(stderr,"ERROR521: Object name for %s must be specified in struct '%s'.\n",
               bstruct_typenames[token],
-              getname(bstr->namestack[bstr->level-1].name));
+              bstruct_getname(bstr->namestack[bstr->level-1].name));
       bstruct_printnamestack(bstr);
     }
     return fwrite(&token,1,1,bstr->file)!=1;
@@ -45,7 +45,7 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     {
       fprintf(stderr,"ERROR521: Object name '%s' for %s not allowed in array '%s'.\n",name,
               bstruct_typenames[token],
-              getname(bstr->namestack[bstr->level-1].name));
+              bstruct_getname(bstr->namestack[bstr->level-1].name));
       bstruct_printnamestack(bstr);
     }
   }

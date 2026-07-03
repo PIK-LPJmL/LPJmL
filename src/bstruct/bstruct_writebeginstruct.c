@@ -23,9 +23,10 @@ Bool bstruct_writebeginstruct(Bstruct bstr,    /**< pointer to restart file */
   /* Function adds a new level of struct in restart file */
   if(bstruct_writename(bstr,BSTRUCT_BEGINSTRUCT,name))
     return TRUE;
-  if(bstr->level==MAXLEVEL-1)
+  if(bstr->level==BSTRUCT_MAXLEVEL-1)
   {
-    fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",MAXLEVEL);
+    fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",
+            BSTRUCT_MAXLEVEL);
     bstruct_printnamestack(bstr);
     return TRUE;
   }

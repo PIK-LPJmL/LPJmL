@@ -33,18 +33,27 @@ Bool bstruct_readfloat(Bstruct bstr,     /**< pointer to restart file */
     *value=0;
     return FALSE;
   }
+  if(bstr->version==1 && token==BSTRUCT_DZERO)
+  {
+    /* for version 1 file only BSTRUCT_DZERO is defined for both float and double */
+    *value=0;
+    return FALSE;
+  }
   if(token!=BSTRUCT_FLOAT)
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not float.\n",
-              getname(name),bstruct_typenames[token]);
+              bstruct_getname(name),bstruct_typenames[token]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
   if(freadfloat(value,1,bstr->swap,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading float '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   return FALSE;

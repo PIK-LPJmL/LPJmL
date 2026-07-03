@@ -26,10 +26,11 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
     return TRUE;
   if(bstruct_findobject(bstr,&b,BSTRUCT_BEGINARRAY,name))
     return TRUE;
-  if(bstr->level==MAXLEVEL-1)
+  if(bstr->level==BSTRUCT_MAXLEVEL-1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR515: Too deep nesting of arrays, %d allowed.\n",MAXLEVEL);
+      fprintf(stderr,"ERROR515: Too deep nesting of arrays, %d allowed.\n",
+              BSTRUCT_MAXLEVEL);
     bstruct_freenamestack(bstr);
     return TRUE;
   }
@@ -45,7 +46,7 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
     if(fread(&b,1,1,bstr->file)!=1)
     {
       if(bstr->isout)
-        fprintf(stderr,"ERROR512: Cannot read array length of '%s'.\n",getname(name));
+        fprintf(stderr,"ERROR512: Cannot read array length of '%s'.\n",bstruct_getname(name));
       return TRUE;
     }
     *size=b;
@@ -55,22 +56,25 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
   if(b!=BSTRUCT_BEGINARRAY)
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not array.\n",
-              getname(name),bstruct_typenames[b]);
+              bstruct_getname(name),bstruct_typenames[b]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
   if(freadint(size,1,bstr->swap,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading array size of '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   if(*size<0)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR526: Invalid array length %d of '%s'.\n",
-              *size,getname(name));
+              *size,bstruct_getname(name));
     return TRUE;
   }
   bstr->namestack[bstr->level++].size=*size;

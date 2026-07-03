@@ -1,1 +1,1 @@
-Bool bstruct_readdouble(Bstruct bstr,const char *,double *);
+Bool bstruct_readdouble(Bstruct,const char *,double *);

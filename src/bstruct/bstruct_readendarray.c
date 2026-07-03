@@ -25,7 +25,7 @@ Bool bstruct_readendarray(Bstruct bstr,    /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading token for endarray of '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   if(token!=BSTRUCT_ENDARRAY)
@@ -38,6 +38,7 @@ Bool bstruct_readendarray(Bstruct bstr,    /**< pointer to restart file */
       else
         fprintf(stderr,"ERROR509: Type=%s is not endarray for array '%s'.\n",
                 bstruct_typenames[token & 63],name);
+      bstruct_printnamestack(bstr);
     }
     return TRUE;
   }

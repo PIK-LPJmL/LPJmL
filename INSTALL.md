@@ -1,4 +1,4 @@
-# Installation of LPJmL C Version 6.1.3
+# Installation of LPJmL C Version 6.1.4
 
 ## Overview
 
@@ -59,7 +59,7 @@ After extracting the source files, the directory structure will look like this:
 ```bash
 mkdir lpjml
 cd lpjml
-gzip -cd lpjml-6.1.3.tar.gz | tar -xf -
+gzip -cd lpjml-6.1.4.tar.gz | tar -xf -
 ```
 
 ---
@@ -157,6 +157,7 @@ The following programs are created in the bin directory:
 |`cfts26lu2clm` | convert binary landuse data files to CLM data files for LPJmL       |
 |`clm2cdf`      | convert CLM files into NetCDF files                                 |
 |`cmpbin`       | compare two binary output files                                     |
+|`cmprestart`   | compare two restart files for LPJmL and check for identity          |
 |`copyheader`   | copy CLM file header                                                |
 |`country2cdf`  | convert country/region code file into NetCDF file                   |
 |`coupler_demo` | Demo program for coupling to a program witch socket communication   |

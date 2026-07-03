@@ -39,7 +39,7 @@ Bool bstruct_readtoken(Bstruct bstr,     /**< pointer to restart file */
               name,strerror(errno));
     return TRUE;
   }
-  if(isinvalidtoken(*token_read))
+  if(bstruct_isinvalidtoken(*token_read))
   {
     if(bstr->isout)
     {

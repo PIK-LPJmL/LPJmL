@@ -28,7 +28,6 @@
 #define USAGE "Usage: %s [-h] [-name key] [-first] [-json] [-noindent] [-invalid2null] [-d n]\n"\
               "       [-t] restartfile [first [last]]\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
-#define getname(name) (name==NULL) ? "unnamed" : name
 
 static void printname(const char *name)
 {
@@ -246,7 +245,7 @@ int main(int argc,char **argv)
             first=TRUE;
             if(indent)
               repeatch(' ',2*(level-keylevel));
-            if(data.name==NULL)
+            if(bstruct_isunnamed(&data))
               puts(data.token==BSTRUCT_BEGINSTRUCT ? "{" : "[");
             else
               printf("\"%s\" : %c\n",data.name,data.token==BSTRUCT_BEGINSTRUCT ? '{' : '[');
@@ -257,7 +256,7 @@ int main(int argc,char **argv)
               first=FALSE;
             else
               repeatch(' ',2*(level-keylevel));
-            if(data.name==NULL)
+            if(bstruct_isunnamed(&data))
             {
               fputs("- ",stdout);
               first=TRUE;
@@ -321,7 +320,7 @@ int main(int argc,char **argv)
             first=FALSE;
           else
             repeatch(' ',2*(level-keylevel));
-          if(data.name==NULL)
+          if(bstruct_isunnamed(&data))
             fputs("- ",stdout);
           else
           {
@@ -333,13 +332,13 @@ int main(int argc,char **argv)
         {
           if(isnan(data.data.f))
           {
-            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",getname(data.name));
+            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",bstruct_getname(data.name));
             if(setnull)
               data.token=BSTRUCT_NULL;
           }
           else if(isinf(data.data.f))
           {
-            fprintf(stderr,"Error: Value of '%s' is infinite.\n",getname(data.name));
+            fprintf(stderr,"Error: Value of '%s' is infinite.\n",bstruct_getname(data.name));
             if(setnull)
               data.token=BSTRUCT_NULL;
           }
@@ -348,13 +347,13 @@ int main(int argc,char **argv)
         {
           if(isnan(data.data.d))
           {
-            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",getname(data.name));
+            fprintf(stderr,"Error: Value of '%s' is not a number (Nan).\n",bstruct_getname(data.name));
             if(setnull)
               data.token=BSTRUCT_NULL;
           }
           else if(isinf(data.data.d))
           {
-            fprintf(stderr,"Error: Value of '%s' is infinite.\n",getname(data.name));
+            fprintf(stderr,"Error: Value of '%s' is infinite.\n",bstruct_getname(data.name));
             if(setnull)
               data.token=BSTRUCT_NULL;
           }

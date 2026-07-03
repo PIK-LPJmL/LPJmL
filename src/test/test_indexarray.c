@@ -11,11 +11,13 @@
 #include "list.h"
 #include "hash.h"
 #include "swap.h"
+#include "getfilesizep.h"
 #include "freadtopheader.h"
 #include "fwritetopheader.h"
 #include "fputprintable.h"
 #include "bstruct_intern.h"
 #include "bstruct_skipdata.h"
+#include "bstruct_skiparrayelements.h"
 #include "bstruct_findobject.h"
 #include "bstruct_wopen.h"
 #include "bstruct_open.h"
@@ -46,13 +48,15 @@ void test_restart(void)
   long long pos[N],filepos;
   float vec[N],vec5=0;
   int i,size;
+  Bool rc;
   filename=tmpnam(NULL);
   bstr=bstruct_create(filename);
   TEST_ASSERT_NOT_NULL(bstr);
-  bstruct_writebeginindexarray(bstr,"vec",&filepos,N); 
+  bstruct_writebeginindexarray(bstr,"vec",&filepos,N);
   for(i=0;i<N;i++)
   {
     vec[i]=i;
+    /* store file position */
     pos[i]=bstruct_getarrayindex(bstr);
     bstruct_writefloat(bstr,NULL,vec[i]);
   }
@@ -61,11 +65,22 @@ void test_restart(void)
   bstruct_finish(bstr);
   bstr=bstruct_open(filename,TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
+  rc=bstruct_readbeginarray(bstr,"vec",&size);
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
+  TEST_ASSERT_EQUAL_INT(N,size);
+  rc=bstruct_seekindexarray(bstr,5,N);
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
+  rc=bstruct_readfloat(bstr,NULL,&vec5);
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
+  TEST_ASSERT_EQUAL_FLOAT(vec[5],vec5);
+  bstruct_finish(bstr);
+  bstr=bstruct_open(filename,TRUE);
+  TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readbeginarray(bstr,"vec",&size);
   TEST_ASSERT_EQUAL_INT(N,size);
-  bstruct_seekindexarray(bstr,5,N); 
-  bstruct_readfloat(bstr,NULL,&vec5);
-  TEST_ASSERT_EQUAL_FLOAT(vec[5],vec5);
+  rc=bstruct_readfloat(bstr,NULL,&vec5);
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
+  TEST_ASSERT_EQUAL_FLOAT(vec[0],vec5);
   bstruct_finish(bstr);
   unlink(filename);
 }

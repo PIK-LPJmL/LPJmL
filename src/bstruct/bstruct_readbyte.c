@@ -35,15 +35,18 @@ Bool bstruct_readbyte(Bstruct bstr,     /**< pointer to restart file */
   if(token!=BSTRUCT_BYTE)
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not byte.\n",
-              getname(name),bstruct_typenames[token]);
+              bstruct_getname(name),bstruct_typenames[token]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
   if(fread(value,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR508: Unexpected end of file reading bool '%s'.\n",
-              getname(name));
+              bstruct_getname(name));
     return TRUE;
   }
   return FALSE;

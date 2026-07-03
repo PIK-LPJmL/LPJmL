@@ -21,6 +21,31 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.4] - 2026-07-03
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de)
+
+### Added
+
+- Utility `cmprestart` added to compare two restart files and check for identity.
+- Function `bstruct_skiparray()` and corresponding test `test_skiparray.c` added in `bstruct` library to skip arrary elements.
+- Function `bstruct_gettype()` added to `bstruct` library to get datatype of object in restart file.
+- Function `bstrucht_printnamestack()` added for more comprehensive error messages.
+- Comparison of restart files with `cmprestart` added to merge request template.
+
+### Changed
+
+- Index array object is always skipped in `bstruct_findobject.c`, test `test_indexarray.c` updated to test for reading array without seeking to an index array.
+- Check for seeking to position within file added to `bstruct_findobject.c`, `bstruct_open.c`, `bstruct_wopen.c` and `bstruct_seekindexarray.c`.
+- Constant `MAXLEVEL` renamed to `BSTRUCT_MAXLEVEL`.
+- Macros `getname()` and `isinvalidtoken()` renamed to `bstruct_getname()` and `bstruct_isinvalidtoken()`.
+- String comparison in `bstruct_fprintdata` replaced by call to `isnan()` and `isinf()`.
+- New token `bstruct_dzero` defined for restart files to distinguish between float and double zeros, version of bstruct files changed to 2.
+
+
 ## [6.1.3] - 2026-07-03
 
 ### Contributors

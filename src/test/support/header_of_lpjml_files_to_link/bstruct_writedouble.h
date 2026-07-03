@@ -1,1 +1,1 @@
-Bool bstruct_writedouble(Bstruct bstr,const char *,double);
+Bool bstruct_writedouble(Bstruct,const char *,double);

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**         b  s  t  r  u  c  t  _  w  r  i  t  e  d  o  u  b  l  e  .  c          \n**/
+/**                b  s  t  r  u  c  t  _  s  k  i  p  a  r  r  a  y  .  c         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,17 +16,15 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writedouble(Bstruct bstr,     /**< pointer to restart file */
-                         const char *name, /**< name of object or NULL */
-                         double value      /**< value written to file */
-                        )                  /** \return TRUE on error */
+Bool bstruct_skiparray(Bstruct bstr /**< pointer to restart file */
+                      )              /** \return TRUE on error */
 {
-  Bool rc=FALSE;
-  Byte token;
-  token=(fpclassify(value)==FP_ZERO) ? BSTRUCT_DZERO : BSTRUCT_DOUBLE; // only non-zero values are written to reduce file size
-  if(bstruct_writename(bstr,token,name))
-    return TRUE;
-  if(token==BSTRUCT_DOUBLE)
-    rc=fwrite(&value,sizeof(value),1,bstr->file)!=1;
-  return rc;
-} /* of 'bstruct_writedouble' */
+  /* Function skips an array object in restart file */
+  if(bstr->level>0)
+  {
+    free(bstr->namestack[bstr->level-1].name);
+    bstr->level--;
+  }
+  /* skip whole array */
+  return bstruct_skiparrayelements(bstr);
+} /* of 'bstruct_skiparray' */

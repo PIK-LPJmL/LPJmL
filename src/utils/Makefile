@@ -28,7 +28,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O cfts26_lu2clm.$O drainage.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
           printglobal.$O binsum.$O arr2clm.$O regriddrain.$O coupler_demo.$O\
           cmpbin.$O statclm.$O drainage2cdf.$O cdf2grid.$O reservoir2cdf.$O\
-          restart2yaml.$O splitclm.$O json2restart.$O
+          restart2yaml.$O splitclm.$O json2restart.$O cmprestart.$O
 
 SRC    =  cru2clm.c cvrtsoil.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -43,7 +43,7 @@ SRC    =  cru2clm.c cvrtsoil.c cfts26_lu2clm.c drainage.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
           arr2clm.c regriddrain.c coupler_demo.c cmpbin.c statclm.c drainage2cdf.c\
-          reservoir2df.c restart2yaml.c json2restart.c
+          reservoir2df.c restart2yaml.c json2restart.c cmprestart.c
 
 INC     = ../../include
 
@@ -82,7 +82,7 @@ all: $(BIN)/cru2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/lpjcat$E $(BIN)/cat2bsq$E $(BIN)/grd2bsq$E $(BIN)/drainage$E\
      $(BIN)/cvrtsoil$E $(BIN)/river_sections_input_irrig$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
-     $(BIN)/printdrain$E $(BIN)/lpjcheck$E\
+     $(BIN)/printdrain$E $(BIN)/lpjcheck$E $(BIN)/cmprestart$E\
      $(BIN)/printreservoir$E $(BIN)/regridclm$E $(BIN)/asc2clm$E\
      $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E $(BIN)/cdf2grid$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
@@ -109,7 +109,7 @@ clean:
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
             printglobal$E binsum$E regriddrain$E coupler_demo$E cmpbin$E\
-            statclm$E splitclm$E restart2yaml$E json2restart$E)
+            statclm$E splitclm$E restart2yaml$E json2restart$E cmprestart$E)
 
 $(OBJS): $(HDRS)
 
@@ -263,6 +263,9 @@ $(BIN)/getcountry$E: getcountry.$O $(LPJLIBS)
 
 $(BIN)/json2restart$E: json2restart.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/json2restart$E json2restart.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/cmprestart$E: cmprestart.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cmprestart$E cmprestart.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/restart2yaml$E: restart2yaml.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/restart2yaml$E restart2yaml.$O $(LPJLIBS) $(LIBS)

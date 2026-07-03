@@ -24,7 +24,7 @@ Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
   if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINARRAY)
   {
     fprintf(stderr,"ERROR521: Endstruct not allowed in array '%s'.\n",
-            getname(bstr->namestack[bstr->level-1].name));
+            bstruct_getname(bstr->namestack[bstr->level-1].name));
     bstruct_printnamestack(bstr);
   }
   if(bstr->level<=1)

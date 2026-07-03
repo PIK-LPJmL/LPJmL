@@ -41,7 +41,7 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
   char *name;
   short *id;
   Bstruct bstruct;
-  int i,version,count;
+  int i,count;
   Byte len;
   bstruct=new(struct bstruct);
   if(bstruct==NULL)
@@ -84,8 +84,8 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
   if(append)
   {
     /* append data to old file */
-    version=READ_VERSION;
-    if(freadtopheader(bstruct->file,&bstruct->swap,BSTRUCT_HEADER,&version,isout))
+    bstruct->version=READ_VERSION;
+    if(freadtopheader(bstruct->file,&bstruct->swap,BSTRUCT_HEADER,&bstruct->version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR513: Invalid header in file '%s'.\n",filename);
@@ -94,11 +94,11 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
       free(bstruct);
       return NULL;
     }
-    if(version!=BSTRUCT_VERSION)
+    if(bstruct->version!=BSTRUCT_FILE_VERSION)
     {
       if(isout)
         fprintf(stderr,"ERROR514: Invalid version %d in file '%s', must be %d.\n",
-                version,filename,BSTRUCT_VERSION);
+                bstruct->version,filename,BSTRUCT_FILE_VERSION);
       fclose(bstruct->file);
       freehash(bstruct->hash);
       free(bstruct);
@@ -129,15 +129,17 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
     else
     {
       /* a name table is stored in the restart file */
-      if(fseek(bstruct->file,filepos,SEEK_SET))
+      if(filepos<0 || filepos>=getfilesizep(bstruct->file))
       {
         if(isout)
-          fprintf(stderr,"ERROR517: Cannot seek to name table.\n");
+          fprintf(stderr,"ERROR517: Cannot seek to name table in '%s', target is outside file boundaries.\n",
+                  filename);
         fclose(bstruct->file);
         freehash(bstruct->hash);
         free(bstruct);
         return NULL;
       }
+      fseek(bstruct->file,filepos,SEEK_SET);
       /* read size of name table */
       if(fread(&count,sizeof(count),1,bstruct->file)!=1)
       {
@@ -217,7 +219,8 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
   }
   else
   {
-    fwritetopheader(bstruct->file,BSTRUCT_HEADER,BSTRUCT_VERSION);
+    bstruct->version=BSTRUCT_FILE_VERSION;
+    fwritetopheader(bstruct->file,BSTRUCT_HEADER,BSTRUCT_FILE_VERSION);
     /* initialize file position of name table to zero and write to file */
     filepos=0;
     fwrite(&filepos,sizeof(filepos),1,bstruct->file);

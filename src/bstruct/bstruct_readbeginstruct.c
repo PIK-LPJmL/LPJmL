@@ -16,7 +16,7 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_readbeginstruct(Bstruct bstr,    /**< pointer to restart file */
+Bool bstruct_readbeginstruct(Bstruct bstr,   /**< pointer to restart file */
                             const char *name /**< name of object or NULL */
                            )                 /** \return TRUE on error */
 {
@@ -28,14 +28,18 @@ Bool bstruct_readbeginstruct(Bstruct bstr,    /**< pointer to restart file */
   if((token & 63) !=BSTRUCT_BEGINSTRUCT)
   {
     if(bstr->isout)
+    {
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not struct.\n",
               name,bstruct_typenames[token & 63]);
+      bstruct_printnamestack(bstr);
+    }
     return TRUE;
   }
-  if(bstr->level==MAXLEVEL-1)
+  if(bstr->level==BSTRUCT_MAXLEVEL-1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",MAXLEVEL);
+      fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",
+              BSTRUCT_MAXLEVEL);
     bstruct_freenamestack(bstr);
     return TRUE;
   }

@@ -39,7 +39,7 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading int '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       *value=token;
@@ -49,7 +49,7 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading int '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       *value=s;
@@ -59,7 +59,7 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading int '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       *value=us;
@@ -69,14 +69,17 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading int '%s'.\n",
-                  getname(name));
+                  bstruct_getname(name));
         return TRUE;
       }
       return FALSE;
     default:
       if(bstr->isout)
+      {
         fprintf(stderr,"ERROR509: Type of '%s'=%s is not int.\n",
-                getname(name),bstruct_typenames[token]);
+                bstruct_getname(name),bstruct_typenames[token]);
+        bstruct_printnamestack(bstr);
+      }
       return TRUE;
   }
   return FALSE;
