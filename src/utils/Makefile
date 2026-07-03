@@ -222,10 +222,10 @@ $(BIN)/mathclm$E: mathclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/cutclm$E: cutclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/splitclm$E: splitclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/splitclm$E splitclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/splitclm$E splitclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/setclm$E: setclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/setclm$E setclm.$O $(LPJLIBS) $(LIBS)
@@ -234,7 +234,7 @@ $(BIN)/mergeclm$E: mergeclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mergeclm$E mergeclm.$O $(LPJLIBS)
 
 $(BIN)/catclm$E: catclm.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/coupler_demo$E: coupler_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/coupler_demo$E coupler_demo.$O $(LPJLIBS)\

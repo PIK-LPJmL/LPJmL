@@ -20,38 +20,23 @@
 #include <netcdf.h>
 #endif
 
-Limit *getlimitarray_netcdf(const char *filename, /**< name of NetCDF file */
-                            int *size,            /**< size of limit array */
-                            const char *name,     /**< name of limit array in NetCDF file */
-                            Verbosity verb        /**< verbosity level (NO_ERR,ERR,VERB) */
-                           )                      /** limit array read or NULL on error */
+Limit *getlimitarray_netcdf(int ncid,        /**< id of NetCDF file */
+                            int *size,       /**< size of limit array */
+                            const char *name /**< name of limit array in NetCDF file */
+                           )                 /** limit array read or NULL on error */
 {
 #ifdef USE_NETCDF
   Limit *limits;
   double *data;
   size_t len;
-  int ncid,varid,rc,ndims,dimids[2],i,count;
-  rc=nc_open(filename,NC_NOWRITE,&ncid);
-  if(rc)
-  {
-    if(verb)
-      fprintf(stderr,"ERROR401: Cannot open '%s': %s\n",filename,nc_strerror(rc));
-    return NULL;
-  }
+  int varid,rc,ndims,dimids[2],i,count;
   if(nc_inq_varid(ncid,name,&varid))
-  {
-    if(verb)
-      fprintf(stderr,"ERROR406: Cannot find variable %s in '%s'.\n",name,filename);
-    nc_close(ncid);
     return NULL;
-  }
   nc_inq_varndims(ncid,varid,&ndims);
   if(ndims!=2)
   {
-    if(verb)
-      fprintf(stderr,"ERROR408: Invalid number %d of dimensions of %s in '%s', must be 2.\n",
-              ndims,name,filename);
-    nc_close(ncid);
+    fprintf(stderr,"ERROR408: Invalid number %d of dimensions of %s, must be 2.\n",
+            ndims,name);
     return NULL;
   }
   nc_inq_vardimid(ncid,varid,dimids);
@@ -60,29 +45,23 @@ Limit *getlimitarray_netcdf(const char *filename, /**< name of NetCDF file */
   nc_inq_dimlen(ncid,dimids[1],&len);
   if(len!=2)
   {
-    if(verb)
-      fprintf(stderr,"ERROR408: Length of second dimension=%zu of %s in '%s' is not 2.\n",
-              len,name,filename);
-    nc_close(ncid);
+    fprintf(stderr,"ERROR408: Length of second dimension=%zu of %s, is not 2.\n",
+            len,name);
     return NULL;
   }
   data=newvec(double,*size*2);
   if(data==NULL)
   {
     printallocerr("data");
-    nc_close(ncid);
     return NULL;
   }
   rc=nc_get_var_double(ncid,varid,data);
   if(rc)
   {
-    if(verb)
-      fprintf(stderr,"ERROR411: Cannot read %s in '%s': %s\n",name,filename,nc_strerror(rc));
+    fprintf(stderr,"ERROR411: Cannot read %s: %s\n",name,nc_strerror(rc));
     free(data);
-    nc_close(ncid);
     return NULL;
   }
-  nc_close(ncid);
   limits=newvec(Limit,*size);
   if(limits==NULL)
   {

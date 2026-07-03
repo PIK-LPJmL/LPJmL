@@ -569,7 +569,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
                  )                     /** \return TRUE on error */
 {
   int i,count,s,p,cell,l,ndata,nirrig,nnat;
-  Real ndate1,sumfrac;
+  Real ndate1,sumfrac,fracsum;
   const Stand *stand;
   const Pft *pft;
   const Pfttree *tree;
@@ -577,8 +577,8 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+  Real depth;
   Real *litter;
-  Real depth=0;
 
 #ifdef USE_TIMING
   double t;
@@ -787,6 +787,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           {
             for(p=0;p<stand->soil.litter.n;p++)
               getoutput(&grid[cell].output,SOILC_1m,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+            depth=0;
             forrootsoillayer(l)
             {
               depth+=soildepth[l];
@@ -1019,8 +1020,13 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
+        {
+          fracsum=0;
           foreachstand(stand,s,grid[cell].standlist)
-            getoutput(&grid[cell].output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+            fracsum+=stand->frac;
+          foreachstand(stand,s,grid[cell].standlist)
+            getoutput(&grid[cell].output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac/fracsum;
+        }
     }
     writeoutputvar(MAXTHAW_DEPTH,1);
   }

@@ -25,6 +25,7 @@ int main(int argc,char **argv)
   Type coord_type;
   Filename coord_filename;
   Header header;
+  Metadata metadata;
   FILE *in,*out;
   char *arglist,*out_json;
   float *data,value,invalid,replace;
@@ -252,7 +253,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+2],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&coord_filename,coord_type,CLM,id,FALSE,version);
+    initmetadata(&metadata,NULL);
+    metadata.source="arr2clm";
+    fprintjson(out,argv[iarg+2],NULL,arglist,&header,&metadata,&coord_filename,coord_type,CLM,id,FALSE,version);
     fclose(out);
   }
   return EXIT_SUCCESS;

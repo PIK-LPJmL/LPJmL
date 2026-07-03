@@ -331,7 +331,7 @@ extern void freesoilpar(Soilpar [],int);
 extern void fprintlitter(FILE *,const Litter *);
 extern void fprintsoilpar(FILE *,const Config *);
 extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int);
-extern FILE *fopensoilcode(const Filename *,Map **,Bool *,size_t *,Type *,unsigned int,Bool);
+extern FILE *fopensoilcode(const Filename *,Metadata *,Bool *,size_t *,Type *,unsigned int,Bool);
 extern int *getsoilmap(Map *,const Config *);
 extern Bool fwritesoil(Bstruct,const char *,const Soil *,int);
 extern Bool fwritelitter(Bstruct,const char *,const Litter *);

@@ -229,18 +229,15 @@ int main(int argc,char **argv)
   Filename filename;
   Climatefile data;
   Config config;
-  char *units,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
+  char *outname,*endptr,*out_json,*arglist,*title=NULL;
   const char *progname;
   Coord *grid;
   Intcoord intcoord;
   float fcoord[2];
   double dcoord[2];
   FILE *file;
-  Map *map=NULL;
+  Metadata metadata;
   int iarg,j,k;
-  Attr *attrs=NULL;
-  int n_attr=0,len;
-  char name[NC_MAX_NAME];
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
@@ -251,14 +248,13 @@ int main(int argc,char **argv)
   filename.map=NULL;
   filename.time=NULL;
   filename.unit=NULL;
-  units=NULL;
-  map_name=NULL;
-  map=0;
   outname="out.bin"; /* default file name for output */
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
+  initmetadata(&metadata,BAND_NAMES);
+  filename.map=BAND_NAMES;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
@@ -277,18 +273,18 @@ int main(int argc,char **argv)
                "-units u     set unit to convert from NetCDF file\n"
 #endif
                "-var name    variable name in NetCDF file\n"
-               "-map name    name of map in NetCDF file\n"
+               "-map name    name of map in NetCDF file, default is \"%s\"\n"
                "-clm         grid file is in CLM format, default is raw\n"
                "-byte        output data is converted in byte\n"
                "-floatgrid   set datatype of grid file to float, default is short\n"
                "-doublegrid  set datatype of grid file to double, default is short\n"
-               "-cellsize s  cell size in grid file, default is 0.5\n"
-               "-json        JSON metafile is created with suffix '.json'\n"
-               "-o binfile   filename of raw data file written. Default is out.bin\n"
+               "-cellsize s  cell size in grid file, default is %g\n"
+               "-json        JSON metafile is created with suffix '%s'\n"
+               "-o binfile   filename of raw data file written. Default is %s\n"
                "gridfile     filename of grid data file\n"
                "netcdffile   filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,metadata.map_name,cellsize_lon,JSON_SUFFIX,outname);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-swap"))
@@ -325,8 +321,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        units=strdup(argv[++iarg]);
-        check(units);
+        metadata.unit=strdup(argv[++iarg]);
+        check(metadata.unit);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -337,7 +333,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        filename.map=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-o"))
       {
@@ -502,6 +498,7 @@ int main(int argc,char **argv)
   file=fopen(outname,"wb");
   if(file==NULL)
   {
+    free(grid);
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
     return EXIT_FAILURE;
   }
@@ -510,70 +507,50 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&data,NULL,NULL,NULL,argv[j],&filename,units,&config))
+    if(openclimate_netcdf(&data,(j==iarg+1) ? &metadata : NULL,argv[j],&filename,metadata.unit,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
+      free(grid);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(filename.var==NULL)
       filename.var=getvarname_netcdf(&data);
-    if(units==NULL)
-      units=getattr_netcdf(data.ncid,data.varid,"units");
-    long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
-    standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
-    history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
-    source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
-    title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
     if(j==iarg+1)
     {
-      if(isjson)
+      metadata.variable=strdup(filename.var);
+      if(metadata.unit==NULL)
+        metadata.unit=getattr_netcdf(data.ncid,data.varid,"units");
+      metadata.long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
+      metadata.standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
+      metadata.history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
+      metadata.source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
+      title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
+      if(metadata.map==NULL)
       {
-        if(map_name!=NULL)
+        if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.fuel.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+        else if((metadata.map=readmap_netcdf(data.ncid,config.netcdf.stand_name.name))!=NULL)
+          metadata.map_name=BAND_NAMES;
+      }
+      for(k=0;k<metadata.n_attr;k++)
+      {
+        if(!strcmp(metadata.attrs[k].name,"history") || !strcmp(metadata.attrs[k].name,"source") || !strcmp(metadata.attrs[k].name,"title"))
         {
-          map=readmap_netcdf(data.ncid,map_name);
-          if(map==NULL)
-          {
-            fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
-            map_name=NULL;
-          }
-          else
-            map_name=BAND_NAMES;
-        }
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
-          map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
-          map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.fuel.name))!=NULL)
-          map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.stand_name.name))!=NULL)
-          map_name=BAND_NAMES;
-        if(nc_inq_natts(data.ncid,&len))
-          n_attr=0;
-        else
-        {
-          attrs=newvec(Attr,len);
-          if(attrs==NULL)
-          {
-            printallocerr("attrs");
-            return EXIT_FAILURE;
-          }
-          n_attr=0;
-          for(k=0;k<len;k++)
-          {
-            if(!nc_inq_attname(data.ncid,NC_GLOBAL,k,name))
-            {
-              if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
-              {
-                attrs[n_attr].value=getattr_netcdf(data.ncid,NC_GLOBAL,name);
-                if(attrs[n_attr].value!=NULL)
-                  attrs[n_attr++].name=strdup(name);
-              }
-            }
-          }
+          free(metadata.attrs[k].name);
+          free(metadata.attrs[k].value);
+          metadata.attrs[k]=metadata.attrs[metadata.n_attr-1];
+          k--;
+          metadata.n_attr--;
         }
       }
-      else
-        map_name=NULL;
     }
     if(isclm || isjson)
     {
@@ -609,11 +586,23 @@ int main(int argc,char **argv)
         if(data.firstyear!=header.firstyear+header.nyear)
         {
           fprintf(stderr,"First year %d in '%s' is not %d.\n",data.firstyear,argv[j],header.firstyear+header.nyear);
+          free(grid);
+          free(filename.var);
+          free(title);
+          freemetadata(&metadata);
+          closeclimate_netcdf(&data,TRUE);
+          fclose(file);
           return EXIT_FAILURE;
         }
         if(data.var_len!=header.nbands)
         {
           fprintf(stderr,"Number of bands %d in '%s' is not %d.\n",(int)data.var_len,argv[j],header.nbands);
+          free(grid);
+          free(filename.var);
+          free(title);
+          freemetadata(&metadata);
+          closeclimate_netcdf(&data,TRUE);
+          fclose(file);
           return EXIT_FAILURE;
         }
         header.nyear+=data.nyear;
@@ -622,6 +611,12 @@ int main(int argc,char **argv)
     if(readmydata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
+      free(grid);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
+      closeclimate_netcdf(&data,TRUE);
+      fclose(file);
       return EXIT_FAILURE;
     }
     closeclimate_netcdf(&data,TRUE);
@@ -631,6 +626,7 @@ int main(int argc,char **argv)
     rewind(file);
     fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   }
+  free(grid);
   fclose(file);
   if(isjson)
   {
@@ -638,31 +634,43 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      free(filename.var);
+      free(title);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
-    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,title,arglist,&header,&metadata,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     free(out_json);
     free(arglist);
     fclose(file);
   }
   free(filename.var);
-  free(units);
-  free(long_name);
-  free(standard_name);
-  free(history);
-  free(source);
-  freemap(map);
-  free(grid);
+  free(title);
+  freemetadata(&metadata);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

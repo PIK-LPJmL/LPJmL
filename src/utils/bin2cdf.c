@@ -604,10 +604,11 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
+  Metadata metadata;
   float *data=NULL;
   short *data_short=NULL;
   const char *progname;
-  int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear,cell;
+  int i,j,k,ngrid,iarg,compress,version,n_global,baseyear,cell;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear,isnetcdf4,notime;
   Type gridtype;
   float cellsize,fcoord[2];
@@ -617,15 +618,11 @@ int main(int argc,char **argv)
   float cellsize_lon,cellsize_lat,scalar;
   Netcdf_config netcdf_config;
   Coordfile coordfile;
-  Map *map=NULL;
   Attr *global_attrs=NULL;
-  Attr *global_attrs2=NULL;
   size_t offset;
-  char *map_name,*filename;
-  char *var_units=NULL,*var_long_name=NULL,*var_name=NULL,*var_standard_name=NULL;
-  char *source=NULL,*history=NULL;
+  char *filename;
   Filename grid_name;
-  char *variable,*grid_filename=NULL,*path,*config_filename=NULL;
+  char *variable,*grid_filename=NULL,*config_filename=NULL;
   grid_name.fmt=RAW;
   grid_name.name=NULL;
   units=long_name=NULL;
@@ -647,13 +644,13 @@ int main(int argc,char **argv)
   revlat=FALSE;
   withdays=FALSE;
   isnetcdf4=FALSE;
-  map_name=BAND_NAMES;
   scalar=0;
   n_global=0;
   missing_value=NULL;
   notime=FALSE;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
+  initmetadata(&metadata,BAND_NAMES);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -692,14 +689,14 @@ int main(int argc,char **argv)
                "-scale s         scale output with factor s, default is 1\n"
                "-notime          omit time axis\n"
                "-metafile        set the input format to JSON metafile instead of raw\n"
-               "-map name        name of map in JSON metafile, default is \"band_names\"\n"
+               "-map name        name of map in JSON metafile, default is \"%s\"\n"
                "-config file     read NetCDF setting from JSON file\n"
                "varname          variable name in NetCDF file\n"
                "gridfile         filename of grid data file\n"
                "binfile          filename of binary data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname,header.cellsize_lon,header.firstyear);
+               progname,header.cellsize_lon,header.firstyear,metadata.map_name);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
@@ -810,7 +807,7 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-config"))
       {
@@ -993,6 +990,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
             ERR_USAGE,progname,progname);
+    freeattrs(global_attrs,n_global);
     return EXIT_FAILURE;
   }
   else
@@ -1005,29 +1003,40 @@ int main(int argc,char **argv)
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
       fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      freeattrs(global_attrs,n_global);
       return EXIT_FAILURE;
     }
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
+    {
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
+    }
     if(header.datatype!=LPJ_SHORT && header.datatype!=LPJ_FLOAT)
     {
       fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
               typenames[header.datatype],argv[iarg+2]);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      free(grid_name.name);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
     isshort=header.datatype==LPJ_SHORT;
-    if(units==NULL && var_units!=NULL)
-      units=var_units;
-    if(long_name==NULL && var_long_name!=NULL)
-      long_name=var_long_name;
-    if(global_attrs2!=NULL)
+    if(units==NULL && metadata.unit!=NULL)
+      units=metadata.unit;
+    if(long_name==NULL && metadata.long_name!=NULL)
+      long_name=metadata.long_name;
+    if(metadata.attrs!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
-      freeattrs(global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,metadata.attrs,metadata.n_attr,FALSE);
     }
   }
   else
@@ -1036,6 +1045,9 @@ int main(int argc,char **argv)
     if(file==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
   }
@@ -1043,40 +1055,55 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Number of time steps=%d within a year must be 1 if years between time steps=%d is greater than 1.\n",
             header.nstep,header.timestep);
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    free(grid_name.name);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
+    free(grid_name.name);
     grid_filename=strdup(argv[iarg+1]);
     if(grid_filename==NULL)
     {
       printallocerr("name");
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
   }
   else
   {
-    if(var_name==NULL)
+    if(metadata.variable==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      free(grid_name.name);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(grid_name.name==NULL)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      fclose(file);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
-    variable=var_name;
-    path=getpath(filename);
-    grid_filename=addpath(grid_name.name,path);
-    if(grid_filename==NULL)
-    {
-      printallocerr("name");
-      return EXIT_FAILURE;
-    }
-    free(grid_name.name);
-    free(path);
+    variable=metadata.variable;
+    grid_filename=grid_name.name;
   }
   if(isclm || grid_name.fmt==CLM || grid_name.fmt==META)
   {
@@ -1084,17 +1111,39 @@ int main(int argc,char **argv)
     coord_filename.fmt=(isclm) ? CLM : grid_name.fmt;
     coordfile=opencoord(&coord_filename,TRUE);
     if(coordfile==NULL)
+    {
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      fclose(file);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
+    }
     grid=newvec(Coord,numcoord(coordfile));
     if(grid==NULL)
     {
       printallocerr("grid");
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      closecoord(coordfile);
+      fclose(file);
       return EXIT_FAILURE;
     }
     ngrid=numcoord(coordfile);
     if(ngrid==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",grid_filename);
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      closecoord(coordfile);
+      fclose(file);
       return EXIT_FAILURE;
     }
     getcellsizecoord(&cellsize_lon,&cellsize_lat,coordfile);
@@ -1111,6 +1160,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error opening grid file '%s': %s.\n",grid_filename,
               strerror(errno));
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
     switch(gridtype)
@@ -1132,17 +1187,35 @@ int main(int argc,char **argv)
         break;
       default:
         fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridtype,grid_filename);
+        free(grid_filename);
+        freemetadata(&metadata);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
     }
     if(ngrid==0)
     {
-       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",grid_filename);
-       return EXIT_FAILURE;
+      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",grid_filename);
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
+      return EXIT_FAILURE;
     }
     grid=newvec(Coord,ngrid);
     if(grid==NULL)
     {
       printallocerr("grid");
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
     switch(gridtype)
@@ -1181,12 +1254,22 @@ int main(int argc,char **argv)
     if(fseek(file,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
+      free(grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
     if(header.ncell!=ngrid)
     {
       fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file '%s'.\n",header.ncell,filename,ngrid,grid_filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(header.nbands>1)
@@ -1199,6 +1282,11 @@ int main(int argc,char **argv)
       else
         fprintf(stderr,"%d",header.order);
       fprintf(stderr," is not supported.\n.");
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
   }
@@ -1210,11 +1298,19 @@ int main(int argc,char **argv)
       if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
       {
         fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
       if(header.ncell!=ngrid)
       {
         fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
       if(version<4)
@@ -1231,6 +1327,10 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
                   typenames[header.datatype],argv[iarg+2]);
+          freeattrs(global_attrs,n_global);
+          if(config_filename!=NULL)
+            freeconfig_netcdf(&netcdf_config);
+          fclose(file);
           return EXIT_FAILURE;
         }
         isshort=header.datatype==LPJ_SHORT;
@@ -1241,12 +1341,20 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,argv[iarg+2],CLM_MAX_VERSION+1);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
       if(header.cellsize_lat!=res.lat || header.cellsize_lon!=res.lon)
       {
         fprintf(stderr,"Resolution (%g,%g) in '%s' does not match (%g,%g) in grid file.\n",
                 header.cellsize_lon,header.cellsize_lat,argv[iarg+2],res.lon,res.lat);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
       if(header.order!=CELLSEQ)
@@ -1257,6 +1365,10 @@ int main(int argc,char **argv)
         else
           fprintf(stderr,"%d",header.order);
         fprintf(stderr," is not supported.\n.");
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
     }
@@ -1267,6 +1379,10 @@ int main(int argc,char **argv)
       if(getfilesizep(file)==0)
       {
         fprintf(stderr,"Error: File '%s' is empty.\n",argv[iarg+2]);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
       if(isshort)
@@ -1289,14 +1405,26 @@ int main(int argc,char **argv)
     fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar);
   if(notime && (header.nstep>1 || header.nyear>1))
   {
-    fprintf(stderr,"Setting not time axis option not allowed for more than one time step.\n");
+    fprintf(stderr,"Setting `-notime` axis option not allowed for more than one time step.\n");
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(!isbaseyear)
     baseyear=header.firstyear;
   index=createindex(grid,ngrid,res,isglobal,revlat);
   if(index==NULL)
+  {
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   free(grid);
   cmdline=catstrvec(argv,argc);
   if(missing_value!=NULL)
@@ -1307,6 +1435,13 @@ int main(int argc,char **argv)
       if(*endptr!='\0')
       {
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        free(cmdline);
+        freemetadata(&metadata);
+        freeattrs(global_attrs,n_global);
+        freecoordarray(index);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
     }
@@ -1315,31 +1450,40 @@ int main(int argc,char **argv)
       netcdf_config.missing_value.f=(float)strtod(missing_value,&endptr);
       if(*endptr!='\0')
       {
+        free(cmdline);
+        freemetadata(&metadata);
+        freeattrs(global_attrs,n_global);
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        freecoordarray(index);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
+        fclose(file);
         return EXIT_FAILURE;
       }
     }
   }
   if(units==NULL || strlen(units)==0)
     units=nounit;
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,&netcdf_config,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
+  cdf=create_cdf(outname,metadata.map,metadata.map_name,cmdline,metadata.source,metadata.history,variable,units,metadata.standard_name,long_name,&netcdf_config,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
-  free(var_units);
-  free(var_long_name);
-  free(var_name);
-  free(var_standard_name);
-  free(source);
-  free(history);
-  freemap(map);
+  freemetadata(&metadata);
   freeattrs(global_attrs,n_global);
+  if(config_filename!=NULL)
+    freeconfig_netcdf(&netcdf_config);
   if(cdf==NULL)
+  {
+    free(grid_filename);
+    freecoordarray(index);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   if(isshort)
   {
     data_short=newvec(short,ngrid);
     if(data_short==NULL)
     {
       printallocerr("data");
+      free(grid_filename);
       fclose(file);
       close_cdf(cdf);
       return EXIT_FAILURE;
@@ -1351,6 +1495,7 @@ int main(int argc,char **argv)
     if(data==NULL)
     {
       printallocerr("data");
+      free(grid_filename);
       fclose(file);
       close_cdf(cdf);
       return EXIT_FAILURE;
@@ -1366,6 +1511,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
             free(data_short);
+            free(grid_filename);
             fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;
@@ -1373,6 +1519,7 @@ int main(int argc,char **argv)
           if(write_short_cdf(cdf,data_short,(notime) ? NO_TIME : i*header.nstep+j,ngrid,ispft,k,netcdf_config.missing_value.s))
           {
             free(data_short);
+            free(grid_filename);
             fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;
@@ -1384,6 +1531,7 @@ int main(int argc,char **argv)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
             free(data);
+            free(grid_filename);
             fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;
@@ -1393,6 +1541,7 @@ int main(int argc,char **argv)
           if(write_float_cdf(cdf,data,(notime) ? NO_TIME : i*header.nstep+j,ngrid,ispft,k,netcdf_config.missing_value.f))
           {
             free(data);
+            free(grid_filename);
             fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;

@@ -28,16 +28,16 @@ Landcover initlandcover(int npft,      /**< number of natural PFTs */
                        )               /** \return landcover data or NULL */
 {
   int i;
-  Map *map=NULL;
   Landcover landcover;
-  
+  Metadata metadata;
   landcover=new(struct landcover);
   if(landcover==NULL)
   {
     printallocerr("landcover");
     return NULL;
   }
-  if(opendata(&landcover->file,&map,NULL,NULL,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
+  initmetadata(&metadata,config->landcover_filename.map);
+  if(opendata(&landcover->file,&metadata,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,getnnat(npft,config),FALSE,config))
   {
     free(landcover);
     return NULL;
@@ -45,7 +45,7 @@ Landcover initlandcover(int npft,      /**< number of natural PFTs */
   if(config->landcovermap==NULL)
   {
     /* No landcovermap defined in lpjml configuration file */
-    if(map==NULL)
+    if(metadata.map==NULL)
     {
       /* no map found, set default 1:1 map */
       config->landcovermap=defaultpftmap("landcovermap",getnnat(npft,config),config);
@@ -54,17 +54,17 @@ Landcover initlandcover(int npft,      /**< number of natural PFTs */
     else
     {
       /* get landcovermap from input file */
-      config->landcovermap=getpftmap(map,"landcovermap",getnnat(npft,config),config);
-      config->landcovermap_size=getmapsize(map);
+      config->landcovermap=getpftmap(metadata.map,"landcovermap",getnnat(npft,config),config);
+      config->landcovermap_size=getmapsize(metadata.map);
     }
     if(config->landcovermap==NULL)
     {
-      freemap(map);
+      freemetadata(&metadata);
       free(landcover);
       return NULL;
     }
   }
-  freemap(map);
+  freemetadata(&metadata);
   if(landcover->file.var_len!=config->landcovermap_size)
   {
     if(isroot(*config))

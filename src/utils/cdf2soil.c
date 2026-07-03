@@ -18,7 +18,7 @@
 #include <netcdf.h>
 #endif
 
-#define USAGE  "Usage: %s [-var name] [-float] [-scale s] [-soilmap] netcdffile coordfile soilfile\n"
+#define USAGE  "Usage: %s [-var name] [-{float|double]] [-scale s] [-soilmap] netcdffile coordfile soilfile\n"
 
 #define error(rc) if(rc){ fprintf(stderr,"ERROR403: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
 
@@ -30,24 +30,23 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,i,ndims,dimids[2],latlon_id;
   char name[NC_MAX_NAME+1];
   size_t ilat,ilon;
-  float *lat,*lon;
+  double *lat,*lon;
   size_t lat_len,lon_len;
   int missing_value;  /**< missing/fill value in file */
   int *data;
   Header header;
-  Intcoord coord;
+  double scalar=0.01;
   FILE *out,*soil;
   Byte soilcode;
-  Bool isfloat,ismap;
+  Bool ismap,scalar_set;
   Byte soilmap[]={Sa,LoSa,SaLo,SiLo,Lo,SaClLo,SiClLo,ClLo,SaCl,SiCl,Cl,Si};
-  struct
-  {
-    float lon,lat;
-  } coord_f;
+  Coord coord;
   char *var=SOIL_NAME;
   char *endptr;
   header.scalar=0.01;
-  isfloat=ismap=FALSE;
+  header.datatype=LPJ_SHORT;
+  scalar=0.01;
+  ismap=scalar_set=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -63,8 +62,15 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[i],"-float"))
       {
-        isfloat=TRUE;
+        header.datatype=LPJ_FLOAT;
         header.scalar=1;
+        scalar=1;
+      }
+      else if(!strcmp(argv[i],"-double"))
+      {
+        header.datatype=LPJ_DOUBLE;
+        header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-soilmap"))
         ismap=TRUE;
@@ -76,14 +82,16 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=strtod(argv[++i],&endptr);
+        header.scalar=scalar;
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
           return EXIT_FAILURE;
         }
+        if(header.scalar!=1)
+          scalar_set=TRUE;
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -99,7 +107,13 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-
+  if(header.datatype!=LPJ_SHORT && scalar_set)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
+            scalar,typenames[header.datatype]);
+    header.scalar=1;
+    scalar=1;
+  }
   rc=nc_open(argv[i],NC_NOWRITE,&ncid);
   if(rc)
   {
@@ -133,14 +147,14 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[1],&lon_len);
-  lon=newvec(float,lon_len);
+  lon=newvec(double,lon_len);
   if(lon==NULL)
   {
     printallocerr("lon");
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_get_var_float(ncid,latlon_id,lon);
+  rc=nc_get_var_double(ncid,latlon_id,lon);
   if(rc)
   {
     fprintf(stderr,"ERROR410: Cannot read longitude in '%s': %s.\n",
@@ -167,7 +181,7 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  lat=newvec(float,lat_len);
+  lat=newvec(double,lat_len);
   if(lat==NULL)
   {
     printallocerr("lat");
@@ -175,7 +189,7 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_get_var_float(ncid,latlon_id,lat);
+  rc=nc_get_var_double(ncid,latlon_id,lat);
   if(rc)
   {
     fprintf(stderr,"ERROR404: Cannot read latitude in '%s': %s.\n",
@@ -233,27 +247,15 @@ int main(int argc,char **argv)
     {
       if(data[ilat*lon_len+ilon]!=missing_value)
       {
-         if(isfloat)
-         {
-           coord_f.lat=lat[ilat];
-           coord_f.lon=lon[ilon];
-           fwrite(&coord_f,sizeof(coord_f),1,out);
-         }
-         else
-         {
-           coord.lat=(short)(lat[ilat]/header.scalar);
-           coord.lon=(short)(lon[ilon]/header.scalar);
-#ifdef DEBUG
-           printf("%.3f %3f %d %d\n",lat[ilat],lon[ilon],coord.lat,coord.lon);
-#endif
-           fwrite(&coord,sizeof(coord),1,out);
-         }
-         header.ncell++;
-         if(ismap)
-           soilcode=(Byte)(soilmap[data[ilat*lon_len+ilon]-1]+1);
-         else
-           soilcode=(Byte)data[ilat*lon_len+ilon];
-         fwrite(&soilcode,1,1,soil);
+        coord.lat=lat[ilat];
+        coord.lon=lat[ilon];
+        writecoord(out,&coord,scalar,header.datatype);
+        header.ncell++;
+        if(ismap)
+          soilcode=(Byte)(soilmap[data[ilat*lon_len+ilon]-1]+1);
+        else
+          soilcode=(Byte)data[ilat*lon_len+ilon];
+        fwrite(&soilcode,1,1,soil);
       }
     }
   }
@@ -267,12 +269,11 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.nbands=2;
   header.order=CELLYEAR;
-  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)(fabs(lat[lat_len-1]-lat[0])/(lat_len-1));
-  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,header.scalar) || isfloatcoord(header.cellsize_lat*0.5,header.scalar)))
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
     fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
-            header.cellsize_lat,header.cellsize_lon,header.scalar);
+            header.cellsize_lat,header.cellsize_lon,scalar);
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(out);
   free(lon);

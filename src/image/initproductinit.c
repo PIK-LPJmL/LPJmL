@@ -37,7 +37,7 @@ Productinit *initproductinit(const Config *config)
     printallocerr("productinit");
     return NULL;
   } 
-  if((productinit->file=openinputfile(&header,&productinit->swap,
+  if((productinit->file=openinputfile(&header,NULL,&productinit->swap,
                                       &config->prodpool_init_filename,
                                       headername,NULL,LPJ_FLOAT,
                                       &version,&offset,TRUE,config))==NULL)

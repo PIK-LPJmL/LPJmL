@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               g e t i n t a r r a y f r o m j s o n . c                        \n**/
+/**               f  r  e  e  c  o  u  n  t  r  y  m  a  p  .  c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads int array from JSON file                                    \n**/
+/**     Function deallocates country map                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,26 +16,18 @@
 
 #include "lpj.h"
 
-int *getintarrayfromjson(const char *filename, /**< name of JSON file */
-                         int *size,            /**< size of int array */
-                         const char *key,      /**< name of int array in JSON file */
-                         Verbosity verb        /**< verbosity level (NO_ERR,ERR,VERB) */
-                        )                      /** int array read or NULL on error */
+void freecountrymap(Countryname countrymap[], /**< country map array */
+                    int size                  /**< size of country map */
+                   )
 {
-  FILE *file;
-  int *array;
-  LPJfile *lpjfile;
-  if((file=fopen(filename,"r"))==NULL)
+  int i;
+  if(countrymap!=NULL)
   {
-    if(verb)
-      printfopenerr(filename);
-    return NULL;
+    for(i=0;i<size;i++)
+    {
+      free(countrymap[i].name);
+      free(countrymap[i].alpha_3);
+    }
+    free(countrymap);
   }
-  lpjfile=parse_json(file,verb);
-  fclose(file);
-  if(lpjfile==NULL)
-    return NULL;
-  array=fscanvarintarray(lpjfile,size,key,verb);
-  closeconfig(lpjfile);
-  return array;
-} /* of 'getintarrayfromjson' */
+} /* of 'freecountrymap' */

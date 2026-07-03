@@ -31,6 +31,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
   String headername;
   int version;
   size_t offset,filesize;
+  Metadata metadata;
   file->fmt=filename->fmt;
   if(file->fmt==CDF)
   {
@@ -44,7 +45,8 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
   }
   else
   {
-    if((file->file=openinputfile(&header,NULL,NULL,NULL,&file->swap,
+    initmetadata(&metadata,NULL);
+    if((file->file=openinputfile(&header,&metadata,&file->swap,
                                  filename,headername,unit,datatype,
                                  &version,&offset,FALSE,config))==NULL)
     {
@@ -52,6 +54,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
       return TRUE;
     }
+    freemetadata(&metadata);
     file->nbands=(size==0) ? 1 : size;
     if(file->fmt==RAW)
     {

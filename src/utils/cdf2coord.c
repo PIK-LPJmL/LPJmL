@@ -28,21 +28,14 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
   int index1,index2,len1,len2;
   double *lat,*lon;
-  float scalar=0.0;
+  double scalar=0.01;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
-  Intcoord coord;
-  struct
-  {
-    double lon,lat;
-  } coord_d;
-  struct
-  {
-    float lon,lat;
-  } coord_f;
+  Coord coord;
+  Metadata metadata;
   Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
@@ -74,11 +67,13 @@ int main(int argc,char **argv)
       {
         header.datatype=LPJ_FLOAT;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-double"))
       {
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[i],"-latlon"))
         latlon=TRUE;
@@ -105,7 +100,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scalar=header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=strtod(argv[++i],&endptr);
+        header.scalar=scalar;
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
@@ -117,7 +113,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]); 
+                USAGE,argv[i],argv[0]);
         return EXIT_FAILURE;
       }
     }
@@ -133,8 +129,8 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
             scalar,typenames[header.datatype]);
-
     header.scalar=1;
+    scalar=1;
   }
   rc=nc_open(argv[i],NC_NOWRITE,&ncid);
   if(rc)
@@ -272,9 +268,9 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(float)((lon[lon_len-1]-lon[0])/(lon_len-1));
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
-  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,header.scalar) || isfloatcoord(header.cellsize_lat*0.5,header.scalar)))
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
     fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
-            header.cellsize_lat,header.cellsize_lon,header.scalar);
+            header.cellsize_lat,header.cellsize_lon,scalar);
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
@@ -301,26 +297,9 @@ int main(int argc,char **argv)
       if((!isnan(missing_value) && !isnan(data) && data!=missing_value) ||
           (isnan(missing_value) && !isnan(data)))
       {
-        switch(header.datatype)
-        {
-          case LPJ_FLOAT:
-            coord_f.lat=(float)lat[offsets[first]];
-            coord_f.lon=(float)lon[offsets[first+1]];
-            fwrite(&coord_f,sizeof(coord_f),1,out);
-            break;
-          case LPJ_DOUBLE:
-            coord_d.lat=lat[offsets[first]];
-            coord_d.lon=lon[offsets[first+1]];
-            fwrite(&coord_d,sizeof(coord_d),1,out);
-            break;
-          default:
-            coord.lat=(short)(lat[offsets[first]]/header.scalar);
-            coord.lon=(short)(lon[offsets[first+1]]/header.scalar);
-#ifdef DEBUG
-            printf("%.3f %3f %d %d\n",lat[offsets[1]],lon[offsets[2]],coord.lat,coord.lon);
-#endif
-            fwrite(&coord,sizeof(coord),1,out);
-        }
+        coord.lon=lon[offsets[first+1]];
+        coord.lat=lat[offsets[first]];
+        writecoord(out,&coord,scalar,header.datatype);
         header.ncell++;
       }
     }
@@ -353,13 +332,28 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[i+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[i+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    initmetadata(&metadata,NULL);
+    metadata.source=argv[0];
+    metadata.variable="grid";
+    metadata.unit="degree";
+    metadata.long_name="cell coodinates";
+    fprintjson(out,argv[i+1],NULL,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    free(out_json);
+    free(arglist);
     fclose(out);
   }
   return EXIT_SUCCESS;

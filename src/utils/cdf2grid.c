@@ -36,36 +36,29 @@ static int cmp(const void *a,const void *b)
 int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
-  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr=0;
+  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len;
   double *lat,*lon;
-  float scalar=0.0;
+  double scalar=0.01;
   size_t lat_len,lon_len;
   int missing_value;
   Bool israw,isjson,scalar_set;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
-  Intcoord coord;
-  struct
-  {
-    double lon,lat;
-  } coord_d;
-  struct
-  {
-    float lon,lat;
-  } coord_f;
+  Metadata metadata;
+  Coord coord;
   Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
-  char *source=NULL,*history=NULL,*title=NULL;
+  char *title=NULL;
   FILE *out;
   Data *data;
   int *index;
-  Attr *attrs=NULL;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
   israw=isjson=scalar_set=FALSE;
   initsetting_netcdf(&netcdf_config);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -83,11 +76,13 @@ int main(int argc,char **argv)
       {
         header.datatype=LPJ_FLOAT;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[iarg],"-double"))
       {
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
+        scalar=1;
       }
       else if(!strcmp(argv[iarg],"-raw"))
       {
@@ -105,13 +100,13 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scalar=header.scalar=(float)strtod(argv[++iarg],&endptr);
+        header.scalar=scalar=strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.scalar!=1)
+        if(scalar!=1)
           scalar_set=TRUE;
       }
       else
@@ -135,6 +130,7 @@ int main(int argc,char **argv)
             scalar,typenames[header.datatype]);
 
     header.scalar=1;
+    scalar=1;
   }
   rc=nc_open(argv[iarg],NC_NOWRITE,&ncid);
   if(rc)
@@ -248,6 +244,10 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
+  if(header.datatype==LPJ_SHORT && (isfloatcoord(header.cellsize_lon*0.5,scalar) || isfloatcoord(header.cellsize_lat*0.5,scalar)))
+    fprintf(stderr,"Warning: Cell size (%g,%g) does not allow short datatype for grid with scaling factor %g.\n",
+            header.cellsize_lat,header.cellsize_lon,scalar);
+
   index=newvec(int,lat_len*lon_len);
   if(index==NULL)
   {
@@ -261,33 +261,34 @@ int main(int argc,char **argv)
   error(rc);
   if(isjson)
   {
-    history=getattr_netcdf(ncid,NC_GLOBAL,"history");
-    source=getattr_netcdf(ncid,NC_GLOBAL,"source");
+    metadata.history=getattr_netcdf(ncid,NC_GLOBAL,"history");
+    metadata.source=getattr_netcdf(ncid,NC_GLOBAL,"source");
     title=getattr_netcdf(ncid,NC_GLOBAL,"title");
     if(nc_inq_natts(ncid,&len))
-      n_attr=0;
+      metadata.n_attr=0;
     else
     {
-      attrs=newvec(Attr,len);
-      if(attrs==NULL)
+      metadata.attrs=newvec(Attr,len);
+      if(metadata.attrs==NULL)
       {
         printallocerr("attrs");
         free(index);
         free(lon);
         free(lat);
+        freemetadata(&metadata);
         nc_close(ncid);
         return EXIT_FAILURE;
       }
-      n_attr=0;
+      metadata.n_attr=0;
       for(i=0;i<len;i++)
       {
         if(!nc_inq_attname(ncid,NC_GLOBAL,i,name))
         {
           if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
           {
-            attrs[n_attr].value=getattr_netcdf(ncid,NC_GLOBAL,name);
-            if(attrs[n_attr].value!=NULL)
-              attrs[n_attr++].name=strdup(name);
+            metadata.attrs[metadata.n_attr].value=getattr_netcdf(ncid,NC_GLOBAL,name);
+            if(metadata.attrs[metadata.n_attr].value!=NULL)
+              metadata.attrs[metadata.n_attr++].name=strdup(name);
           }
         }
       }
@@ -305,15 +306,17 @@ int main(int argc,char **argv)
     free(index);
     free(lon);
     free(lat);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   data=newvec(Data,header.ncell);
   if(data==NULL)
   {
+    printallocerr("data");
     free(index);
     free(lon);
     free(lat);
-    printallocerr("data");
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   header.ncell=0;
@@ -344,6 +347,7 @@ int main(int argc,char **argv)
       free(data);
       free(lon);
       free(lat);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
   header.nyear=1;
@@ -359,33 +363,16 @@ int main(int argc,char **argv)
     free(data);
     free(lon);
     free(lat);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   for(i=0;i<header.ncell;i++)
   {
-    switch(header.datatype)
-    {
-      case LPJ_FLOAT:
-        coord_f.lat=(float)lat[data[i].ilat];
-        coord_f.lon=(float)lon[data[i].ilon];
-        rc=fwrite(&coord_f,sizeof(coord_f),1,out);
-        break;
-      case LPJ_DOUBLE:
-        coord_d.lat=lat[data[i].ilat];
-        coord_d.lon=lon[data[i].ilon];
-        rc=fwrite(&coord_d,sizeof(coord_d),1,out);
-        break;
-      default:
-        coord.lat=(short)(lat[data[i].ilat]/header.scalar);
-        coord.lon=(short)(lon[data[i].ilon]/header.scalar);
-#ifdef DEBUG
-        printf("%.3f %3f %d %d\n",lat[data[i].ilat],lon[data[i].ilon],coord.lat,coord.lon);
-#endif
-        rc=fwrite(&coord,sizeof(coord),1,out);
-    } /* of switch() */
-    if(rc!=1)
+    coord.lat=lat[data[i].ilat];
+    coord.lon=lat[data[i].ilon];
+    if(writecoord(out,&coord,scalar,header.datatype))
     {
       fprintf(stderr,"Error writing grid file '%s': %s.\n",
               argv[iarg+1],strerror(errno));
@@ -393,6 +380,7 @@ int main(int argc,char **argv)
       free(data);
       free(lon);
       free(lat);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
   }
@@ -407,23 +395,35 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      freemetadata(&metadata);
       return EXIT_FAILURE;
     }
     free(out_json);
-    fprintjson(out,argv[iarg+1],title,source,history,arglist,&header,NULL,NULL,attrs,n_attr,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    metadata.variable=strdup("grid");
+    metadata.unit=strdup("degree");
+    metadata.long_name=strdup("cell coordinates");
+    fprintjson(out,argv[iarg+1],title,arglist,&header,&metadata,NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     free(arglist);
     free(title);
-    free(source);
-    free(history);
-    freeattrs(attrs,n_attr);
+    freemetadata(&metadata);
     fclose(out);
   }
   return EXIT_SUCCESS;

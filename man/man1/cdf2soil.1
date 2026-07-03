@@ -3,7 +3,7 @@
 cdf2soil \- convert NetCDF file into binary file
 .SH SYNOPSIS
 .B cdf2soil
-[\-var name] [\-float] [\-scale s] [\-soilmap]
+[\-var name] [\-{float|double}] [\-scale s] [\-soilmap]
 .I netcdffile gridfile soilfile
 .SH DESCRIPTION
 Program converts NetCDF input data into soil code or binary input data and writes grid file.
@@ -15,8 +15,8 @@ Variable name in NetCDF file, default is 'stexture'.
 \-scale factor
 Scaling factor for clm grid file. Default is 0.01.
 .TP
-\-float
-Write float values in grid clm file, default is short.
+\-{float|double}
+Write float or double values in CLM grid file without applying the scaling factor, default is short.
 .TP
 \-soilmap
 Use built-in soil map.

@@ -27,9 +27,9 @@ typedef struct
 
 typedef struct
 {
-  Real lon;  /**< longitude in degrees */
-  Real lat;  /**< latitude in degrees */
-  Real area; /**< cell area (m^2) */
+  double lon;  /**< longitude in degrees */
+  double lat;  /**< latitude in degrees */
+  double area; /**< cell area (m^2) */
 } Coord;
 
 typedef struct coordfile *Coordfile;
@@ -43,9 +43,11 @@ extern Bool readcoord(Coordfile,Coord *,const Coord *);
 extern void closecoord(Coordfile);
 extern Bool bstruct_writecoord(Bstruct,const char *,const Coord *);
 extern Bool bstruct_readcoord(Bstruct,const char *,Coord *);
-extern Bool writecoord(FILE *,const Coord *);
+extern Bool writecoord(FILE *,const Coord *,double,Type);
+extern Bool writeshortcoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
-extern Real cellarea(const Coord *,const Coord *);
+extern Bool writedoublecoord(FILE *,const Coord *);
+extern double cellarea(const Coord *,const Coord *);
 extern int getfirstcoord(const Coordfile);
 extern Bool fscancoord(LPJfile *,Coord *,Verbosity);
 extern int numcoord(const Coordfile);
@@ -53,9 +55,10 @@ extern void getcellsizecoord(float *,float *,const Coordfile);
 extern char *sprintcoord(String,const Coord *);
 extern void fprintcoord(FILE *,const Coord *);
 extern int findcoord(const Coord *,const Coord [],const Coord *,int);
-extern int findnextcoord(Real *,const Coord *,const Coord[],int);
+extern int findnextcoord(double *,const Coord *,const Coord[],int);
 extern Type getcoordtype(const Coordfile);
-extern Bool isfloatcoord(Real,Real);
+extern float getcoordscale(const Coordfile);
+extern Bool isfloatcoord(double,double);
 
 /* Definition of macros */
 

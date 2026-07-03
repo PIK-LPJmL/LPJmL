@@ -30,10 +30,10 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   String headername;
   int last,version,nbands,rc;
   char *s;
-  Attr *attrs=NULL;
-  int n_attr;
+  Metadata metadata;
   size_t offset,filesize;
   file->fmt=filename->fmt;
+  initmetadata(&metadata,NULL);
   if(filename->fmt==FMS)
   {
     file->time_step=DAY;
@@ -94,9 +94,10 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       {
         s=getsprintf(file->filename,file->firstyear);
         check(s);
-        rc=openclimate_netcdf(file,NULL,&attrs,&n_attr,s,filename,units,config);
-        checktitle(attrs,n_attr,s,&config->climate,isroot(*config));
-        freeattrs(attrs,n_attr);
+        rc=openclimate_netcdf(file,&metadata,s,filename,units,config);
+        if(!rc && checktitle(metadata.attrs,metadata.n_attr,s,&config->climate,isroot(*config)) && config->pedantic)
+          rc=TRUE;
+        freemetadata(&metadata);
         free(s);
       }
 #ifdef USE_MPI
@@ -130,11 +131,17 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     }
     else
     {
-      if(mpi_openclimate_netcdf(file,NULL,&attrs,&n_attr,filename,units,config))
+      if(mpi_openclimate_netcdf(file,&metadata,filename,units,config))
         return TRUE;
       if(check)
-        checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
-      freeattrs(attrs,n_attr);
+      {
+        if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config)) && config->pedantic)
+        {
+          freemetadata(&metadata);
+          return TRUE;
+        }
+      }
+      freemetadata(&metadata);
       if(file->time_step==MISSING_TIME)
       {
         if(isroot(*config))
@@ -151,14 +158,21 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       return FALSE;
     }
   }
-  if((file->file=openinputfile(&header,NULL,&attrs,&n_attr,&file->swap,
+  if((file->file=openinputfile(&header,&metadata,&file->swap,
                                filename,
                                headername,units,datatype,
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
   if(check)
-    checktitle(attrs,n_attr,filename->name,&config->climate,isroot(*config));
-  freeattrs(attrs,n_attr);
+  {
+    if(checktitle(metadata.attrs,metadata.n_attr,filename->name,&config->climate,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      fclose(file->file);
+      return TRUE;
+    }
+  }
+  freemetadata(&metadata);
   if (header.order!=CELLYEAR)
   {
     if(isroot(*config))

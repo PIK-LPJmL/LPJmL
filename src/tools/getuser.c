@@ -23,7 +23,7 @@
 #include <pwd.h>
 #endif
 
-char *getuser(void) /** \return user name */
+char *getuser(void) /** \return user name or NULL on error */
 {
 #ifdef _WIN32
   static TCHAR infoBuf[INFO_BUFFER_SIZE];
@@ -36,6 +36,6 @@ char *getuser(void) /** \return user name */
 #else
   struct passwd *who;
   who=getpwuid(getuid());
-  return who->pw_name;
+  return (who==NULL) ? NULL : who->pw_name;
 #endif
 } /* of 'getuser' */
