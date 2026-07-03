@@ -17,9 +17,7 @@
 #include "lpj.h"
 
 Bool opendata_seq(Climatefile *file,        /**< pointer to file */
-                  Map **map,                /**< pointer to map or NULL */
-                  Attr **attrs,             /**< pointer to array of attributes or NULL */
-                  int *n_attr,              /**< size of array attribute */
+                  Metadata *metadata,       /**< metadata information */
                   const Filename *filename, /**< filename */
                   const char *name,         /**< name of data */
                   const char *unit,         /**< unit or NULL */
@@ -33,13 +31,14 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
   file->fmt=filename->fmt;
   if(file->fmt==CDF)
   {
-    if(openclimate_netcdf(file,map,attrs,n_attr,filename->name,filename,unit,config))
+    if(openclimate_netcdf(file,metadata,filename->name,filename,unit,config))
       return TRUE;
     file->oneyear=FALSE;
     if(file->time_step!=YEAR)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename->name);
+      freemetadata(metadata);
       closeclimate_netcdf(file,isroot(*config));
       return TRUE;
     }
@@ -48,13 +47,14 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
       if(isroot(*config))
         fprintf(stderr,"ERROR435: Time step of %d yrs in file '%s' must be 1.\n",
                 file->delta_year,filename->name);
+      freemetadata(metadata);
       closeclimate_netcdf(file,isroot(*config));
       return TRUE;
     }
   }
   else
   {
-    if(openclmdata(file,map,attrs,n_attr,filename,name,unit,datatype,scalar,nbands,config))
+    if(openclmdata(file,metadata,filename,name,unit,datatype,scalar,nbands,config))
       return TRUE;
   }
   if(ischeck && file->var_len!=nbands)
@@ -62,6 +62,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s data file '%s', must be %d.\n",
              file->var_len,name,filename->name,nbands);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }

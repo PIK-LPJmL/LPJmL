@@ -28,11 +28,12 @@ int main(int argc,char **argv)
   Coordfile grid;
   float lon,lat;
   Coord res,res2;
-  Real dist_min;
+  double dist_min;
   int i,j,setversion,ngrid,ngrid2,count,iarg,rc;
   Filename filename,grid_name;
   Type grid_type;
   Header header;
+  Metadata metadata;
   setversion=READ_VERSION;
   iszero=issearch=isjson=FALSE;
   progname=strippath(argv[0]);
@@ -51,13 +52,13 @@ int main(int argc,char **argv)
                "-h,--help    print this help text\n"
                "-search      if cell is not found, nearest cell is used\n"
                "-zero        id cell is not found, data is set to zero\n"
-               "-json        an additional JSON metafile with suffix .json is created\n"
+               "-json        an additional JSON metafile with suffix '%s' is created\n"
                "grid_old.clm corresponding grid filename of input data\n"
                "grid_new_clm grid filename data should be regridded to\n"
                "soil_old_clm filename of data that should be regridded\n"
                "soil_new.clm filename of data file where regridded data is written\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,JSON_SUFFIX);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-longheader"))
@@ -216,10 +217,18 @@ int main(int argc,char **argv)
     }
     strcat(strcpy(out_json,argv[iarg+3]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
       return EXIT_FAILURE;
     }
     grid_name.name=argv[iarg+1];
@@ -234,7 +243,10 @@ int main(int argc,char **argv)
     header.order=CELLYEAR;
     header.cellsize_lon=lon;
     header.cellsize_lat=lat;
-    fprintjson(file,argv[iarg+3],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    initmetadata(&metadata,NULL);
+    metadata.source=strdup(progname);
+    fprintjson(file,argv[iarg+3],NULL,arglist,&header,&metadata,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    freemetadata(&metadata);
     free(out_json);
     free(arglist);
     fclose(file);

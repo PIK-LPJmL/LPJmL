@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions opens JSON desription file and returns filename of specified     \n**/
+/**     Function opens JSON desription file and returns filename of specified      \n**/
 /**     binary file. Description file has the following format:                    \n**/
 /**                                                                                \n**/
 /**     {                                                                          \n**/
@@ -82,16 +82,7 @@ void freemap(Map *map)
 
 char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           Header *header,     /**< pointer to file header */
-                          Map **map,         /**< map from json file or NULL */
-                          const char *map_name, /**< name of map or NULL */
-                          Attr **attrs,       /**< pointer to array of attributes */
-                          int *n_attr,        /**< size of array attribute */
-                          char **source,      /**< source of data  or NULL */
-                          char **history,     /**< history of data or NULL */
-                          char **variable,    /**< name of variable or NULL */
-                          char **unit,        /**< unit of variable or NULL */
-                          char **standard_name, /**< standard name of variable or NULL */
-                          char **long_name,   /**< long name of variable or NULL */
+                          Metadata *metadata, /**< metadata information or NULL */
                           Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
                           int *filefmt,       /**< file format or NULL */
@@ -101,40 +92,26 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                          )                    /** \return filename of binary file or NULL */
 {
   LPJfile *lpjfile,*item;
-  const char *filename,*val;
+  const char *filename;
   char *ret;
   Bool endian;
   int format;
   lpjfile=parse_json(file,verbosity);
   if(lpjfile==NULL)
     return NULL;
-  if(map!=NULL)
+  if(metadata!=NULL)
   {
-    if(iskeydefined(lpjfile,(map_name==NULL) ? MAP_NAME : map_name))
-      *map=fscanmap(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
-    else
-      *map=NULL;
-  }
-  if(attrs!=NULL)
-  {
-    if(iskeydefined(lpjfile,"global_attrs"))
+    if(fscanmetadata(lpjfile,metadata,verbosity))
     {
-      if(fscanattrs(lpjfile,attrs,n_attr,"global_attrs",verbosity))
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-    }
-    else
-    {
-     *attrs=NULL;
-     *n_attr=0;
+      closeconfig(lpjfile);
+      return NULL;
     }
   }
   if(iskeydefined(lpjfile,"format"))
   {
     if(fscankeywords(lpjfile,&format,"format",fmt,N_FMT,FALSE,verbosity))
     {
+      freemetadata(metadata);
       closeconfig(lpjfile);
       return NULL;
     }
@@ -143,56 +120,12 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
       if(verbosity)
         fprintf(stderr,"ERROR229: Invalid format %s for input file, must be raw, clm or clm2.\n",
                 fmt[format]);
+      freemetadata(metadata);
       closeconfig(lpjfile);
       return NULL;
     }
     if(filefmt!=NULL)
       *filefmt=format;
-  }
-  if(variable!=NULL)
-  {
-    if(iskeydefined(lpjfile,"variable"))
-    {
-      val=fscanstring(lpjfile,NULL,"variable",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *variable=strdup(val);
-    }
-    else
-      *variable=NULL;
-  }
-  if(source!=NULL)
-  {
-    if(iskeydefined(lpjfile,"source"))
-    {
-      val=fscanstring(lpjfile,NULL,"source",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *source=strdup(val);
-    }
-    else
-      *source=NULL;
-  }
-  if(history!=NULL)
-  {
-    if(iskeydefined(lpjfile,"history"))
-    {
-      val=fscanstring(lpjfile,NULL,"history",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *history=strdup(val);
-    }
-    else
-      *history=NULL;
   }
   if(gridfile!=NULL)
   {
@@ -201,18 +134,29 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
       item=fscanstruct(lpjfile,"grid",verbosity);
       if(item==NULL)
       {
+        freemetadata(metadata);
         closeconfig(lpjfile);
         return NULL;
       }
       filename=fscanstring(item,NULL,"filename",verbosity);
       if(filename==NULL)
       {
+        freemetadata(metadata);
         closeconfig(lpjfile);
         return NULL;
       }
       gridfile->name=strdup(filename);
+      if(gridfile->name==NULL)
+      {
+        printallocerr("filename");
+        freemetadata(metadata);
+        closeconfig(lpjfile);
+        return NULL;
+      }
       if(fscankeywords(item,&gridfile->fmt,"format",fmt,N_FMT,FALSE,verbosity))
       {
+        freemetadata(metadata);
+        free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -222,6 +166,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
         {
           if(fscankeywords(item,(int *)grid_type,"datatype",typenames,N_TYPES,FALSE,verbosity))
           {
+            freemetadata(metadata);
+            free(gridfile->name);
             closeconfig(lpjfile);
             return NULL;
           }
@@ -230,6 +176,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
             if(verbosity)
               fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
                     typenames[*grid_type]);
+            freemetadata(metadata);
+            free(gridfile->name);
             closeconfig(lpjfile);
             return NULL;
           }
@@ -239,67 +187,15 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     else
       gridfile->name=NULL;
   }
-  if(unit!=NULL)
-  {
-    if(iskeydefined(lpjfile,"unit"))
-    {
-      val=fscanstring(lpjfile,NULL,"unit",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *unit=strdup(val);
-    }
-    else
-      *unit=NULL;
-  }
-  if(standard_name!=NULL)
-  {
-    if(iskeydefined(lpjfile,"standard_name"))
-    {
-      val=fscanstring(lpjfile,NULL,"standard_name",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *standard_name=strdup(val);
-    }
-    else
-      *standard_name=NULL;
-  }
-  if(long_name!=NULL)
-  {
-    if(iskeydefined(lpjfile,"descr"))
-    {
-      val=fscanstring(lpjfile,NULL,"descr",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *long_name=strdup(val);
-    }
-    else if(iskeydefined(lpjfile,"long_name"))
-    {
-      val=fscanstring(lpjfile,NULL,"long_name",verbosity);
-      if(val==NULL)
-      {
-        closeconfig(lpjfile);
-        return NULL;
-      }
-      *long_name=strdup(val);
-    }
-    else
-      *long_name=NULL;
-  }
   if(header!=NULL)
   {
     if(iskeydefined(lpjfile,"firstcell"))
     {
       if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -308,6 +204,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -316,6 +215,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -324,6 +226,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -333,6 +238,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -341,6 +249,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -349,6 +260,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->timestep,"timestep",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -357,6 +271,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
         if(verbosity)
           fprintf(stderr,"ERROR221: Invalid time step %d, must be >0.\n",
                   header->timestep);
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -365,6 +282,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -373,6 +293,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -382,6 +305,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanfloat(lpjfile,&header->scalar,"scalar",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -390,6 +316,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,N_TYPES,FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -398,6 +327,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanfloat(lpjfile,&header->cellsize_lon,"cellsize_lon",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -406,6 +338,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(fscanfloat(lpjfile,&header->cellsize_lat,"cellsize_lat",FALSE,verbosity))
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         closeconfig(lpjfile);
         return NULL;
       }
@@ -415,6 +350,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   {
     if(fscansize(lpjfile,offset,"offset",FALSE,verbosity))
     {
+      freemetadata(metadata);
+      if(gridfile!=NULL)
+        free(gridfile->name);
       closeconfig(lpjfile);
       return NULL;
     }
@@ -423,6 +361,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   {
     if(fscanbool(lpjfile,&endian,"bigendian",FALSE,verbosity))
     {
+      freemetadata(metadata);
+      if(gridfile!=NULL)
+        free(gridfile->name);
       closeconfig(lpjfile);
       return NULL;
     }
@@ -431,6 +372,9 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   filename=fscanstring(lpjfile,NULL,"filename",verbosity);
   if(filename==NULL)
   {
+    freemetadata(metadata);
+    if(gridfile!=NULL)
+      free(gridfile->name);
     closeconfig(lpjfile);
     return NULL;
   }
@@ -439,18 +383,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   return ret;
 } /* of 'parse_json_metafile' */
 
-
 FILE *openmetafile(Header *header,       /**< pointer to file header */
-                   Map **map,            /**< map from json file or NULL */
-                   const char *map_name, /**< name of map or NULL */
-                   Attr **attrs,         /**< pointer to array of attributes */
-                   int *n_attr,          /**< size of array attribute */
-                   char **source,        /**< source of data or NULL */
-                   char **history,       /**< history of data or NULL */
-                   char **variable,      /**< name of variable or NULL */
-                   char **unit,          /**< unit of variable or NULL */
-                   char **standard_name, /**< standard name of variable or NULL */
-                   char **long_name,     /**< long name of variable or NULL */
+                   Metadata *metadata,   /**< metadata information or NULL */
                    Filename *gridfile,   /**< name of grid file or NULL */
                    Type *grid_type,      /**< datatype of grid or NULL */
                    int *filefmt,         /**< file format or NULL */
@@ -474,9 +408,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   *swap=FALSE;
   *offset=0;
   name=NULL;
-  if(map!=NULL)
-    *map=NULL;
-  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,source,history,variable,unit,standard_name,long_name,gridfile,grid_type,filefmt,offset,swap,isout ? ERR : NO_ERR);
+  name=parse_json_metafile(file,header,metadata,gridfile,grid_type,filefmt,offset,swap,isout ? ERR : NO_ERR);
   fclose(file);
   if(name==NULL)
   {
@@ -491,21 +423,50 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     printallocerr("name");
     free(path);
     free(name);
+    if(gridfile!=NULL)
+      free(gridfile->name);
+    freemetadata(metadata);
     return NULL;
   }
   free(name);
-  free(path);
   name=fullname;
+  if(gridfile!=NULL && gridfile->name!=NULL)
+  {
+    fullname=addpath(gridfile->name,path);
+    if(fullname==NULL)
+    {
+      printallocerr("name");
+      free(path);
+      free(name);
+      freemetadata(metadata);
+      free(gridfile->name);
+      return NULL;
+    }
+    free(gridfile->name);
+    gridfile->name=fullname;
+  }
+  free(path);
   /* open data file */
-  if((file=fopen(name,"rb"))==NULL  && isout)
-    printfopenerr(name);
+  file=fopen(name,"rb");
   /* check file size of binary file */
-  if(file!=NULL)
+  if(file==NULL)
+  {
+    if(isout)
+      printfopenerr(name);
+    free(name);
+    if(gridfile!=NULL)
+      free(gridfile->name);
+    freemetadata(metadata);
+  }
+  else
   {
     if((header->order==CELLINDEX  && getfilesizep(file)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(file)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
     {
       if(getfilesizep(file)==0)
       {
+        freemetadata(metadata);
+        if(gridfile!=NULL)
+          free(gridfile->name);
         fclose(file);
         file=NULL;
         if(isout)

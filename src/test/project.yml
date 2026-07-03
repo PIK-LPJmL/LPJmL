@@ -90,6 +90,7 @@
     - ../soil/**
     - ../numeric/**
     - ../landuse/**
+    - ../lpj/**
     - ../tree/**
     - ../grass/**
     - ../crop/**

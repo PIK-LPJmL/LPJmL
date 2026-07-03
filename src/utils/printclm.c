@@ -22,7 +22,7 @@
 #define NO_TEXT 4
 
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjon)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjson)
 {
   FILE *file;
   time_t mod_date;
@@ -35,13 +35,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
   float fdata;
   double ddata;
   int year,cell,i,*index=NULL,rc,t;
-  char *unit=NULL,*long_name=NULL,*standard_name=NULL;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
-  Map *map=NULL;
-  Attr *attrs=NULL;
-  int n_attr=0;
+  Metadata metadata;
+  initmetadata(&metadata,map_name);
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -55,13 +53,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,NULL,NULL,&unit,&standard_name,&long_name,NULL,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,NULL,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
       fclose(file);
+      freemetadata(&metadata);
       return;
     }
     type=header.datatype;
@@ -70,9 +69,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   else
   {
-    unit=NULL;
-    standard_name=NULL;
-    long_name=NULL;
     file=fopen(filename,"rb");
     if(file==NULL)
     {
@@ -94,14 +90,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
     isrestart=(!strcmp(id,RESTART_HEADER));
     isreservoir=(!strcmp(id,LPJRESERVOIR_HEADER));
   }
-  if(isjon)
+  if(isjson)
   {
-    fprintjson(stdout,filename,NULL,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,NULL,&header,&metadata,NULL,LPJ_SHORT,CLM,id,swap,version);
+    freemetadata(&metadata);
+    fclose(file);
     return;
   }
-  free(long_name);
-  freemap(map);
-  freeattrs(attrs,n_attr);
   if((output & NO_HEADER)==0)
   {
     mod_date=getfiledate(filename);
@@ -116,17 +111,16 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
     printheader(&header);
-    if(map!=NULL)
+    if(metadata.map!=NULL)
     {
       printf("%s: ",map_name);
-      printmap(map);
+      printmap(metadata.map);
       printf("\n");
-      freemap(map);
     }
-    if(unit!=NULL && strlen(unit)>0)
-      printf("Unit:\t\t%s\n",unit);
+    if(metadata.unit!=NULL && strlen(metadata.unit)>0)
+      printf("Unit:\t\t%s\n",metadata.unit);
   }
-  free(unit);
+  freemetadata(&metadata);
   if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
     fprintf(stderr,"Warning: Unsupported version %d, must be less than %d.\n",
             version,CLM_MAX_VERSION+1);
@@ -219,6 +213,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
         if(index==NULL)
         {
           printallocerr("index");
+          fclose(file);
           return;
         }
         rc=freadint(index,last,swap,file);
@@ -226,6 +221,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
         {
           fprintf(stderr,"Unexpected end of file at cell %d.\n",rc+first+1);
           free(index);
+          fclose(file);
           return;
         }
         fseek(file,sizeof(int)*(header.ncell-last-first+header.firstcell),SEEK_CUR);
@@ -233,6 +229,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       if(fseek(file,typesizes[type]*header.ncell*header.nstep*header.nbands*(start-header.firstyear),SEEK_CUR))
       {
         fprintf(stderr,"Error seeking to year %d.\n",start);
+        free(index);
         fclose(file);
         return;
       }
@@ -261,6 +258,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   {
                     fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
                             year,cell,i);
+                    free(index);
+                    fclose(file);
                     return;
                   }
                   if(isscale && header.scalar!=1)
@@ -273,6 +272,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   {
                     fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
                             year,cell,i);
+                    free(index);
+                    fclose(file);
                     return;
                   }
                   if(isscale && header.scalar!=1)
@@ -285,6 +286,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   {
                     fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
                             year,cell,i);
+                    free(index);
+                    fclose(file);
                     return;
                   }
                   if(isscale && header.scalar!=1)
@@ -297,6 +300,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   {
                     fprintf(stderr,"Unexpected end of file at year %d, cell %d, day %d.\n",
                             year,cell,i);
+                    free(index);
+                    fclose(file);
                     return;
                   }
                   printf("%g\n",fdata);
@@ -306,98 +311,106 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   {
                     fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
                             year,cell,i);
+                    free(index);
+                    fclose(file);
                     return;
                   }
                   printf("%6g\n",ddata);
                   break;
                 default:
+                  free(index);
+                  fclose(file);
                   return;
                }
             }
             fseek(file,typesizes[type]*(header.ncell-last-first+header.firstcell),SEEK_CUR);
           }
-        if(header.order==CELLINDEX)
-          free(index);
+        free(index);
       }
       else
         for(year=start;year<=stop;year++)
         {
-        if((output & NO_TEXT)==0)
-          printf("Year: %d\n",year);
-        fseek(file,typesizes[type]*header.nbands*header.nstep*(first-header.firstcell),SEEK_CUR);
-        for(cell=0;cell<last;cell++)
-        {
           if((output & NO_TEXT)==0)
-            printf("%5d:",cell+first);
-          for(i=0;i<header.nbands*header.nstep;i++)
-            switch(type)
-            {
-              case LPJ_BYTE:
-                if(fread(&byte,1,1,file)!=1)
-                {
-                  putchar('\n');
-                  fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
-                          year,cell,i);
+            printf("Year: %d\n",year);
+          fseek(file,typesizes[type]*header.nbands*header.nstep*(first-header.firstcell),SEEK_CUR);
+          for(cell=0;cell<last;cell++)
+          {
+            if((output & NO_TEXT)==0)
+              printf("%5d:",cell+first);
+            for(i=0;i<header.nbands*header.nstep;i++)
+              switch(type)
+              {
+                case LPJ_BYTE:
+                  if(fread(&byte,1,1,file)!=1)
+                  {
+                    putchar('\n');
+                    fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
+                            year,cell,i);
+                    fclose(file);
+                    return;
+                  }
+                  if(isscale && header.scalar!=1)
+                    printf(" %6g",byte*header.scalar);
+                  else
+                    printf(" %3d",(int)byte);
+                  break;
+                case LPJ_SHORT:
+                  if(freadshort(&sdata,1,swap,file)!=1)
+                  {
+                    putchar('\n');
+                    fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
+                            year,cell,i);
+                    fclose(file);
+                    return;
+                  }
+                  if(isscale && header.scalar!=1)
+                    printf(" %6g",sdata*header.scalar);
+                  else
+                    printf(" %5d",(int)sdata);
+                  break;
+                case LPJ_INT:
+                  if(freadint(&idata,1,swap,file)!=1)
+                  {
+                    putchar('\n');
+                    fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
+                            year,cell,i);
+                    fclose(file);
+                    return;
+                  }
+                  if(isscale && header.scalar!=1)
+                    printf(" %6g",idata*header.scalar);
+                  else
+                    printf(" %6d",idata);
+                  break;
+                case LPJ_FLOAT:
+                  if(freadfloat(&fdata,1,swap,file)!=1)
+                  {
+                    putchar('\n');
+                    fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
+                            year,cell,i);
+                    return;
+                  }
+                  printf(" %10.6f",fdata);
+                  break;
+                case LPJ_DOUBLE:
+                  if(freaddouble(&ddata,1,swap,file)!=1)
+                  {
+                    putchar('\n');
+                    fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
+                            year,cell,i);
+                    fclose(file);
+                    return;
+                  }
+                  printf(" %6g",ddata);
+                  break;
+                default:
+                  fclose(file);
                   return;
-                }
-                if(isscale && header.scalar!=1)
-                  printf(" %6g",byte*header.scalar);
-                else
-                  printf(" %3d",(int)byte);
-                break;
-              case LPJ_SHORT:
-                if(freadshort(&sdata,1,swap,file)!=1)
-                {
-                  putchar('\n');
-                  fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
-                          year,cell,i);
-                  return;
-                }
-                if(isscale && header.scalar!=1)
-                  printf(" %6g",sdata*header.scalar);
-                else
-                  printf(" %5d",(int)sdata);
-                break;
-              case LPJ_INT:
-                if(freadint(&idata,1,swap,file)!=1)
-                {
-                  putchar('\n');
-                  fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
-                          year,cell,i);
-                  return;
-                }
-                if(isscale && header.scalar!=1)
-                  printf(" %6g",idata*header.scalar);
-                else
-                  printf(" %6d",idata);
-                break;
-              case LPJ_FLOAT:
-                if(freadfloat(&fdata,1,swap,file)!=1)
-                {
-                  putchar('\n');
-                  fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
-                          year,cell,i);
-                  return;
-                }
-                printf(" %10.6f",fdata);
-                break;
-              case LPJ_DOUBLE:
-                if(freaddouble(&ddata,1,swap,file)!=1)
-                {
-                  putchar('\n');
-                  fprintf(stderr,"Unexpected end of file at year %d, cell %d, band %d.\n",
-                          year,cell,i);
-                  return;
-                }
-                printf(" %6g",ddata);
-                break;
-              default:
-                return;
-            }
-          putchar('\n');
-        } /* of for(cell=...) */
-        fseek(file,typesizes[type]*header.nbands*header.nstep*(header.ncell-last-first+header.firstcell),SEEK_CUR);
-      }
+              }
+            putchar('\n');
+          } /* of for(cell=...) */
+          fseek(file,typesizes[type]*header.nbands*header.nstep*(header.ncell-last-first+header.firstcell),SEEK_CUR);
+        }
     }
   }
   fclose(file);
@@ -442,16 +455,16 @@ int main(int argc,char **argv)
                "-json       print header in JSON format only\n"
                "-scale      scale data with scale factor defined in header\n"
                "-longheader set long header(version 2) in CLM files\n"
-               "-type t     set datatype of clm file. Default is short\n"
+               "-type t     set datatype of clm file, default is short\n"
                "-nbands n   set number of bands to n ignoring value in file header\n"
-               "-map name   name of map in JSON metafile, default is \"map\"\n"
+               "-map name   name of map in JSON metafile, default is \"%s\"\n"
                "-start s    start output of data at year s\n"
                "-end e      end output of data at year e\n"
                "-first f    index of first cell for output\n"
                "-last l     index of last cell for output\n"
                "clmfile     filename of clm data file(s)\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,map_name);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
@@ -567,11 +580,6 @@ int main(int argc,char **argv)
                   ERR_USAGE,argv[i],progname,progname);
           return EXIT_FAILURE;
         }
-        if(start!=INT_MAX && stop<start)
-        {
-          fprintf(stderr,"Error: argument of '-end' must be  >=%d.\n",start);
-          return EXIT_FAILURE;
-        }
       }
       else if(!strcmp(argv[i],"-type"))
       {
@@ -605,6 +613,17 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Filename missing.\n"
             ERR_USAGE,progname,progname);
+    return EXIT_FAILURE;
+  }
+  if(stop!=INT_MAX && start!=INT_MAX && stop<start)
+  {
+    fprintf(stderr,"Error: argument of '-end' must be  >=%d.\n",start);
+    return EXIT_FAILURE;
+  }
+  if(first>last)
+  {
+    fprintf(stderr,"First cell %d specified greater than specified last cell %d.\n",
+            first,last);
     return EXIT_FAILURE;
   }
   for(i=0;i<argc;i++)

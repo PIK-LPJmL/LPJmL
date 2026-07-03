@@ -602,6 +602,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
               name,filename,nc_strerror(rc));
     free(dimids);
+    if(map!=NULL)
+      freemap(*map);
     nc_close(coord->ncid);
     free(coord);
     return NULL;
@@ -612,6 +614,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
   {
     printallocerr("lon");
     free(dimids);
+    if(map!=NULL)
+      freemap(*map);
     nc_close(coord->ncid);
     free(coord);
     return NULL;
@@ -623,6 +627,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
       fprintf(stderr,"ERROR410: Cannot read longitude in '%s': %s.\n",
               filename,nc_strerror(rc));
     free(coord->lon);
+    if(map!=NULL)
+      freemap(*map);
     free(dimids);
     nc_close(coord->ncid);
     free(coord);
@@ -636,6 +642,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
               name,filename,nc_strerror(rc));
     free(dimids);
+    if(map!=NULL)
+      freemap(*map);
     free(coord->lon);
     nc_close(coord->ncid);
     free(coord);
@@ -648,6 +656,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
   {
     printallocerr("lat");
     free(coord->lon);
+    if(map!=NULL)
+      freemap(*map);
     nc_close(coord->ncid);
     free(coord);
     return NULL;
@@ -658,6 +668,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
     if(isout)
       fprintf(stderr,"ERROR404: Cannot read latitude in '%s': %s.\n",
               filename,nc_strerror(rc));
+    if(map!=NULL)
+      freemap(*map);
     closecoord_netcdf(coord);
     return NULL;
   }
@@ -709,6 +721,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,Map **map,const char *map_nam
       if(isout)
         fprintf(stderr,"ERROR428: Invalid data type of %s in '%s'.\n",
                 (var==NULL) ? name :var,filename);
+      if(map!=NULL)
+        freemap(*map);
       closecoord_netcdf(coord);
       return NULL;
   }

@@ -26,18 +26,21 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
                                                            struct or NULL */
 {
   Human_ignition ignition;
-
+  Metadata metadata;
   ignition=new(struct human_ignition);
   if(ignition==NULL)
   {
     printallocerr("ignition");
     return NULL;
   }
-  if(opendata(&ignition->file,NULL,NULL,NULL,&config->human_ignition_filename,"human ignition","yr-1",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
+  initmetadata(&metadata,NULL);
+  if(opendata(&ignition->file,&metadata,&config->human_ignition_filename,"human ignition","yr-1",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
   {
+    freemetadata(&metadata);
     free(ignition);
     return NULL;
   }
+  freemetadata(&metadata);
   if(isroot(*config) && config->human_ignition_filename.fmt!=SOCK && config->lastyear>ignition->file.firstyear+ignition->file.nyear-1)
     fprintf(stderr,"WARNING024: Last year in human ignition data file=%d is less than last simulation year %d, data from last year used.\n",
             ignition->file.firstyear+ignition->file.nyear-1,config->lastyear);

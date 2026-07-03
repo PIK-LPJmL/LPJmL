@@ -14,256 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-list] [-longheader] [-json] countryfile gridfile outfile country ...\n"
-
-#define NCOUNTRY 236 /* number of countries defined in LPJmL */
-
-typedef struct
-{
-  int code;     /* LPJmL country code */
-  const char *name;
-  char abbrev[4]; /* ISO 3166-1 alpha-3 abbreviation for country */
-} Countryname;
-
-static Countryname countrynames[NCOUNTRY]=
-{
-  {Afghanistan,"Afghanistan","AFG"},
-  {Aland_Islands,"Aland Islands","ALA"},
-  {Albania,"Albania","ALB"},
-  {Algeria,"Algeria","DZA"},
-  {American_Samoa,"American Samoa","ASM"},
-  {Angola,"Angola","AGO"},
-  {Anguilla,"Anguilla","AIA"},
-  {Antigua_and_Barbuda,"Antigua and Barbuda","ATG"},
-  {Argentina,"Argentina","ARG"},
-  {Armenia,"Armenia","ARM"},
-  {Austria,"Austria","AUT"},
-  {Azerbaijan,"Azerbaijan","AZE"},
-  {Bahamas_The,"Bahamas,The","BHS"},
-  {Bahrain,"Bahrain","BHR"},
-  {Bangladesh,"Bangladesh","BGD"},
-  {Barbados,"Barbados","BRB"},
-  {Belgium,"Belgium","BEL"},
-  {Belize,"Belize","BLZ"},
-  {Benin,"Benin","BEN"},
-  {Bermuda,"Bermuda","BMU"},
-  {Bhutan,"Bhutan","BTN"},
-  {Bolivia,"Bolivia","BOL"},
-  {Bosnia_and_Herzegovina,"Bosnia and Herzegovina","BIH"},
-  {Botswana,"Botswana","BWA"},
-  {British_Indian_Ocean_Territory,"British Indian Ocean Territory","IOT"},
-  {Brunei,"Brunei","BRN"},
-  {Bulgaria,"Bulgaria","BGR"},
-  {Burkina_Faso,"Burkina Faso","BFA"},
-  {Burundi,"Burundi","BDI"},
-  {Byelarus,"Byelarus","BLR"},
-  {Cambodia,"Cambodia","KHM"},
-  {Cameroon,"Cameroon","CMR"},
-  {Cape_Verde,"Cape Verde","CPV"},
-  {Cayman_Islands,"Cayman Islands","CYM"},
-  {Central_African_Republic,"Central African Republic","CAF"},
-  {Chad,"Chad","TCD"},
-  {Chile,"Chile","CHL"},
-  {Christmas_Island,"Christmas Island","CXR"},
-  {Cocos_Keeling_Islands,"Cocos Keeling Islands","CCK"},
-  {Colombia,"Colombia","COL"},
-  {Comoros,"Comoros","COM"},
-  {Congo_Brazzaville,"Congo-Brazzaville","COG"},
-  {Cook_Islands,"Cook Islands","COK"},
-  {Costa_Rica,"Costa Rica","CRI"},
-  {Croatia,"Croatia","HRV"},
-  {Cuba,"Cuba","CUB"},
-  {Curacao,"Curacao","CUW"},
-  {Cyprus,"Cyprus","CYP"},
-  {Czech_Republic,"Czech Republic","CZE"},
-  {Denmark,"Denmark","DNK"},
-  {Djibouti,"Djibouti","DJI"},
-  {Dominica,"Dominica","DMA"},
-  {Dominican_Republic,"Dominican Republic","DOM"},
-  {Ecuador,"Ecuador","ECU"},
-  {Egypt,"Egypt","EGY"},
-  {El_Salvador,"El Salvador","SLV"},
-  {Equatorial_Guinea,"Equatorial Guinea","GNQ"},
-  {Eritrea,"Eritrea","ERI"},
-  {Estonia,"Estonia","EST"},
-  {Ethiopia,"Ethiopia","ETH"},
-  {Falkland_Islands_or_Islas_Malvinas,"Falkland Islands or Islas Malvinas","FLK"},
-  {Faroe_Islands,"Faroe Islands","FRO"},
-  {Federated_States_of_Micronesia,"Federated States of Micronesia","FSM"},
-  {Fiji,"Fiji","FJI"},
-  {Finland,"Finland","FIN"},
-  {France,"France","FRA"},
-  {French_Guiana,"French Guiana","GUF"},
-  {French_Polynesia,"French Polynesia","PYF"},
-  {French_Southern_and_Antarctica_Lands,"French Southern and Antarctica Lands","NOC"},
-  {Gabon,"Gabon","GAB"},
-  {Gambia_The,"Gambia,The","GMB"},
-  {Georgia,"Georgia","GEO"},
-  {Germany,"Germany","DEU"},
-  {Ghana,"Ghana","GHA"},
-  {Greece,"Greece","GRC"},
-  {Greenland,"Greenland","GRL"},
-  {Grenada,"Grenada","GRD"},
-  {Guadeloupe,"Guadeloupe","GLP"},
-  {Guam,"Guam","GUM"},
-  {Guatemala,"Guatemala","GTM"},
-  {Guernsey,"Guernsey","GGY"},
-  {Guinea_Bissau,"Guinea-Bissau","GNB"},
-  {Guinea,"Guinea","GIN"},
-  {Guyana,"Guyana","GUY"},
-  {Haiti,"Haiti","HTI"},
-  {Heard_Island_and_McDonald_Islands,"Heard Island and McDonald Islands","HMD"},
-  {Honduras,"Honduras","HND"},
-  {Hong_Kong,"Hong Kong","HKG"},
-  {Hungary,"Hungary","HUN"},
-  {Iceland,"Iceland","ISL"},
-  {Indonesia,"Indonesia","IDN"},
-  {Iran,"Iran","IRN"},
-  {Iraq,"Iraq","IRQ"},
-  {Ireland,"Ireland","IRL"},
-  {Isle_of_Man,"Isle of Man","IMN"},
-  {Israel,"Israel","ISR"},
-  {Italy,"Italy","ITA"},
-  {Ivory_Coast,"Ivory Coast","CIV"},
-  {Jamaica,"Jamaica","JAM"},
-  {Japan,"Japan","JPN"},
-  {Jersey,"Jersey","JEY"},
-  {Jordan,"Jordan","JOR"},
-  {Kazakhstan,"Kazakhstan","KAZ"},
-  {Kenya,"Kenya","KEN"},
-  {Kiribati,"Kiribati","KIR"},
-  {Kosovo,"Kosovo","KO-"},
-  {Kuwait,"Kuwait","KWT"},
-  {Kyrgyzstan,"Kyrgyzstan","KGZ"},
-  {Laos,"Laos","LAO"},
-  {Latvia,"Latvia","LVA"},
-  {Lebanon,"Lebanon","LBN"},
-  {Lesotho,"Lesotho","LSO"},
-  {Liberia,"Liberia","LBR"},
-  {Libya,"Libya","LBY"},
-  {Lithuania,"Lithuania","LTU"},
-  {Luxembourg,"Luxembourg","LUX"},
-  {Macedonia,"Macedonia","MKD"},
-  {Madagascar,"Madagascar","MDG"},
-  {Malawi,"Malawi","MWI"},
-  {Malaysia,"Malaysia","MYS"},
-  {Maldives,"Maldives","MDV"},
-  {Mali,"Mali","MLI"},
-  {Malta,"Malta","MLT"},
-  {Marshall_Islands,"Marshall Islands","MHL"},
-  {Martinique,"Martinique","MTQ"},
-  {Mauritania,"Mauritania","MRT"},
-  {Mauritius,"Mauritius","MUS"},
-  {Mayotte,"Mayotte","MYT"},
-  {Mexico,"Mexico","MEX"},
-  {Moldova,"Moldova","MDA"},
-  {Mongolia,"Mongolia","MNG"},
-  {Montenegro,"Montenegro","MNE"},
-  {Montserrat,"Montserrat","MSR"},
-  {Morocco,"Morocco","MAR"},
-  {Mozambique,"Mozambique","MOZ"},
-  {Myanmar_or_Burma,"Myanmar or Burma","MMR"},
-  {Namibia,"Namibia","NAM"},
-  {Nauru,"Nauru","NRU"},
-  {Nepal,"Nepal","NPL"},
-  {Netherlands,"Netherlands","NLD"},
-  {New_Caledonia,"New Caledonia","NCL"},
-  {New_Zealand,"New Zealand","NZL"},
-  {Nicaragua,"Nicaragua","NIC"},
-  {Niger,"Niger","NER"},
-  {Nigeria,"Nigeria","NGA"},
-  {Niue,"Niue","NIU"},
-  {No_Land,"No Land","XNL"},
-  {Norfolk_Island,"Norfolk Island","NFK"},
-  {North_Korea,"North Korea","PRK"},
-  {Northern_Mariana_Islands,"Northern Mariana Islands","MNP"},
-  {Norway,"Norway","NOR"},
-  {Oman,"Oman","OMN"},
-  {Pakistan,"Pakistan","PAK"},
-  {Palau,"Palau","PLW"},
-  {Panama,"Panama","PAN"},
-  {Papua_New_Guinea,"Papua New Guinea","PNG"},
-  {Paraguay,"Paraguay","PRY"},
-  {Peru,"Peru","PER"},
-  {Philippines,"Philippines","PHL"},
-  {Pitcairn_Islands,"Pitcairn Islands","PCN"},
-  {Poland,"Poland","POL"},
-  {Portugal,"Portugal","PRT"},
-  {Puerto_Rico,"Puerto Rico","PRI"},
-  {Qatar,"Qatar","QAT"},
-  {Reunion,"Reunion","REU"},
-  {Romania,"Romania","ROU"},
-  {Rwanda,"Rwanda","RWA"},
-  {Saint_Helena_Ascension_and_Tristan_da_Cunha,"Saint Helena Ascension and Tristan da Cunha","SHN"},
-  {Saint_Kitts_and_Nevis,"Saint Kitts and Nevis","KNA"},
-  {Saint_Lucia,"Saint Lucia","LCA"},
-  {Saint_Pierre_and_Miquelon,"Saint Pierre and Miquelon","SPM"},
-  {Sao_Tome_and_Principe,"Sao Tome and Principe","STP"},
-  {Saudi_Arabia,"Saudi Arabia","SAU"},
-  {Senegal,"Senegal","SEN"},
-  {Serbia,"Serbia","SRB"},
-  {Seychelles,"Seychelles","SYC"},
-  {Sierra_Leone,"Sierra Leone","SLE"},
-  {Singapore,"Singapore","SGP"},
-  {Slovakia,"Slovakia","SVK"},
-  {Slovenia,"Slovenia","SVN"},
-  {Solomon_Islands,"Solomon Islands","SLB"},
-  {Somalia,"Somalia","SOM"},
-  {South_Africa,"South Africa","ZAF"},
-  {South_Georgia_and_the_South_Sandwich_Islands,"South Georgia and the South Sandwich Islands","SGS"},
-  {South_Korea,"South Korea","KOR"},
-  {South_Sudan,"South Sudan","SSD"},
-  {Spain,"Spain","ESP"},
-  {Sri_Lanka,"Sri Lanka","LKA"},
-  {St_Vincent_and_the_Grenadines,"St. Vincent and the Grenadines","VCT"},
-  {Sudan,"Sudan","SDN"},
-  {Suriname,"Suriname","SUR"},
-  {Svalbard,"Svalbard","SJM"},
-  {Swaziland,"Swaziland","SWZ"},
-  {Sweden,"Sweden","SWE"},
-  {Switzerland,"Switzerland","CHE"},
-  {Syria,"Syria","SYR"},
-  {Taiwan,"Taiwan","TWN"},
-  {Tajikistan,"Tajikistan","TJK"},
-  {Tanzania_United_Republic_of,"Tanzania,United Republic of","TZA"},
-  {Thailand,"Thailand","THA"},
-  {Timor_Leste,"Timor Leste","TLS"},
-  {Togo,"Togo","TGO"},
-  {Tokelau,"Tokelau","TKL"},
-  {Tonga,"Tonga","TON"},
-  {Trinidad_and_Tobago,"Trinidad and Tobago","TTO"},
-  {Tunisia,"Tunisia","TUN"},
-  {Turkey,"Turkey","TUR"},
-  {Turkmenistan,"Turkmenistan","TKM"},
-  {Turks_and_Caicos_Islands,"Turks and Caicos Islands","TCA"},
-  {Tuvalu,"Tuvalu","TUV"},
-  {Uganda,"Uganda","UGA"},
-  {Ukraine,"Ukraine","UKR"},
-  {United_Arab_Emirates,"United Arab Emirates","ARE"},
-  {United_Kingdom,"United Kingdom","GBR"},
-  {United_States_Minor_Outlying_Islands,"United States Minor Outlying Islands","UMI"},
-  {Uruguay,"Uruguay","URY"},
-  {Uzbekistan,"Uzbekistan","UZB"},
-  {Vanuatu,"Vanuatu","VUT"},
-  {Venezuela,"Venezuela","VEN"},
-  {Vietnam,"Vietnam","VNM"},
-  {Virgin_Islands,"Virgin Islands","VGB"},
-  {Wallis_and_Futuna,"Wallis and Futuna","WLF"},
-  {West_Bank,"West Bank","PSE"},
-  {Western_Sahara,"Western Sahara","ESH"},
-  {Western_Samoa,"Western Samoa","WSM"},
-  {Yemen,"Yemen","YEM"},
-  {Zaire_DR_Congo,"Zaire,DR Congo","COD"},
-  {Zambia,"Zambia","ZMB"},
-  {Zimbabwe,"Zimbabwe","ZWE"},
-  {Australia,"Australia","AUS"},
-  {Brazil,"Brazil","BRA"},
-  {Canada,"Canada","CAN"},
-  {China,"China","CHN"},
-  {India,"India","IND"},
-  {Russia,"Russia","RUS"},
-  {United_States,"United States of America","USA"}
-};
+#define USAGE "Usage: %s [-list] [-json] countryfile outfile country ...\n"
 
 static int findcountryname(const char *name,
                            const Countryname countryname[],
@@ -271,15 +22,10 @@ static int findcountryname(const char *name,
 {
   int i;
   for(i=0;i<ncountries;i++)
-    if(!strcmp(name,countryname[i].abbrev))
-      return countryname[i].code;
+    if(!strcmp(name,countryname[i].alpha_3))
+      return i;
   return NOT_FOUND;
 } /* 'findcountryname' */
-
-static int compare(const void *a,const void *b)
-{
-  return strcmp(((const Countryname *)a)->name,((const Countryname *)b)->name);
-}
 
 static Bool findcountry(const int country[],int n,int c)
 {
@@ -292,17 +38,21 @@ static Bool findcountry(const int country[],int n,int c)
 
 int main(int argc,char **argv)
 {
-  FILE *file,*grid,*out;
-  int i,*country,n,version,country_version,iarg;
+  FILE *file,*out,*gridfile;
+  int i,*country,n,iarg,ngrid;
   char *endptr;
   char *out_json,*arglist;
-  Intcoord coord;
-  Header header,gridheader,outheader;
-  String headername;
+  size_t offset,grid_offset;
+  Header header,outheader;
+  Filename grid_name;
+  Coord *grid,res;
+  Coordfile coordfile;
+  Type grid_type;
+  Metadata metadata;
   int code;
-  Bool swap_country,swap_grid,rc,isregion,isjson;
-  float fcoord[2];
-  double dcoord[2];
+  int format;
+  float cellsize_lon,cellsize_lat;
+  Bool swap,rc,isregion,isjson,islist,gridswap,ismeta;
   outheader.nyear=1;
   outheader.nstep=1;
   outheader.timestep=1;
@@ -310,172 +60,263 @@ int main(int argc,char **argv)
   outheader.order=0;
   outheader.ncell=0;
   outheader.nbands=2;
-  version=country_version=READ_VERSION;
-  isjson=FALSE;
+  isjson=islist=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-longheader"))
-        version=country_version=2;
-      else if(!strcmp(argv[iarg],"-json"))
+      if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
       else if(!strcmp(argv[iarg],"-list"))
+        islist=TRUE;
+      else
       {
-        puts("List of country codes:\nCode Name");
-        qsort(countrynames,NCOUNTRY,sizeof(Countryname),
-              (int (*)(const void *,const void *))compare);
-        for(i=0;i<NCOUNTRY;i++)
-          printf("%s  %s\n",countrynames[i].abbrev,countrynames[i].name);
-        return EXIT_SUCCESS;
+        fprintf(stderr,"Invalid option '%s'.\n"
+                USAGE,argv[iarg],argv[0]);
+        return EXIT_FAILURE;
       }
     }
     else
       break;
-  if(argc<iarg+4)
+  if((islist && argc<iarg+1) || (!islist && argc<iarg+3))
   {
     fprintf(stderr,"Argument(s) missing.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  file=fopen(argv[iarg],"rb");
+  header.datatype=LPJ_SHORT;
+  header.timestep=1;
+  header.nbands=1;
+  header.nstep=1;
+  header.order=CELLYEAR;
+  header.firstcell=0;
+  header.firstyear=1901;
+  header.cellsize_lon=header.cellsize_lat=0.5;
+  header.ncell=1;
+  header.nyear=1;
+  grid_type=LPJ_SHORT;
+  grid_name.name=NULL;
+  initmetadata(&metadata,NULL);
+  file=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg],TRUE);
   if(file==NULL)
+    return EXIT_FAILURE;
+  if(metadata.countrymap==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
+    fprintf(stderr,"Country map is missing in '%s.\n",argv[iarg]);
+    fclose(file);
+    free(grid_name.name);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
-  if(freadanyheader(file,&header,&swap_country,headername,&country_version,TRUE))
+  if(islist)
   {
-    fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg]);
-    return EXIT_FAILURE;
+    fclose(file);
+    puts("List of country codes:\nCode Name");
+    for(i=0;i<metadata.countrymap_size;i++)
+       printf("%s  %s\n",metadata.countrymap[i].alpha_3,metadata.countrymap[i].name);
+    free(grid_name.name);
+    freemetadata(&metadata);
+    return EXIT_SUCCESS;
   }
+  fseek(file,offset,SEEK_SET);
   if(header.nbands==1)
     isregion=FALSE;
   else if(header.nbands!=2)
   {
     fprintf(stderr,"Invalid number of bands=%d in `%s', must be 1 or 2.\n",
             header.nbands,argv[iarg]);
+    fclose(file);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
   else
-   isregion=TRUE;
-  grid=fopen(argv[iarg+1],"rb");
-  if(grid==NULL)
+    isregion=TRUE;
+  if(grid_name.name==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
+    fprintf(stderr,"Filename of grid file missing in '%s'.\n",argv[iarg]);
+    fclose(file);
+    freemetadata(&metadata);
     return EXIT_FAILURE;
   }
-  if(freadheader(grid,&gridheader,&swap_grid,LPJGRID_HEADER,&version,TRUE))
-  {
-    fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+1]);
-    return EXIT_FAILURE;
-  }
-  outheader.firstyear=gridheader.firstyear;
-  outheader.datatype=gridheader.datatype;
-  if(version>=2)
-  {
-    outheader.cellsize_lon=gridheader.cellsize_lon;
-    outheader.cellsize_lat=gridheader.cellsize_lat;
-    outheader.scalar=gridheader.scalar;
-  }
-  n=argc-iarg-3;
+  n=argc-iarg-2;
   country=newvec(int,n);
-  check(country);
+  if(country==NULL)
+  {
+    printallocerr("country");
+    free(grid_name.name);
+    fclose(file);
+    freemetadata(&metadata);
+    return EXIT_FAILURE;
+  }
   for(i=0;i<n;i++)
   {
-    country[i]=strtol(argv[iarg+3+i],&endptr,10);
+    country[i]=strtol(argv[iarg+2+i],&endptr,10);
     if(*endptr!='\0')
     {
       /* argument is not a number */
-      country[i]=findcountryname(argv[iarg+3+i],countrynames,NCOUNTRY);
+      country[i]=findcountryname(argv[iarg+2+i],metadata.countrymap,metadata.countrymap_size);
       if(country[i]==NOT_FOUND)
       {
-        fprintf(stderr,"Invalid number/name '%s' for country.\n",argv[iarg+3+i]);
+        fprintf(stderr,"Invalid number/name '%s' for country.\n",argv[iarg+2+i]);
+        free(grid_name.name);
+        free(country);
+        fclose(file);
+        freemetadata(&metadata);
         return EXIT_FAILURE;
       }
     }
   }
-  out=fopen(argv[iarg+2],"wb");
-  if(out==NULL)
+  freemetadata(&metadata);
+  coordfile=opencoord(&grid_name,TRUE);
+  if(coordfile==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[3],strerror(errno));
+    free(grid_name.name);
+    free(country);
+    fclose(file);
     return EXIT_FAILURE;
   }
-  fwriteheader(out,&outheader,LPJGRID_HEADER,version);
+  ngrid=numcoord(coordfile);
+  if(ngrid!=header.ncell)
+  {
+    fprintf(stderr,"Number of cells %d in grid file '%s' is different from number of cells %d in '%s'.\n",
+            ngrid,grid_name.name,header.ncell,argv[iarg]);
+    free(grid_name.name);
+    closecoord(coordfile);
+    free(country);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
+  getcellsizecoord(&cellsize_lon,&cellsize_lat,coordfile);
+  res.lon=cellsize_lon;
+  res.lat=cellsize_lat;
+  grid=newvec(Coord,numcoord(coordfile));
+  if(grid==NULL)
+  {
+    printallocerr("grid");
+    free(grid_name.name);
+    closecoord(coordfile);
+    free(country);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
+  for(i=0;i<numcoord(coordfile);i++)
+    readcoord(coordfile,grid+i,&res);
+  outheader.nstep=1;
+  outheader.nbands=2;
+  outheader.timestep=1;
+  outheader.order=CELLYEAR;
+  outheader.firstyear=header.firstyear;
+  outheader.datatype=grid_type;
+  outheader.cellsize_lon=cellsize_lon;
+  outheader.cellsize_lat=cellsize_lat;
+  outheader.scalar=getcoordscale(coordfile);
+  closecoord(coordfile);
+  if(isjson && grid_name.fmt==META)
+  {
+    ismeta=TRUE;
+    initmetadata(&metadata,NULL);
+    gridfile=openmetafile(&outheader,&metadata,NULL,NULL,NULL,&gridswap,&grid_offset,grid_name.name,TRUE);
+    if(gridfile==NULL)
+      ismeta=FALSE;
+    else
+      fclose(gridfile);
+  }
+  else
+    ismeta=FALSE;
+  free(grid_name.name);
+  outheader.firstcell=0;
+  outheader.ncell=0;
+  out=fopen(argv[iarg+1],"wb");
+  if(out==NULL)
+  {
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
+    if(ismeta)
+      freemetadata(&metadata);
+    free(grid);
+    free(country);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
+  fwriteheader(out,&outheader,LPJGRID_HEADER,LPJGRID_VERSION);
   for(i=0;i<header.ncell;i++)
   {
-    if(readcountrycode(file,&code,header.datatype,isregion,swap_country))
+    if(readcountrycode(file,&code,header.datatype,isregion,swap))
     {
       fprintf(stderr,"Error reading country code at %d.\n",i+1);
-      return EXIT_FAILURE;
-    }
-    switch(gridheader.datatype)
-    {
-      case LPJ_SHORT:
-        rc=readintcoord(grid,&coord,swap_grid);
-        break;
-      case LPJ_FLOAT:
-        rc=freadfloat(fcoord,2,swap_grid,grid)!=2;
-        break;
-      case LPJ_DOUBLE:
-        rc=freaddouble(dcoord,2,swap_grid,grid)!=2;
-        break;
-      default:
-        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridheader.datatype,argv[iarg+1]);
-        return EXIT_FAILURE;
-    }
-    if(rc)
-    {
-      fprintf(stderr,"Error reading coordinate at %d.\n",i+1);
+      if(ismeta)
+        freemetadata(&metadata);
+      free(grid);
+      free(country);
+      fclose(file);
+      fclose(out);
       return EXIT_FAILURE;
     }
     if(findcountry(country,n,code))
     {
-      switch(gridheader.datatype)
-      {
-        case LPJ_SHORT:
-          rc=fwrite(&coord,sizeof(coord),1,out)!=1;
-          break;
-        case LPJ_FLOAT:
-          rc=fwrite(fcoord,sizeof(float),2,out)!=2;
-          break;
-        case LPJ_DOUBLE:
-          rc=fwrite(dcoord,sizeof(double),2,out)!=2;
-          break;
-        default:
-          break;
-      }
+      rc=writecoord(out,grid+i,outheader.scalar,outheader.datatype);
       if(rc)
       {
         fprintf(stderr,"Error writing coordinate at %d.\n",i+1);
+        if(ismeta)
+          freemetadata(&metadata);
+        free(grid);
+        free(country);
+        fclose(file);
+        fclose(out);
         return EXIT_FAILURE;
       }
       outheader.ncell++;
     }
   }
+  free(grid);
   free(country);
   fclose(file);
-  fclose(grid);
   rewind(out);
-  fwriteheader(out,&outheader,LPJGRID_HEADER,version);
+  fwriteheader(out,&outheader,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(out);
   if(isjson)
   {
-    out_json=malloc(strlen(argv[iarg+2])+strlen(JSON_SUFFIX)+1);
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
       printallocerr("filename");
+      if(ismeta)
+        freemetadata(&metadata);
       return EXIT_FAILURE;
     }
-    strcat(strcpy(out_json,argv[iarg+2]),JSON_SUFFIX);
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      if(ismeta)
+        freemetadata(&metadata);
+      return EXIT_FAILURE;
+    }
     out=fopen(out_json,"w");
     if(out==NULL)
     {
       printfcreateerr(out_json);
+      free(arglist);
+      free(out_json);
+      if(ismeta)
+        freemetadata(&metadata);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+2],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,version);
+    if(!ismeta)
+    {
+      initmetadata(&metadata,NULL);
+      metadata.source=argv[0];
+      metadata.variable="grid";
+      metadata.unit="degree";
+      metadata.long_name="cell coordinates";
+    }
+    fprintjson(out,argv[iarg+1],NULL,arglist,&outheader,&metadata,NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    if(ismeta)
+      freemetadata(&metadata);
     fclose(out);
+    free(out_json);
+    free(arglist);
   }
   if(header.ncell)
     printf("Number of cells: %d\n",outheader.ncell);

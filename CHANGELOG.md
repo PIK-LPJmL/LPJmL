@@ -21,6 +21,43 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.3] - 2026-07-03
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth(wirth@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- Option `-metafile` and `-json` added to `cutclm` and `catclm`.
+- Option `-double` added to `cdf2soil.c` to write grid file with double datatype.
+
+### Changed
+
+- New datatype `Metadata` defined in `types.h` combining maps, attributes, basetemp and hlimit arrays used by `opendata()`.
+- basetemp, countrymap and hlimit arrays are copied from JSON metafiles to newly created metafiles in `regridclm`, `cutlcm`, `catclm`, and `mathclm`.
+- Scaling to sum of stand fractions removed for output `"vegc_avg"`.
+- Utility `getcountry` reads now JSON metafile for country codes including the alpha-3 country codes and global grid instead of CLM file.
+- If `-pedantic` option is set, non-matching titles in input files stops `lpjml` with an error.
+- Datatype of `lon`, `lat`, and `area` elements of `Coord` changed from `Real` to `double`.
+- Missing path to grid file added in `openmetafile.c`.
+
+### Fixed
+
+- Warning for float coordinates corrected in `cdf2coord.c`, `cdf2grid.c` and `cdf2soil.c`.
+- Variables initialized to zero in `reservoir2cdf.c` and `restart2yaml.c` to avoid warnings by `gcc`.
+- Carbon balance fixed in `reclaim_land.c`.
+- Check for NULL pointer added in `getuser.c` to avoid SEGV if user name cannot be resolved.
+- Verbose output corrected for input without time axis in `cdf2clm.c`.
+- Output is rescaled by the actual sum of stand fractions in `update_daily_cell.c` and `fwriteoutput.c` to avoid division by zero (issue #411).
+- Default timestep set to 1 in `regridclm.c`.
+- Variable `depth` initialized to zero before layer loop in `fwriteoutput.c` to correct `soilc_1m` output.
+- Length of buffer for hostname corrected in `gethost.c`.
+- Output of unprintable characters corrected in `fputprintable.c`.
+- Memory leak fixed in `openmetafile.c` in case of error.
+
+
 ## [6.1.2] - 2026-06-16
 
 ### Contributors
@@ -118,8 +155,8 @@ code review: Christoph Müller (cmueller@pik-potsdam.de), Stephen Wirth (wirth@p
 
 ### Contributors
 
-author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
-code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 

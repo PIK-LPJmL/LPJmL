@@ -42,10 +42,11 @@ int *getpftmap(const Map *map,      /**< pointer to string array  */
   if(undef==NULL)
   {
     printallocerr("undef");
+    free(pftmap);
     return NULL;
   }
   for(pft=0;pft<npft;pft++)
-     undef[pft]=TRUE;
+    undef[pft]=TRUE;
   for(pft=0;pft<getmapsize(map);pft++)
   {
     if(getmapitem(map,pft)==NULL)

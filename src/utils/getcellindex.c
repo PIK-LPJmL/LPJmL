@@ -24,7 +24,7 @@ int main(int argc,char **argv)
   Coordfile file;
   Coord *coords,res,pos;
   float lon,lat;
-  Real dist_min;
+  double dist_min;
   Filename name;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')

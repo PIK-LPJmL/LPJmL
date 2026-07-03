@@ -84,13 +84,8 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
                    )               /** \return allocated landuse or NULL */
 {
   Landuse landuse;
-  Limit *basetemp;
-  int *hlimit;
-  int basetemp_size,hlimit_size;
-  Map *map=NULL;
-  Attr *attrs=NULL;
+  Metadata metadata;
   char *climate;
-  int n_attr;
   landuse=new(struct landuse);
   if(landuse==NULL)
   {
@@ -100,19 +95,27 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&map,&attrs,&n_attr,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  initmetadata(&metadata,config->landuse_filename.map);
+  if(opendata(&landuse->landuse,&metadata,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
+    freemetadata(&metadata);
     freelanduse(landuse,config);
     return NULL;
   }
-  checktitle(attrs,n_attr,config->landuse_filename.name,&config->landuse,isroot(*config));
-  freeattrs(attrs,n_attr);
-  if(getmap(map,config->landuse_filename.name,"landusemap",FALSE,TRUE,
+  if(checktitle(metadata.attrs,metadata.n_attr,config->landuse_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+  {
+    freemetadata(&metadata);
+    freelanduse(landuse,config);
+    return NULL;
+  }
+  if(getmap(metadata.map,config->landuse_filename.name,"landusemap",FALSE,TRUE,
             &config->landusemap,&config->landusemap_size,npft,ncft,config))
   {
+    freemetadata(&metadata);
     freelanduse(landuse,config);
     return NULL;
   }
+  freemetadata(&metadata);
   if(config->landusemap==NULL)
     config->landusemap=defaultcftmap(&config->landusemap_size,"landusemap",FALSE,TRUE,npft,ncft,config);
   if(isroot(*config) && isurban(config->landusemap,config->landusemap_size,ncft,config))
@@ -133,19 +136,22 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->sdate_option>=PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&map,NULL,NULL,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->sdatemap_size,FALSE,config))
+    initmetadata(&metadata,config->sdate_filename.map);
+    if(opendata(&landuse->sdate,&metadata,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->sdatemap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    if(getmap(map,config->sdate_filename.name,"sdatemap",TRUE,FALSE,
+    if(getmap(metadata.map,config->sdate_filename.name,"sdatemap",TRUE,FALSE,
               &config->sdatemap,&config->sdatemap_size,npft,ncft,config))
     {
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
     if(config->sdatemap==NULL)
       config->sdatemap=defaultcftmap(&config->sdatemap_size,"sdatemap",TRUE,FALSE,npft,ncft,config);
+    freemetadata(&metadata);
     if(landuse->sdate.var_len!=2*config->sdatemap_size)
     {
       if(isroot(*config))
@@ -162,14 +168,15 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&map,&attrs,&n_attr,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->crop_phumap_size,FALSE,config))
+    initmetadata(&metadata,config->crop_phu_filename.map);
+    if(opendata(&landuse->crop_phu,&metadata,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->crop_phumap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    if(attrs!=NULL)
+    if(metadata.attrs!=NULL)
     {
-      climate=getattr(attrs,n_attr,"climate");
+      climate=getattr(metadata.attrs,metadata.n_attr,"climate");
       if(climate==NULL)
       {
         if(isroot(*config))
@@ -186,21 +193,21 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
           fprintf(stderr,"ERROR269: Climate source %s in crop PHU file differs from %s in climate input.\n",
                   climate,config->climate);
         free(climate);
-        freeattrs(attrs,n_attr);
+        freemetadata(&metadata);
         freelanduse(landuse,config);
         return NULL;
       }
       free(climate);
-      freeattrs(attrs,n_attr);
     }
     else
     {
       if(isroot(*config))
         fprintf(stderr,"WARNING044: No climate source defined in crop PHU file.\n");
     }
-    if(getmap(map,config->crop_phu_filename.name,"crop_phumap",TRUE,FALSE,
+    if(getmap(metadata.map,config->crop_phu_filename.name,"crop_phumap",TRUE,FALSE,
               &config->crop_phumap,&config->crop_phumap_size,npft,ncft,config))
     {
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
@@ -212,15 +219,13 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in crop PHU date data file, must be %d.\n",
                 landuse->crop_phu.var_len,2*config->crop_phumap_size);
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
-    if(config->crop_phu_filename.fmt==META  || config->crop_phu_filename.fmt==CDF)
+    if(config->crop_phu_filename.fmt==META || config->crop_phu_filename.fmt==CDF)
     {
-      basetemp=(config->crop_phu_filename.fmt==META) ?
-                 getlimitarrayfromjson(config->crop_phu_filename.name,&basetemp_size,"basetemp",isroot(*config)) :
-                 getlimitarray_netcdf(config->crop_phu_filename.name,&basetemp_size,"basetemp",isroot(*config));
-      if(basetemp==NULL)
+      if(metadata.basetemp==NULL)
       {
         if(isroot(*config))
           fprintf(stderr,"WARNING041: No basetemp array found in crop PHU file '%s'.\n",
@@ -228,18 +233,14 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       }
       else
       {
-        if(checkbasetemp(basetemp,basetemp_size,npft,config))
+        if(checkbasetemp(metadata.basetemp,metadata.basetemp_size,npft,config))
         {
-          free(basetemp);
+          freemetadata(&metadata);
           freelanduse(landuse,config);
           return NULL;
         }
-        free(basetemp);
       }
-      hlimit=(config->crop_phu_filename.fmt==META) ?
-                 getintarrayfromjson(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config)) :
-                 getintarray_netcdf(config->crop_phu_filename.name,&hlimit_size,"hlimit",isroot(*config));
-      if(hlimit==NULL)
+      if(metadata.hlimit==NULL)
       {
         if(isroot(*config))
           fprintf(stderr,"WARNING041: No hlimit array found in crop PHU file '%s'.\n",
@@ -247,39 +248,44 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       }
       else
       {
-        if(checkhlimit(hlimit,hlimit_size,npft,config))
+        if(checkhlimit(metadata.hlimit,metadata.hlimit_size,npft,config))
         {
-          free(hlimit);
+          freemetadata(&metadata);
           freelanduse(landuse,config);
           return NULL;
         }
-        free(hlimit);
       }
     }
     else if(isroot(*config))
-    {
-      fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON or NetCDF file, no basetemp and hlimit array found.\n",
-              config->crop_phu_filename.name);
-    }
+       fprintf(stderr,"WARNING041: Crop PHU file '%s' is not a JSON or NetCDF file, no basetemp and hlimit array found.\n",
+               config->crop_phu_filename.name);
     checkyear("crop phu",&landuse->crop_phu,config);
+    freemetadata(&metadata);
   } /* End crop_phu */
 
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&map,&attrs,&n_attr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
+    initmetadata(&metadata,config->fertilizer_nr_filename.map);
+    if(opendata(&landuse->fertilizer_nr,&metadata,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checktitle(attrs,n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config));
-    freeattrs(attrs,n_attr);
-    if(getmap(map,config->fertilizer_nr_filename.name,"fertilizermap",FALSE,FALSE,
+    if(checktitle(metadata.attrs,metadata.n_attr,config->fertilizer_nr_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(getmap(metadata.map,config->fertilizer_nr_filename.name,"fertilizermap",FALSE,FALSE,
               &config->fertilizermap,&config->fertilizermap_size,npft,ncft,config))
     {
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
+    freemetadata(&metadata);
     if(config->fertilizermap==NULL)
       config->fertilizermap=defaultcftmap(&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,npft,ncft,config);
     if(config->fertilizer_nr_filename.fmt!=SOCK)
@@ -298,19 +304,26 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&map,&attrs,&n_attr,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
+    initmetadata(&metadata,config->manure_nr_filename.map);
+    if(opendata(&landuse->manure_nr,&metadata,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->manuremap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checktitle(attrs,n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config));
-    freeattrs(attrs,n_attr);
-    if(getmap(map,config->manure_nr_filename.name,"manuremap",FALSE,FALSE,
+    if(checktitle(metadata.attrs,metadata.n_attr,config->manure_nr_filename.name,&config->landuse,isroot(*config)) && config->pedantic)
+    {
+      freemetadata(&metadata);
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    if(getmap(metadata.map,config->manure_nr_filename.name,"manuremap",FALSE,FALSE,
               &config->manuremap,&config->manuremap_size,npft,ncft,config))
     {
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
+    freemetadata(&metadata);
     if(config->manuremap==NULL)
       config->manuremap=defaultcftmap(&config->manuremap_size,"manuremap",FALSE,FALSE,npft,ncft,config);
     if(landuse->manure_nr.var_len!=2*config->manuremap_size)
@@ -328,7 +341,7 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
 
   if(config->tillage_type==READ_TILLAGE)
   {
-    if(opendata(&landuse->with_tillage,NULL,NULL,NULL,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->with_tillage,NULL,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -340,17 +353,20 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* open residue data */
-    if(opendata(&landuse->residue_on_field,&map,NULL,NULL,&config->residue_data_filename,"residue extraction","1",LPJ_FLOAT,LPJ_SHORT,1.0,config->residuemap_size,FALSE,config))
+    initmetadata(&metadata,config->residue_data_filename.map);
+    if(opendata(&landuse->residue_on_field,&metadata,&config->residue_data_filename,"residue extraction","1",LPJ_FLOAT,LPJ_SHORT,1.0,config->residuemap_size,FALSE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    if(getmap(map,config->residue_data_filename.name,"residuemap",FALSE,FALSE,
+    if(getmap(metadata.map,config->residue_data_filename.name,"residuemap",FALSE,FALSE,
               &config->residuemap,&config->residuemap_size,npft,ncft,config))
     {
+      freemetadata(&metadata);
       freelanduse(landuse,config);
       return NULL;
     }
+    freemetadata(&metadata);
     if(config->residuemap==NULL)
       config->residuemap=defaultcftmap(&config->residuemap_size,"residuemap",FALSE,FALSE,npft,ncft,config);
     if(landuse->residue_on_field.var_len!=config->residuemap_size)
@@ -368,14 +384,15 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,NULL,&attrs,&n_attr,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
+    initmetadata(&metadata,config->lsuha_filename.map);
+    if(opendata(&landuse->grassland_lsuha,&metadata,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    if(attrs!=NULL)
+    if(metadata.attrs!=NULL)
     {
-      climate=getattr(attrs,n_attr,"climate");
+      climate=getattr(metadata.attrs,metadata.n_attr,"climate");
       if(climate==NULL)
       {
         if(isroot(*config))
@@ -390,19 +407,19 @@ Landuse initlanduse(int npft,      /**< number of natural PFTs */
       {
         fprintf(stderr,"ERROR269: Climate source %s in livestock density file differs from %s in climate input.\n",
                 climate,config->climate);
+        freemetadata(&metadata);
         free(climate);
-        freeattrs(attrs,n_attr);
         freelanduse(landuse,config);
         return NULL;
       }
       free(climate);
-      freeattrs(attrs,n_attr);
     }
     else
     {
       if(isroot(*config))
         fprintf(stderr,"WARNING044: No climate source defined in livestock density file.\n");
     }
+    freemetadata(&metadata);
     if(config->lsuha_filename.fmt!=SOCK)
       checkyear("livestock density",&landuse->grassland_lsuha,config);
   }

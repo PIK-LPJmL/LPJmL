@@ -40,8 +40,9 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
           freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
           getversion.$O getsprintf.$O freadtopheader.$O hash.$O sendhash.$O\
-          fwritetopheader.$O getlimitarrayfromjson.$O fscanvarintarray.$O\
-          getintarrayfromjson.$O timing.$O fprinttiming.$O
+          fwritetopheader.$O fscanvarintarray.$O timing.$O fprinttiming.$O\
+          fprintmetadata.$O mpi_bcastmetadata.$O fscanmetadata.$O\
+          fscancountrymap.$O initmetadata.$O freemetadata.$O freecountrymap.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

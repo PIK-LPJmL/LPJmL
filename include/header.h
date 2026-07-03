@@ -143,6 +143,32 @@ typedef struct
   Bool isfloat;
 } Map;
 
+typedef struct
+{
+  char *name;    /**< full country name */
+  char *alpha_3; /**< alpha-3 abbreviation */
+} Countryname;
+
+typedef struct
+{
+  Map *map;         /**< map from json file or NULL */
+  const char *map_name; /**< name of map or NULL */
+  Attr *attrs;       /**< pointer to array of attributes */
+  int n_attr;        /**< size of array attribute */
+  Limit *basetemp;   /**< basetemp array */
+  int basetemp_size; /**< size of basetemp array */
+  Countryname *countrymap; /**< country map array */
+  int countrymap_size;     /**< size of country map array */
+  int *hlimit;       /**< harvest limit array */
+  int hlimit_size;   /**< size of harvest limit array */
+  char *source;      /**< source of data or NULL */
+  char *history;     /**< history of data or NULL */
+  char *variable;    /**< name of variable or NULL */
+  char *unit;        /**< unit of variable or NULL */
+  char *standard_name; /**< standard name of variable or NULL */
+  char *long_name;   /**< long name of variable or NULL */
+} Metadata;          /**< metadata information stored in JSON/NetCDF files */
+
 /* Declaration of functions */
 
 extern Bool fwriteheader(FILE *,const Header *, const char *,int);
@@ -150,20 +176,28 @@ extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *,Bool);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);
-extern FILE *openinputfile(Header *,Map **,Attr **,int *, Bool *,const Filename *,
+extern FILE *openinputfile(Header *,Metadata *,Bool *,const Filename *,
                            String,const char *,Type,int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,Metadata *,Filename *,Type *,int *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(FILE *,Header *,Metadata *,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern Countryname *fscancountrymap(LPJfile *,int *,const char *,Verbosity);
+extern void freecountrymap(Countryname [],int);
 extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);
 extern Bool cmpmap(const Map *,const Map *);
-extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const char *,const Header *,
-                       Map *,const char *,const Attr *,int,const char *,const char *,const char *,
-                       const char *,const Filename *,Type,int,const char *,Bool,int);
+extern void fprintjson(FILE *,const char *,const char *,const char *,const Header *,
+                       const Metadata *,const Filename *,Type,int,const char *,Bool,int);
+extern void initmetadata(Metadata *,const char *);
+extern Bool fscanmetadata(LPJfile *,Metadata *,Verbosity);
+extern void freemetadata(Metadata *);
+extern void fprintmetadata(FILE *,const Metadata *,const char *);
+#ifdef USE_MPI
+void mpi_bcastmetadata(Metadata *,int,MPI_Comm);
+#endif
 
 /* Definition of macros */
 

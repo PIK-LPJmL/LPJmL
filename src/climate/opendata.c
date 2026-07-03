@@ -17,9 +17,7 @@
 #include "lpj.h"
 
 Bool opendata(Climatefile *file,        /**< pointer to file */
-              Map **map,                /**< pointer to map or NULL */
-              Attr **attrs,             /**< pointer to array of attributes or NULL */
-              int *n_attr,              /**< size of array attribute */
+              Metadata *metadata,       /**< metadata information */
               const Filename *filename, /**< filename */
               const char *name,         /**< name of data */
               const char *unit,         /**< unit or NULL */
@@ -66,7 +64,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   }
   if(file->fmt==CDF)
   {
-    if(opendata_netcdf(file,map,attrs,n_attr,filename,unit,config))
+    if(opendata_netcdf(file,metadata,filename,unit,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
@@ -75,7 +73,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    if(openclmdata(file,map,attrs,n_attr,filename,name,unit,datatype,scalar,nbands,config))
+    if(openclmdata(file,metadata,filename,name,unit,datatype,scalar,nbands,config))
       return TRUE;
   }
   if(ischeck && file->var_len!=nbands)
@@ -83,6 +81,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
     if(isroot(*config))
       fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s data file '%s', must be %d.\n",
              file->var_len,name,filename->name,nbands);
+    freemetadata(metadata);
     closeclimatefile(file,isroot(*config));
     return TRUE;
   }

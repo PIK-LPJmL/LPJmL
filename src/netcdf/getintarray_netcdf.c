@@ -20,37 +20,22 @@
 #include <netcdf.h>
 #endif
 
-int *getintarray_netcdf(const char *filename, /**< name of NetCDF file */
-                        int *size,            /**< size of int array */
-                        const char *name,     /**< name of int array in NetCDF file */
-                        Verbosity verb        /**< verbosity level (NO_ERR,ERR,VERB) */
-                       )                      /** int array read or NULL on error */
+int *getintarray_netcdf(int ncid,        /**< id of NetCDF file */
+                        int *size,       /**< size of int array */
+                        const char *name /**< name of int array in NetCDF file */
+                       )                 /** int array read or NULL on error */
 {
 #ifdef USE_NETCDF
   int *array;
   size_t len;
-  int ncid,varid,rc,ndims,dimids;
-  rc=nc_open(filename,NC_NOWRITE,&ncid);
-  if(rc)
-  {
-    if(verb)
-      fprintf(stderr,"ERROR401: Cannot open '%s': %s\n",filename,nc_strerror(rc));
-    return NULL;
-  }
+  int varid,rc,ndims,dimids;
   if(nc_inq_varid(ncid,name,&varid))
-  {
-    if(verb)
-      fprintf(stderr,"ERROR406: Cannot find variable %s in '%s'.\n",name,filename);
-    nc_close(ncid);
     return NULL;
-  }
   nc_inq_varndims(ncid,varid,&ndims);
   if(ndims!=1)
   {
-    if(verb)
-      fprintf(stderr,"ERROR408: Invalid number %d of dimensions of %s in '%s', must be 1.\n",
-              ndims,name,filename);
-    nc_close(ncid);
+    fprintf(stderr,"ERROR408: Invalid number %d of dimensions of %s, must be 1.\n",
+            ndims,name);
     return NULL;
   }
   nc_inq_vardimid(ncid,varid,&dimids);
@@ -60,19 +45,15 @@ int *getintarray_netcdf(const char *filename, /**< name of NetCDF file */
   if(array==NULL)
   {
     printallocerr("array");
-    nc_close(ncid);
     return NULL;
   }
   rc=nc_get_var_int(ncid,varid,array);
   if(rc)
   {
-    if(verb)
-      fprintf(stderr,"ERROR411: Cannot read %s in '%s': %s\n",name,filename,nc_strerror(rc));
+    fprintf(stderr,"ERROR411: Cannot read %s: %s\n",name,nc_strerror(rc));
     free(array);
-    nc_close(ncid);
     return NULL;
   }
-  nc_close(ncid);
   return array;
 #else
   return NULL;

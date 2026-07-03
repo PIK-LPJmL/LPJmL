@@ -62,7 +62,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
   Real nh3;
   int l,i;
   Real prec_save;
-  Real agrfrac;
+  Real agrfrac,fracsum;
   Real gsi;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
@@ -184,7 +184,9 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
 
     agrfrac=0;
     cell->balance.ricefrac=0;
-
+    fracsum=0;
+    foreachstand(stand,s,cell->standlist)
+      fracsum+=stand->frac;
     foreachstand(stand,s,cell->standlist)
     {
       if(isagriculture(stand))
@@ -240,15 +242,15 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
         stand->soil.amean_temp[l]=(1-1./365)*stand->soil.amean_temp[l]+1./365*stand->soil.temp[l];
       }
       stand->soil.amean_temp[SNOWLAYER]=(1-1./365)*stand->soil.amean_temp[SNOWLAYER]+1./365*stand->soil.temp[SNOWLAYER];
-      getoutput(&cell->output,SOILTEMP1,config)+=stand->soil.temp[0]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,SOILTEMP2,config)+=stand->soil.temp[1]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,SOILTEMP3,config)+=stand->soil.temp[2]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,SOILTEMP4,config)+=stand->soil.temp[3]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,SOILTEMP5,config)+=stand->soil.temp[4]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,SOILTEMP6,config)+=stand->soil.temp[5]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      getoutput(&cell->output,LITTERMOIST,config)+=stand->soil.litter.agtop_moist*stand->frac*(1.0/(1-cell    ->lakefrac-cell->ml.reservoirfrac));
+      getoutput(&cell->output,SOILTEMP1,config)+=stand->soil.temp[0]*stand->frac/fracsum;
+      getoutput(&cell->output,SOILTEMP2,config)+=stand->soil.temp[1]*stand->frac/fracsum;
+      getoutput(&cell->output,SOILTEMP3,config)+=stand->soil.temp[2]*stand->frac/fracsum;
+      getoutput(&cell->output,SOILTEMP4,config)+=stand->soil.temp[3]*stand->frac/fracsum;
+      getoutput(&cell->output,SOILTEMP5,config)+=stand->soil.temp[4]*stand->frac/fracsum;
+      getoutput(&cell->output,SOILTEMP6,config)+=stand->soil.temp[5]*stand->frac/fracsum;
+      getoutput(&cell->output,LITTERMOIST,config)+=stand->soil.litter.agtop_moist*stand->frac/fracsum;
       foreachsoillayer(l)
-        getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+        getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac/fracsum;
       getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
       isrice=ispftinstand(&stand->pftlist,config->rice_pft);
       if(config->with_methane)
@@ -394,7 +396,7 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       } /* if woodplantation */
 #endif
 
-      getoutput(&cell->output,LITTERTEMP,config)+=stand->soil.litter.agtop_temp*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+      getoutput(&cell->output,LITTERTEMP,config)+=stand->soil.litter.agtop_temp*stand->frac/fracsum;
       getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
       getoutput(&cell->output,TWS,config)+=stand->soil.snowpack*stand->frac;
       getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
@@ -494,30 +496,30 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
       cell->discharge.drunoff+=runoff*stand->frac;
       climate->prec=prec_save;
       foreachpft(pft, p, &stand->pftlist)
-        getoutput(&cell->output,VEGC_AVG,config)+=vegc_sum(pft)*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+        getoutput(&cell->output,VEGC_AVG,config)+=vegc_sum(pft)*stand->frac;
       getoutput(&cell->output,SWC1,config)+=(stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
-                stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]*stand->frac/fracsum;
       getoutput(&cell->output,SWC2,config)+=(stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
-                stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1]*stand->frac/fracsum;
       getoutput(&cell->output,SWC3,config)+=(stand->soil.w[2]*stand->soil.whcs[2]+stand->soil.w_fw[2]+stand->soil.wpwps[2]+
-                stand->soil.ice_depth[2]+stand->soil.ice_fw[2])/stand->soil.wsats[2]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                stand->soil.ice_depth[2]+stand->soil.ice_fw[2])/stand->soil.wsats[2]*stand->frac;
       getoutput(&cell->output,SWC4,config)+=(stand->soil.w[3]*stand->soil.whcs[3]+stand->soil.w_fw[3]+stand->soil.wpwps[3]+
-                stand->soil.ice_depth[3]+stand->soil.ice_fw[3])/stand->soil.wsats[3]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                stand->soil.ice_depth[3]+stand->soil.ice_fw[3])/stand->soil.wsats[3]*stand->frac/fracsum;
       getoutput(&cell->output,SWC5,config)+=(stand->soil.w[4]*stand->soil.whcs[4]+stand->soil.w_fw[4]+stand->soil.wpwps[4]+
-                stand->soil.ice_depth[4]+stand->soil.ice_fw[4])/stand->soil.wsats[4]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                stand->soil.ice_depth[4]+stand->soil.ice_fw[4])/stand->soil.wsats[4]*stand->frac/fracsum;
       foreachsoillayer(l)
       {
         getoutputindex(&cell->output,SWC,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
-                       stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+                       stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac/fracsum;
         getoutput(&cell->output,TWS,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                        stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac;
       }
       forrootmoist(l)
-        getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
+        getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac/fracsum; /* absolute soil water content between wilting point and field capacity (mm) */
       forrootsoillayer(l)
       {
-        getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
-        getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
+        getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/fracsum;
+        getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/fracsum;
 #ifdef DEBUG
         V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
         soilmoist = getsoilmoist(&stand->soil,l);

@@ -36,7 +36,6 @@ Bool getmap(Map *map,            /**< string array */
       if(isroot(*config))
         fprintf(stderr,"ERROR255: '%s' array in '%s' must be of type string, not float.\n",
                 name,filename);
-      freemap(map);
       return TRUE;
     }
     landusemap=getcftmap(map,filename,cftonly,urban,npft,ncft,config);
@@ -55,7 +54,6 @@ Bool getmap(Map *map,            /**< string array */
         free(landusemap);
       }
     }
-    freemap(map);
   }
   return FALSE;
 } /* of 'getmap' */

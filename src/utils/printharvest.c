@@ -57,7 +57,7 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
   Config config;         /* LPJ configuration */
-  Real *area;
+  float *area;
   Coord coord;
   Coordfile coordfile;
   Intcoord intcoord;
@@ -139,7 +139,7 @@ int main(int argc,char **argv)
             config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
-  area=newvec(Real,n);
+  area=newvec(float,n);
   if(area==NULL)
   {
     printallocerr("area");

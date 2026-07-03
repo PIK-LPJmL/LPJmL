@@ -292,25 +292,23 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
+  Metadata metadata;
   String headername;
   size_t offset;
   Attr *global_attrs=NULL;
-  Attr *global_attrs2=NULL;
-  int i,ngrid,version,iarg,compress,setversion;
+  int i,ngrid,version,iarg,compress=0,setversion;
   Bool swap,isglobal,israw,ismeta,isnetcdf4,rc;
-  int n_global,n_global2;
+  int n_global;
   float cellsize_lon,cellsize_lat;
   Reservoir *rdata;
   char *endptr,*arglist;
   char *pos;
   const char *progname;
-  char *grid_filename,*path;
+  char *grid_filename;
   Filename grid_name;
   Netcdf_config netcdf_config;
   char *filename,*outname,*config_filename=NULL;
   size_t filesize;
-  char *source=NULL,*history=NULL;
-  compress=0;
   cellsize_lon=cellsize_lat=0;
   isglobal=FALSE;
   israw=FALSE;
@@ -321,7 +319,8 @@ int main(int argc,char **argv)
   n_global=0;
   progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
-
+  grid_name.name=NULL;
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -337,7 +336,7 @@ int main(int argc,char **argv)
                "-v,--version     print LPJmL version\n"
                "-global          use global grid for NetCDF file\n"
                "-longheader      force version of CLM file to 2\n"
-               "-cellsize s      set cell size, default is 0.5\n"
+               "-cellsize s      set cell size, default is %g\n"
                "-metafile        set the input format to JSON metafile instead of CLM\n"
                "-raw             set the input format to raw instead of CLM\n"
                "-netcdf4         file written is in NetCDF4 format\n"
@@ -348,7 +347,7 @@ int main(int argc,char **argv)
                "clmfile          filename of CLM data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,cellsize_lon);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
@@ -456,6 +455,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
             ERR_USAGE,progname,progname);
+    freeattrs(global_attrs,n_global);
     return EXIT_FAILURE;
   }
   else
@@ -468,6 +468,7 @@ int main(int argc,char **argv)
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
       fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      freeattrs(global_attrs,n_global);
       return EXIT_FAILURE;
     }
   }
@@ -482,19 +483,28 @@ int main(int argc,char **argv)
     header.datatype=LPJ_INT;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,NULL,NULL,&global_attrs2,&n_global2,&source,&history,NULL,NULL,NULL,NULL,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&metadata,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
+    {
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
+    }
     if(fseek(file,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      free(grid_name.name);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(global_attrs2!=NULL)
+    if(metadata.attrs!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
-      freeattrs(global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,metadata.attrs,metadata.n_attr,FALSE);
     }
   }
   else
@@ -503,35 +513,48 @@ int main(int argc,char **argv)
     if(file==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",filename,strerror(errno));
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       return EXIT_FAILURE;
     }
   }
   if(argc!=iarg+2)
   {
-    grid_filename=argv[iarg];
+    free(grid_name.name);
+    freemetadata(&metadata);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    grid_filename=strdup(argv[iarg]);
   }
   else
   {
     if(grid_name.name==NULL)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
+      freemetadata(&metadata);
+      freeattrs(global_attrs,n_global);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
+      fclose(file);
       return EXIT_FAILURE;
     }
-    path=getpath(filename);
-    grid_filename=addpath(grid_name.name,path);
-    if(grid_filename==NULL)
-    {
-      printallocerr("name");
-      return EXIT_FAILURE;
-    }
-    free(grid_name.name);
-    free(path);
+    grid_filename=grid_name.name;
   }
   /* Open and read grid file */
   grid_name.name=grid_filename;
   coordfile=opencoord(&grid_name,TRUE);
   if(coordfile==NULL)
+  {
+    freemetadata(&metadata);
+    free(grid_filename);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   ngrid=numcoord(coordfile);
   if(cellsize_lon>0)
     res.lon=res.lat=cellsize_lon;
@@ -545,6 +568,13 @@ int main(int argc,char **argv)
   if(grid==NULL)
   {
     printallocerr("grid");
+    freemetadata(&metadata);
+    free(grid_filename);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
+    closecoord(coordfile);
     return EXIT_FAILURE;
   }
   for(i=0;i<numcoord(coordfile);i++)
@@ -561,6 +591,11 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error reading header of '%s'.\n",filename);
         free(grid);
+        freemetadata(&metadata);
+        free(grid_filename);
+        freeattrs(global_attrs,n_global);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -570,7 +605,12 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,filename,CLM_MAX_VERSION+1);
+        freemetadata(&metadata);
+        free(grid_filename);
+        freeattrs(global_attrs,n_global);
         free(grid);
+        if(config_filename!=NULL)
+          freeconfig_netcdf(&netcdf_config);
         fclose(file);
         return EXIT_FAILURE;
       }
@@ -582,10 +622,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
               filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -594,10 +636,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
               header.ncell,filename,ngrid,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -610,10 +654,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lon,filename,res.lon,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -621,10 +667,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);
-      free(source);
-      free(history);
+      freemetadata(&metadata);
+      free(grid_filename);
       freeattrs(global_attrs,n_global);
       free(grid);
+      if(config_filename!=NULL)
+        freeconfig_netcdf(&netcdf_config);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -649,29 +697,46 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Number of bands=%d in '%s' must be 10.\n",
             header.nbands,filename);
-    free(source);
-    free(history);
+    freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
     free(grid);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
   index=createindex(grid,ngrid,res,isglobal,FALSE);
+  free(grid);
   if(index==NULL)
   {
-    free(source);
-    free(history);
+    freemetadata(&metadata);
+    free(grid_filename);
     freeattrs(global_attrs,n_global);
-    free(grid);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
-  free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,source,history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
+  if(arglist==NULL)
+  {
+    printallocerr("arglist");
+    freemetadata(&metadata);
+    free(grid_filename);
+    freecoordarray(index);
+    freeattrs(global_attrs,n_global);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
+  cdf=create_cdf(outname,metadata.source,metadata.history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
-  free(source);
-  free(history);
+  freemetadata(&metadata);
+  if(config_filename!=NULL)
+    freeconfig_netcdf(&netcdf_config);
+  free(grid_filename);
   freeattrs(global_attrs,n_global);
   if(cdf==NULL)
   {

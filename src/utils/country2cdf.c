@@ -240,7 +240,7 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-index'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
@@ -312,6 +312,8 @@ int main(int argc,char **argv)
   if(coordfile==NULL)
   {
     fprintf(stderr,"Error opening grid file '%s'.\n",filename.name);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     return EXIT_FAILURE;
   }
   ngrid=numcoord(coordfile);
@@ -331,12 +333,16 @@ int main(int argc,char **argv)
   if(file==NULL)
   {
     fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
   if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
   {
     fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+2]);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -344,18 +350,26 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Number of cells in '%s' is different from %d in '%s'.\n",
             argv[iarg+2],ngrid,argv[iarg+1]);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
   if(inum<0 || inum>=header.nbands)
   {
     fprintf(stderr,"Error: Invalid value of index %d, must be 0<index<%d.\n",inum,header.nbands-1);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
   index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
+  {
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     return EXIT_FAILURE;
+  }
   free(grid);
   if(version==1 && cellsize>0)
     header.cellsize_lon=header.cellsize_lat=cellsize;
@@ -363,6 +377,8 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Cell size in '%s' differs from '%s'.\n",
             argv[iarg+2],argv[iarg+1]);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -370,6 +386,8 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Cell size in '%s' differs from '%s'.\n",
             argv[iarg+2],argv[iarg+1]);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -377,28 +395,53 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error: Datatype in '%s' of %s must be short.\n",
             argv[iarg+2],typenames[header.datatype]);
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
     fclose(file);
     return EXIT_FAILURE;
   }
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],argv[0],arglist,argv[iarg],descr,&netcdf_config,res,compress,isnetcdf4,index);
-  if(cdf==NULL)
+  if(arglist==NULL)
+  {
+    printallocerr("arglist");
+    if(config_filename!=NULL)
+      freeconfig_netcdf(&netcdf_config);
+    fclose(file);
     return EXIT_FAILURE;
+  }
+  cdf=create_cdf(argv[iarg+3],argv[0],arglist,argv[iarg],descr,&netcdf_config,res,compress,isnetcdf4,index);
+  if(config_filename!=NULL)
+    freeconfig_netcdf(&netcdf_config);
+  free(arglist);
+  if(cdf==NULL)
+  {
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   data=newvec(short,ngrid*header.nbands);
   if(data==NULL)
   {
     printallocerr("data");
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   f=newvec(short,ngrid);
   if(f==NULL)
   {
     printallocerr("f");
+    free(data);
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   if(freadshort(data,ngrid*header.nbands,swap,file)!=ngrid*header.nbands)
   {
     fprintf(stderr,"Error reading country data.\n");
+    free(data);
+    free(f);
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid;i++)

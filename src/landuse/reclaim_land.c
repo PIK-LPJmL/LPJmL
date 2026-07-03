@@ -155,7 +155,10 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
     /* rest goes to litter */
     if(stand->type->landusetype!=AGRICULTURE && !(stand->type->landusetype==OTHERS && pft->par->type==CROP))
     {
-      soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*sfrac;
+      if(luc_timber && pft->par->type==TREE)
+        soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*(sfrac-param.ftimber);
+      else
+        soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*sfrac;
     }
     litter_update(&soil->litter,pft,nind*sfrac,config);
 #ifdef DEBUG_IMAGE_CELL

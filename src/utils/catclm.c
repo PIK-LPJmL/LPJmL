@@ -14,27 +14,33 @@
 
 #include "lpj.h"
 #include <sys/stat.h>
-#define USAGE "Usage: catclm [-f] [-v] [-longheader] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
+#define USAGE "Usage: catclm [-f] [-v] [-longheader] [-metafile] [-json] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
   Header header,oldheader={};
+  Metadata metadata,metadata2;
   String id;
-  int i,j,k,firstyear=0,version,n,setversion,iarg,firstversion=0;
+  Type grid_type;
+  Filename grid_name;
+  int i,j,k,firstyear=0,version,n,setversion,iarg,firstversion=0,format;
   FILE *in,*out;
   short *values;
+  char *arglist,*out_json;
   int *ivals;
   int *index=NULL,*index2=NULL;
   Byte *bvals;
   long long *lvals;
   struct stat filestat;
-  Bool swap,verbose,force;
-  size_t size,filesize;
+  Bool swap,verbose,force,ismeta=FALSE,isjson=FALSE,rc;
+  size_t size,filesize,offset;
   char c;
   size=2;
   setversion=READ_VERSION;
   verbose=FALSE;
   force=FALSE;
+  grid_name.name=NULL;
+  format=CLM;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -44,6 +50,10 @@ int main(int argc,char **argv)
         force=TRUE;
       else if(!strcmp(argv[iarg],"-v"))
         verbose=TRUE;
+      else if(!strcmp(argv[iarg],"-metafile"))
+        ismeta=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-size4"))
         size=4;
       else
@@ -78,26 +88,81 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s\n",argv[argc-1],strerror(errno));
     return EXIT_FAILURE;
   }
+  initmetadata(&metadata,NULL);
+  initmetadata(&metadata2,NULL);
   for(i=0;i<n;i++)
   {
-    in=fopen(argv[iarg+i],"rb");
-    if(in==NULL)
+    if(ismeta)
     {
-      fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+i],strerror(errno));
-      return EXIT_FAILURE;
+      /* set default values */
+      header.datatype=LPJ_SHORT;
+      header.timestep=1;
+      header.nbands=1;
+      header.nstep=1;
+      header.order=CELLYEAR;
+      header.firstcell=0;
+      header.firstyear=1901;
+      header.cellsize_lon=header.cellsize_lat=0.5;
+      header.ncell=1;
+      header.nyear=1;
+      version=4;
+      grid_type=LPJ_SHORT;
+      if(i==0)
+        in=openmetafile(&header,&metadata,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg+i],TRUE);
+      else
+      {
+        initmetadata(&metadata2,NULL);
+        in=openmetafile(&header,&metadata2,NULL,&grid_type,NULL,&swap,&offset,argv[iarg+i],TRUE);
+      }
+      if(in==NULL)
+      {
+        free(grid_name.name);
+        freemetadata(&metadata);
+        fclose(out);
+        return EXIT_FAILURE;
+      }
+      if(i==0 && format==CLM)
+      {
+        if(freadheaderid(in,id,TRUE))
+        {
+          free(grid_name.name);
+          freemetadata(&metadata);
+          freemetadata(&metadata2);
+          fclose(in);
+          fclose(out);
+          return EXIT_FAILURE;
+        }
+      }
+      fseek(in,offset,SEEK_SET);
+      size=typesizes[header.datatype];
     }
-    if(i)
+    else
     {
+      in=fopen(argv[iarg+i],"rb");
+      if(in==NULL)
+      {
+        fprintf(stderr,"Error opening '%s': %s\n",argv[iarg+i],strerror(errno));
+        fclose(out);
+        return EXIT_FAILURE;
+      }
       version=setversion;
-      if(freadheader(in,&header,&swap,id,&version,TRUE))
+      if(i)
+        rc=freadheader(in,&header,&swap,id,&version,TRUE);
+      else
+        rc=freadanyheader(in,&header,&swap,id,&version,TRUE);
+      if(rc)
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(version>CLM_MAX_VERSION)
       {
         fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
                 version,argv[i+iarg],CLM_MAX_VERSION+1);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       filesize=getfilesizep(in)-headersize(id,version);
@@ -105,79 +170,134 @@ int main(int argc,char **argv)
          (header.order!=CELLINDEX && filesize!=((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[iarg+i]);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
+    }
+    if(header.order==CELLINDEX)
+    {
+      if(i==0)
+      {
+        index=newvec(int,header.ncell);
+        if(index==NULL)
+        {
+          printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
+          freemetadata(&metadata2);
+          fclose(in);
+          fclose(out);
+          return EXIT_FAILURE;
+        }
+      }
+      if(freadint(index,header.ncell,swap,in)!=header.ncell)
+      {
+        fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+          free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
+        return EXIT_FAILURE;
+      }
+    }
+    if(i)
+    {
       if(version>=3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.order!=oldheader.order)
       {
         fprintf(stderr,"Error: Different order in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.ncell!=oldheader.ncell)
       {
         fprintf(stderr,"Error: Different number of cells in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.firstcell!=oldheader.firstcell)
       {
         fprintf(stderr,"Error: Different index of first cell in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.nbands!=oldheader.nbands)
       {
         fprintf(stderr,"Error: Different number of bands in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.nstep!=oldheader.nstep)
       {
         fprintf(stderr,"Error: Different number of steps in '%s'.\n",argv[i+iarg]);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.firstyear!=oldheader.firstyear+oldheader.nyear)
       {
         fprintf(stderr,"Error: First year=%d in '%s' is different from %d.\n",header.firstyear,argv[i+iarg],oldheader.firstyear+oldheader.nyear);
+        free(grid_name.name);
+        freemetadata(&metadata);
+        freemetadata(&metadata2);
+        fclose(in);
+        fclose(out);
         return EXIT_FAILURE;
       }
       if(header.order==CELLINDEX)
       {
-        if(freadint(index2,header.ncell,swap,in)!=header.ncell)
-        {
-          fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
-          return EXIT_FAILURE;
-        }
         for(j=0;j<header.ncell;j++)
           if(index[j]!=index2[j])
           {
             fprintf(stderr,"Cell index different in '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            freemetadata(&metadata2);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
+      }
+      if(ismeta)
+      {
+        if(metadata.unit!=NULL && metadata2.unit!=NULL && strcmp(metadata.unit,metadata2.unit))
+          fprintf(stderr,"Warning: Unit '%s' in '%s' differs from '%s' in '%s'.\n",
+                  metadata2.unit,argv[iarg+i],metadata.unit,argv[iarg]);
+        freemetadata(&metadata2);
       }
     }
     else
     {
-      version=setversion;
-      if(freadanyheader(in,&header,&swap,id,&version,TRUE))
-      {
-        fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
-        return EXIT_FAILURE;
-      }
-      if(version>CLM_MAX_VERSION)
-      {
-        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-                version,argv[i+iarg],CLM_MAX_VERSION+1);
-        return EXIT_FAILURE;
-      }
-      filesize=getfilesizep(in)-headersize(id,version);
-      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
-         (header.order!=CELLINDEX && filesize!=((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
-      {
-        fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[i+iarg]);
-        return EXIT_FAILURE;
-      }
       fseek(out,headersize(id,version),SEEK_SET);
       if(header.order==CELLINDEX)
       {
@@ -185,24 +305,42 @@ int main(int argc,char **argv)
         if(index==NULL)
         {
           printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         if(freadint(index,header.ncell,swap,in)!=header.ncell)
         {
           fprintf(stderr,"Error reading cell index in '%s'.\n",argv[i+iarg]);
+          free(grid_name.name);
+          freemetadata(&metadata);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         if(fwrite(index,sizeof(int),header.ncell,out)!=header.ncell)
         {
           fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+          free(grid_name.name);
+          freemetadata(&metadata);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
         index2=newvec(int,header.ncell);
         if(index2==NULL)
         {
           printallocerr("index");
+          free(grid_name.name);
+          freemetadata(&metadata);
+          fclose(in);
+          fclose(out);
           return EXIT_FAILURE;
         }
+        for(j=0;j<header.ncell;j++)
+          index2[j]=index[j];
       }
       firstyear=header.firstyear;
       firstversion=version;
@@ -215,16 +353,25 @@ int main(int argc,char **argv)
     {
       case 1:
         bvals=newvec(Byte,(long long)header.nbands*header.nstep*header.ncell);
+        check(bvals);
         for(j=0;j<header.nyear;j++)
         {
           if(fread(bvals,1,(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(fwrite(bvals,1,(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -232,11 +379,16 @@ int main(int argc,char **argv)
         break;
       case 2:
         values=newvec(short,(long long)header.nbands*header.nstep*header.ncell);
+        check(values);
         for(j=0;j<header.nyear;j++)
         {
           if(fread(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -245,6 +397,10 @@ int main(int argc,char **argv)
           if(fwrite(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -252,11 +408,16 @@ int main(int argc,char **argv)
         break;
       case 4:
         ivals=newvec(int,(long long)header.nbands*header.nstep*header.ncell);
+        check(ivals);
         for(j=0;j<header.nyear;j++)
         {
           if(fread(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -265,6 +426,10 @@ int main(int argc,char **argv)
           if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -272,11 +437,16 @@ int main(int argc,char **argv)
         break;
       case 8:
         lvals=newvec(long long,(long long)header.nbands*header.nstep*header.ncell);
+        check(lvals);
         for(j=0;j<header.nyear;j++)
         {
           if(fread(lvals,sizeof(long long),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
           if(swap)
@@ -285,6 +455,10 @@ int main(int argc,char **argv)
           if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
+            free(grid_name.name);
+            freemetadata(&metadata);
+            fclose(in);
+            fclose(out);
             return EXIT_FAILURE;
           }
         }
@@ -302,5 +476,42 @@ int main(int argc,char **argv)
   rewind(out);
   fwriteheader(out,&header,id,firstversion);
   fclose(out);
+  if(ismeta || isjson)
+  {
+    out_json=malloc(strlen(argv[argc-1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      freemetadata(&metadata);
+      free(grid_name.name);
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[argc-1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      free(grid_name.name);
+      return EXIT_FAILURE;
+    }
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      freemetadata(&metadata);
+      free(grid_name.name);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[argc-1],NULL,arglist,&header,&metadata,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    free(out_json);
+    free(arglist);
+    fclose(out);
+  }
+  freemetadata(&metadata);
+  free(grid_name.name);
   return EXIT_SUCCESS;
 } /* of 'main' */

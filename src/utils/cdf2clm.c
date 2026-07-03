@@ -352,14 +352,13 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*outname,*endptr,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
-  char *map_name=NULL;
+  char *outname,*endptr,*arglist;
   char * config_filename=NULL;
-  Map *map=NULL;
   float scale,*data=NULL;
   Filename coord_filename,filename;
   Coord *coords;
   Header header;
+  Metadata metadata;
   FILE *file;
   int iarg,j,k,year,version;
   short *s=NULL;
@@ -368,9 +367,6 @@ int main(int argc,char **argv)
   Time time=DAY;
   size_t var_len=0;
   char *id,*out_json;
-  Attr *attrs=NULL;
-  int n_attr=0,len;
-  char name[NC_MAX_NAME];
   const char *progname;
   Filename grid_name;
   Type grid_type;
@@ -380,7 +376,6 @@ int main(int argc,char **argv)
   filename.map=MAP_NAME;
   filename.time=NULL;
   filename.unit=NULL;
-  units=NULL;
   scale=1;
   datatype=LPJ_SHORT;
   verbose=iszero=isjson=FALSE;
@@ -390,6 +385,7 @@ int main(int argc,char **argv)
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
   progname=strippath(argv[0]);
+  initmetadata(&metadata,NULL);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -410,17 +406,17 @@ int main(int argc,char **argv)
                "-var name     variable name in NetCDF file\n"
                "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
                "-id string    LPJ header string in clm file\n"
-               "-version v    version of clm header, default is 3\n"
+               "-version v    version of clm header, default is %d\n"
                "-int          write int values in clm file, default is short\n"
                "-float        write float values in clm file, default is short\n"
                "-zero         write zero values in clm file if data is not found\n"
-               "-json         JSON metafile is created with suffix '.json'\n"
-               "-o clmfile    filename of CLM data file written. Default is out.clm\n"
+               "-json         JSON metafile is created with suffix '%s'\n"
+               "-o clmfile    filename of CLM data file written. Default is '%s'\n"
                "-config file  read NetCDF setting from JSON file\n"
                "gridfile      filename of grid data file\n"
                "netcdffile    filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               progname);
+               progname,version,JSON_SUFFIX,outname);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-var"))
@@ -453,8 +449,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        units=strdup(argv[++iarg]);
-        check(units);
+        metadata.unit=strdup(argv[++iarg]);
+        check(metadata.unit);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -465,7 +461,7 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        map_name=argv[++iarg];
+        metadata.map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-o"))
       {
@@ -600,6 +596,7 @@ int main(int argc,char **argv)
   if(coords==NULL)
   {
     printallocerr("coords");
+    closecoord(coordfile);
     return EXIT_FAILURE;
   }
   grid_type=getcoordtype(coordfile);
@@ -621,15 +618,18 @@ int main(int argc,char **argv)
   if(file==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
+    free(coords);
     return EXIT_FAILURE;
   }
   fwriteheader(file,&header,id,version);
   climate.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
-    if(openclimate_netcdf(&climate,NULL,NULL,NULL,argv[j],&filename,units,&config))
+    if(openclimate_netcdf(&climate,(j==iarg+1) ? &metadata : NULL,argv[j],&filename,metadata.unit,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
+      free(coords);
+      fclose(file);
       return EXIT_FAILURE;
     }
     if(verbose)
@@ -659,14 +659,22 @@ int main(int argc,char **argv)
           break;
         case SECOND:
           fprintf(stderr,"Time step of second not supported in '%s'.\n",argv[j]);
+          free(coords);
+          fclose(file);
+          closeclimate_netcdf(&climate,TRUE);
           return EXIT_FAILURE;
       }
       if(verbose)
       {
-        printf(" time step");
-        if(climate.isleap && climate.time_step==DAY)
-          printf(" with leap days");
-        printf(" from %d",climate.firstyear);
+        if(climate.time_step==MISSING_TIME)
+          printf(" time");
+        else
+        {
+          printf(" time step");
+          if(climate.isleap && climate.time_step==DAY)
+            printf(" with leap days");
+          printf(" from %d",climate.firstyear);
+        }
         if(climate.slope!=1 || climate.intercept!=0)
           printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
         else
@@ -676,6 +684,9 @@ int main(int argc,char **argv)
       if(data==NULL)
       {
         printallocerr("data");
+        free(coords);
+        fclose(file);
+        closeclimate_netcdf(&climate,TRUE);
         return EXIT_FAILURE;
       }
       switch(header.datatype)
@@ -685,6 +696,10 @@ int main(int argc,char **argv)
            if(s==NULL)
            {
              printallocerr("short");
+             free(coords);
+             free(data);
+             fclose(file);
+             closeclimate_netcdf(&climate,TRUE);
              return EXIT_FAILURE;
            }
            break;
@@ -693,6 +708,10 @@ int main(int argc,char **argv)
            if(idata==NULL)
            {
              printallocerr("int");
+             free(coords);
+             free(data);
+             fclose(file);
+             closeclimate_netcdf(&climate,TRUE);
              return EXIT_FAILURE;
            }
            break;
@@ -700,49 +719,30 @@ int main(int argc,char **argv)
            break;
          default:
            fprintf(stderr,"Datatype %s not supported.\n",typenames[header.datatype]);
+           free(coords);
+           free(data);
+           fclose(file);
+           closeclimate_netcdf(&climate,TRUE);
            return EXIT_FAILURE;
       }
-      if(units==NULL)
-        units=getattr_netcdf(climate.ncid,climate.varid,"units");
+      if(metadata.unit==NULL)
+        metadata.unit=getattr_netcdf(climate.ncid,climate.varid,"units");
       if(filename.var==NULL)
         filename.var=getvarname_netcdf(&climate);
-      long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
-      standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
-      history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
-      source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
-      if(map_name!=NULL)
+      metadata.variable=strdup(filename.var);
+      metadata.long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
+      metadata.standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
+      metadata.history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
+      metadata.source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
+      for(k=0;k<metadata.n_attr;k++)
       {
-        map=readmap_netcdf(climate.ncid,map_name);
-        if(map==NULL)
+        if(!strcmp(metadata.attrs[k].name,"history") || !strcmp(metadata.attrs[k].name,"source"))
         {
-          fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
-          map_name=NULL;
-        }
-        else
-          map_name=BAND_NAMES;
-      }
-      if(nc_inq_natts(climate.ncid,&len))
-        n_attr=0;
-      else
-      {
-        attrs=newvec(Attr,len);
-        if(attrs==NULL)
-        {
-          printallocerr("attrs");
-          return EXIT_FAILURE;
-        }
-        n_attr=0;
-        for(k=0;k<len;k++)
-        {
-          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,k,name))
-          {
-            if(strcmp(name,"history") && strcmp(name,"source"))
-            {
-              attrs[n_attr].value=getattr_netcdf(climate.ncid,NC_GLOBAL,name);
-              if(attrs[n_attr].value!=NULL)
-                attrs[n_attr++].name=strdup(name);
-            }
-          }
+          free(metadata.attrs[k].name);
+          free(metadata.attrs[k].value);
+          metadata.attrs[k]=metadata.attrs[metadata.n_attr-1];
+          k--;
+          metadata.n_attr--;
         }
       }
     }
@@ -751,16 +751,40 @@ int main(int argc,char **argv)
       if(time!=climate.time_step)
       {
         fprintf(stderr,"Time axis is different in '%s'.\n",argv[j]);
+        free(coords);
+        free(data);
+        free(s);
+        free(idata);
+        freemetadata(&metadata);
+        free(filename.var);
+        fclose(file);
+        closeclimate_netcdf(&climate,TRUE);
         return EXIT_FAILURE;
       }
       if (var_len!=climate.var_len)
       {
         fprintf(stderr,"Dimension is different in '%s'.\n",argv[j]);
+        free(coords);
+        free(data);
+        free(s);
+        free(idata);
+        freemetadata(&metadata);
+        free(filename.var);
+        fclose(file);
+        closeclimate_netcdf(&climate,TRUE);
         return EXIT_FAILURE;
       }
       if(climate.firstyear!=header.firstyear+header.nyear)
       {
         fprintf(stderr,"First year %d in '%s' not last year %d.\n",climate.firstyear,argv[j],header.firstyear+header.nyear);
+        free(coords);
+        free(data);
+        free(s);
+        free(idata);
+        freemetadata(&metadata);
+        free(filename.var);
+        fclose(file);
+        closeclimate_netcdf(&climate,TRUE);
         return EXIT_FAILURE;
       }
     }
@@ -771,6 +795,14 @@ int main(int argc,char **argv)
       if(readclimate2(&climate,data,year,coords,iszero,&config))
       {
         fprintf(stderr,"Error reading '%s' in year %d.\n",argv[j],year+climate.firstyear);
+        free(coords);
+        free(data);
+        free(s);
+        free(idata);
+        freemetadata(&metadata);
+        free(filename.var);
+        fclose(file);
+        closeclimate_netcdf(&climate,TRUE);
         return EXIT_FAILURE;
       }
       switch(header.datatype)
@@ -779,6 +811,12 @@ int main(int argc,char **argv)
           if(fwrite(data,sizeof(float),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
           {
             fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            free(coords);
+            free(data);
+            freemetadata(&metadata);
+            free(filename.var);
+            fclose(file);
+            closeclimate_netcdf(&climate,TRUE);
             return EXIT_FAILURE;
           }
           break;
@@ -796,6 +834,13 @@ int main(int argc,char **argv)
           if(fwrite(s,sizeof(short),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
           {
             fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            free(coords);
+            free(data);
+            free(s);
+            freemetadata(&metadata);
+            free(filename.var);
+            fclose(file);
+            closeclimate_netcdf(&climate,TRUE);
             return EXIT_FAILURE;
           }
           break;
@@ -805,6 +850,13 @@ int main(int argc,char **argv)
           if(fwrite(idata,sizeof(int),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
           {
             fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            free(coords);
+            free(data);
+            free(idata);
+            freemetadata(&metadata);
+            free(filename.var);
+            fclose(file);
+            closeclimate_netcdf(&climate,TRUE);
             return EXIT_FAILURE;
           }
           break;
@@ -839,32 +891,41 @@ int main(int argc,char **argv)
     if(out_json==NULL)
     {
       printallocerr("filename");
+      freemetadata(&metadata);
+      free(filename.var);
       return EXIT_FAILURE;
     }
     strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
+    if(arglist==NULL)
+    {
+      printallocerr("arglist");
+      free(out_json);
+      freemetadata(&metadata);
+      free(filename.var);
+      return EXIT_FAILURE;
+    }
     file=fopen(out_json,"w");
     if(file==NULL)
     {
       printfcreateerr(out_json);
+      free(out_json);
+      free(arglist);
+      freemetadata(&metadata);
+      free(filename.var);
       return EXIT_FAILURE;
     }
     if(version<4)
       header.nbands/=header.nstep;
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,filename.var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,NULL,arglist,&header,&metadata,&grid_name,grid_type,CLM,id,FALSE,version);
     free(arglist);
     free(out_json);
     fclose(file);
   }
-  freeattrs(attrs,n_attr);
+  freemetadata(&metadata);
   free(filename.var);
-  free(units);
-  free(long_name);
-  free(standard_name);
-  free(history);
-  free(source);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
