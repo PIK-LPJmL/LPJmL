@@ -21,6 +21,16 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Fixed
+
+- The file format was not stored for grid files in formats other than `"meta"`. This causes errors in reading the coordinates (issue #427) and has been fixed now.
+
+
 ## [6.1.4] - 2026-07-03
 
 ### Contributors
