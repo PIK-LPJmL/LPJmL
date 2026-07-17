@@ -185,6 +185,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
     }
   }
+  coordfile->fmt=filename->fmt;
   return coordfile;
 } /* of 'opencoord' */
 

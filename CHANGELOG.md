@@ -21,6 +21,18 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.5] - 2026-07-17
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsda.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Fixed
+
+- Reading of grid files in formats other than `"meta"` corrected (issue #427).
+
+
 ## [6.1.4] - 2026-07-03
 
 ### Contributors
