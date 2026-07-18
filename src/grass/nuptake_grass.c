@@ -99,7 +99,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     else
     {
       if(nupsum>*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen))
-        n_uptake=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
+        n_uptake=max(0.0,*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen));
       else
         n_uptake=nupsum;
       pft->bm_inc.nitrogen+=n_uptake;
