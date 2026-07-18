@@ -74,7 +74,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   gresp=(assim-roresp-soresp-presp)*param.r_growth;
   if(gresp<0.0)
     gresp=0.0;
-  npp=assim-soresp-presp-gresp;
+  npp=assim-roresp-soresp-presp-gresp;
   if(config->with_methane)
     forrootsoillayer(l)
     {
