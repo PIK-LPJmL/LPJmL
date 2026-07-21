@@ -48,6 +48,11 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
       !isdead)  /* still not dead? */
       isdead=!survive(pft->par,&stand->cell->climbuf);
   }
+  /* Reset growth increment. It was kept non-zero through allocation_tree so that
+     mortality_tree could compute the growth-efficiency mortality term bm_delta.
+     Now that this year's growth has been allocated to the tissue pools, bm_inc.carbon
+     must be zeroed to avoid double-counting it in standstocks. */
+  pft->bm_inc.carbon=0;
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
   if (fabs(end-start.carbon)>param.error_limit.stocks_fcn.carbon)

@@ -144,6 +144,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   /* add excess carbon from last year to bm_inc to have this allocated now */
   pft->bm_inc.carbon+=tree->excess_carbon*pft->nind;
   tree->excess_carbon=0;
+  String line;
   if(isneg_tree(pft))
   {
     if(pft->nind!=0)
@@ -357,7 +358,8 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
     tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
   }
-  pft->bm_inc.carbon=0;
+  /* pft->bm_inc.carbon is intentionally NOT reset here. It is kept so that 
+     mortality_tree can compute the growth-efficiency correctly. */
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);
