@@ -90,8 +90,8 @@ extract_version <- function(path) {
 }
 
 get_transient_sims <- function(path) {
- dirs <- list.dirs(path, full.names = FALSE, recursive = FALSE)
- sort(dirs[grepl("^transient", dirs)])
+  dirs <- list.dirs(path, full.names = FALSE, recursive = FALSE)
+  sort(dirs[grepl("^transient", dirs)])
 }
 
 is_simulation_dir <- function(path) {
