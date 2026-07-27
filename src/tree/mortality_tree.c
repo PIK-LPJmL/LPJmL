@@ -37,10 +37,11 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
                     const Config *config /**< LPJmL configuration              */
                    )                  /** \return TRUE on death                */
 {
-  Real mort,bm_delta,heatstress,nind_kill,mort_max;
+  Real mort,mort_bg,bm_delta,heatstress,nind_kill,mort_max;
   Pfttree *tree;
   tree=pft->data;
   bm_delta=0;
+  mort_bg=0;
   if(pft->nind>0)
   {
     bm_delta=pft->bm_inc.carbon/pft->nind-turnover_ind;
@@ -58,6 +59,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
       mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
     else
       mort=0.0;
+    mort_bg=mort; /* background (growth-efficiency) mortality, before heat/inundation stress */
     if(mtemp_max>((isdaily) ? pft->par->twmax_daily : pft->par->twmax))
     {
       heatstress=tree->gddtw/ramp_gddtw;
@@ -79,7 +81,10 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     pft->nind-=nind_kill;
     fpc_tree(pft);
     if(isnatural(pft->stand))
+    {
       getoutputindex(&pft->stand->cell->output,PFT_MORT,pft->par->id,config)+=min(mort,1);
+      getoutputindex(&pft->stand->cell->output,PFT_MORT_BACKGROUND,pft->par->id,config)+=min(mort_bg,1);
+    }
   }
   return isneg_tree(pft);
 } /* of 'mortality_tree' */

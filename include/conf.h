@@ -86,7 +86,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 384            /* number of output files */
+#define NOUT 385            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -477,6 +477,7 @@
 #define DFMC 381
 #define FIREDURATIONDAYS 382
 #define LITTERMOIST 383
+#define PFT_MORT_BACKGROUND 384
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

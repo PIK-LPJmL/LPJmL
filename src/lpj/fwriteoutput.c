@@ -1443,6 +1443,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONSUMP_WATER_B,1);
   writeoutputarray(GROWING_PERIOD,1);
   writeoutputarray(PFT_MORT,1);
+  writeoutputarray(PFT_MORT_BACKGROUND,1);
   writeoutputarray(PFT_HEIGHT,1);
   writeoutputarray(PFT_PHEN,ndate1);
   writeoutputarray(FPC_BFT,1);
