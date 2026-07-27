@@ -20,6 +20,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
 ## [6.1.6] - 2026-07-27
 
 ### Contributors
@@ -36,6 +37,7 @@ of `major.minor.patch` with
 - `oneAPI` and `json-c` version corrected in `run_benchmark_default.sh`
 - corrected bracket in `default.md` template for merge requests
 - correct indentation in `benchmark_default.R`
+
 
 ## [6.1.5] - 2026-07-17
 
