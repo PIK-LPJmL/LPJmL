@@ -21,6 +21,25 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [6.1.6] - 2026-07-27
+
+### Contributors
+
+- author: Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Christoph Müller (cmueller@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- burntarea output added to default benchmark.
+
+### Fixed
+
+- `oneAPI` version corrected in `run_benchmark_default.sh`
+- `json-c` version corrected in `run_simulate_default.sh`
+- corrected bracket in `default.md` template for merge requests
+- correct indentation in `benchmark_default.R`
+
+
 ## [6.1.5] - 2026-07-17
 
 ### Contributors
