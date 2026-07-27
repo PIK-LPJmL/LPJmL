@@ -34,6 +34,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - `oneAPI` version corrected in `run_benchmark_default.sh`
+- corrected bracket in `default.md` template for merge requests
 
 ## [6.1.5] - 2026-07-17
 
