@@ -22,7 +22,7 @@ outputvars_base <- c(
   "n2o_nit", "nuptake", "bnf", "firec", "flux_estabc", "gpp", "npp",
   "nbp", "rh", "evap", "transp", "interc", "runoff", "fpc",
   "albedo", "ra", "agb", "soilc_1m", "prec", "temp", "maxthaw_depth",
-  "gw_storage", "harvestc"
+  "gw_storage", "harvestc", "burntarea"
 )
 
 # Additional outputs for landuse runs
@@ -151,6 +151,10 @@ get_bm_settings <- function(base_settings, run_type, time_avg_map = FALSE) {
       bm_settings$ch4_rice_em <- template
     }
   }
+
+  # Add burntarea (uses firec as template)
+  template <- bm_settings$firec
+  bm_settings$burntarea <- template
 
   # Add TimeAvgMapWithAbs metric to all variables if requested
   if (time_avg_map) {
