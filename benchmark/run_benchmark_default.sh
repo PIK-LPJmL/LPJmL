@@ -24,8 +24,6 @@ fi
 
 # Load required modules
 module load piam/1.27
-module unload json-c
-module load json-c/0.17
 module load intel/oneAPI/2024.0.0
 
 # Run the R script with all forwarded arguments
