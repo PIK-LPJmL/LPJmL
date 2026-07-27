@@ -24,7 +24,7 @@ fi
 
 # Load required modules
 module load piam/1.27
-module load intel/oneAPI/2024.2.1
+module load intel/oneAPI/2024.0.0
 
 # Run the R script with all forwarded arguments
 Rscript "$(dirname "$0")/benchmark_default.R" "$@"
