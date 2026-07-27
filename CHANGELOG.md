@@ -34,7 +34,8 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `oneAPI` and `json-c` version corrected in `run_benchmark_default.sh`
+- `oneAPI` version corrected in `run_benchmark_default.sh`
+- `json-c` version corrected in `run_simulate_default.sh`
 - corrected bracket in `default.md` template for merge requests
 - correct indentation in `benchmark_default.R`
 
