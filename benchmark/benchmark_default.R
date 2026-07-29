@@ -202,7 +202,7 @@ for (sim_name in transient_sims) {
   run_type <- get_run_type(sim_name)
   bm_settings <- get_bm_settings(default_settings, run_type,
                                   time_avg_map = time_avg_map)
-
+  set_lpjmlstats_settings(pdf_plot_dpi = 250)
   cat("  Run type:", run_type, "\n")
   cat("  Output:  ", output_file, "\n\n")
 
