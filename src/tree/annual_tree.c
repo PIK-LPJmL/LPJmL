@@ -18,6 +18,7 @@
 Bool annual_tree(Stand *stand,       /**< pointer to stand */
                  Pft *pft,           /**< pointer to PFT */
                  Real *fpc_inc,      /**< FPC increment */
+                 Real natfrac,       /**< natural and wetland fraction */
                  Bool isdaily,       /**< daily temperature data (TRUE/FALSE) */
                  const Config *config /**< LPJmL configuration */
                 )                    /** \return TRUE on death */
@@ -43,7 +44,7 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
   if(!isdead)
   {
     isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,
-                          stand->cell->climbuf.temp_max,isdaily,config);
+                          stand->cell->climbuf.temp_max,natfrac,isdaily,config);
   if (!(stand->prescribe_landcover==LANDCOVERFPC && (stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)) &&
       !isdead)  /* still not dead? */
       isdead=!survive(pft->par,&stand->cell->climbuf);

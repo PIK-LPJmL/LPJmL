@@ -109,7 +109,7 @@ extern char *leaftype[];
 extern void new_tree(Pft *,int,int,const Config *);
 extern Pft *newpftage(Pftpar *,int);
 extern Real npp_tree(Pft *,Real,Real,Real,const Config *);
-extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool,const Config *);
+extern Bool mortality_tree(Litter *,Pft *,Real,Real,Real,Bool,const Config *);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
 extern Real alphaa_tree(const Pft *,int);
@@ -143,7 +143,7 @@ extern void fprintpar_tree(FILE *,const Pftpar *,const Config *);
 extern void output_daily_tree(const Pft *,const Config *);
 extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
                                    Bool *,Real,Real,const Config *);
-extern Bool annual_tree(Stand *,Pft *,Real *,Bool,const Config *);
+extern Bool annual_tree(Stand *,Pft *,Real *,Real,Bool,const Config *);
 extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void copy_tree(Pft *, const Pft *);

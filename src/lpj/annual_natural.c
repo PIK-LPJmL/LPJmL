@@ -74,7 +74,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
 
-      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
+      if(annualpft(stand,pft,fpc_inc+p,natfrac,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];

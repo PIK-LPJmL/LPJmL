@@ -33,6 +33,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
                     Pft *pft,         /**< Pointer to pft                      */
                     Real turnover_ind,/**< indivudual turnover                 */
                     Real mtemp_max,   /**< maximum temperature of month (deg C)*/
+                    Real natfrac,     /**< natural and wetland fraction        */
                     Bool isdaily,     /**< daily temperature data (TRUE/FALSE) */
                     const Config *config /**< LPJmL configuration              */
                    )                  /** \return TRUE on death                */
@@ -82,8 +83,8 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     fpc_tree(pft);
     if(isnatural(pft->stand))
     {
-      getoutputindex(&pft->stand->cell->output,PFT_MORT,pft->par->id,config)+=min(mort,1);
-      getoutputindex(&pft->stand->cell->output,PFT_MORT_BACKGROUND,pft->par->id,config)+=min(mort_bg,1);
+      getoutputindex(&pft->stand->cell->output,PFT_MORT,pft->par->id,config)+=min(mort,1)*pft->stand->frac/natfrac;
+      getoutputindex(&pft->stand->cell->output,PFT_MORT_BACKGROUND,pft->par->id,config)+=min(mort_bg,1)*pft->stand->frac/natfrac;
     }
   }
   return isneg_tree(pft);

@@ -22,7 +22,7 @@
 Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
                      int npft,             /**< number of natural PFTs */
                      int UNUSED(ncft),     /**< number of crop PFTs */
-                     Real UNUSED(natfrac), /**< natural and wetland fraction */
+                     Real natfrac,         /**< natural and wetland fraction */
                      int year,             /**< simulation year */
                      Bool isdaily,         /**< daily temperature data? */
                      Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
@@ -58,7 +58,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
     present[pft->par->id]=TRUE;
 #endif
-    if(annual_grass(stand,pft,&fpc_inc,isdaily,config))
+    if(annual_grass(stand,pft,&fpc_inc,natfrac,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
       litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
