@@ -711,16 +711,16 @@ static void landexpansion(Cell *cell,            /* cell pointer */
        }
       } /* of s!= NOT_FOUND */
     } /* of difffrac<-epsilon */
+    if(mixstand2!=NULL)
+    {
+      mixsoil(mixstand,mixstand2,year,npft+ncft,config);
+      mixstand->frac+=mixstand2->frac;
+      difffrac2+=-mixstand2->frac;
+      difffrac=0;
+      delstand(cell->standlist,pos);
+    }
     if(grassstand!=NULL)
     {
-      if(mixstand2!=NULL)
-      {
-        mixsoil(mixstand,mixstand2,year,npft+ncft,config);
-        mixstand->frac+=mixstand2->frac;
-        difffrac2+=-mixstand2->frac;
-        difffrac=0;
-        delstand(cell->standlist,pos);
-      }
       mixsoil(grassstand,mixstand,year,npft+ncft,config);
       mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac);
       mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
@@ -771,14 +771,6 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case OTHER_PASTURE:
           if(!config->others_to_crop)
           {
-            if(mixstand2!=NULL)
-            {
-              mixsoil(mixstand,mixstand2,year,npft+ncft,config);
-              mixstand->frac+=mixstand2->frac;
-              difffrac2+=-mixstand2->frac;
-              difffrac=0;
-              delstand(cell->standlist,pos);
-            }
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
                  config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
@@ -1870,7 +1862,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   cell->ml.cropfrac_rf=sum[0];
   cell->ml.cropfrac_ir=sum[1];/* could be different from landusefraction input, due to not harvested winter cereals */
   cell->ml.cropfrac_wl=sum_wl;
-
 
 #if defined IMAGE && defined COUPLED
   /* if timber harvest not satisfied by agricultural expansion */
