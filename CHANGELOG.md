@@ -20,6 +20,26 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review:
+
+### Added
+
+- Check and warning message for left-over `kill_stand` added at end of `landusechange()`
+
+### Changed
+
+### Removed
+
+- Redundant call of `killstand()` in `update_daily_cell()` removed
+
+### Fixed
+
+- Removed unintended conversion of stands with 0 PFTs to `kill_stand` in `check_lu()`, which suppressed sowing of more than one crop on the same day
+- Fixed handling of `mixstand2` in `landexpansion()`, which could lead to left-over `kill_stand` in some edge cases.
+
 
 ## [6.1.6] - 2026-07-27
 
