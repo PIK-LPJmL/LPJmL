@@ -105,7 +105,6 @@ is_simulation_dir <- function(path) {
 baseline_version <- extract_version(baseline_sim_path)
 under_test_versions <- sapply(under_test_sim_paths, extract_version)
 
-# Deduplicate under_test_versions: append _2, _3, ... to clashes
 # Deduplicate version names: baseline gets _bl suffix, under_test get _1, _2, ...
 all_versions <- c(baseline_version, under_test_versions)
 if (anyDuplicated(all_versions)) {
