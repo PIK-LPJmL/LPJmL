@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /** File: input_testcase_2cell.cjson                                               \n**/
 /** Source: regridlpj -drainage -dir testcase_2cell testcase_2cell                 \n**/
-/** Configuration file for input dataset for LPJmL C Version 6.1.0                 \n**/
+/** Configuration file for input dataset for LPJmL C Version 6.1.7                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

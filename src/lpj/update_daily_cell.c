@@ -174,7 +174,6 @@ void update_daily_cell(Cell *cell,            /**< cell pointer */
     if(config->withlanduse) /* landuse enabled? */
       flux_estab=sowing(cell,climate->prec,day,year,npft,ncft,config);
     cell->discharge.drunoff=0.0;
-    killstand(cell,npft,ncft,cell->ml.with_tillage,intercrop,year,config);
     if(isspitfire(config))
     {
       update_nesterov(cell,climate);
