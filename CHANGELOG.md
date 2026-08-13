@@ -20,10 +20,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [6.1.7] - 2026-08-13
+
 ### Contributors
 
 - author: Sebastian Ostberg (ostberg@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
-- code review:
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 
 ### Added
 
