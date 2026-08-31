@@ -104,6 +104,32 @@ is_simulation_dir <- function(path) {
 
 baseline_version <- extract_version(baseline_sim_path)
 under_test_versions <- sapply(under_test_sim_paths, extract_version)
+
+# Deduplicate version names: baseline gets _bl suffix, under_test get _1, _2, ...
+all_versions <- c(baseline_version, under_test_versions)
+if (anyDuplicated(all_versions)) {
+  warning(paste(
+    "Duplicate version names detected:",
+    paste(all_versions[duplicated(all_versions)], collapse = ", "),
+    "\nAppending suffixes to make them unique (_bl for baseline, _1/_2/... for under_test)."
+  ))
+  if (baseline_version %in% under_test_versions) {
+    baseline_version <- paste0(baseline_version, "_bl")
+  }
+  if (anyDuplicated(under_test_versions)) {
+    counts <- table(under_test_versions)
+    seen <- integer(length(counts))
+    names(seen) <- names(counts)
+    for (i in seq_along(under_test_versions)) {
+      v <- under_test_versions[i]
+      if (counts[v] > 1) {
+        seen[v] <- seen[v] + 1L
+        under_test_versions[i] <- paste0(v, "_", seen[v])
+      }
+    }
+  }
+}
+
 author <- Sys.info()["user"]
 
 baseline_is_direct <- is_simulation_dir(baseline_sim_path)

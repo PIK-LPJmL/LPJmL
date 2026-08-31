@@ -711,16 +711,16 @@ static void landexpansion(Cell *cell,            /* cell pointer */
        }
       } /* of s!= NOT_FOUND */
     } /* of difffrac<-epsilon */
+    if(mixstand2!=NULL)
+    {
+      mixsoil(mixstand,mixstand2,year,npft+ncft,config);
+      mixstand->frac+=mixstand2->frac;
+      difffrac2+=-mixstand2->frac;
+      difffrac=0;
+      delstand(cell->standlist,pos);
+    }
     if(grassstand!=NULL)
     {
-      if(mixstand2!=NULL)
-      {
-        mixsoil(mixstand,mixstand2,year,npft+ncft,config);
-        mixstand->frac+=mixstand2->frac;
-        difffrac2+=-mixstand2->frac;
-        difffrac=0;
-        delstand(cell->standlist,pos);
-      }
       mixsoil(grassstand,mixstand,year,npft+ncft,config);
       mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac);
       mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
@@ -771,14 +771,6 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case OTHER_PASTURE:
           if(!config->others_to_crop)
           {
-            if(mixstand2!=NULL)
-            {
-              mixsoil(mixstand,mixstand2,year,npft+ncft,config);
-              mixstand->frac+=mixstand2->frac;
-              difffrac2+=-mixstand2->frac;
-              difffrac=0;
-              delstand(cell->standlist,pos);
-            }
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,getlandusetype(mixstand)==WETLAND || getlandusetype(mixstand)==SETASIDE_WETLAND) &&
                  config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && strcmp(config->pftpar[p].name,"Sphagnum moss"))
@@ -1453,6 +1445,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Real sum[2],sum_wl; /* rainfed, irrigated */
   int s,s2,pos;
   int i,p;
+  String line;
 #if defined IMAGE && defined COUPLED
   int nnat;
   Real timberharvest=0;
@@ -1579,7 +1572,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   cell->ml.cropfrac_wl=sum_wl;
 
 #ifdef CHECK_BALANCE
-  String line;
   end.carbon=end.nitrogen =0;
   end_w=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   end_w+=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water+cell->balance.aconv_loss_evap+cell->balance.aconv_loss_drain;
@@ -1871,7 +1863,19 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   cell->ml.cropfrac_ir=sum[1];/* could be different from landusefraction input, due to not harvested winter cereals */
   cell->ml.cropfrac_wl=sum_wl;
 
-
+  /* Check for the presence of kill stands. They should not exist if all landuse change functions work as expected.
+   * If this warning is triggered check landuse change routine. */
+  foreachstand(stand, s, cell->standlist)
+  {
+    if(stand->type->landusetype==KILL)
+    {
+      fprintf(stderr, "WARNING051: %s stand with frac %g at end of %s, year %d, cell (%s). This points to an error in the landuse change routine.\n",
+              stand->type->name,stand->frac,__FUNCTION__,year,sprintcoord(line,&cell->coord));
+      /* As a quick fix turn kill stands into setaside. */
+      killstand(cell, npft, ncft, cell->ml.with_tillage, intercrop, year, config);
+      break;
+    }
+  }
 #if defined IMAGE && defined COUPLED
   /* if timber harvest not satisfied by agricultural expansion */
   if(config->luc_timber && cell->ml.image_data->timber_frac>epsilon)
