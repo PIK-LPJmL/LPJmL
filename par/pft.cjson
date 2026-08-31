@@ -31,7 +31,7 @@
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#define MORT_MAX 0.03
+#define MORT_MAX 0.04
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.5      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_CROP 0.30      /* fraction of N not recovered before turnover */
