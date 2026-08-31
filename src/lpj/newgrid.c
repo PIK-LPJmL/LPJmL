@@ -159,10 +159,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 
   config->count=0;
 
-  /* adjust seedscaler according to the number of grid cells */
-  if(config->ngridcell*seedscaler>2147483647)
-    seedscaler=(int)(2146000000/config->ngridcell);
-
+  /* adjust seedscaler according to the number of grid cells 
+     to avoid unsigned integer overflow */
+  if (seedscaler>2147483647/config->ngridcell)
+    seedscaler=2146000000/config->ngridcell;
 
   /* allocate grid */
   if((grid=newvec(Cell,config->ngridcell))==NULL)
