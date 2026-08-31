@@ -1,4 +1,4 @@
-/**************************************************************************************/
+  /**************************************************************************************/
 /**                                                                                \n**/
 /**                       n  e  w  g  r  i  d  .  c                                \n**/
 /**                                                                                \n**/
@@ -392,7 +392,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*31363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist(0);
         checkptr(grid[i].standlist);
