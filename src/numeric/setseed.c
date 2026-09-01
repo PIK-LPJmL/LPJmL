@@ -20,7 +20,7 @@
 #include "bstruct.h"
 #include "numeric.h"
 
-void setseed(Seed seed,int start)
+void setseed(Seed seed,unsigned int start)
 {
 #ifdef USE_RAND48
   seed[0]=13070;

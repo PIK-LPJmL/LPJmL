@@ -1,4 +1,4 @@
-  /**************************************************************************************/
+/**************************************************************************************/
 /**                                                                                \n**/
 /**                       n  e  w  g  r  i  d  .  c                                \n**/
 /**                                                                                \n**/
@@ -49,7 +49,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 #endif
   int code;
-  int seedscaler=31363;
   Bstruct file_restart;
   Infile countrycode;
 
@@ -158,11 +157,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 
   config->count=0;
-
-  /* adjust seedscaler according to the number of grid cells 
-     to avoid unsigned integer overflow */
-  if (seedscaler>2147483647/config->ngridcell)
-    seedscaler=2146000000/config->ngridcell;
 
   /* allocate grid */
   if((grid=newvec(Cell,config->ngridcell))==NULL)
@@ -398,7 +392,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*seedscaler);
+        setseed(grid[i].seed,config->seed_start+((unsigned int)i+config->startgrid)*36363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist(0);
         checkptr(grid[i].standlist);
@@ -463,7 +457,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         return NULL;
       }
       if(!config->ischeckpoint && config->new_seed)
-        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*seedscaler);
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
       {
         if(check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac,FALSE))
