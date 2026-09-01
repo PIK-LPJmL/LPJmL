@@ -152,10 +152,6 @@ get_bm_settings <- function(base_settings, run_type, time_avg_map = FALSE) {
     }
   }
 
-  # Add burntarea (uses firec as template)
-  template <- bm_settings$firec
-  bm_settings$burntarea <- template
-
   # Add TimeAvgMapWithAbs metric to all variables if requested
   if (time_avg_map) {
     bm_settings <- lapply(bm_settings, function(x) c(x, "TimeAvgMapWithAbs"))

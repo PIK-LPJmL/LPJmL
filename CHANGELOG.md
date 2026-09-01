@@ -20,6 +20,35 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [6.1.8] - 2026-09-01
+
+### Contributors
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+
+### Added
+
+- new output `PFT_MORT_BACKGROUND`
+
+### Changed
+
+- updated `mort_max` to 0.04 and `k_mort` to 0.1 in response to bug fixes in tree mortality (see below `Fixed`)
+- reduced standard png resolution in `benchmark/benchmark_default.R` to 250 dpi to reduce file size of benchmark PDF
+
+### Removed
+
+- benchmark settings for `burnt area` now treated explicitly in `lpjmlstats` and setting specification in `benchmark/benchmark_utils.R` is no longer needed
+
+### Fixed
+
+- `nuptake` for crops and trees correctly capped at remaining demand in `src/crop/nuptake_crop.c` and `src/tree/nuptake_tree.c`
+- avoided unwanted negative `nuptake` in `src/crop/nuptake_crop.c`, `src/grass/nuptake_grass.c`, and `src/tree/nuptake_tree.c`
+- root respiration considered in NPP computation for crops in `src/crop/npp_crop.c`
+- mortality no longer at `max_mort` in `src/tree/mortality_tree.c` by no longer setting `bm_inc = 0.0` in `src/tree/allocation_tree.c` (issue #428)
+- no subnormal allocation in `src/tree/allocation_tree.c` by avoiding negative `lmtorm` by controlling for negative `ndemand_leaf` in `src/
+- avoided `signed int overflow` in `src/lpj/newgrid.c` in `setseed()` function call, error proofing against high spatial resolution
+
 
 ## [6.1.7] - 2026-08-13
 

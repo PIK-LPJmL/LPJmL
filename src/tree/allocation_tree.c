@@ -166,12 +166,13 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     wscal=pft->wscal_mean/NDAYYEAR;
     lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
+  pft->wscal_mean=pft->vscal=0;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
   treepar=pft->par->data;
   tinc_ind.heartwood.carbon=tinc_ind.debt.carbon=0.0;
   tinc_ind.heartwood.nitrogen=tinc_ind.debt.nitrogen=0.0;
-  if (lmtorm<1.0e-10) /* No leaf production possible - put all biomass 
+  if (lmtorm<1.0e-10) /* No leaf production possible - put all biomass
                            into roots (Individual will die next time period)*/
   {
     tinc_ind.leaf.carbon=0.0;
@@ -251,18 +252,18 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       }
       tinc_ind.sapwood.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon-tinc_ind.root.carbon;
     }
-    else 
+    else
     {
-    
+
 /* Abnormal allocation: reduction in some biomass compartment(s) to
  * satisfy allometry
  * Attempt to distribute this year's production among leaves and roots only
  */
       tinc_ind.leaf.carbon=(bm_inc_ind.carbon+tree->ind.root.carbon-tree->ind.leaf.carbon/lmtorm)/
                     (1.0+1.0/lmtorm);
-      if (tinc_ind.leaf.carbon>0.0) 
+      if (tinc_ind.leaf.carbon>0.0)
         tinc_ind.root.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon;
-      else 
+      else
       {
         tinc_ind.root.carbon=bm_inc_ind.carbon;
         tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
@@ -352,12 +353,8 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     }
   }
   pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
-  if(tree->ind.leaf.carbon<epsilon && tree->ind.root.carbon>epsilon)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
-  {
-    tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
-    tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
-  }
-  pft->bm_inc.carbon=0;
+  /* pft->bm_inc.carbon is intentionally NOT reset here. It is kept so that
+     mortality_tree can compute the growth-efficiency correctly. */
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

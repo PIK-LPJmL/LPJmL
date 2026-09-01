@@ -102,8 +102,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       n_uptake=0;
     else
     {
-      if(n_uptake>*n_plant_demand-pft->bm_inc.nitrogen)
-        n_uptake=*n_plant_demand-pft->bm_inc.nitrogen;
+      if(nupsum>*n_plant_demand-pft->bm_inc.nitrogen)
+        n_uptake=max(0.0,*n_plant_demand-pft->bm_inc.nitrogen);
       else
         n_uptake=nupsum;
       pft->bm_inc.nitrogen+=n_uptake;
@@ -182,7 +182,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         if(crop->ind.leaf.carbon==0)
           *ndemand_leaf=0;
         else
-          *ndemand_leaf=(crop->ind.leaf.carbon*pft->nind)*(crop->ind.leaf.nitrogen)/(crop->ind.leaf.carbon);
+          *ndemand_leaf=max(0.0,(crop->ind.leaf.carbon*pft->nind)*(crop->ind.leaf.nitrogen)/(crop->ind.leaf.carbon));
         if(ndemand_leaf_opt<epsilon)
           pft->vscal=1;
         else

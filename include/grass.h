@@ -93,7 +93,7 @@ extern void reduce_grass(Litter *,Pft *,Real,const Config *);
 extern void fprintpar_grass(FILE *,const Pftpar *,const Config *);
 extern Stocks livefuel_consum_grass(Litter *,Pft *,const Fuel *,Livefuel *,
                                     Bool *,Real, Real,const Config *);
-extern Bool annual_grass(Stand *,Pft *,Real *,Bool,const Config *);
+extern Bool annual_grass(Stand *,Pft *,Real *,Real,Bool,const Config *);
 extern void turnover_monthly_grass(Litter *,Pft *,const Config *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,int,Bool,const Config *);
 extern void albedo_grass(Pft *,Real,Real);

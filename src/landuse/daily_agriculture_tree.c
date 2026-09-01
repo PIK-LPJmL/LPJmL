@@ -400,7 +400,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
       stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
       stand->cell->output.dcflux+=yield.carbon*stand->frac;
-      annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
+      annual_tree(stand,pft,&fpc_inc,stand->frac,climate->isdailytemp,config);
       getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
       getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
       getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;

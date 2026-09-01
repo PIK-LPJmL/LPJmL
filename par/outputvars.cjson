@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 6.1.7                             \n**/
+/**  Defines array of output variables for LPJmL 6.1.8                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -264,6 +264,7 @@
     { "id" : WD_AQ, "name": "wd_aq", "timestep" : "monthly","var": "wd_aq", "long_name": "aquifer withdrawal", "unit": "mm/month", "scale": 1.0, "offset" : 0.0},
     { "id" : WFT_VEGC, "name": "wft_vegc", "timestep" : "annual", "var": "wft_vegc", "long_name": "Vegetation carbon for wood plantation trees (WFTs)", "unit": "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : PFT_MORT, "name": "pft_mort", "timestep" : "annual","var": "mortality", "long_name": "Annual mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0},
+    { "id" : PFT_MORT_BACKGROUND, "name": "pft_mort_background", "timestep" : "annual","var": "mortality_background", "long_name": "Annual background (growth-efficiency) mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0},
     { "id" : VEGC_AVG, "name": "vegc_avg", "timestep" : "annual", "var" : "VegC", "long_name" : "average vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : NV_LAI, "name": "nv_lai", "timestep" : "annual", "var" : "LAI", "long_name" : "mean LAI from natural vegetation", "unit" : "m2/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : FPC_BFT, "name": "fpc_bft", "timestep" : "annual", "var" : "FPC", "long_name" : "FPC for bioenergy PFTs and managed grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},

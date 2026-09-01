@@ -23,7 +23,7 @@
 Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
                               int npft,             /**< number of natural pfts */
                               int ncft,             /**< number of crop PFTs */
-                              Real UNUSED(natfrac), /**< natural and wetland fraction */
+                              Real natfrac,         /**< natural and wetland fraction */
                               int year,
                               Bool isdaily,         /**< daily temperature data? */
                               Bool UNUSED(intercrop),
@@ -70,7 +70,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon += estab_store.carbon * stand->frac;
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen += estab_store.nitrogen * stand->frac;
     }
-    if (annual_grass(stand, pft, &fpc_inc,isdaily,config))
+    if (annual_grass(stand, pft, &fpc_inc,natfrac,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
       litter_update_grass(&stand->soil.litter, pft, pft->nind,config);

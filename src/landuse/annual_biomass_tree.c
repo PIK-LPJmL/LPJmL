@@ -24,7 +24,7 @@
 Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
                          int npft,             /**< number of natural pfts */
                          int ncft,             /**< number of crop PFTs */
-                         Real UNUSED(natfrac), /**< natural and wetland fraction */
+                         Real natfrac,         /**< natural and wetland fraction */
                          int year,             /**< year (AD) */
                          Bool isdaily,         /**< daily temperature data? */
                          Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
@@ -97,7 +97,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         }
       }
 
-      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
+      if(annualpft(stand,pft,fpc_inc+p,natfrac,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
