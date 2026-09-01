@@ -59,7 +59,7 @@ of `major.minor.patch` with
 - avoided unwanted negative `nuptake` in `src/crop/nuptake_crop.c`, `src/grass/nuptake_grass.c`, and `src/tree/nuptake_tree.c`
 - root respiration considered in NPP computation for crops in `src/crop/npp_crop.c`
 - mortality no longer at `max_mort` in `src/tree/mortality_tree.c` by no longer setting `bm_inc = 0.0` in `src/tree/allocation_tree.c` (issue #428)
-- no subnormal allocation in `src/tree/allocation_tree.c` by avoiding negative `lmtorm` by controlling for negative `ndemand_leaf` in `src/
+- no subnormal allocation in `src/tree/allocation_tree.c` by avoiding negative `lmtorm` by controlling for negative `ndemand_leaf` in `src/crop/nuptake_crop.c`, `src/grass/nuptake_grass.c`, and `src/tree/nuptake_tree.c`
 - avoided `signed int overflow` in `src/lpj/newgrid.c` in `setseed()` function call, error proofing against high spatial resolution
 
 
