@@ -20,6 +20,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- reviewer: Christoph Müller (cmueller@pik-potdam.de)
+
+### Fixed
+
+- bug fixed that was introduced in 6.1.8 to avoid `signed int overflow` in `src/lpj/newgrid.c` but which caused non-reproducibility as `config->ngridcell` is dependent of the number of tasks
+
+
+
 ## [6.1.8] - 2026-09-01
 
 ### Contributors
